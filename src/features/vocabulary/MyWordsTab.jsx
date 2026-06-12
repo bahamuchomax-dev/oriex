@@ -50,7 +50,16 @@ export default function MyWordsTab({ uid }) {
   }
 
   return (
-    <div>
+    <div className="vocab-tab-surface">
+      <div className="factory-mini-hero">
+        <div>
+          <span className="section-chip">Factory</span>
+          <h3>マイワードを作る</h3>
+          <p>自分の単語を作って、必要なものだけ復習へ送れます。</p>
+        </div>
+        <span className="vocab-count">{items.length}語</span>
+      </div>
+
       <AddForm onAdd={addWord} />
       {flash && <div className="vocab-flash">{flash}</div>}
 
@@ -94,7 +103,8 @@ function AddForm({ onAdd }) {
   const [form, setForm] = useState(empty);
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   return (
-    <div className="ox-card vocab-add">
+    <div className="ox-card vocab-add factory-add-card">
+      <div className="factory-step-label">自分の単語を作る</div>
       <div className="vocab-add-grid">
         <input placeholder="英単語" value={form.word} onChange={set("word")} />
         <input placeholder="日本語訳" value={form.meaning} onChange={set("meaning")} />
@@ -106,7 +116,7 @@ function AddForm({ onAdd }) {
         disabled={!form.word.trim()}
         onClick={() => { if (onAdd(form)) setForm(empty); }}
       >
-        追加
+        マイワードに追加
       </button>
     </div>
   );

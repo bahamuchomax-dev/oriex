@@ -17,11 +17,29 @@ import Vocabulary from "./features/vocabulary/index.jsx";
 
 function TeacherProblems() {
   return (
-    <section className="feature-placeholder">
-      <h2>先生からの問題</h2>
-      <p>
-        先生のオリジナル問題と配信問題は、次のフェーズで v7.22 の導線に合わせて整理します。
-      </p>
+    <section className="teacher-delivery-screen">
+      <div className="teacher-delivery-hero">
+        <span className="section-chip">Teacher Delivery</span>
+        <h2>先生からの問題</h2>
+        <p>先生のオリジナル問題と配信問題を受け取る場所です。</p>
+      </div>
+
+      <div className="delivery-grid">
+        <article className="delivery-card">
+          <span className="delivery-icon">問</span>
+          <h3>先生のオリジナル問題</h3>
+          <p>配信された問題は、今後ここにカード形式で表示します。</p>
+        </article>
+        <article className="delivery-card">
+          <span className="delivery-icon">配</span>
+          <h3>配信コンテンツ</h3>
+          <p>v7.22 の配信導線に合わせるための安全なプレースホルダーです。</p>
+        </article>
+      </div>
+
+      <div className="teacher-delivery-note">
+        今回は見た目と導線のみ整理しています。Firestoreの先生機能データモデルは変更していません。
+      </div>
     </section>
   );
 }
@@ -86,7 +104,7 @@ export default function App() {
       current = <Timer uid={uid} profile={profile} navigate={navigate} />;
       break;
     case "books":
-      current = <Books uid={uid} profile={profile} />;
+      current = <Books uid={uid} profile={profile} navigate={navigate} />;
       break;
     case "friends":
       current = <Friends uid={uid} profile={profile} />;
@@ -98,13 +116,13 @@ export default function App() {
       current = <HamsterRoom />;
       break;
     case "factory":
-      current = <Factory />;
+      current = <Factory navigate={navigate} />;
       break;
     case "plans":
       current = <Plans uid={uid} profile={profile} isTeacher={isTeacher} />;
       break;
     case "vocab":
-      current = <Vocabulary uid={uid} />;
+      current = <Vocabulary uid={uid} navigate={navigate} />;
       break;
     default:
       current = <Home profile={profile} navigate={navigate} />;

@@ -6,17 +6,28 @@ import MyWordsTab from "./MyWordsTab.jsx";
 // Vocabulary screen: 単語帳 / 復習 / マイワード. review & userVocab are stored in
 // localStorage only (see the two local*Store.js files) — never Firestore.
 const TABS = [
-  { key: "wordbook", label: "単語帳" },
-  { key: "review", label: "復習" },
-  { key: "mywords", label: "マイワード" },
+  { key: "wordbook", label: "単語帳", icon: "単" },
+  { key: "review", label: "復習", icon: "復" },
+  { key: "mywords", label: "マイワード", icon: "作" },
 ];
 
-export default function Vocabulary({ uid }) {
+export default function Vocabulary({ uid, navigate }) {
   const [tab, setTab] = useState("wordbook");
 
   return (
-    <section className="ox-screen">
-      <h2 className="ox-screen-title">単語学習</h2>
+    <section className="ox-screen vocab-screen">
+      <div className="vocab-hero">
+        <div>
+          <p className="home-kicker">Vocabulary</p>
+          <h2>単語学習</h2>
+          <p>単語帳、復習、マイワードをFactory風に整理しました。</p>
+        </div>
+        {navigate && (
+          <button className="vocab-factory-button" onClick={() => navigate("factory")}>
+            Factory
+          </button>
+        )}
+      </div>
 
       <div className="ox-tabs" role="tablist">
         {TABS.map((t) => (
@@ -27,6 +38,7 @@ export default function Vocabulary({ uid }) {
             className={"ox-tab" + (t.key === tab ? " active" : "")}
             onClick={() => setTab(t.key)}
           >
+            <span aria-hidden="true">{t.icon}</span>
             {t.label}
           </button>
         ))}

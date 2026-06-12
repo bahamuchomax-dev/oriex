@@ -151,7 +151,16 @@ export default function WordbookTab({ uid }) {
   }
 
   return (
-    <div>
+    <div className="vocab-tab-surface">
+      <div className="vocab-tab-intro">
+        <div>
+          <span className="section-chip">Wordbook</span>
+          <h3>単語帳</h3>
+          <p>{usingCustom ? "先生や共有データから届いた単語を表示しています。" : "標準単語帳を表示しています。"}</p>
+        </div>
+        <span className="vocab-count">{shown.length}語</span>
+      </div>
+
       <div className="vocab-toolbar">
         <input className="vocab-search" placeholder="検索（単語・意味）" value={search} onChange={(e) => setSearch(e.target.value)} />
         {subjects.length > 1 && (

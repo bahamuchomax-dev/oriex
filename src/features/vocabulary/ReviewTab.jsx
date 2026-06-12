@@ -55,7 +55,16 @@ export default function ReviewTab({ uid }) {
   }
 
   return (
-    <div>
+    <div className="vocab-tab-surface">
+      <div className="vocab-tab-intro green">
+        <div>
+          <span className="section-chip">Review</span>
+          <h3>復習</h3>
+          <p>覚えた/もう一度で、localStorageの復習リストを整理します。</p>
+        </div>
+        <span className="vocab-count">{shown.length}/{items.length}</span>
+      </div>
+
       <div className="vocab-toolbar">
         <div className="ox-segment">
           {[["all", "すべて"], ["learning", "未習得"], ["known", "習得済み"]].map(([k, label]) => (
