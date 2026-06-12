@@ -1,0 +1,89 @@
+rules_version = '2';
+// ============================================================================
+// Oriex Firestore Rules — PHASE 1（暫定 / 現行コードを壊さない）
+// ----------------------------------------------------------------------------
+// 注意：
+// 現行コードはまだ匿名認証（signInAnonymously）＋ Firestore の profile.password
+// 比較でログインしています。そのため Phase 2 の理想ルール（password 書き込み禁止・
+// Custom Claims 前提）をそのまま本番適用すると、登録・ログインが壊れます。
+//
+// この Phase 1 ルールは「現行ログインを壊さずに、最低限の防御だけ入れる」暫定版です。
+// ・未ログインは全拒否（匿名認証でも request.auth は非null になる点に注意）
+// ・本人データは本人のみ read/write
+// ・isTeacher:true への自己昇格は禁止（false への変更や据え置きは許可）
+// ・password フィールドは「現状は許可」（ログイン互換のため）。Phase 2 で禁止する。
+//
+// 本番適用前に Firebase Auth（Email/Password）方式へ移行してください。
+// 実データ構造に合わせて調整し、エミュレータで十分にテストすること（要検証）。
+// ============================================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; } // 匿名認証含む
+    function uid()        { return request.auth.uid; }
+
+    match /artifacts/gen-ron-kai-app-v1 {
+
+      // ===== 本人プロフィール =====
+      // password は現状許可（ログイン互換）。ただし自己昇格は禁止。
+      match /users/{userId}/{document=**} {
+        allow read:  if isSignedIn() && uid() == userId;
+        allow write: if isSignedIn() && uid() == userId
+                     && !(
+                          'isTeacher' in request.resource.data
+                          && request.resource.data.isTeacher == true
+                          && (resource == null || resource.data.isTeacher != true)
+                        );
+      }
+
+      // ===== 公開リーダーボード（XP/score）=====
+      // 本人の doc のみ書込。極端な値を弾く（増分上限は要調整）。
+      match /public/data/customApp/{userId} {
+        allow read:  if isSignedIn();
+        allow write: if isSignedIn() && uid() == userId
+                     && request.resource.data.totalExp is int
+                     && request.resource.data.totalExp >= 0
+                     && request.resource.data.totalExp <= 10000000;
+      }
+
+      // ===== 提出状況 =====
+      match /public/data/taskProgress/{progressId} {
+        allow read:  if isSignedIn();
+        allow create, update: if isSignedIn()
+                     && request.resource.data.uid == uid()   // uid 偽装防止
+                     && request.resource.data.done is int
+                     && request.resource.data.done >= 0;
+      }
+
+      // ===== 先生配信・お知らせ・設定・index・チャット =====
+      // Phase 1 では匿名認証のため「教師だけ」を厳密に判定できない。
+      // ひとまず認証済みに限定し、Phase 2 で isTeacher()/isAdmin() に絞る。
+      match /public/data/customVocabulary/{id} {
+        allow read:  if isSignedIn();
+        allow write: if isSignedIn(); // TODO(Phase 2): isTeacher() のみ
+      }
+      match /public/data/announcements/{id} {
+        allow read:  if isSignedIn();
+        allow write: if isSignedIn(); // TODO(Phase 2): isTeacher() のみ
+      }
+      match /public/data/settings/{id} {
+        allow read:  if isSignedIn();
+        allow write: if isSignedIn(); // TODO(Phase 2): isAdmin() のみ
+      }
+      match /public/data/teacherIndex/{userId} {
+        allow read:  if isSignedIn();
+        allow write: if isSignedIn(); // TODO(Phase 2): isTeacher() のみ
+      }
+      match /public/data/chat/{msgId} {
+        allow read:  if isSignedIn();
+        allow create: if isSignedIn()
+                     && request.resource.data.uid == uid()
+                     && request.resource.data.text is string
+                     && request.resource.data.text.size() <= 1000;
+        allow update, delete: if isSignedIn(); // TODO(Phase 2): isTeacher() のみ
+      }
+
+      // 明示しないものは拒否（デフォルト deny）
+    }
+  }
+}
