@@ -15,13 +15,14 @@ import Factory from "./features/factory/index.jsx";
 import Plans from "./features/plans/index.jsx";
 import Vocabulary from "./features/vocabulary/index.jsx";
 import TeacherHub from "./features/teacher/TeacherHub.jsx";
+import Settings from "./features/settings/index.jsx";
 
 const NAV_TABS = [
   { key: "home", label: "ホーム", icon: "家", match: ["home", "plans", "teacher"] },
   { key: "vocab", label: "学習", icon: "学", match: ["vocab", "factory"] },
   { key: "records", label: "記録", icon: "記", match: ["records", "timer", "books"] },
   { key: "friends", label: "ひろば", icon: "広", match: ["friends", "hamster"] },
-  { key: "profile", label: "マイ", icon: "私", match: ["profile"] },
+  { key: "profile", label: "マイ", icon: "私", match: ["profile", "settings"] },
 ];
 
 export default function App() {
@@ -64,6 +65,7 @@ export default function App() {
         <Profile
           profile={profile}
           uid={uid}
+          navigate={navigate}
           onProfileSaved={setProfile}
           onSignOut={signOutUser}
         />
@@ -85,7 +87,19 @@ export default function App() {
       current = <TeacherHub profile={profile} isTeacher={isTeacher} navigate={navigate} />;
       break;
     case "hamster":
-      current = <HamsterRoom />;
+      current = (
+        <HamsterRoom
+          profile={profile}
+          uid={uid}
+          navigate={navigate}
+          onProfileSaved={setProfile}
+        />
+      );
+      break;
+    case "settings":
+      current = (
+        <Settings profile={profile} navigate={navigate} onSignOut={signOutUser} />
+      );
       break;
     case "factory":
       current = <Factory navigate={navigate} />;

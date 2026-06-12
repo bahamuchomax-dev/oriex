@@ -23,7 +23,7 @@ body {
 
 .app-main {
   flex: 1;
-  padding: 10px 14px calc(var(--nav-h) + 34px);
+  padding: 10px 14px calc(var(--nav-h) + 34px + env(safe-area-inset-bottom, 0px));
 }
 
 .app-header {
@@ -62,7 +62,7 @@ body {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 14px;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
   width: calc(100% - 24px);
   max-width: 496px;
   height: var(--nav-h);
@@ -1628,3 +1628,196 @@ select { width: 100%; font: inherit; padding: 10px 12px; border: 1px solid var(-
 .timer-flash.ok { color: var(--good); }
 .timer-flash.warn { color: var(--warn); }
 .timer-flash.err { color: var(--danger); }
+
+/* =========================================================================
+   v7.22 phase4 — ハムスターのへや / 育成 / マイページ・設定 (SAFE, no WebGL)
+   ========================================================================= */
+.settings-screen { padding-bottom: calc(var(--nav-h) + 32px + env(safe-area-inset-bottom, 0px)); }
+.hamster-screen { padding-bottom: calc(var(--nav-h) + 96px + env(safe-area-inset-bottom, 0px)); }
+
+.hamster-titlebar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin: 2px 0 12px;
+}
+.hamster-soft-note { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+.hamster-foot-note { margin-top: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; text-align: center; }
+
+/* Safe CSS-only room scene */
+.hamster-room {
+  position: relative; height: 176px; border-radius: 18px; overflow: hidden;
+  background: linear-gradient(180deg, #f6eadb 0%, #ead0b0 100%);
+  border: 1px solid var(--border);
+  box-shadow: inset 0 -22px 34px rgba(124,82,44,.12);
+}
+.hamster-room-floor {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 46px;
+  background: linear-gradient(180deg, #f0d8b6, #e6c79c);
+}
+.hamster-body {
+  position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%);
+  font-size: 56px; filter: drop-shadow(0 6px 6px rgba(120,80,40,.22));
+  animation: hamBob 2.4s ease-in-out infinite;
+}
+@keyframes hamBob { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-5px); } }
+.hamster-wheel {
+  position: absolute; right: 26px; bottom: 30px; width: 66px; height: 66px;
+  border: 6px solid #d9b78a; border-radius: 50%; opacity: .85;
+  animation: hamSpin 5s linear infinite;
+}
+.hamster-wheel-spoke { position: absolute; inset: 0; margin: auto; width: 54px; height: 4px; background: #d9b78a; border-radius: 4px; top: 50%; transform: translateY(-50%); }
+.hamster-wheel-spoke.v { width: 4px; height: 54px; left: 50%; transform: translateX(-50%); top: 6px; }
+@keyframes hamSpin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+.hamster-bed { position: absolute; left: 24px; bottom: 28px; width: 58px; height: 26px; background: #e7a4a0; border-radius: 16px 16px 10px 10px; opacity: .9; }
+.hamster-plant { position: absolute; left: 92px; bottom: 60px; font-size: 22px; opacity: .9; }
+
+/* ID card (name + level + xp) */
+.hamster-id-card {
+  margin-top: 12px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px;
+}
+.hamster-id-main { display: flex; align-items: baseline; justify-content: space-between; }
+.hamster-id-name { font-size: 18px; font-weight: 800; color: var(--text); }
+.hamster-id-lv { font-size: 14px; font-weight: 800; color: var(--accent); }
+.hamster-xp { margin-top: 10px; }
+.hamster-xp-bar { height: 8px; border-radius: 6px; background: rgba(0,0,0,.06); overflow: hidden; }
+.hamster-xp-bar span { display: block; height: 100%; border-radius: 6px; background: var(--accent); transition: width .4s; }
+.hamster-xp-text { margin-top: 6px; font-size: 11.5px; color: var(--text-muted); }
+
+/* Cosmetic gauges */
+.hamster-gauges { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.hamster-gauge { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
+.hamster-gauge-head { display: flex; align-items: baseline; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: var(--text); }
+.hamster-gauge-bar { margin-top: 7px; height: 7px; border-radius: 6px; background: rgba(0,0,0,.06); overflow: hidden; }
+.hamster-gauge-bar span { display: block; height: 100%; border-radius: 6px; transition: width .4s; background: var(--accent); }
+.hg-red .hamster-gauge-bar span { background: #ef6f53; }
+.hg-amber .hamster-gauge-bar span { background: #f5a623; }
+.hg-blue .hamster-gauge-bar span { background: #3aa6e6; }
+
+/* Hub grid (shop / achievements / typing) — colorful tiles reuse .tone-* bg */
+.hamster-hub-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.hamster-hub-card {
+  border: none; cursor: pointer; color: #fff; text-align: left;
+  border-radius: 16px; padding: 14px 12px; display: flex; flex-direction: column; gap: 4px;
+  box-shadow: 0 6px 16px rgba(43,39,36,.12); min-height: 92px;
+}
+.hamster-hub-card:active { transform: translateY(1px); }
+.hamster-hub-icon { font-size: 20px; font-weight: 800; }
+.hamster-hub-label { font-size: 13.5px; font-weight: 800; }
+.hamster-hub-sub { font-size: 10.5px; opacity: .92; line-height: 1.3; }
+
+/* Hub sub-screens */
+.hamster-sub-lead { display: flex; gap: 12px; align-items: flex-start; }
+.hamster-sub-icon { font-size: 22px; font-weight: 800; color: var(--accent); flex: none; }
+.hamster-sub-lead p { margin: 0; font-size: 13px; color: var(--text); line-height: 1.6; }
+.hamster-shop-row, .hamster-ach-row { display: flex; align-items: center; gap: 12px; }
+.hamster-shop-emoji, .hamster-ach-badge { font-size: 22px; flex: none; }
+.hamster-shop-text, .hamster-ach-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.hamster-shop-text strong, .hamster-ach-text strong { font-size: 14px; color: var(--text); }
+.hamster-shop-text small, .hamster-ach-text small { font-size: 11.5px; color: var(--text-muted); }
+.hamster-price { flex: none; font-weight: 800; font-size: 13px; color: var(--accent); }
+.hamster-ach-state { flex: none; font-size: 12px; font-weight: 700; color: var(--text-muted); }
+.hamster-ach-row.earned { border-color: rgba(32,128,80,.4); }
+.hamster-ach-row.earned .hamster-ach-state { color: var(--good); }
+
+/* Profile quick links */
+.profile-links { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+.profile-link-card {
+  display: flex; align-items: center; gap: 12px; width: 100%; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; text-align: left;
+}
+.profile-link-card:active { transform: translateY(1px); }
+.profile-link-icon { flex: none; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; background: rgba(200,128,64,.12); color: var(--accent); font-weight: 800; }
+.profile-link-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.profile-link-text strong { font-size: 14px; color: var(--text); }
+.profile-link-text small { font-size: 11.5px; color: var(--text-muted); }
+.profile-link-arrow { flex: none; color: var(--text-muted); font-size: 20px; font-weight: 800; }
+
+/* Settings */
+.settings-account { display: flex; align-items: center; gap: 12px; }
+.settings-account-avatar { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; background: rgba(0,0,0,.04); font-size: 24px; }
+.settings-account-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.settings-account-text strong { font-size: 15px; color: var(--text); }
+.settings-account-text small { font-size: 12px; color: var(--text-muted); }
+.settings-list { margin-top: 12px; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.settings-row-label { font-size: 13.5px; font-weight: 700; color: var(--text); }
+.settings-row-value { font-size: 12.5px; color: var(--text-muted); text-align: right; }
+.settings-note { margin-top: 14px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+/* phase4-2 — ハムスター命名UI */
+.hamster-name-card {
+  margin-top: 12px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px;
+}
+.hamster-name-label { display: block; font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
+.hamster-name-row { display: flex; gap: 8px; align-items: stretch; }
+.hamster-name-input {
+  flex: 1; min-width: 0; font: inherit; font-size: 15px; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px;
+}
+.hamster-name-input:focus { outline: none; border-color: var(--accent); }
+.hamster-name-row .ox-button-primary { flex: none; padding: 10px 18px; border-radius: 10px; }
+.hamster-name-msg { margin: 8px 0 0; font-size: 12px; line-height: 1.5; }
+.hamster-name-msg.ok { color: var(--good); }
+.hamster-name-msg.err { color: var(--danger); }
+
+/* phase4-3 — 育成ハブ サブ画面（ショップ/実績/タイピング）v7.22風 */
+.hamster-xp-pill {
+  display: inline-flex; align-items: baseline; gap: 8px; margin: 12px 0;
+  background: rgba(200,128,64,.10); color: var(--accent);
+  border: 1px solid rgba(200,128,64,.25); border-radius: 999px; padding: 6px 14px;
+  font-size: 12px; font-weight: 700;
+}
+.hamster-xp-pill strong { font-size: 15px; }
+
+.hamster-shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.hamster-shop-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+  padding: 12px; display: flex; flex-direction: column; gap: 4px;
+  box-shadow: 0 4px 14px rgba(43,39,36,.05);
+}
+.hamster-shop-card-emoji { font-size: 28px; line-height: 1; }
+.hamster-shop-card-name { font-size: 14px; font-weight: 800; color: var(--text); margin-top: 2px; }
+.hamster-shop-card-desc { font-size: 11.5px; color: var(--text-muted); line-height: 1.4; min-height: 32px; }
+.hamster-shop-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 2px; }
+.hamster-shop-card-cost { font-size: 13px; font-weight: 800; color: var(--accent); }
+.hamster-chip { font-size: 10.5px; font-weight: 700; border-radius: 999px; padding: 3px 8px; }
+.hamster-chip.wip { background: rgba(0,0,0,.05); color: var(--text-muted); }
+.hamster-chip.soon { background: rgba(245,158,11,.14); color: #b8770a; }
+.hamster-shop-afford { font-size: 11px; font-weight: 700; }
+.hamster-shop-afford.ok { color: var(--good); }
+.hamster-shop-afford.short { color: var(--text-muted); }
+.hamster-shop-btn { margin-top: 6px; padding: 8px 10px; border-radius: 10px; font-size: 12.5px; }
+
+.hamster-ach-summary {
+  display: flex; gap: 10px; margin: 12px 0;
+}
+.hamster-ach-summary > div {
+  flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.hamster-ach-summary strong { font-size: 20px; font-weight: 800; color: var(--text); }
+.hamster-ach-summary span { font-size: 11.5px; color: var(--text-muted); }
+
+.hamster-typing-hero {
+  display: flex; align-items: center; gap: 12px; margin: 12px 0;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px;
+}
+.hamster-typing-emoji { font-size: 32px; flex: none; }
+.hamster-typing-hero p { margin: 0; font-size: 13px; color: var(--text); line-height: 1.6; }
+.hamster-rule-row { display: flex; align-items: flex-start; gap: 12px; font-size: 13px; color: var(--text); line-height: 1.5; }
+.hamster-rule-num {
+  flex: none; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 999px;
+  background: rgba(200,128,64,.12); color: var(--accent); font-size: 12px; font-weight: 800;
+}
+
+/* phase4-4 — 静的3Dへや */
+.hamster-room-modebar { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+.hamster-room-3d { padding: 0; overflow: hidden; }
+.hamster-3d-canvas { width: 100%; height: 100%; display: block; line-height: 0; }
+.hamster-room.hamster-room-3d { background: #f5eadc; }
+
+@media (max-width: 420px) {
+  .hamster-screen { padding-bottom: calc(var(--nav-h) + 112px + env(safe-area-inset-bottom, 0px)); }
+  .hamster-room { height: 166px; }
+}

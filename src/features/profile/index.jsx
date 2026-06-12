@@ -4,7 +4,7 @@ import ProfileEdit from "./ProfileEdit.jsx";
 // MyPage: shows the current profile as a single card, with an "edit" entry that
 // opens the edit screen. (Per the broader plan, editing should happen only from
 // the edit screen — not by tapping pieces of the card directly.)
-export default function Profile({ profile, uid, onProfileSaved, onSignOut }) {
+export default function Profile({ profile, uid, navigate, onProfileSaved, onSignOut }) {
   const [editing, setEditing] = useState(false);
 
   if (!profile) {
@@ -46,6 +46,19 @@ export default function Profile({ profile, uid, onProfileSaved, onSignOut }) {
             {profile.shortId && <div><strong>{profile.shortId}</strong><span>ID</span></div>}
           </div>
         </div>
+      </div>
+
+      <div className="profile-links">
+        <button className="profile-link-card" onClick={() => navigate?.("hamster")}>
+          <span className="profile-link-icon" aria-hidden="true">育</span>
+          <span className="profile-link-text"><strong>ハムスターのへや</strong><small>{profile.hamsterName ? `${profile.hamsterName}・育成・ショップ` : "育成・ショップ・実績"}</small></span>
+          <span className="profile-link-arrow" aria-hidden="true">›</span>
+        </button>
+        <button className="profile-link-card" onClick={() => navigate?.("settings")}>
+          <span className="profile-link-icon" aria-hidden="true">設</span>
+          <span className="profile-link-text"><strong>設定</strong><small>アプリの情報・表示</small></span>
+          <span className="profile-link-arrow" aria-hidden="true">›</span>
+        </button>
       </div>
 
       <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
