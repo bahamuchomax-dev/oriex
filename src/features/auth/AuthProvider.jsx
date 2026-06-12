@@ -14,18 +14,27 @@ export function AuthProvider({ children }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setLoading(false);
+    }, 8000);
+
     const unsub = onAuthStateChanged(
       auth,
       (u) => {
+        window.clearTimeout(timeout);
         setUser(u);
         setLoading(false);
       },
       (err) => {
+        window.clearTimeout(timeout);
         setError(err);
         setLoading(false);
       }
     );
-    return unsub;
+    return () => {
+      window.clearTimeout(timeout);
+      unsub();
+    };
   }, []);
 
   async function signInAnon() {
