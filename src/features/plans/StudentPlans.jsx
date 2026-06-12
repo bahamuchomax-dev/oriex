@@ -6,14 +6,17 @@ import { clampPercent, computeOverall } from "./planUtils.js";
 export default function StudentPlans({ uid }) {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(Boolean(uid));
+  const [errorText, setErrorText] = useState("");
 
   useEffect(() => {
     if (!uid) {
       setLoading(false);
       setPlans([]);
+      setErrorText("");
       return undefined;
     }
     setLoading(true);
+    setErrorText("");
     const unsub = subscribeMyPlans(
       uid,
       (list) => {
@@ -22,6 +25,7 @@ export default function StudentPlans({ uid }) {
       },
       (e) => {
         console.error("subscribeMyPlans failed", e);
+        setErrorText(planErrorText(e, "週計画の読み込みに失敗しました。"));
         setLoading(false);
       }
     );
@@ -43,6 +47,7 @@ export default function StudentPlans({ uid }) {
         <h3>届いた計画</h3>
         <p>スライダーで進捗を調整してから保存します。表示だけでは書き込みません。</p>
       </div>
+      {errorText && <p className="plan-message err">{errorText}</p>}
       {plans.length === 0 ? (
         <div className="ox-empty plan-empty">
           <p>まだ届いている計画はありません。</p>
@@ -61,6 +66,7 @@ function PlanCard({ plan }) {
   const [items, setItems] = useState(plan.items ?? []);
   const [dirty, setDirty] = useState(false);
   const [status, setStatus] = useState("idle"); // idle|saving|saved|error
+  const [errorText, setErrorText] = useState("");
   const lastUpdated = useRef(plan.updatedAt);
 
   // Re-seed from server when the plan changes upstream AND we have no local edits.
@@ -77,10 +83,12 @@ function PlanCard({ plan }) {
     );
     setDirty(true);
     setStatus("idle");
+    setErrorText("");
   }
 
   async function save() {
     setStatus("saving");
+    setErrorText("");
     try {
       await saveStudentProgress(plan, items);
       setDirty(false);
@@ -88,6 +96,7 @@ function PlanCard({ plan }) {
       setStatus("saved");
     } catch (e) {
       console.error("saveStudentProgress failed", e);
+      setErrorText(planErrorText(e, "保存に失敗しました。"));
       setStatus("error");
     }
   }
@@ -149,7 +158,7 @@ function PlanCard({ plan }) {
           {dirty && status !== "saving" && <span className="warn">未保存</span>}
           {status === "saving" && "保存中..."}
           {status === "saved" && !dirty && <span className="ok">保存しました</span>}
-          {status === "error" && <span className="err">保存に失敗しました</span>}
+          {status === "error" && <span className="err">{errorText || "保存に失敗しました"}</span>}
         </span>
         <button className="btn-primary" onClick={save} disabled={!dirty || status === "saving"}>
           進捗を保存
@@ -157,4 +166,11 @@ function PlanCard({ plan }) {
       </div>
     </li>
   );
+}
+
+function planErrorText(error, fallback) {
+  if (error?.code === "permission-denied") {
+    return `${fallback} Firestoreの権限を確認してください。`;
+  }
+  return fallback;
 }

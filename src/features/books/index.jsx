@@ -227,8 +227,10 @@ function AddLogForm({ book, owner, onDone, onCancel }) {
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   });
   const [busy, setBusy] = useState(false);
+  const safeMinutes = Math.max(0, Number(minutes) || 0);
 
   async function save() {
+    if (safeMinutes <= 0) return;
     setBusy(true);
     try {
       await addBookLog(
@@ -248,7 +250,7 @@ function AddLogForm({ book, owner, onDone, onCancel }) {
       <Field label="学習日"><input type="date" value={studiedAt} onChange={(e) => setStudiedAt(e.target.value)} /></Field>
       <Field label="メモ"><input value={memo} onChange={(e) => setMemo(e.target.value)} placeholder="例：二次関数の復習" /></Field>
       <div className="books-form-actions">
-        <button className="btn-primary" onClick={save} disabled={busy}>{busy ? "保存中…" : "保存"}</button>
+        <button className="btn-primary" onClick={save} disabled={busy || safeMinutes <= 0}>{busy ? "保存中…" : "保存"}</button>
         <button className="btn-secondary" onClick={onCancel} disabled={busy}>キャンセル</button>
       </div>
     </div>

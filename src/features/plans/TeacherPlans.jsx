@@ -11,12 +11,14 @@ export default function TeacherPlans({ uid, profile }) {
   const [bookOptions, setBookOptions] = useState([]);
   const [sent, setSent] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorText, setErrorText] = useState("");
 
   const refreshSent = useCallback(async () => {
     try {
       setSent(await loadSentPlans(uid));
     } catch (e) {
       console.error("loadSentPlans failed", e);
+      setErrorText(planErrorText(e, "送信履歴の読み込みに失敗しました。"));
     }
   }, [uid]);
 
@@ -25,6 +27,7 @@ export default function TeacherPlans({ uid, profile }) {
     let active = true;
     (async () => {
       setLoading(true);
+      setErrorText("");
       try {
         const [{ friends }, opts] = await Promise.all([loadFriends(uid), loadBookOptions()]);
         if (!active) return;
@@ -33,6 +36,7 @@ export default function TeacherPlans({ uid, profile }) {
         await refreshSent();
       } catch (e) {
         console.error("teacher plans init failed", e);
+        if (active) setErrorText(planErrorText(e, "週計画の準備に失敗しました。"));
       } finally {
         active && setLoading(false);
       }
@@ -57,6 +61,7 @@ export default function TeacherPlans({ uid, profile }) {
         <h3>送信ボード</h3>
         <p>現行の weeklyPlans / sentPlans 形式のまま、見た目だけv7.22風に整理しています。</p>
       </div>
+      {errorText && <p className="plan-message err">{errorText}</p>}
       <SendForm
         teacher={teacher}
         students={students}
@@ -113,6 +118,10 @@ function SendForm({ teacher, students, bookOptions, onSent }) {
       return;
     }
     const student = students.find((s) => s.uid === studentUid);
+    if (!student) {
+      setMsg({ ok: false, text: "選択した生徒を確認できませんでした。もう一度選び直してください。" });
+      return;
+    }
     setBusy(true);
     setMsg(null);
     try {
@@ -123,7 +132,7 @@ function SendForm({ teacher, students, bookOptions, onSent }) {
       onSent?.();
     } catch (e) {
       console.error("sendPlan failed", e);
-      setMsg({ ok: false, text: "送信に失敗しました" });
+      setMsg({ ok: false, text: planErrorText(e, "送信に失敗しました") });
     } finally {
       setBusy(false);
     }
@@ -271,4 +280,11 @@ function ProgressBar({ value }) {
   return (
     <span className="bar"><span className="bar-fill" style={{ width: `${value}%` }} /></span>
   );
+}
+
+function planErrorText(error, fallback) {
+  if (error?.code === "permission-denied") {
+    return `${fallback} Firestoreの権限を確認してください。`;
+  }
+  return fallback;
 }

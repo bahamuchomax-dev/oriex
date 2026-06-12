@@ -400,7 +400,7 @@ function toBookLogTimelineItem(log) {
   return {
     id: `bookLog-${log.id}`,
     type: "bookLog",
-    title: "参考書学習",
+    title: log.source === "timer" ? "Timer記録" : "参考書学習",
     bookTitle: log.bookTitle ?? "",
     subject: log.subject ?? "",
     minutes: Number(log.minutes) || 0,

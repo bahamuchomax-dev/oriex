@@ -109,6 +109,7 @@ export async function addBookLog(data, user) {
     subject: data.subject ?? "",
     minutes: Number(data.minutes) || 0,
     memo: (data.memo || "").trim(),
+    source: data.source ?? "manual",
     studiedAt: data.studiedAt || todayStr(),
     uid: user?.uid ?? null,
     userName: user?.name ?? "",
@@ -133,6 +134,7 @@ export async function createBookLogFromTimer(session, user) {
       subject: session.subject,
       minutes: session.minutes,
       memo: session.memo ?? "",
+      source: "timer",
       studiedAt: session.studiedAt || todayStr(),
     },
     user
