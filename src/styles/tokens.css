@@ -1,0 +1,17 @@
+/* Design tokens recovered/approximated from the v6.9 dist.
+   These let the rebuild gradually match the existing look.
+   Adjust freely as the real UI is reconstructed. */
+:root {
+  --bg: #fbf8f3;          /* app background (cream) */
+  --surface: #ffffff;     /* cards */
+  --text: #2b2724;        /* primary text */
+  --text-muted: #8b5e3c;  /* muted/secondary */
+  --accent: #c88040;      /* primary accent (orange-brown) */
+  --accent-2: #9060b8;    /* secondary accent (purple) */
+  --good: #208050;        /* success/green */
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --border: #e7ddd0;
+  --radius: 14px;
+  --nav-h: 60px;
+}
