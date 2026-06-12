@@ -1,19 +1,20 @@
-// Bottom navigation. The `screens` array defines the tabs; keep this in sync
-// with the screen map in App.jsx. Labels are Japanese to match the legacy UI.
 export default function BottomNav({ screens, current, onSelect }) {
   return (
     <nav className="bottom-nav" aria-label="メインナビ">
-      {screens.map((s) => (
-        <button
-          key={s.key}
-          className={s.key === current ? "active" : ""}
-          aria-current={s.key === current ? "page" : undefined}
-          onClick={() => onSelect(s.key)}
-        >
-          <span className="nav-icon" aria-hidden="true">{s.icon}</span>
-          {s.label}
-        </button>
-      ))}
+      {screens.map((s) => {
+        const active = s.key === current || (s.match ?? []).includes(current);
+        return (
+          <button
+            key={s.key}
+            className={active ? "active" : ""}
+            aria-current={active ? "page" : undefined}
+            onClick={() => onSelect(s.key)}
+          >
+            <span className="nav-icon" aria-hidden="true">{s.icon}</span>
+            <span className="nav-label">{s.label}</span>
+          </button>
+        );
+      })}
     </nav>
   );
 }
