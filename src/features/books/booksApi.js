@@ -52,6 +52,25 @@ export async function loadBookLogsForBook(bookId) {
   return logs;
 }
 
+/**
+ * Load recent book study logs for record/timeline surfaces.
+ * Reads only when the screen opens. No realtime listener and no writes.
+ *
+ * @param params { uid?, limitCount? }
+ * @returns array of bookLog docs, newest first by studiedAt/createdAt
+ */
+export async function loadBookLogs({ uid, limitCount = 50 } = {}) {
+  const safeLimit = Math.min(Math.max(Number(limitCount) || 50, 1), 200);
+  const fetchLimit = Math.min(Math.max(safeLimit * 3, safeLimit), 200);
+  const q = uid
+    ? query(refs.bookLogsCol(), where("uid", "==", uid), limit(fetchLimit))
+    : query(refs.bookLogsCol(), limit(fetchLimit));
+  const snap = await getDocs(q);
+  const logs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  logs.sort((a, b) => bookLogDateMs(b) - bookLogDateMs(a));
+  return logs.slice(0, safeLimit);
+}
+
 /* ------------------------------------------------------------------ *
  * Writes (only on explicit save — never per keystroke)
  * ------------------------------------------------------------------ */
@@ -129,4 +148,22 @@ function todayStr() {
     "-" +
     String(d.getDate()).padStart(2, "0")
   );
+}
+
+function bookLogDateMs(log) {
+  return toMillis(log?.studiedAt) || toMillis(log?.createdAt) || 0;
+}
+
+function toMillis(value) {
+  if (!value) return 0;
+  if (typeof value.toMillis === "function") return value.toMillis();
+  if (typeof value.seconds === "number") return value.seconds * 1000;
+  if (typeof value === "number") return value;
+  if (value instanceof Date) return value.getTime();
+  if (typeof value === "string") {
+    const normalized = /^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T00:00:00` : value;
+    const ms = Date.parse(normalized);
+    return Number.isFinite(ms) ? ms : 0;
+  }
+  return 0;
 }
