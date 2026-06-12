@@ -2,18 +2,19 @@ const QUICK_ACTIONS = [
   { key: "timer", label: "タイマー", sub: "参考書を選んで記録", icon: "時", tone: "red" },
   { key: "records", label: "記録", sub: "タイムラインを見る", icon: "記", tone: "blue" },
   { key: "books", label: "参考書", sub: "本棚とログ", icon: "本", tone: "green" },
-  { key: "plans", label: "週計画", sub: "計画と進捗", icon: "計", tone: "amber" },
+  { key: "teacher", label: "配信", sub: "先生ハブと週計画", icon: "配", tone: "amber" },
 ];
 
 const PALETTE = [
   { key: "vocab", label: "単語帳", icon: "単", grad: "orange" },
   { key: "vocab", label: "復習", icon: "復", grad: "green" },
-  { key: "teacher", label: "先生の問題", icon: "先", grad: "rose" },
+  { key: "teacher", label: "配信ハブ", icon: "配", grad: "rose" },
   { key: "factory", label: "FACTORY", icon: "F", grad: "violet" },
   { key: "friends", label: "ひろば", icon: "広", grad: "sky" },
   { key: "hamster", label: "育成", icon: "育", grad: "pink" },
   { key: "profile", label: "マイ", icon: "私", grad: "slate" },
   { key: "records", label: "記録ハブ", icon: "録", grad: "cyan" },
+  { key: "plans", label: "週計画", icon: "計", grad: "green" },
   { key: "timer", label: "時間記録", icon: "分", grad: "red" },
 ];
 

@@ -302,6 +302,7 @@ body {
 .tone-green { background: linear-gradient(135deg, #68b783, #24885e); }
 .tone-amber { background: linear-gradient(135deg, #fbbf24, #d97706); }
 .tone-violet { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
+.tone-rose { background: linear-gradient(135deg, #fb7185, #e11d48); }
 .palette-section {
   padding: 14px;
   border-radius: 18px;
@@ -1052,6 +1053,331 @@ select { width: 100%; font: inherit; padding: 10px 12px; border: 1px solid var(-
 .save-msg-inline .warn { color: var(--warn); }
 .save-msg-inline .ok { color: var(--good); }
 .save-msg-inline .err { color: var(--danger); }
+
+.plans-screen,
+.teacher-hub-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: calc(var(--nav-h) + 32px);
+}
+.plans-hero,
+.teacher-hub-hero {
+  padding: 16px;
+  border-radius: 20px;
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(31,41,55,.14);
+}
+.plans-hero.teacher,
+.teacher-hub-hero {
+  background: linear-gradient(135deg, #ef7a69, #d84f55);
+}
+.plans-hero.student {
+  background: linear-gradient(135deg, #60a5fa, #2563eb);
+}
+.plans-hero h2,
+.teacher-hub-hero h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+}
+.plans-hero p,
+.teacher-hub-hero p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255,255,255,.9);
+}
+.plans-route-grid,
+.teacher-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.plans-route-card,
+.teacher-hub-card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 16px;
+  box-shadow: 0 8px 22px rgba(31,41,55,.06);
+  cursor: pointer;
+}
+.plans-route-card {
+  min-height: 94px;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  text-align: left;
+}
+.plans-route-card span {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #fff;
+  background: linear-gradient(135deg, #ef7a69, #d84f55);
+  font-weight: 900;
+}
+.plans-route-card strong {
+  font-size: 14px;
+}
+.plans-route-card small {
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+.plans-section-head {
+  margin: 4px 0 10px;
+}
+.plans-section-head.compact {
+  margin-top: 20px;
+}
+.plans-section-head h3 {
+  margin: 5px 0 4px;
+  font-size: 18px;
+}
+.plans-section-head p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.plan-send-card,
+.sent-plan-card,
+.student-plan-card,
+.plan-empty {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(31,41,55,.07);
+}
+.plan-send-card {
+  padding: 14px;
+}
+.plan-mini-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.plan-mini-stat {
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(216,79,85,.08);
+  border: 1px solid rgba(216,79,85,.14);
+}
+.plan-mini-stat span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+.plan-mini-stat strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 20px;
+}
+.plan-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.plan-help {
+  margin: 4px 0 10px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.plan-add-btn,
+.plan-send-btn {
+  width: 100%;
+}
+.plan-compose-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.plan-compose-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(0,0,0,.025);
+  border: 1px solid var(--border);
+}
+.plan-compose-item strong,
+.plan-compose-item span,
+.plan-compose-item small {
+  display: block;
+}
+.plan-compose-item span,
+.plan-compose-item small {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.plan-send-footer,
+.student-plan-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 12px 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.plan-message {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+.plan-message.ok { color: var(--good); }
+.plan-message.err { color: var(--danger); }
+.plan-message.mobile { display: none; }
+.sent-plan-head,
+.student-plan-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.sent-plan-head strong,
+.sent-plan-head small,
+.student-plan-hero strong,
+.student-plan-hero small,
+.plan-kicker {
+  display: block;
+}
+.plan-kicker {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+.sent-plan-head strong,
+.student-plan-hero strong {
+  margin-top: 2px;
+  font-size: 17px;
+}
+.sent-plan-head small,
+.student-plan-hero small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.plan-score {
+  flex: 0 0 auto;
+  width: 66px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, var(--surface) 48%, rgba(216,79,85,.16) 49%);
+  border: 6px solid rgba(216,79,85,.35);
+}
+.plan-score strong {
+  font-size: 18px;
+  line-height: 1;
+}
+.plan-score span {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+.plan-total-line {
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.student-plan-items {
+  margin-top: 10px;
+}
+.student-plan-item {
+  padding: 12px 0;
+}
+.student-plan-item small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+.plan-card-foot {
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.teacher-hub-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.teacher-hub-card {
+  min-height: 154px;
+  padding: 14px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 6px;
+}
+.teacher-hub-card[aria-disabled="true"] {
+  cursor: default;
+}
+.teacher-hub-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: rgba(255,255,255,.22);
+  font-weight: 900;
+}
+.teacher-hub-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(255,255,255,.82);
+}
+.teacher-hub-card strong {
+  font-size: 17px;
+}
+.teacher-hub-card span:last-child {
+  color: rgba(255,255,255,.88);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  .plans-route-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .plans-route-card {
+    padding: 10px 8px;
+  }
+  .plans-route-card strong {
+    font-size: 13px;
+  }
+  .plans-route-card small {
+    display: none;
+  }
+  .plan-form-grid,
+  .teacher-hub-grid {
+    grid-template-columns: 1fr;
+  }
+  .plan-send-footer .plan-message {
+    display: none;
+  }
+  .plan-message.mobile {
+    display: block;
+  }
+}
 
 /* ============================================================
    Reusable "ox-" UI kit (introduced with vocabulary; safe to

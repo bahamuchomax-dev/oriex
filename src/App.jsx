@@ -14,35 +14,7 @@ import HamsterRoom from "./features/hamsterRoom/index.jsx";
 import Factory from "./features/factory/index.jsx";
 import Plans from "./features/plans/index.jsx";
 import Vocabulary from "./features/vocabulary/index.jsx";
-
-function TeacherProblems() {
-  return (
-    <section className="teacher-delivery-screen">
-      <div className="teacher-delivery-hero">
-        <span className="section-chip">Teacher Delivery</span>
-        <h2>先生からの問題</h2>
-        <p>先生のオリジナル問題と配信問題を受け取る場所です。</p>
-      </div>
-
-      <div className="delivery-grid">
-        <article className="delivery-card">
-          <span className="delivery-icon">問</span>
-          <h3>先生のオリジナル問題</h3>
-          <p>配信された問題は、今後ここにカード形式で表示します。</p>
-        </article>
-        <article className="delivery-card">
-          <span className="delivery-icon">配</span>
-          <h3>配信コンテンツ</h3>
-          <p>v7.22 の配信導線に合わせるための安全なプレースホルダーです。</p>
-        </article>
-      </div>
-
-      <div className="teacher-delivery-note">
-        今回は見た目と導線のみ整理しています。Firestoreの先生機能データモデルは変更していません。
-      </div>
-    </section>
-  );
-}
+import TeacherHub from "./features/teacher/TeacherHub.jsx";
 
 const NAV_TABS = [
   { key: "home", label: "ホーム", icon: "家", match: ["home", "plans", "teacher"] },
@@ -110,7 +82,7 @@ export default function App() {
       current = <Friends uid={uid} profile={profile} />;
       break;
     case "teacher":
-      current = <TeacherProblems />;
+      current = <TeacherHub profile={profile} isTeacher={isTeacher} navigate={navigate} />;
       break;
     case "hamster":
       current = <HamsterRoom />;
@@ -119,7 +91,7 @@ export default function App() {
       current = <Factory navigate={navigate} />;
       break;
     case "plans":
-      current = <Plans uid={uid} profile={profile} isTeacher={isTeacher} />;
+      current = <Plans uid={uid} profile={profile} isTeacher={isTeacher} navigate={navigate} />;
       break;
     case "vocab":
       current = <Vocabulary uid={uid} navigate={navigate} />;

@@ -5,28 +5,51 @@ import { clampPercent, computeOverall } from "./planUtils.js";
 // Student plans screen: live subscription to MY weeklyPlans + progress editing.
 export default function StudentPlans({ uid }) {
   const [plans, setPlans] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(uid));
 
   useEffect(() => {
-    if (!uid) return;
+    if (!uid) {
+      setLoading(false);
+      setPlans([]);
+      return undefined;
+    }
     setLoading(true);
     const unsub = subscribeMyPlans(
       uid,
-      (list) => { setPlans(list); setLoading(false); },
-      (e) => { console.error("subscribeMyPlans failed", e); setLoading(false); }
+      (list) => {
+        setPlans(list);
+        setLoading(false);
+      },
+      (e) => {
+        console.error("subscribeMyPlans failed", e);
+        setLoading(false);
+      }
     );
     return unsub; // unsubscribe on unmount
   }, [uid]);
 
-  if (loading) return <p style={{ color: "var(--text-muted)" }}>読み込み中…</p>;
+  if (loading) {
+    return (
+      <div className="ox-empty plan-empty">
+        <p>読み込み中...</p>
+      </div>
+    );
+  }
 
   return (
-    <section>
-      <h2 style={{ marginTop: 0 }}>週計画</h2>
+    <section className="student-plans-panel">
+      <div className="plans-section-head">
+        <span className="section-chip">Student</span>
+        <h3>届いた計画</h3>
+        <p>スライダーで進捗を調整してから保存します。表示だけでは書き込みません。</p>
+      </div>
       {plans.length === 0 ? (
-        <p style={{ color: "var(--text-muted)" }}>まだ届いている計画はありません。</p>
+        <div className="ox-empty plan-empty">
+          <p>まだ届いている計画はありません。</p>
+          <p className="ox-empty-sub">先生から週計画が届くと、ここに教材ごとに表示されます。</p>
+        </div>
       ) : (
-        <ul className="plan-list">
+        <ul className="plan-list student-plan-list">
           {plans.map((p) => <PlanCard key={p.planId} plan={p} />)}
         </ul>
       )}
@@ -72,23 +95,36 @@ function PlanCard({ plan }) {
   const overall = computeOverall(items);
 
   return (
-    <li className="plan-card">
-      <div className="row-between">
-        <strong>{plan.teacherName || "先生"} からの計画</strong>
-        <span className="book-sub">{plan.weekId} · 期限 {plan.dueDate}</span>
+    <li className="plan-card student-plan-card">
+      <div className="student-plan-hero">
+        <div>
+          <span className="plan-kicker">先生からの計画</span>
+          <strong>{plan.teacherName || "先生"}</strong>
+          <small>{plan.weekId} · 期限 {plan.dueDate}</small>
+        </div>
+        <div className="plan-score">
+          <strong>{overall}%</strong>
+          <span>進捗</span>
+        </div>
       </div>
-      <div className="progress-line">
+
+      <div className="progress-line plan-total-line">
         <span>全体進捗</span>
         <span className="bar"><span className="bar-fill" style={{ width: `${overall}%` }} /></span>
         <span className="pct">{overall}%</span>
       </div>
 
-      <ul className="plan-item-list">
+      <ul className="plan-item-list student-plan-items">
         {items.map((it) => (
-          <li key={it.itemId} className="plan-item-edit">
+          <li key={it.itemId} className="plan-item-edit student-plan-item">
             <div className="plan-item-head">
               <strong>{it.bookTitle}</strong>
-              <span className="book-sub"> {it.taskText} {it.target && `· ${it.target}`}</span>
+              <span className="book-sub">
+                {it.subject || "教科未設定"}{it.level ? ` / ${it.level}` : ""}
+              </span>
+              {(it.taskText || it.target) && (
+                <small>{it.taskText} {it.target && `· ${it.target}`}</small>
+              )}
             </div>
             <div className="progress-edit">
               <input
@@ -108,7 +144,7 @@ function PlanCard({ plan }) {
         ))}
       </ul>
 
-      <div className="row-between" style={{ marginTop: 8 }}>
+      <div className="student-plan-footer">
         <span className="save-msg-inline">
           {dirty && status !== "saving" && <span className="warn">未保存</span>}
           {status === "saving" && "保存中..."}

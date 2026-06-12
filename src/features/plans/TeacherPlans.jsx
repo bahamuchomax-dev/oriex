@@ -13,8 +13,11 @@ export default function TeacherPlans({ uid, profile }) {
   const [loading, setLoading] = useState(true);
 
   const refreshSent = useCallback(async () => {
-    try { setSent(await loadSentPlans(uid)); }
-    catch (e) { console.error("loadSentPlans failed", e); }
+    try {
+      setSent(await loadSentPlans(uid));
+    } catch (e) {
+      console.error("loadSentPlans failed", e);
+    }
   }, [uid]);
 
   // Reads happen only when this screen opens.
@@ -34,21 +37,36 @@ export default function TeacherPlans({ uid, profile }) {
         active && setLoading(false);
       }
     })();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [uid, refreshSent]);
 
-  if (loading) return <p style={{ color: "var(--text-muted)" }}>読み込み中…</p>;
+  if (loading) {
+    return (
+      <div className="ox-empty plan-empty">
+        <p>読み込み中...</p>
+      </div>
+    );
+  }
 
   return (
-    <section>
-      <h2 style={{ marginTop: 0 }}>週計画（先生）</h2>
+    <section className="teacher-plans-panel">
+      <div className="plans-section-head">
+        <span className="section-chip">Teacher</span>
+        <h3>送信ボード</h3>
+        <p>現行の weeklyPlans / sentPlans 形式のまま、見た目だけv7.22風に整理しています。</p>
+      </div>
       <SendForm
         teacher={teacher}
         students={students}
         bookOptions={bookOptions}
         onSent={refreshSent}
       />
-      <h3 style={{ marginTop: 24 }}>送信履歴</h3>
+      <div className="plans-section-head compact">
+        <span className="section-chip">History</span>
+        <h3>送信履歴</h3>
+      </div>
       <SentHistory sent={sent} />
     </section>
   );
@@ -112,57 +130,74 @@ function SendForm({ teacher, students, bookOptions, onSent }) {
   }
 
   return (
-    <div className="inline-form">
-      <label className="field">
-        <span>生徒を選ぶ</span>
-        <select value={studentUid} onChange={(e) => setStudentUid(e.target.value)}>
-          <option value="">— 選択 —</option>
-          {students.map((s) => (
-            <option key={s.uid} value={s.uid}>{s.name}</option>
-          ))}
-        </select>
-      </label>
+    <div className="plan-send-card">
+      <div className="plan-mini-stats">
+        <div className="plan-mini-stat">
+          <span>生徒</span>
+          <strong>{students.length}</strong>
+        </div>
+        <div className="plan-mini-stat">
+          <span>参考書</span>
+          <strong>{bookOptions.length}</strong>
+        </div>
+        <div className="plan-mini-stat">
+          <span>追加教材</span>
+          <strong>{items.length}</strong>
+        </div>
+      </div>
+
+      <div className="plan-form-grid">
+        <label className="field">
+          <span>生徒を選ぶ</span>
+          <select value={studentUid} onChange={(e) => setStudentUid(e.target.value)}>
+            <option value="">— 選択 —</option>
+            {students.map((s) => (
+              <option key={s.uid} value={s.uid}>{s.name}</option>
+            ))}
+          </select>
+        </label>
+        <div className="field">
+          <span>教材を追加（参考書本棚から）</span>
+          <select value={bookIdx} onChange={(e) => setBookIdx(e.target.value)}>
+            <option value="">— 参考書を選択 —</option>
+            {bookOptions.map((b, i) => (
+              <option key={b.bookId} value={i}>
+                {b.title}{b.subject ? `（${b.subject}）` : ""}{b.level ? ` / ${b.level}` : ""}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       {students.length === 0 && (
-        <p style={{ fontSize: 12, color: "var(--text-muted)" }}>
-          フレンドがいません。先に「フレンド」から生徒を追加してください。
-        </p>
+        <p className="plan-help">フレンドがいません。先に「フレンド」から生徒を追加してください。</p>
+      )}
+      {bookOptions.length === 0 && (
+        <p className="plan-help">参考書が未登録です。先に「参考書」から登録してください。</p>
       )}
 
-      <div className="field">
-        <span>教材を追加（参考書本棚から）</span>
-        <select value={bookIdx} onChange={(e) => setBookIdx(e.target.value)}>
-          <option value="">— 参考書を選択 —</option>
-          {bookOptions.map((b, i) => (
-            <option key={b.bookId} value={i}>
-              {b.title}{b.subject ? `（${b.subject}）` : ""}{b.level ? ` / ${b.level}` : ""}
-            </option>
-          ))}
-        </select>
+      <div className="plan-form-grid">
+        <label className="field">
+          <span>課題内容</span>
+          <input value={taskText} onChange={(e) => setTaskText(e.target.value)} placeholder="例: 第3章を解く" />
+        </label>
+        <label className="field">
+          <span>目標（ページ / 内容）</span>
+          <input value={target} onChange={(e) => setTarget(e.target.value)} placeholder="例: p.40-72" />
+        </label>
       </div>
-      {bookOptions.length === 0 && (
-        <p style={{ fontSize: 12, color: "var(--text-muted)" }}>
-          参考書が未登録です。先に「参考書」から登録してください。
-        </p>
-      )}
-      <label className="field">
-        <span>課題内容</span>
-        <input value={taskText} onChange={(e) => setTaskText(e.target.value)} placeholder="例: 第3章を解く" />
-      </label>
-      <label className="field">
-        <span>目標（ページ / 内容）</span>
-        <input value={target} onChange={(e) => setTarget(e.target.value)} placeholder="例: p.40-72" />
-      </label>
-      <button className="btn-secondary" onClick={addItem} disabled={bookIdx === ""}>
+      <button className="btn-secondary plan-add-btn" onClick={addItem} disabled={bookIdx === ""}>
         ＋ この教材を追加
       </button>
 
       {items.length > 0 && (
-        <ul className="plan-item-list" style={{ marginTop: 12 }}>
+        <ul className="plan-compose-list">
           {items.map((it) => (
-            <li key={it.itemId} className="plan-item">
+            <li key={it.itemId} className="plan-compose-item">
               <div>
                 <strong>{it.bookTitle}</strong>
-                <span className="book-sub"> {it.taskText} {it.target && `· ${it.target}`}</span>
+                <span>{it.subject || "教科未設定"}{it.level ? ` / ${it.level}` : ""}</span>
+                {(it.taskText || it.target) && <small>{it.taskText} {it.target && `· ${it.target}`}</small>}
               </div>
               <button className="btn-link" onClick={() => removeItem(it.itemId)}>削除</button>
             </li>
@@ -170,14 +205,13 @@ function SendForm({ teacher, students, bookOptions, onSent }) {
         </ul>
       )}
 
-      <p style={{ fontSize: 12, color: "var(--text-muted)" }}>
-        期限（送信時）: 次週金曜 = {getNextWeekFriday(new Date())}
-      </p>
-      {msg && (
-        <p style={{ color: msg.ok ? "var(--good)" : "var(--danger)", fontSize: 13 }}>{msg.text}</p>
-      )}
-      <button className="btn-primary" onClick={handleSend} disabled={busy || !studentUid || items.length === 0}>
-        {busy ? "送信中…" : "計画を送信"}
+      <div className="plan-send-footer">
+        <span>期限（送信時）: 次週金曜 = {getNextWeekFriday(new Date())}</span>
+        {msg && <span className={`plan-message ${msg.ok ? "ok" : "err"}`}>{msg.text}</span>}
+      </div>
+      {msg && <p className={`plan-message mobile ${msg.ok ? "ok" : "err"}`}>{msg.text}</p>}
+      <button className="btn-primary plan-send-btn" onClick={handleSend} disabled={busy || !studentUid || items.length === 0}>
+        {busy ? "送信中..." : "計画を送信"}
       </button>
     </div>
   );
@@ -185,21 +219,33 @@ function SendForm({ teacher, students, bookOptions, onSent }) {
 
 function SentHistory({ sent }) {
   if (sent.length === 0) {
-    return <p style={{ color: "var(--text-muted)" }}>まだ送信した計画はありません。</p>;
+    return (
+      <div className="ox-empty plan-empty">
+        <p>まだ送信した計画はありません。</p>
+        <p className="ox-empty-sub">生徒と教材を選ぶと、ここに進捗つきで履歴が表示されます。</p>
+      </div>
+    );
   }
   return (
-    <ul className="plan-list">
+    <ul className="plan-list sent-plan-list">
       {sent.map((p) => {
         // Always recompute from items so display is correct even if summaries are stale/missing.
         const overall = computeOverall(p.items);
         const books = computeBookProgress(p.items);
         return (
-          <li key={p.id} className="plan-card">
-            <div className="row-between">
-              <strong>{p.studentName || p.studentUid}</strong>
-              <span className="book-sub">{p.weekId} · 期限 {p.dueDate}</span>
+          <li key={p.id} className="plan-card sent-plan-card">
+            <div className="sent-plan-head">
+              <div>
+                <span className="plan-kicker">送信先</span>
+                <strong>{p.studentName || p.studentUid}</strong>
+                <small>{p.weekId} · 期限 {p.dueDate}</small>
+              </div>
+              <div className="plan-score">
+                <strong>{overall}%</strong>
+                <span>全体</span>
+              </div>
             </div>
-            <div className="progress-line">
+            <div className="progress-line plan-total-line">
               <span>全体進捗</span>
               <ProgressBar value={overall} />
               <span className="pct">{overall}%</span>
@@ -213,7 +259,7 @@ function SentHistory({ sent }) {
                 </div>
               ))}
             </div>
-            <div className="book-sub">教材数 {p.items?.length ?? 0}</div>
+            <div className="plan-card-foot">教材数 {p.items?.length ?? 0}</div>
           </li>
         );
       })}
