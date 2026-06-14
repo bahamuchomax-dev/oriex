@@ -27,7 +27,7 @@ export const EMBEDDED_AI_PROBE_ENABLED = false;
 // flag is back to false. The engine dependency/adapter stay in the repo but are
 // completely hidden from normal UI / production navigation. Reachable only via
 // the hidden PoC URL, and even then load/generate require this flag true.
-export const EMBEDDED_AI_POC_ENABLED = false;
+export const EMBEDDED_AI_POC_ENABLED = true;
 
 // Phase 1 has exactly one tiny use case: a short review suggestion built from
 // today's study memo. Short input, no strict JSON output, safe to fail.
