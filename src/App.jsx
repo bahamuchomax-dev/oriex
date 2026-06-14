@@ -1,123 +1,73 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "./features/auth/AuthProvider.jsx";
-import LoginScreen from "./features/auth/LoginScreen.jsx";
-import { loadOrCreateProfile } from "./features/profile/profileApi.js";
+import { lazy, Suspense, useState } from "react";
+import { currentUid } from "./services/firebase/client.js";
+import Home from "./features/home/Home.jsx";
+import Records from "./features/records/Records.jsx";
+import Review from "./features/review/Review.jsx";
+import Factory from "./features/factory/Factory.jsx";
+import Profile from "./features/profile/Profile.jsx";
+import TeacherProblems from "./features/teacher/TeacherProblems.jsx";
 
-import BottomNav from "./components/BottomNav.jsx";
-import Home from "./features/home/index.jsx";
-import Profile from "./features/profile/index.jsx";
-import Records from "./features/records/index.jsx";
-import Timer from "./features/timer/index.jsx";
-import Books from "./features/books/index.jsx";
-import Friends from "./features/friends/index.jsx";
-import HamsterRoom from "./features/hamsterRoom/index.jsx";
-import Factory from "./features/factory/index.jsx";
-import Plans from "./features/plans/index.jsx";
-import Vocabulary from "./features/vocabulary/index.jsx";
-import TeacherHub from "./features/teacher/TeacherHub.jsx";
+// Heavy 3D screen is code-split so it (and three.js usage) stays out of the
+// initial bundle — matches the reference note about lazy-loading heavy views.
+const HamsterRoom = lazy(() => import("./features/hamster/HamsterRoom.jsx"));
 
-const NAV_TABS = [
-  { key: "home", label: "ホーム", icon: "家", match: ["home", "plans", "teacher"] },
-  { key: "vocab", label: "学習", icon: "学", match: ["vocab", "factory"] },
-  { key: "records", label: "記録", icon: "記", match: ["records", "timer", "books"] },
-  { key: "friends", label: "ひろば", icon: "広", match: ["friends", "hamster"] },
-  { key: "profile", label: "マイ", icon: "私", match: ["profile"] },
+/* ============================================================
+ * App - React migration scaffold that hosts migrated screens
+ * ------------------------------------------------------------
+ * This is the target root for the React/Vite rebuild. It is NOT yet mounted:
+ * src/main.js still boots the original production bundle so the live app
+ * keeps working untouched. Migration flips one screen at a time — render the
+ * real component here, delete that screen from the bundle, repeat. When every
+ * tab is migrated, point main.js at this file and drop src/legacy entirely.
+ * See docs/REACT_MIGRATION_PLAN.md.
+ *
+ * Navigation reuses the existing .rx-tabbar styling.
+ * ============================================================ */
+
+const TABS = [
+  { id: "home", label: "ホーム" },
+  { id: "review", label: "復習" },
+  { id: "factory", label: "単語" },
+  { id: "hamster", label: "部屋" },
+  { id: "profile", label: "マイ" },
 ];
 
 export default function App() {
-  const { user, uid, loading: authLoading, signOutUser } = useAuth();
-
-  const [profile, setProfile] = useState(null);
-  const [profileLoading, setProfileLoading] = useState(false);
-  const [screen, setScreen] = useState("home");
-
-  useEffect(() => {
-    let active = true;
-    if (!uid) {
-      setProfile(null);
-      return;
-    }
-    setProfileLoading(true);
-    loadOrCreateProfile(uid)
-      .then((p) => active && setProfile(p))
-      .catch((e) => console.error("profile load failed", e))
-      .finally(() => active && setProfileLoading(false));
-    return () => {
-      active = false;
-    };
-  }, [uid]);
-
-  if (authLoading) return <CenteredMessage text="読み込み中..." />;
-  if (!user) return <LoginScreen />;
-  if (profileLoading && !profile) return <CenteredMessage text="プロフィールを読み込み中..." />;
-
-  const isTeacher = !!profile?.isTeacher;
-  const navigate = (key) => setScreen(key);
-
-  let current;
-  switch (screen) {
-    case "home":
-      current = <Home profile={profile} navigate={navigate} />;
-      break;
-    case "profile":
-      current = (
-        <Profile
-          profile={profile}
-          uid={uid}
-          onProfileSaved={setProfile}
-          onSignOut={signOutUser}
-        />
-      );
-      break;
-    case "records":
-      current = <Records uid={uid} profile={profile} navigate={navigate} />;
-      break;
-    case "timer":
-      current = <Timer uid={uid} profile={profile} navigate={navigate} />;
-      break;
-    case "books":
-      current = <Books uid={uid} profile={profile} navigate={navigate} />;
-      break;
-    case "friends":
-      current = <Friends uid={uid} profile={profile} />;
-      break;
-    case "teacher":
-      current = <TeacherHub profile={profile} isTeacher={isTeacher} navigate={navigate} />;
-      break;
-    case "hamster":
-      current = <HamsterRoom />;
-      break;
-    case "factory":
-      current = <Factory navigate={navigate} />;
-      break;
-    case "plans":
-      current = <Plans uid={uid} profile={profile} isTeacher={isTeacher} navigate={navigate} />;
-      break;
-    case "vocab":
-      current = <Vocabulary uid={uid} navigate={navigate} />;
-      break;
-    default:
-      current = <Home profile={profile} navigate={navigate} />;
-  }
+  const uid = currentUid();
+  const [tab, setTab] = useState("home");
 
   return (
-    <div className="app-shell">
-      <header className="app-header">
-        <span>Oriex</span>
-        {isTeacher && <span className="header-role">先生</span>}
-      </header>
-      <main className="app-main">{current}</main>
-      <BottomNav screens={NAV_TABS} current={screen} onSelect={setScreen} />
-    </div>
-  );
-}
+    <>
+      {tab === "home" && <Home uid={uid} onOpen={setTab} />}
+      {tab === "records" && <Records uid={uid} onBack={() => setTab("home")} />}
+      {tab === "review" && <Review words={[]} history={{}} onBack={() => setTab("home")} />}
+      {tab === "factory" && <Factory words={[]} onBack={() => setTab("home")} />}
+      {/* TODO(react-shell): the "teacher" branch is intentionally NOT in TABS yet.
+          This shell is unmounted (legacy bundle is live), so there is no live
+          dead-end. When the shell goes live, add the tab ONLY for teachers
+          (isTeacher(profile)) and keep TeacherProblems' own isTeacher/assertTeacher
+          guards. "records" is reached from Home (onOpen), not the tab bar. */}
+      {tab === "teacher" && <TeacherProblems uid={uid} onBack={() => setTab("home")} />}
+      {tab === "profile" && <Profile uid={uid} onBack={() => setTab("home")} />}
+      {tab === "hamster" && (
+        <div className="rx-home">
+          <div className="rx-sec"><h3>ハムスターの部屋</h3></div>
+          <Suspense fallback={<div className="rx-trow-ls">読み込み中…</div>}>
+            <HamsterRoom mood={60} />
+          </Suspense>
+        </div>
+      )}
 
-function CenteredMessage({ text }) {
-  return (
-    <div className="app-shell">
-      <main className="app-main centered-main">
-        <p>{text}</p>
-      </main>
-    </div>
+      {/* Local AI UI is temporarily paused. Keep src/features/localAi intact;
+          restore LOCAL_AI_UI_ENABLED and a lazy route here when re-enabling. */}
+
+      <nav className="rx-tabbar">
+        {TABS.map((t) => (
+          <button key={t.id} className={tab === t.id ? "on" : ""} onClick={() => setTab(t.id)}>
+            <span>{t.label}</span>
+          </button>
+        ))}
+      </nav>
+    </>
   );
 }

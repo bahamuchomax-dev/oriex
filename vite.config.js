@@ -1,19 +1,23 @@
 import { defineConfig } from "vite";
+import { configDefaults } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
-// Notes:
-// - `base: "./"` keeps relative asset paths, matching how the v6.9 dist was
-//   served from GitHub Pages. Adjust if you deploy to a sub-path.
-// - The legacy-dist/ folder is reference-only and is NOT part of the build.
+// `base: "./"` keeps asset URLs relative so the build also works when
+// served from a GitHub Pages project subpath (matches manifest/sw "./").
 export default defineConfig({
   base: "./",
   plugins: [react()],
-  server: {
-    port: 5173,
-    open: true,
-  },
   build: {
-    outDir: "dist",
-    sourcemap: true, // keep sourcemaps so future builds stay debuggable
+    target: "es2019",
+    // The legacy app bundle is intentionally large until screens are
+    // migrated out of it; silence the size warning for now.
+    chunkSizeWarningLimit: 4096,
+  },
+  test: {
+    environment: "node",
+    include: ["test/**/*.test.js"],
+    // Rules Emulator tests are run separately via `npm run test:rules`
+    // (they need the Firebase emulator); keep them out of the normal run.
+    exclude: [...configDefaults.exclude, "**/*.emulator.test.js"],
   },
 });
