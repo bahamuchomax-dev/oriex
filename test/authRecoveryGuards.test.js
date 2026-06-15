@@ -8,16 +8,19 @@ import { join } from "node:path";
  * the public login directories, read `artifacts/{appId}/users/{uid}/profile/main`
  * and compare `data.password` on the client. During the `allow read,write: if
  * true` window that doc was world-readable, so every plaintext password is
- * compromised. These STATIC guards lock the invariants so the pattern cannot be
- * reintroduced via rules drift or new client code. (No emulator: Java not
- * installed; behavioural rules tests are `npm run test:rules`.) */
+ * compromised.
+ *
+ * These STATIC guards lock the invariants of the CURRENTLY DEPLOYABLE rules so
+ * a regression cannot silently re-open the hole. They are deliberately scoped to
+ * what is safe to ship to main today; the additional `noSecretFields()` write
+ * hardening is gated behind the Firebase Auth migration and lives in a separate
+ * PR (see AUTH_RECOVERY_PLAN.md §3 / "Sequencing & deploy"). (No emulator: Java
+ * not installed; behavioural rules tests are `npm run test:rules`.) */
 
 const RULES = readFileSync("firestore.rules", "utf8");
 // rules with comments stripped, so doc comments that mention `if true` /
 // `password` for explanatory purposes do not cause false positives.
 const RULES_CODE = RULES.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
-
-const CREDENTIAL_FIELDS = ["password", "passwordHash", "pass", "pin", "secret", "credential"];
 
 /* text of `match <path> { ... }` with balanced braces */
 function block(path) {
@@ -36,38 +39,6 @@ function block(path) {
   }
   throw new Error("unbalanced braces for: " + path);
 }
-
-describe("auth recovery — no plaintext credential may be stored", () => {
-  it("defines noSecretFields() banning every credential field", () => {
-    const m = RULES.match(/function noSecretFields\(\)\s*\{[\s\S]*?\}/);
-    expect(m).toBeTruthy();
-    for (const f of CREDENTIAL_FIELDS) expect(m[0].includes("'" + f + "'")).toBe(true);
-  });
-
-  it("the world-readable Friend ID login directories forbid credential writes", () => {
-    // both artifacts public-read directories (the only `if true` reads) AND
-    // noSecretFields() into their writes, so a password can never be written
-    // where it could be read unauthenticated.
-    expect(RULES_CODE).toMatch(
-      /customApp\/\{cardUid\}\s*\{\s*allow read: if true;\s*allow write: if isSelf\(cardUid\) && noSecretFields\(\);/,
-    );
-    expect(RULES_CODE).toMatch(
-      /teacherIndex\/\{docId\}\s*\{\s*allow read: if true;\s*allow write: if isSelf\(docId\) &&[^\n]*noSecretFields\(\);/,
-    );
-  });
-
-  it("the legacy self profile (where the plaintext password lived) forbids credential writes", () => {
-    const b = block("/users/{u}/profile/main");
-    // create and the self-update branch both AND noSecretFields()
-    expect(b).toMatch(/create:[\s\S]*noSecretFields\(\)/);
-    expect(b).toMatch(/update:[\s\S]*isSelf\(u\) && authorityUnchanged\(\) && noSecretFields\(\)/);
-  });
-
-  it("the top-level public customApp card also forbids credential writes", () => {
-    const b = block("/public/data/customApp/{cardUid}");
-    expect(b).toMatch(/create, update:[\s\S]*noSecretFields\(\)/);
-  });
-});
 
 describe("auth recovery — profile/main is never unauthenticated-readable", () => {
   it("legacy top-level profile/main read requires the owner (no `if true`, no bare signedIn)", () => {
@@ -93,6 +64,14 @@ describe("auth recovery — public (unauthenticated) read surface is locked", ()
   it("no `allow read, write: if true` wildcard survives anywhere", () => {
     expect(RULES_CODE).not.toMatch(/allow\s+read\s*,\s*write\s*:\s*if\s+true/);
   });
+  it("no mutation (write/create/update/delete) is granted `if true`", () => {
+    expect(RULES_CODE).not.toMatch(/allow\s+(?:write|create|update|delete)\b[^\n]*:\s*if\s+true\b/);
+  });
+  it("the shared public/data wildcard is signed-in read, never broadly writable", () => {
+    expect(RULES_CODE).toMatch(
+      /match \/public\/data\/\{document=\*\*\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if false;/,
+    );
+  });
 });
 
 /* ---- source guard: modern code must not reintroduce client-side plaintext auth ---- */
@@ -102,7 +81,9 @@ function walk(dir, out = []) {
     const p = join(dir, name);
     const st = statSync(p);
     if (st.isDirectory()) {
-      // skip the frozen legacy bundle (reference-only, holds the old pattern)
+      // skip the frozen legacy bundle (reference-only, holds the old pattern).
+      // The plaintext-password pattern is confined here and must NOT be rewritten
+      // in place — migration replaces it, see AUTH_RECOVERY_PLAN.md.
       if (p.replace(/\\/g, "/").includes("src/legacy")) continue;
       walk(p, out);
     } else if (/\.(js|jsx|ts|tsx)$/.test(name)) {
@@ -137,5 +118,10 @@ describe("auth recovery — the recovery plan records the incident", () => {
     expect(plan).toMatch(/compromised/i);
     expect(plan).toMatch(/force[\s\S]{0,20}reset/i);
     expect(plan).toMatch(/profile\/main\.password|profile","main/);
+  });
+  it("the plan records that the rules hardening is split into a gated follow-up", () => {
+    const plan = readFileSync("AUTH_RECOVERY_PLAN.md", "utf8");
+    expect(plan).toMatch(/noSecretFields/);
+    expect(plan).toMatch(/gated|separate PR|follow-up|after .* migration/i);
   });
 });

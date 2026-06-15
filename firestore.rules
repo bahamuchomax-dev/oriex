@@ -74,15 +74,6 @@ service cloud.firestore {
       return !request.resource.data.keys()
         .hasAny(['role', 'isTeacher', 'admin', 'teacher', 'teacherId', 'claims', 'permissions']);
     }
-    // No document may store a plaintext credential. The legacy bundle did client-
-    // side plaintext "auth" (read profile/main.password, compare on the client);
-    // during the allow-true window that doc was world-readable. Auth is Firebase
-    // Auth only now — no credential field belongs in Firestore, least of all in a
-    // world-readable login directory. See AUTH_RECOVERY_PLAN.md.
-    function noSecretFields() {
-      return !request.resource.data.keys()
-        .hasAny(['password', 'passwordHash', 'pass', 'pin', 'secret', 'credential']);
-    }
     // an update must not change any authority marker
     function authorityUnchanged() {
       return !request.resource.data.diff(resource.data).affectedKeys()
@@ -233,9 +224,8 @@ service cloud.firestore {
       allow create: if isSelf(u)
                     && (!('isTeacher' in request.resource.data) || request.resource.data.isTeacher == false)
                     && !request.resource.data.keys()
-                         .hasAny(['role', 'admin', 'teacher', 'teacherId', 'claims', 'permissions'])
-                    && noSecretFields();
-      allow update: if isAdmin() || (isSelf(u) && authorityUnchanged() && noSecretFields());
+                         .hasAny(['role', 'admin', 'teacher', 'teacherId', 'claims', 'permissions']);
+      allow update: if isAdmin() || (isSelf(u) && authorityUnchanged());
       allow delete: if isAdmin();
     }
 
@@ -313,7 +303,7 @@ service cloud.firestore {
     // signed-in user; writable only by the owner; never authority/answer fields. ----
     match /public/data/customApp/{cardUid} {
       allow read: if signedIn();
-      allow create, update: if isSelf(cardUid) && noAuthorityFields() && noAnswerFields() && noSecretFields();
+      allow create, update: if isSelf(cardUid) && noAuthorityFields() && noAnswerFields();
       allow delete: if isSelf(cardUid) || isAdmin();
     }
 
@@ -389,7 +379,7 @@ service cloud.firestore {
       // xp, streak, shortId); no authority, no answers. WRITE stays owner-only.
       match /public/data/customApp/{cardUid} {
         allow read: if true;
-        allow write: if isSelf(cardUid) && noSecretFields();
+        allow write: if isSelf(cardUid);
       }
       // Friend ID login directory. Despite the legacy name, EVERY user has their
       // OWN entry here (doc id = the user's uid; fields {shortId, uid, name,
@@ -401,7 +391,7 @@ service cloud.firestore {
       // WRITE stays owner-only (doc id == uid) and authority/answer free.
       match /public/data/teacherIndex/{docId} {
         allow read: if true;
-        allow write: if isSelf(docId) && noAuthorityFields() && noAnswerFields() && noSecretFields();
+        allow write: if isSelf(docId) && noAuthorityFields() && noAnswerFields();
       }
     }
 

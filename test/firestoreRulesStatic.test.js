@@ -231,14 +231,14 @@ describe("firestore.rules — legacy artifacts live-app tree is least-privilege"
       /match \/public\/data\/\{document=\*\*\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if false;/,
     );
   });
-  it("customApp is public-read (primary Friend ID directory) but self-write only, no credential", () => {
+  it("customApp is public-read (primary Friend ID directory) but self-write only", () => {
     expect(RULES_CODE).toMatch(
-      /match \/public\/data\/customApp\/\{cardUid\}\s*\{\s*allow read: if true;\s*allow write: if isSelf\(cardUid\) && noSecretFields\(\);/,
+      /match \/public\/data\/customApp\/\{cardUid\}\s*\{\s*allow read: if true;\s*allow write: if isSelf\(cardUid\);/,
     );
   });
-  it("teacherIndex is public-read (Friend ID login) but owner-write, answer/authority/credential free", () => {
+  it("teacherIndex is public-read (Friend ID login) but owner-write, answer/authority free", () => {
     expect(RULES_CODE).toMatch(
-      /match \/public\/data\/teacherIndex\/\{docId\}\s*\{\s*allow read: if true;\s*allow write: if isSelf\(docId\) && noAuthorityFields\(\) && noAnswerFields\(\) && noSecretFields\(\);/,
+      /match \/public\/data\/teacherIndex\/\{docId\}\s*\{\s*allow read: if true;\s*allow write: if isSelf\(docId\) && noAuthorityFields\(\) && noAnswerFields\(\);/,
     );
   });
   it("other shared public/data stays signed-in read (not public)", () => {

@@ -71,28 +71,45 @@ Two further confirmed issues in the same bundle:
   (`onAuthStateChanged`-driven) + a real `LoginScreen`. This also fixes the
   no-reload state-transition bug documented in `AUTH_LOGIN_NOTES.md` §1.
 
-## 3. What this PR changes (rules proposal + guard tests)
+## 3. The work is split into two PRs (deploy safety)
 
-Additive, least-privilege, **not deployed**:
+The credential-field write hardening and the docs/guards are split so that
+`main`'s `firestore.rules` stays the **deployable source of truth** at all times.
+This repo deploys Firestore Rules from `main` by hand (see the deploy records in
+`FIRESTORE_RULES_DRIFT_AUDIT.md`), so an undeployable ruleset must never sit in
+`main`.
 
-1. New rules helper `noSecretFields()` — rejects any write whose data carries a
-   credential field (`password`, `passwordHash`, `pass`, `pin`, `secret`,
-   `credential`). This makes "no plaintext password storage" an enforceable rule,
-   not just a convention.
-2. `noSecretFields()` is AND-ed into the writes of the **world-readable** Friend
-   ID login directories (`public/data/customApp` top-level + artifacts,
-   `public/data/teacherIndex`) and the legacy self profile (`users/{u}/profile/main`).
-   A plaintext credential can no longer be written where it could be publicly read.
-3. Guard tests (`test/authRecoveryGuards.test.js`) lock the invariants so a future
-   change cannot silently regress:
-   - `profile/main` is never unauthenticated-readable (no `if true`);
-   - the only public (`if true`) reads are the two Friend ID directories;
-   - the credential-field ban is present on all four write paths;
-   - modern `src/` (excluding the frozen legacy bundle) contains **no** client-side
-     plaintext password comparison and the auth feature is Firebase-Auth-driven.
+### PR #20 — docs + static guard tests (safe to merge now, no deploy)
 
-This PR does **not** edit the frozen legacy bundle and does **not** change any
-`allow read` rule.
+- **Does not change `firestore.rules`.** No production-rules change; no deploy
+  required; nothing breaks if the rules are later deployed from `main`.
+- Adds this plan and `test/authRecoveryGuards.test.js`, which lock the invariants
+  of the **currently deployable** rules so a regression cannot silently re-open
+  the hole:
+  - `profile/main` is never unauthenticated-readable (no `if true`, no bare `signedIn`);
+  - the legacy per-user subtree stays owner-only (not broadly public-readable);
+  - the only public (`if true`) reads are the two Friend ID directories, and no
+    `allow read, write: if true` / `if true` mutation survives anywhere;
+  - modern `src/` (excluding the frozen legacy bundle) contains **no** client-side
+    plaintext password comparison and the auth feature is Firebase-Auth-driven.
+
+### PR #21 (gated/draft) — `noSecretFields()` rules hardening, ship AFTER migration
+
+- Adds a `noSecretFields()` helper (rejects writes carrying `password`,
+  `passwordHash`, `pass`, `pin`, `secret`, `credential`) and AND-s it into the
+  writes of the **world-readable** Friend ID login directories
+  (`public/data/customApp` top-level + artifacts, `public/data/teacherIndex`) and
+  the legacy self profile (`users/{u}/profile/main`), plus tests proving credential
+  fields are rejected.
+- **Must NOT be merged/deployed before the §4 Firebase Auth migration.** The
+  current legacy signup, profile-save, password-change, and `customApp` card-sync
+  writes all carry a plaintext `password` field, so deploying this hardening today
+  would deny those writes and break the live app. The hardening is intentional
+  **only after** migration removes those plaintext-password writes. `firestore.rules`
+  in that PR carries a `DO NOT DEPLOY UNTIL FIREBASE AUTH MIGRATION` banner.
+
+Neither PR edits the frozen legacy bundle, and neither changes any `allow read`
+rule. PR #20 changes no rules at all.
 
 ## 4. Migration steps (future PRs, gated, out of scope here)
 
@@ -105,15 +122,17 @@ This PR does **not** edit the frozen legacy bundle and does **not** change any
 4. Replace the legacy login UI with the modern `AuthProvider`/`LoginScreen`
    flow; remove the `"genronkai.miwa"` bypass and the password-display roster.
 5. Provision teacher/admin **custom claims** (`TEACHER_CUSTOM_CLAIMS_PLAN.md`).
-6. **Then** deploy: this PR's `noSecretFields()` hardening + the rest, after
+6. **Then** deploy: the PR #21 `noSecretFields()` hardening + the rest, after
    emulator verification (`npm run test:rules`, needs Java) and manual flow tests.
 
 ## Sequencing & deploy
 
-- Merging this PR changes **repo files only**. Production rules are unchanged
-  until someone runs `firebase deploy --only firestore:rules` — which must NOT
-  happen before the application-layer migration in §4, or the legacy bundle's
-  card/profile writes would be denied.
+- Merging **PR #20** changes **repo files only** and changes no rules — it is safe
+  to merge now and requires no deploy.
+- The **PR #21** rules hardening must NOT be deployed (nor merged into `main`)
+  until the application-layer migration in §4 is done, or the legacy bundle's
+  signup / profile / password-change / `customApp` card-sync writes (which still
+  carry a plaintext `password`) would be denied.
 - Do not re-open `profile/main` reads, do not restore `allow read, write: if
   true`, and do not reintroduce a plaintext-password path. The guard tests fail
   the build if any of these regress.
