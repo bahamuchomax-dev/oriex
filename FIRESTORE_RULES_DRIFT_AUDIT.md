@@ -97,3 +97,46 @@ manual app testing before deploy:
 - Not provided at audit time → **not audited**. If Firebase Storage is used
   (the legacy bundle references it), the deployed Storage rules must be audited
   separately (a similar `allow ... if true` would be equally critical).
+- Update: Console shows Storage **not enabled** on the Spark plan; see
+  `STORAGE_RULES_AUDIT.md` (PR #10) for the recorded status.
+
+## Production deploy record
+
+Two Firestore Rules deployments have replaced the original
+`allow read, write: if true` wildcard. **Production is no longer publicly
+readable/writable.**
+
+### Deploy 1 — critical fix (least-privilege + default-deny)
+
+- Project: `genro-b74de`
+- Deployed commit: `6fd833a`
+- Command: `firebase.cmd deploy --only firestore:rules --project genro-b74de`
+- Result: Deploy complete; Console showed the hardened ruleset.
+- (Also recorded in `DEPLOYED_FIRESTORE_RULES_NOTE.md`, PR #8 — pending merge.)
+
+### Deploy 2 — tightened plan progress updates (PR #9)
+
+- Project: `genro-b74de`
+- Local main commit: `17d36b7` ("Tighten plan progress update rules")
+- Command: `firebase.cmd deploy --only firestore:rules --project genro-b74de`
+- git: fast-forward to `17d36b7`
+- Dry-run: **success**
+- Deploy: **complete** — `firestore.rules` released to `cloud.firestore`
+- Effect: students may now update only progress fields
+  (`items` / `overallProgress` / `bookProgress` / `updatedAt`) on
+  `weeklyPlans` / `sentPlans`; they cannot create plans or edit teacher content /
+  ownership / authority / answer fields.
+
+### Remaining risks (current)
+
+- **Storage Rules**: Storage not enabled / not audited — recorded in
+  `STORAGE_RULES_AUDIT.md` (PR #10).
+- **Custom claims**: teacher/admin claims provisioning not confirmed — documented
+  in `TEACHER_CUSTOM_CLAIMS_PLAN.md` (PR #7). If teachers lack claims, teacher
+  flows are denied by the deployed rules.
+- **`npm run test:rules`**: not run (Java 11+ not installed); only static tests
+  (450 passing) validated the rules.
+- **`chats/{pairId}` parent doc write**: currently allowed for either participant;
+  tighten to the fields actually used (or deny parent writes) if needed.
+- **`public/data/bookLogs` read**: signed-in users can read all book logs
+  (incl. `uid`/`memo`); confirm the intended public scope.
