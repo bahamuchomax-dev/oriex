@@ -1,19 +1,24 @@
 import { useEffect, useRef, useState } from "react";
-import { subscribeAuth, currentAuthUser } from "./modernAuthState.js";
+import { subscribeAuth } from "./modernAuthState.js";
+import { shouldMountLegacy, bridgeUid } from "./authBridgeController.js";
 import ModernAuthShell from "./ModernAuthShell.jsx";
 
 /* ============================================================
  * AuthBridgeProbe — opt-in probe for the modern-auth → legacy handoff
  * ------------------------------------------------------------
- * Mounted ONLY behind ?oriexAuthBridge=1 (see authBridgeRoute.js). It signs in
- * with the modern Firebase Auth shell, then starts the legacy app and OBSERVES
- * whether legacy adopts the same authenticated user (window.__oxUid). It does not
- * use the legacy plaintext login, does not read/compare any password, does not
- * write to Firestore, and logs nothing sensitive. The uid is a non-secret id and
- * is the only auth value shown.
+ * Mounted ONLY behind ?oriexAuthBridge=1 (see authBridgeRoute.js). It WAITS for
+ * Firebase Auth state to be restored, and only once a user exists does it set
+ * window.__oxUid = user.uid and start the legacy app (by importing — not editing —
+ * the bundle). Legacy's own onAuthStateChanged then adopts that user and loads
+ * the user's OWN profile/main, entering the real app without the plaintext login.
  *
- * This is a developer feasibility probe, NOT a feature and NOT the default login.
- * See MODERN_AUTH_APP_HANDOFF_SPIKE.md.
+ * Waiting for auth restoration fixes the first-load race (legacy used to mount
+ * before persistence restored, so it briefly showed the old login until a reload).
+ *
+ * It does NOT use the legacy plaintext login, reads/compares NO password, does NO
+ * Firestore read/write, writes NO password, and logs nothing sensitive (uid is a
+ * non-secret id). Developer feasibility probe, NOT a feature / NOT the default
+ * login. See MODERN_AUTH_APP_HANDOFF_SPIKE.md.
  * ============================================================ */
 
 const show = (v) => (v == null ? "—" : String(v)); // uid / boolean only (non-secret)
@@ -21,9 +26,9 @@ const show = (v) => (v == null ? "—" : String(v)); // uid / boolean only (non-
 export default function AuthBridgeProbe() {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
-  const [legacyState, setLegacyState] = useState("idle"); // idle | starting | started | error
+  const [phase, setPhase] = useState("checking"); // checking | signin | mounting | mounted | error
   const [obs, setObs] = useState(null);
-  const startedRef = useRef(false);
+  const mountedRef = useRef(false); // guards against double legacy mount
 
   useEffect(
     () =>
@@ -34,40 +39,66 @@ export default function AuthBridgeProbe() {
     [],
   );
 
-  const startLegacy = async () => {
-    if (startedRef.current) return;
-    startedRef.current = true;
-    const authUid = (currentAuthUser() && currentAuthUser().uid) || (user && user.uid) || null;
-    const oxUidBefore = (typeof window !== "undefined" && window.__oxUid) || null;
-    setLegacyState("starting");
-    try {
-      // Import (not edit) the legacy bundle; it self-mounts into #root.
-      await import("../../legacy/oriex-app.bundle.js");
-    } catch {
-      setLegacyState("error");
+  // Once auth is RESOLVED and a user exists, set the uid global and start legacy
+  // exactly once. Repeated auth events / re-renders cannot re-mount it.
+  useEffect(() => {
+    if (!ready) {
+      setPhase("checking");
       return;
     }
-    setLegacyState("started");
-    // Observe after the legacy app has had a moment to boot + run onAuthStateChanged.
-    window.setTimeout(() => {
-      const oxUidAfter = (typeof window !== "undefined" && window.__oxUid) || null;
-      let legacyPasswordInputPresent = false;
+    if (!user) {
+      setPhase("signin");
+      return;
+    }
+    if (!shouldMountLegacy({ ready, hasUser: !!user, alreadyMounted: mountedRef.current })) {
+      return;
+    }
+    mountedRef.current = true;
+
+    let cancelled = false;
+    (async () => {
+      const authUid = bridgeUid(user);
+      const oxUidBefore = (typeof window !== "undefined" && window.__oxUid) || null;
+      // Set the uid global BEFORE legacy starts (observed; non-secret).
+      if (typeof window !== "undefined" && authUid) window.__oxUid = authUid;
+
+      setPhase("mounting");
       try {
-        const root = document.getElementById("root");
-        // existence check only — never reads an input's value
-        legacyPasswordInputPresent = !!(root && root.querySelector('input[type="password"]'));
+        // Import (not edit) the legacy bundle; it self-mounts into #root.
+        await import("../../legacy/oriex-app.bundle.js");
       } catch {
-        /* ignore */
+        if (!cancelled) setPhase("error");
+        return;
       }
-      setObs({
-        authUid,
-        oxUidBefore,
-        oxUidAfter,
-        oxUidMatchesAuth: !!authUid && oxUidAfter === authUid,
-        legacyPasswordInputPresent,
-      });
-    }, 2000);
-  };
+      if (cancelled) return;
+      setPhase("mounted");
+
+      // Observe after legacy has had a moment to boot + run onAuthStateChanged.
+      window.setTimeout(() => {
+        if (cancelled) return;
+        const oxUidAfter = (typeof window !== "undefined" && window.__oxUid) || null;
+        let legacyPasswordInputPresent = false;
+        try {
+          const root = document.getElementById("root");
+          // existence check only — never reads an input's value
+          legacyPasswordInputPresent = !!(root && root.querySelector('input[type="password"]'));
+        } catch {
+          /* ignore */
+        }
+        setObs({
+          authUid,
+          oxUidBefore,
+          oxUidAfter,
+          oxUidMatchesAuth: !!authUid && oxUidAfter === authUid,
+          legacyPasswordInputPresent,
+        });
+      }, 2000);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [ready, user]);
 
   const banner = (
     <div
@@ -87,8 +118,6 @@ export default function AuthBridgeProbe() {
     </div>
   );
 
-  // Signed in → show observations + the "start legacy" control (legacy fills #root
-  // beneath this fixed banner once started).
   const panel = (
     <div
       style={{
@@ -101,29 +130,25 @@ export default function AuthBridgeProbe() {
         maxWidth: 520,
       }}
     >
-      {!ready && <p>読み込み中…</p>}
+      {phase === "checking" && <p style={{ margin: 0 }}>認証状態を確認中...</p>}
 
-      {ready && !user && (
+      {phase === "signin" && (
         <p style={{ margin: "0 0 8px" }}>
-          まず下のモダン認証でログイン/新規登録してください。ログイン後にレガシーアプリを起動して、
+          ログイン/新規登録してください。認証が確認できたら、自動でレガシーアプリを起動して
           同じ Firebase Auth ユーザーを引き継げるか検証します。
         </p>
       )}
 
-      {ready && user && (
+      {(phase === "mounting" || phase === "mounted" || phase === "error") && (
         <div>
           <p style={{ margin: "0 0 6px" }}>
-            Auth user present: <code>{show(user.uid)}</code>
+            Auth user present: <strong>YES</strong> — uid <code>{show(user && user.uid)}</code>
           </p>
-          {legacyState === "idle" && (
-            <button type="button" className="btn-primary" onClick={startLegacy}>
-              レガシーアプリを起動して検証
-            </button>
-          )}
-          {legacyState === "starting" && <p>レガシーアプリを起動中…</p>}
-          {legacyState === "error" && (
+          {phase === "mounting" && <p>レガシーアプリを起動中…（認証確認後）</p>}
+          {phase === "error" && (
             <p style={{ color: "#c0392b" }}>レガシーアプリの読み込みに失敗しました。</p>
           )}
+          {phase === "mounted" && !obs && <p>レガシー起動済み。観測中…（数秒お待ちください）</p>}
           {obs && (
             <ul style={{ margin: "8px 0 0", paddingLeft: 18, lineHeight: 1.6 }}>
               <li>Auth uid: <code>{show(obs.authUid)}</code></li>
@@ -133,24 +158,23 @@ export default function AuthBridgeProbe() {
                 __oxUid == Auth uid?{" "}
                 <strong>{obs.oxUidMatchesAuth ? "YES ✅" : "NO ❌"}</strong>
               </li>
+              <li>legacy mounted: <strong>YES ✅</strong></li>
               <li>
                 旧ログイン画面（passwordフィールド）が出ている?{" "}
                 <strong>{obs.legacyPasswordInputPresent ? "YES ⚠️" : "NO ✅"}</strong>
               </li>
             </ul>
           )}
-          {legacyState === "started" && !obs && <p>観測中…（数秒お待ちください）</p>}
         </div>
       )}
     </div>
   );
 
-  // Before sign-in, render the modern auth shell so the tester can sign in.
   return (
     <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 2147483600 }}>
       {banner}
       {panel}
-      {ready && !user && (
+      {phase === "signin" && (
         <div style={{ maxHeight: "80vh", overflow: "auto", background: "transparent" }}>
           <ModernAuthShell />
         </div>

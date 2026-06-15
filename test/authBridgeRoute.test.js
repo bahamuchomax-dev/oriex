@@ -107,3 +107,30 @@ describe("auth bridge probe — safe by construction", () => {
     expect(mount).toContain("oriex-bridge-probe"); // separate overlay host
   });
 });
+
+describe("auth bridge probe — waits for auth restoration before mounting legacy", () => {
+  const PROBE = srcOf("src/features/auth/AuthBridgeProbe.jsx");
+  it("subscribes to auth state (does not rely only on immediate currentUser)", () => {
+    expect(PROBE).toContain("subscribeAuth");
+    expect(PROBE).not.toContain("currentAuthUser"); // no eager pre-resolution read
+  });
+  it("gates the legacy mount on resolved auth + a user (shouldMountLegacy)", () => {
+    expect(PROBE).toContain("shouldMountLegacy");
+    expect(PROBE).toMatch(/if \(!ready\)/);
+    expect(PROBE).toMatch(/if \(!user\)/);
+  });
+  it("shows a 'checking auth' loading state", () => {
+    expect(PROBE).toContain("認証状態を確認中");
+  });
+  it("sets window.__oxUid before importing legacy (uid set first, then mount)", () => {
+    const setIdx = PROBE.indexOf("window.__oxUid = authUid");
+    const importIdx = PROBE.indexOf('import("../../legacy/oriex-app.bundle.js")');
+    expect(setIdx).toBeGreaterThan(-1);
+    expect(importIdx).toBeGreaterThan(-1);
+    expect(setIdx).toBeLessThan(importIdx);
+  });
+  it("guards against a double legacy mount (mountedRef)", () => {
+    expect(PROBE).toContain("mountedRef");
+    expect(PROBE).toContain("mountedRef.current = true");
+  });
+});
