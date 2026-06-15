@@ -4,6 +4,7 @@ import { handoffToLegacy } from "./legacyHandoff.js";
 import { clearLegacyLocalSession } from "./legacyLocalSession.js";
 import { consumeCutoverReloadMarker, reloadForCutoverRelogin } from "./cutoverReload.js";
 import ModernAuthShell from "./ModernAuthShell.jsx";
+import OriexMark from "./OriexMark.jsx";
 import "./authScreen.css";
 
 /* ============================================================
@@ -42,7 +43,7 @@ function BrandedLoader({ message }) {
   return (
     <div className="ox-auth">
       <div className="ox-auth-card ox-auth-loading">
-        <div className="ox-auth-logo">O</div>
+        <OriexMark />
         <h1 className="ox-auth-title">Oriex</h1>
         <div className="ox-auth-spinner" aria-hidden="true" />
         <p role="status">{message}</p>
@@ -54,7 +55,11 @@ function BrandedLoader({ message }) {
 export default function ModernCutoverBridge() {
   const [ready, setReady] = useState(false);
   const [user, setUser] = useState(null);
-  const [phase, setPhase] = useState("checking"); // checking | signin | starting | mounted | error
+  // checking | signin | starting | revealing | mounted | error
+  // "revealing": handoff finished (legacy imported); keep the branded cover up a
+  // brief, BOUNDED moment so the legacy home paints BEHIND it — then drop the
+  // cover. This prevents the old legacy login/home from flashing on reveal.
+  const [phase, setPhase] = useState("checking");
   const startedRef = useRef(false);
   const aliveRef = useRef(true);
   const lastUidRef = useRef(null);
@@ -91,12 +96,46 @@ export default function ModernCutoverBridge() {
     handoffToLegacy(u)
       .then(() => {
         handedOffOnceRef.current = true;
-        if (aliveRef.current) setPhase("mounted");
+        // Don't reveal the instant the import resolves — the legacy app has not
+        // painted home yet, so dropping the cover now flashes its old screen.
+        // Hold the branded cover through a short settle (see the effect below).
+        if (aliveRef.current) setPhase("revealing");
       })
       .catch(() => {
         if (aliveRef.current) setPhase("error");
       });
   }, []);
+
+  // Reveal settle: once handoff is done, keep the cover up for two animation
+  // frames + a short, BOUNDED timeout so the legacy home can paint behind it,
+  // then drop the cover (phase "mounted" → renders nothing, legacy owns #root).
+  // Bounded by design — never an infinite loader.
+  useEffect(() => {
+    if (phase !== "revealing") return undefined;
+    let raf1 = 0;
+    let raf2 = 0;
+    let timer = 0;
+    const reveal = () => {
+      if (aliveRef.current) setPhase("mounted");
+    };
+    const w = typeof window !== "undefined" ? window : null;
+    if (w && typeof w.requestAnimationFrame === "function") {
+      raf1 = w.requestAnimationFrame(() => {
+        raf2 = w.requestAnimationFrame(() => {
+          timer = w.setTimeout(reveal, 500);
+        });
+      });
+    } else {
+      timer = setTimeout(reveal, 500);
+    }
+    return () => {
+      if (w && typeof w.cancelAnimationFrame === "function") {
+        if (raf1) w.cancelAnimationFrame(raf1);
+        if (raf2) w.cancelAnimationFrame(raf2);
+      }
+      if (timer) clearTimeout(timer);
+    };
+  }, [phase]);
 
   // Auth observer: source of truth for restore + later changes. On any user,
   // start the handoff immediately.
@@ -163,7 +202,7 @@ export default function ModernCutoverBridge() {
       <Overlay>
         <div className="ox-auth">
           <div className="ox-auth-card ox-auth-loading">
-            <div className="ox-auth-logo">O</div>
+            <OriexMark />
             <h1 className="ox-auth-title">Oriex</h1>
             <p className="ox-auth-error" role="alert" style={{ marginTop: 14, textAlign: "left" }}>
               うまく開けませんでした。お手数ですが、ページを再読み込みしてください。
@@ -184,6 +223,16 @@ export default function ModernCutoverBridge() {
   }
 
   if (phase === "starting") {
+    return (
+      <Overlay>
+        <BrandedLoader message="Oriex を準備しています…" />
+      </Overlay>
+    );
+  }
+
+  // Handoff done, legacy painting behind the cover — keep the SAME branded cover
+  // up briefly (see the reveal-settle effect) so the old legacy screen can't flash.
+  if (phase === "revealing") {
     return (
       <Overlay>
         <BrandedLoader message="Oriex を準備しています…" />

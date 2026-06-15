@@ -37,19 +37,17 @@
   text-align: center;
   margin-bottom: 18px;
 }
-.ox-auth-logo {
+/* The Oriex app/PWA icon (see OriexMark.jsx) — matches the installed app. */
+.ox-auth-logo-img {
   width: 56px;
   height: 56px;
   margin: 0 auto 10px;
-  display: grid;
-  place-items: center;
-  border-radius: 18px;
-  background: linear-gradient(135deg, var(--accent, #c88040), #e0a766);
-  color: #fff;
-  font-size: 28px;
-  font-weight: 900;
-  line-height: 1;
-  box-shadow: 0 8px 20px rgba(200, 128, 64, 0.30);
+  display: block;
+  border-radius: 16px;
+  object-fit: cover;
+  box-shadow: 0 8px 20px rgba(43, 39, 36, 0.16);
+  -webkit-user-select: none;
+  user-select: none;
 }
 .ox-auth-title {
   margin: 0;
