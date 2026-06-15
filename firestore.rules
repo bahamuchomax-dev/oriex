@@ -344,6 +344,40 @@ service cloud.firestore {
     // guess in that file; they are intentionally left under the default-deny
     // below until their real shape/usage is confirmed (REQUIRES CONFIRMATION).
 
+    // ============================================================
+    // LEGACY LIVE APP (artifacts/{appId}/...)
+    // The deployed legacy bundle stores ALL data under artifacts/{appId}/... ,
+    // NOT the top-level paths above. The hardening deploy left this subtree under
+    // default-deny, which broke login/signup: a per-user `friends` onSnapshot and
+    // the user's own profile reads/writes were permission-denied. Restore the live
+    // app at least-privilege:
+    //   - each user controls ONLY their own subtree (no cross-user access);
+    //   - shared public/data is signed-in READ only (study content — the legacy
+    //     app has NO separate teacher answer-key collection);
+    //   - the user's own leaderboard/search card is self-write (streak/exp on login);
+    //   - all OTHER shared writes stay denied (teacher/shared writes are a
+    //     documented follow-up).
+    // No allow-true, no cross-user access, no broad authenticated write.
+    // ============================================================
+    match /artifacts/{appId} {
+      // per-user private data: owner only (profile/main, friends, studyDiary,
+      // history, review, userVocab, ...). Fixes the failing friends onSnapshot.
+      match /users/{uid}/{document=**} {
+        allow read, write: if isSelf(uid);
+      }
+      // shared catalogs / leaderboard: any signed-in user may READ; writes are
+      // denied by default (see the own-card exception below).
+      match /public/data/{document=**} {
+        allow read: if signedIn();
+        allow write: if false;
+      }
+      // the user's own public card (leaderboard / search) — self-write only.
+      match /public/data/customApp/{cardUid} {
+        allow read: if signedIn();
+        allow write: if isSelf(cardUid);
+      }
+    }
+
     // ---------------- default deny ----------------
     match /{document=**} {
       allow read, write: if false;
