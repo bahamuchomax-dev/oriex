@@ -94,24 +94,44 @@ describe("modern auth — mobile screen is vertically centered", () => {
   });
 });
 
-describe("modern auth — logout intent shield raises veil before legacy paints", () => {
-  it("installs a capture-phase logout listener only while the legacy home is mounted", () => {
-    expect(BRIDGE).toMatch(/const homeReady = phase === "mounted" && !!user;\s*\n\s*if \(!homeReady\) return undefined;/);
-    expect(BRIDGE).toMatch(/addEventListener\(n, onLogoutIntent, true\)/);
-    expect(BRIDGE).toMatch(/removeEventListener\(n, onLogoutIntent, true\)/);
+describe("modern auth — cutover intercepts legacy logout (no old-login render)", () => {
+  const SHIELD = readFileSync("src/features/auth/cutoverLogoutShield.js", "utf8");
+
+  it("the shield cancels the event so legacy's logout handler never runs", () => {
+    expect(SHIELD).toContain("preventDefault");
+    expect(SHIELD).toContain("stopPropagation");
+    expect(SHIELD).toContain("stopImmediatePropagation");
+    // capture phase so it fires before legacy's own handler
+    expect(SHIELD).toMatch(/addEventListener\([^,]+,\s*handler,\s*true\)/);
+    expect(SHIELD).toMatch(/removeEventListener\([^,]+,\s*handler,\s*true\)/);
   });
-  it("detects logout narrowly (short control containing ログアウト) and raises the veil", () => {
-    expect(BRIDGE).toContain("ログアウト");
-    expect(BRIDGE).toMatch(/isLogoutTarget\(e\.target\)\) showCutoverVeil\(\)/);
-    // captures the earliest signals, before legacy's own handler
-    expect(BRIDGE).toContain('"pointerdown"');
-    expect(BRIDGE).toContain('"touchstart"');
+  it("detects logout controls narrowly and skips the modern auth UI", () => {
+    expect(SHIELD).toContain("ログアウト");
+    // does not hijack the modern shell's own logout/controls
+    expect(SHIELD).toMatch(/closest\("\.ox-auth"\)/);
+    expect(SHIELD).toMatch(/BUTTON|tagName/);
   });
-  it("never prevents default (legacy logout proceeds normally)", () => {
-    // the intent handler only shows the veil; it must not call preventDefault
-    const start = BRIDGE.indexOf("onLogoutIntent = (e)");
-    const end = BRIDGE.indexOf("INTENT_EVENTS", start);
-    expect(BRIDGE.slice(start, end)).not.toContain("preventDefault");
+  it("the bridge installs the shield only while the legacy home is mounted", () => {
+    expect(BRIDGE).toContain("installCutoverLogoutShield");
+    expect(BRIDGE).toMatch(/homeReady = phase === "mounted" && !!user;\s*\n\s*if \(!homeReady\) return undefined;\s*\n\s*return installCutoverLogoutShield/);
+  });
+  it("cutover logout runs the MODERN sign-out path (not legacy's)", () => {
+    expect(BRIDGE).toMatch(/import \{ logout \} from "\.\/modernAuthApi\.js"/);
+    expect(BRIDGE).toMatch(/onLogoutIntent = useCallback/);
+    expect(BRIDGE).toContain("logout()");
+    expect(BRIDGE).toContain("showCutoverVeil()");
+    // clears the safe legacy fast-start session + uid global (no password/token)
+    expect(BRIDGE).toContain("clearLegacyLocalSession(lastUidRef.current)");
+    expect(BRIDGE).toMatch(/window\.__oxUid = undefined/);
+  });
+  it("sign-out is idempotent (guarded) and reset for the next cycle", () => {
+    expect(BRIDGE).toMatch(/if \(loggingOutRef\.current\) return;/);
+    expect(BRIDGE).toMatch(/loggingOutRef\.current = false;/);
+  });
+  it("does not log credentials on sign-out failure", () => {
+    const start = BRIDGE.indexOf("onLogoutIntent = useCallback");
+    const seg = BRIDGE.slice(start, start + 600);
+    expect(seg).not.toMatch(/console\s*\./);
   });
 });
 
