@@ -289,19 +289,29 @@ service cloud.firestore {
       allow create, update, delete: if (isTeacher() || isAdmin()) && noAnswerFields();
     }
 
-    // ---- shared book catalog (legacy). Students read-only; teacher/admin manage. ----
+    // ---- shared book catalog (legacy). Any signed-in user adds their OWN book
+    // (booksApi.addBook stamps ownerUid); only the owner or admin may modify or
+    // remove. Shared read. No answer fields. ----
     match /public/data/bookShelf/{bookId} {
       allow read: if signedIn();
-      allow create, update, delete: if (isTeacher() || isAdmin()) && noAnswerFields();
+      allow create: if signedIn()
+                    && request.resource.data.ownerUid == request.auth.uid
+                    && noAnswerFields();
+      allow update: if isAdmin()
+                    || (signedIn() && resource.data.ownerUid == request.auth.uid && noAnswerFields());
+      allow delete: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
     }
 
-    // ---- public book logs (legacy). REQUIRES CONFIRMATION of the document
-    // shape/owner; conservatively bound to the writer's own userId. ----
+    // ---- public book logs (legacy). Owner field is `uid` (booksApi.addBookLog).
+    // Shared read; each user writes only their own logs. ----
     match /public/data/bookLogs/{logId} {
       allow read: if signedIn();
-      allow create, update: if signedIn() && request.resource.data.userId == request.auth.uid;
-      allow delete: if isAdmin()
-                    || (signedIn() && resource.data.userId == request.auth.uid);
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update: if isAdmin()
+                    || (signedIn()
+                        && resource.data.uid == request.auth.uid
+                        && request.resource.data.uid == request.auth.uid);
+      allow delete: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
     }
 
     // NOTE: other legacy public/data docs referenced by firestorePaths.js

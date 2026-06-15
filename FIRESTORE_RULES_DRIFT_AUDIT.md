@@ -64,6 +64,34 @@ teacherProblems), top-level `deliveredProblems`, `teacherProblemAnswers`,
 - The fix uses **custom claims** (`request.auth.token.teacher/admin`) for
   teacher/admin and forbids clients from setting authority fields.
 
+## Deploy-prep corrections (post-merge follow-up)
+
+Verifying the live write shapes against `src/features/books/booksApi.js` surfaced
+two field/intent corrections to the proposed legacy rules (would have broken
+features on deploy):
+
+- `public/data/bookLogs`: owner field is **`uid`** (not `userId`) —
+  `addBookLog` stamps `uid: user.uid`. Rule corrected to bind writes to
+  `request.resource.data.uid == request.auth.uid`.
+- `public/data/bookShelf`: books are added by **any signed-in user** (Books
+  screen "追加" → `addBook`), stamping `ownerUid`. The first draft restricted
+  writes to teacher/admin, which would have blocked normal "add book". Rule
+  corrected to **owner-bound** (`ownerUid == request.auth.uid`); owner/admin
+  update/delete.
+
+Still REQUIRES CONFIRMATION via emulator (`npm run test:rules`, needs Java) +
+manual app testing before deploy:
+
+- `sentPlans` student progress update is not yet field-whitelisted to
+  progress/status-only.
+- `teacherIndex` / `sharedApps` remain default-deny (odd-segment TODO paths);
+  manually test any feature that might use them.
+- Teacher/admin **custom claims must actually be provisioned** in production. The
+  hardened rules grant teacher/admin via `request.auth.token.teacher/admin`. If
+  the live app never set these claims (e.g. relied on a client `isTeacher`), then
+  teacher flows (plan send, vocabulary/bookShelf management) will be denied after
+  deploy. Confirm claims are set BEFORE deploying.
+
 ## Storage rules
 
 - Not provided at audit time → **not audited**. If Firebase Storage is used

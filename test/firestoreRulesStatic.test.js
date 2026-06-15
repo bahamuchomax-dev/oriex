@@ -275,14 +275,18 @@ describe("firestore.rules — legacy public/data is not broadly writable", () =>
       "isSelf(cardUid)",
     );
   });
-  for (const path of [
-    "/public/data/customVocabulary/{wordId}",
-    "/public/data/bookShelf/{bookId}",
-  ]) {
-    it(`${path} write is teacher/admin only and answer-free`, () => {
-      const c = clause(block(path), "create, update, delete");
-      expect(c).toContain("isTeacher() || isAdmin()");
-      expect(c).toContain("noAnswerFields()");
-    });
-  }
+  it("customVocabulary write is teacher/admin only and answer-free", () => {
+    const c = clause(block("/public/data/customVocabulary/{wordId}"), "create, update, delete");
+    expect(c).toContain("isTeacher() || isAdmin()");
+    expect(c).toContain("noAnswerFields()");
+  });
+  it("bookShelf create is owner-bound (ownerUid == self), not world-write", () => {
+    const c = clause(block("/public/data/bookShelf/{bookId}"), "create");
+    expect(c).toContain("request.resource.data.ownerUid == request.auth.uid");
+    expect(c).toContain("noAnswerFields()");
+  });
+  it("bookLogs create is owner-bound by uid", () => {
+    const c = clause(block("/public/data/bookLogs/{logId}"), "create");
+    expect(c).toContain("request.resource.data.uid == request.auth.uid");
+  });
 });
