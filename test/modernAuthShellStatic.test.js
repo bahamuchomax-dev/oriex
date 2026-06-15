@@ -39,7 +39,14 @@ describe("modern auth — driven by Firebase Auth, errors are safe", () => {
   it("transitions IMMEDIATELY after sign-in/up (does not wait for a reload/observer)", () => {
     // the awaited login/signup handler sets the user from the authoritative
     // current user, so the signed-in view shows without a reload.
-    expect(SHELL).toContain("setUser(currentAuthUser())");
+    expect(SHELL).toContain("currentAuthUser()");
+    expect(SHELL).toMatch(/setUser\(authed\)/);
+  });
+  it("notifies a host via onAuthed on a successful in-session sign-in", () => {
+    // lets an embedding host (the cutover bridge) start its handoff even when its
+    // own onAuthStateChanged is slow for an in-session login.
+    expect(SHELL).toMatch(/function ModernAuthShell\(\{ onAuthed \}/);
+    expect(SHELL).toMatch(/if \(onAuthed\) onAuthed\(authed\)/);
   });
   it("transitions to signed-out immediately after logout (no reload)", () => {
     expect(SHELL).toContain("setUser(null)");
