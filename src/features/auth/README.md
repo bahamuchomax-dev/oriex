@@ -49,23 +49,39 @@ are all intentionally out of scope.
 
 - `modernAuthRoute.js` — tiny pure gate. `isModernAuthEnabled(location)` is true
   only when explicitly opted in.
-- `modernAuthApi.js` — `signUpWithFriendId`, `loginWithFriendId`, `logout`.
+- `modernAuthApi.js` — `signUpWithInviteCode`, `loginWithFriendId`, `logout`.
   Firebase Auth owns the password; it is passed **only** to the Auth SDK, never
   written to Firestore (every Firestore write runs through `assertSafePayload`,
-  which rejects credential/authority/answer fields). Login derives the internal
-  email deterministically — it reads no other user's `profile/main` and does no
-  client-side password comparison (the module imports no Firestore read primitive).
+  which rejects credential/authority/answer fields). **Signup is gated by an
+  invite code and GENERATES the Friend ID** (a new user does not type one — the
+  Friend ID is the system-assigned public handle, matching the legacy generator).
+  Login derives the internal email deterministically — it reads no other user's
+  `profile/main` and does no client-side password comparison (the module imports
+  no Firestore read primitive).
+- `inviteCode.js` — the signup gate. ⚠️ **`DEV_INVITE_CODE = "ORIX-TEST"` is a
+  documented, NON-SECRET, TEST-ONLY code and is NOT a security boundary** (it is
+  client-side and trivially bypassable; the real protections are Firebase Auth +
+  Firestore Rules). `validateInviteCode` normalizes casing / spaces / hyphens /
+  full-width / hidden chars. The invite code is never written to Firestore and
+  never logged. A production cutover must replace this with a server-validated
+  invite (a real secret, never shipped in client source).
 - `ModernAuthShell.jsx` — `onAuthStateChanged`-driven UI; signed-out shows
-  login/signup, signed-in shows the user's own UID (copy) + logout. Errors are
-  shown only via `safeAuthErrorMessage`. Nothing is logged.
+  login (Friend ID) / signup (invite code → generates & displays the Friend ID),
+  signed-in shows the user's own UID (copy) + logout. The invite error is the
+  specific `招待コードが正しくありません`; all other errors go through
+  `safeAuthErrorMessage`. Nothing is logged.
 - `mountModernAuth.jsx` — lazy mount; `src/main.js` loads it (separate chunk)
   only when enabled, falling back to the legacy app on any failure.
 
-### How to enable (opt-in)
+### How to enable (opt-in) + sign up
 
 - URL query: `…/?oriexModernAuth=1`
 - URL hash: `…/#modern-auth`
 - localStorage: `localStorage.setItem("oriexModernAuth", "1")` (clear it to disable)
+
+To sign up while testing, enter the **test invite code `ORIX-TEST`** + a password
+(≥ 6 chars). A Friend ID is generated and shown — use that Friend ID + the same
+password to log in next time.
 
 With the flag absent (the default), `main.js` boots the legacy app exactly as
 before. Firestore Rules are unchanged; deploying nothing is required. The #21

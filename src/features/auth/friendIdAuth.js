@@ -44,6 +44,31 @@ export function validateFriendIdFormat(id) {
 }
 
 /**
+ * Generate a fresh random Friend ID (a new user does NOT type one — it is the
+ * system-assigned public handle, matching the legacy generator). Always returns a
+ * value that passes validateFriendIdFormat. Uses the crypto RNG when available.
+ *
+ * NOTE: uniqueness is not checked here. On the (rare) collision, the downstream
+ * createUserWithEmailAndPassword fails with auth/email-already-in-use and the
+ * caller surfaces a safe "already registered" message / retries. A production
+ * cutover should add a real uniqueness check.
+ * @returns {string}
+ */
+export function generateFriendId() {
+  const n = FRIEND_ID_LENGTH;
+  let bytes = null;
+  if (typeof globalThis !== "undefined" && globalThis.crypto && globalThis.crypto.getRandomValues) {
+    bytes = globalThis.crypto.getRandomValues(new Uint32Array(n));
+  }
+  let out = "";
+  for (let i = 0; i < n; i++) {
+    const r = bytes ? bytes[i] : Math.floor(Math.random() * 0xffffffff);
+    out += FRIEND_ID_ALPHABET[r % FRIEND_ID_ALPHABET.length];
+  }
+  return out;
+}
+
+/**
  * Map a Friend ID to its deterministic internal Firebase Auth email. Normalizes
  * and validates the input first; throws a generic error (never echoing the
  * input) on an invalid Friend ID.

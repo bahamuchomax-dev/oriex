@@ -20,46 +20,61 @@ vi.mock("firebase/firestore", () => ({
 import * as fbAuth from "firebase/auth";
 import * as fs from "firebase/firestore";
 import {
-  signUpWithFriendId,
+  signUpWithInviteCode,
   loginWithFriendId,
   logout,
   assertSafePayload,
 } from "../src/features/auth/modernAuthApi.js";
+import { DEV_INVITE_CODE } from "../src/features/auth/inviteCode.js";
+import { validateFriendIdFormat } from "../src/features/auth/friendIdAuth.js";
 
 const PASSWORD = "s3cret-PLAINTEXT-pw";
 const EMAIL = "2n7422@friend-id.oriex.invalid";
+const EMAIL_RE = /^[a-z0-9]{6}@friend-id\.oriex\.invalid$/;
 
 beforeEach(() => vi.clearAllMocks());
 
-describe("signUpWithFriendId", () => {
-  it("creates a real Auth user keyed by the deterministic internal email", async () => {
-    const res = await signUpWithFriendId({ friendId: " 2n7422 ", password: PASSWORD, name: "太郎" });
-    expect(res).toEqual({ uid: "UID_NEW", shortId: "2N7422" });
-    expect(fbAuth.createUserWithEmailAndPassword).toHaveBeenCalledWith(
-      { __auth: true },
-      EMAIL,
-      PASSWORD,
-    );
+describe("signUpWithInviteCode", () => {
+  it("requires a valid invite code, then creates an Auth user with a GENERATED Friend ID", async () => {
+    const res = await signUpWithInviteCode({ inviteCode: " orix-test ", password: PASSWORD, name: "太郎" });
+    expect(res.uid).toBe("UID_NEW");
+    // the Friend ID is generated (not supplied) and is well-formed
+    expect(validateFriendIdFormat(res.shortId)).toBe(true);
+    // Auth user keyed by the internal email derived from that generated id
+    expect(fbAuth.createUserWithEmailAndPassword).toHaveBeenCalledTimes(1);
+    const [, email, pw] = fbAuth.createUserWithEmailAndPassword.mock.calls[0];
+    expect(email).toMatch(EMAIL_RE);
+    expect(email.split("@")[0]).toBe(res.shortId.toLowerCase());
+    expect(pw).toBe(PASSWORD);
   });
-  it("writes the owner profile + public card but NEVER a password/credential", async () => {
-    await signUpWithFriendId({ friendId: "2N7422", password: PASSWORD });
+  it("writes the owner profile + public card but NEVER a password / invite code / credential", async () => {
+    await signUpWithInviteCode({ inviteCode: DEV_INVITE_CODE, password: PASSWORD });
     const payloads = fs.setDoc.mock.calls.map((c) => c[1]);
     expect(payloads.length).toBe(2);
     for (const p of payloads) {
-      for (const forbidden of ["password", "passwordHash", "token", "credential", "isTeacher", "role", "answer"]) {
+      for (const forbidden of ["password", "passwordHash", "token", "credential", "inviteCode", "isTeacher", "role", "answer"]) {
         expect(Object.keys(p)).not.toContain(forbidden);
       }
     }
-    // the password value never reaches any Firestore call
-    expect(JSON.stringify(fs.setDoc.mock.calls)).not.toContain(PASSWORD);
+    // neither the password nor the invite code value reaches any Firestore call
+    const flat = JSON.stringify(fs.setDoc.mock.calls);
+    expect(flat).not.toContain(PASSWORD);
+    expect(flat).not.toContain(DEV_INVITE_CODE);
     // writes only the user's own docs
     const paths = fs.doc.mock.calls.map((c) => c.slice(1).join("/"));
     expect(paths).toContain("users/UID_NEW/profile/main");
     expect(paths).toContain("public/data/customApp/UID_NEW");
   });
-  it("rejects an invalid Friend ID before any Auth/Firestore call", async () => {
-    await expect(signUpWithFriendId({ friendId: "bad!", password: PASSWORD })).rejects.toThrow(
-      /invalid-friend-id/,
+  it("accepts case/space/hyphen/full-width variants of the invite code", async () => {
+    for (const code of ["orix-test", "ORIX TEST", "ＯＲＩＸ－ＴＥＳＴ"]) {
+      vi.clearAllMocks();
+      await signUpWithInviteCode({ inviteCode: code, password: PASSWORD });
+      expect(fbAuth.createUserWithEmailAndPassword).toHaveBeenCalledTimes(1);
+    }
+  });
+  it("rejects an invalid invite code before any Auth/Firestore call", async () => {
+    await expect(signUpWithInviteCode({ inviteCode: "WRONG", password: PASSWORD })).rejects.toThrow(
+      /invalid-invite-code/,
     );
     expect(fbAuth.createUserWithEmailAndPassword).not.toHaveBeenCalled();
     expect(fs.setDoc).not.toHaveBeenCalled();

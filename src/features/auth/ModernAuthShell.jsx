@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { signUpWithFriendId, loginWithFriendId, logout } from "./modernAuthApi.js";
+import { signUpWithInviteCode, loginWithFriendId, logout } from "./modernAuthApi.js";
 import { subscribeAuth, currentAuthUser } from "./modernAuthState.js";
 import { safeAuthErrorMessage } from "./friendIdAuth.js";
+import { validateInviteCode, DEV_INVITE_CODE } from "./inviteCode.js";
 import { copyUserId, isCopyableUid } from "../profile/copyUserId.js";
 
 /* ============================================================
@@ -19,11 +20,13 @@ export default function ModernAuthShell() {
   const [ready, setReady] = useState(false);
   const [mode, setMode] = useState("login"); // "login" | "signup"
   const [friendId, setFriendId] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [idCopied, setIdCopied] = useState(false);
+  const [generatedFriendId, setGeneratedFriendId] = useState("");
 
   useEffect(() => {
     // Ongoing source of truth: restores a persisted session on mount (reload)
@@ -42,7 +45,14 @@ export default function ModernAuthShell() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        await signUpWithFriendId({ friendId, password, name });
+        // Specific, safe feedback before hitting Firebase. The invite code is a
+        // TEST-ONLY gate; it is never written to Firestore and never logged.
+        if (!validateInviteCode(inviteCode)) {
+          setError("招待コードが正しくありません");
+          return;
+        }
+        const { shortId } = await signUpWithInviteCode({ inviteCode, password, name });
+        setGeneratedFriendId(shortId); // a Friend ID is GENERATED, not typed
       } else {
         await loginWithFriendId({ friendId, password });
       }
@@ -95,6 +105,14 @@ export default function ModernAuthShell() {
         <main className="app-main" style={{ display: "grid", placeItems: "center" }}>
           <div className="feature-placeholder" style={{ textAlign: "center", maxWidth: 360 }}>
             <h2 style={{ color: "var(--accent)" }}>ログイン中</h2>
+            {generatedFriendId && (
+              <p style={{ fontSize: 14 }}>
+                あなたのフレンドID:{" "}
+                <strong style={{ fontFamily: "monospace" }}>{generatedFriendId}</strong>
+                <br />
+                次回のログインに使います。お控えください。
+              </p>
+            )}
             <div className="rx-pid">
               ID: {user.uid}
               {isCopyableUid(user.uid) && (
@@ -129,16 +147,33 @@ export default function ModernAuthShell() {
           <h2 style={{ color: "var(--accent)", textAlign: "center" }}>
             Oriex {mode === "signup" ? "新規登録" : "ログイン"}
           </h2>
-          <label>
-            フレンドID
-            <input
-              className="rx-tf"
-              value={friendId}
-              onChange={(e) => setFriendId(e.target.value)}
-              autoComplete="username"
-              placeholder="例: 2N7422"
-            />
-          </label>
+          {mode === "login" && (
+            <label>
+              フレンドID
+              <input
+                className="rx-tf"
+                value={friendId}
+                onChange={(e) => setFriendId(e.target.value)}
+                autoComplete="username"
+                placeholder="例: 2N7422"
+              />
+            </label>
+          )}
+          {mode === "signup" && (
+            <label>
+              招待コード
+              <input
+                className="rx-tf"
+                value={inviteCode}
+                onChange={(e) => setInviteCode(e.target.value)}
+                placeholder="招待コードを入力"
+              />
+              <small style={{ display: "block", color: "var(--text-muted)", fontSize: 11, marginTop: 4 }}>
+                ※テスト用招待コード（開発のみ・機密ではありません）：<code>{DEV_INVITE_CODE}</code>
+                。本番では別の招待方式に置き換えます。
+              </small>
+            </label>
+          )}
           {mode === "signup" && (
             <label>
               表示名（任意）
