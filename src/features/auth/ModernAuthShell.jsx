@@ -3,6 +3,7 @@ import { signUpWithInviteCode, loginWithFriendId, logout } from "./modernAuthApi
 import { subscribeAuth, currentAuthUser } from "./modernAuthState.js";
 import { safeAuthErrorMessage } from "./friendIdAuth.js";
 import { validateInviteCode, DEV_INVITE_CODE } from "./inviteCode.js";
+import { CUTOVER_TITLE, CUTOVER_LINES, SIGNUP_NEW_FRIEND_ID_NOTE } from "./cutoverCopy.js";
 import { copyUserId, isCopyableUid } from "../profile/copyUserId.js";
 
 /* ============================================================
@@ -153,6 +154,25 @@ export default function ModernAuthShell() {
           <h2 style={{ color: "var(--accent)", textAlign: "center" }}>
             Oriex {mode === "signup" ? "新規登録" : "ログイン"}
           </h2>
+          <section
+            className="rx-notice"
+            aria-label="ログイン方式の変更について"
+            style={{
+              fontSize: 12,
+              lineHeight: 1.5,
+              padding: "8px 10px",
+              marginBottom: 12,
+              borderRadius: 8,
+              background: "var(--surface-2, rgba(0,0,0,0.04))",
+            }}
+          >
+            <strong>{CUTOVER_TITLE}</strong>
+            {CUTOVER_LINES.map((line) => (
+              <p key={line} style={{ margin: "4px 0 0" }}>
+                {line}
+              </p>
+            ))}
+          </section>
           {mode === "login" && (
             <label>
               フレンドID
@@ -179,6 +199,11 @@ export default function ModernAuthShell() {
                 。本番では別の招待方式に置き換えます。
               </small>
             </label>
+          )}
+          {mode === "signup" && (
+            <p style={{ fontSize: 12, color: "var(--text-muted)", margin: "0 0 4px" }}>
+              {SIGNUP_NEW_FRIEND_ID_NOTE}
+            </p>
           )}
           {mode === "signup" && (
             <label>
