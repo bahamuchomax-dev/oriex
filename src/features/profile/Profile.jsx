@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { currentUid } from "../../services/firebase/client.js";
+import { copyUserId, isCopyableUid } from "./copyUserId.js";
 import * as profiles from "../../services/repository/profileRepository.js";
 import {
   compressAvatarToBlob,
@@ -40,6 +41,7 @@ export default function Profile({ uid = currentUid(), stats = [], onBack }) {
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [idCopied, setIdCopied] = useState(false);
   const fileRef = useRef(null);
   const urlRef = useRef(null);
 
@@ -152,6 +154,14 @@ export default function Profile({ uid = currentUid(), stats = [], onBack }) {
     setSaved(true);
   };
 
+  // Copy the user's OWN uid only (read-only; never tokens/claims/role/credential).
+  const onCopyId = async () => {
+    if (await copyUserId(profileUid)) {
+      setIdCopied(true);
+      window.setTimeout(() => setIdCopied(false), 1500);
+    }
+  };
+
   return (
     <div className="rx-mp">
       {onBack && <button className="rx-back" onClick={onBack}>戻る</button>}
@@ -184,7 +194,20 @@ export default function Profile({ uid = currentUid(), stats = [], onBack }) {
             {profile.bio}
           </div>
         )}
-        <div className="rx-pid">ID: {profileUid || "未ログイン"}</div>
+        <div className="rx-pid">
+          ID: {profileUid || "未ログイン"}
+          {isCopyableUid(profileUid) && (
+            <button
+              type="button"
+              className="rx-mini"
+              onClick={onCopyId}
+              aria-label="ユーザーIDをコピー"
+              style={{ marginLeft: 8 }}
+            >
+              {idCopied ? "コピーしました" : "コピー"}
+            </button>
+          )}
+        </div>
 
         {stats.length > 0 && (
           <div className="rx-stats">
