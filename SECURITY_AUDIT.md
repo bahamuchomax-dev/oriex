@@ -111,6 +111,25 @@ does not provision the emulator reliably here.
 - Expectation: in CI, `security:scan` and `build` now run (and pass) before the
   pre-existing `test`/`lint` failures are reached.
 
+## onSnapshot guardrail (Phase 3 — resolved)
+
+The `firebaseSecurity.test.js` "no onSnapshot" guardrail was too broad: it
+matched the word `onSnapshot` anywhere (including comments that say "No
+onSnapshot") and forbade all realtime listeners, while the app intentionally
+uses two scoped, bounded, screen-open-only listeners:
+
+- `src/features/dm/dmApi.js` — `subscribeMessages` (single DM thread,
+  `limit(100)`, returns unsubscribe).
+- `src/features/plans/plansApi.js` — `subscribeMyPlans` (student's OWN
+  weeklyPlans only, `limit(50)`, returns unsubscribe; no login-time/global
+  listeners).
+
+The guardrail was made explicit (not weakened): it now detects real
+`onSnapshot(` calls (so comments no longer false-trigger) and allows ONLY those
+two documented files via a narrow allowlist; any new/other onSnapshot call still
+fails the test. Full suite is green (429 passing). No DM/plans feature code was
+changed; the listeners were already own-/thread-scoped and bounded.
+
 ## Next steps (separate PRs)
 
 - Optionally remove `@mlc-ai/web-llm` and the PoC engine code entirely if the

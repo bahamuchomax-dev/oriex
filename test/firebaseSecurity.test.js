@@ -131,8 +131,21 @@ describe("read-pattern guardrails in the React source", () => {
     return acc;
   }
 
-  it("does not introduce onSnapshot anywhere in src (excluding legacy)", () => {
-    const hits = walk("src").filter((p) => /\bonSnapshot\b/.test(readFileSync(p, "utf8")));
+  it("does not introduce unsanctioned onSnapshot listeners in src (excluding legacy)", () => {
+    // Realtime listeners are banned by default (no login-time / global / broad
+    // listeners). The ONLY sanctioned onSnapshot calls are the scoped, bounded,
+    // screen-open-only subscriptions below — each is own-/thread-scoped, uses a
+    // limit(), and returns an unsubscribe. Any NEW onSnapshot call in any other
+    // file (or a broadening of these) must fail this test.
+    const ALLOWED = new Set([
+      "src/features/dm/dmApi.js", // subscribeMessages: single DM thread, limit(100), unsubscribe
+      "src/features/plans/plansApi.js", // subscribeMyPlans: own weeklyPlans, limit(50), unsubscribe
+    ]);
+    // Match actual calls (`onSnapshot(`), not comments that merely mention it.
+    const hits = walk("src")
+      .map((p) => p.replace(/\\/g, "/"))
+      .filter((p) => /\bonSnapshot\s*\(/.test(readFileSync(p, "utf8")))
+      .filter((p) => !ALLOWED.has(p));
     expect(hits).toEqual([]);
   });
 
