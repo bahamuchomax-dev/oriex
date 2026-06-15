@@ -83,6 +83,14 @@ To sign up while testing, enter the **test invite code `ORIX-TEST`** + a passwor
 (≥ 6 chars). A Friend ID is generated and shown — use that Friend ID + the same
 password to log in next time.
 
+> **Required Firebase Console setup (not a code/rules change):** the
+> Email/Password provider must be enabled, or `accounts:signUp` returns
+> `400 OPERATION_NOT_ALLOWED` and signup shows
+> "Firebase Authentication のメール/パスワードログインが有効になっていません。".
+> Enable it at **Firebase Console → Authentication → Sign-in method →
+> Email/Password → Enable**. This is a console setting only — it is **not** a
+> Firestore Rules change and requires no deploy from this repo.
+
 With the flag absent (the default), `main.js` boots the legacy app exactly as
 before. Firestore Rules are unchanged; deploying nothing is required. The #21
 rules hardening remains blocked until the migration is complete.

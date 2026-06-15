@@ -109,3 +109,19 @@ describe("modern auth — invite-code signup gate", () => {
     expect(INV).toMatch(/NOT A SECURITY BOUNDARY/);
   });
 });
+
+describe("modern auth — signup error handling is mode-aware + pre-validated", () => {
+  it("passes the mode to safeAuthErrorMessage (signup failures avoid login text)", () => {
+    expect(SHELL).toMatch(/safeAuthErrorMessage\(\s*err\s*,\s*mode === "signup" \? "signup" : "login"\s*\)/);
+  });
+  it("blocks a too-short password before any Firebase Auth call", () => {
+    expect(SHELL).toMatch(/password\.length < 6/);
+    expect(SHELL).toContain("パスワードは6文字以上にしてください。");
+  });
+  it("maps the provider-not-enabled error (no rules change — a console setting)", () => {
+    const FRIEND = readFileSync("src/features/auth/friendIdAuth.js", "utf8");
+    expect(FRIEND).toMatch(/operation-not-allowed/);
+    expect(FRIEND).toMatch(/OPERATION_NOT_ALLOWED/);
+    expect(FRIEND).toMatch(/メール\/パスワードログインが有効になっていません/);
+  });
+});
