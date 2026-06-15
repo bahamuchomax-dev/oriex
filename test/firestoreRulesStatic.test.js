@@ -221,7 +221,7 @@ describe("firestore.rules — legacy profile/main authority lockdown", () => {
   });
 });
 
-describe("firestore.rules — legacy weeklyPlans scoping", () => {
+describe("firestore.rules — weeklyPlans scoping + student progress-only updates", () => {
   const b = block("/users/{u}/weeklyPlans/{planId}");
   it("read is not public; limited to self/admin/assigned teacher", () => {
     const r = clause(b, "read");
@@ -229,24 +229,54 @@ describe("firestore.rules — legacy weeklyPlans scoping", () => {
     expect(r).toContain("teaches(u)");
     expect(r).not.toContain("if signedIn()");
   });
-  it("teacher writes are bound to teacherUid == request.auth.uid", () => {
-    expect(clause(b, "create, update")).toContain(
-      "request.resource.data.teacherUid == request.auth.uid",
-    );
+  it("create is teacher/admin only (no student create); teacher bound + answer-free", () => {
+    const c = clause(b, "create").split(";")[0]; // condition only, excluding comments
+    expect(c).toContain("request.resource.data.teacherUid == request.auth.uid");
+    expect(c).toContain("request.resource.data.studentUid == u");
+    expect(c).toContain("noAnswerFields()");
+    expect(c).not.toContain("isSelf(u)"); // students cannot create a plan
+  });
+  it("student update is progress-only; teacher update stays bound + answer-free", () => {
+    const u = clause(b, "update");
+    expect(u).toContain("isSelf(u) && studentProgressOnly()");
+    expect(u).toContain("resource.data.teacherUid == request.auth.uid");
+    expect(u).toContain("noAnswerFields()");
   });
 });
 
-describe("firestore.rules — legacy sentPlans student mirror bound to studentUid", () => {
+describe("firestore.rules — sentPlans student mirror is progress-only", () => {
   const b = block("/users/{u}/sentPlans/{planId}");
-  it("student update requires studentUid == self (existing and new)", () => {
+  it("student update only for own plan (studentUid==self) and progress-only", () => {
     const u = clause(b, "update");
     expect(u).toContain("resource.data.studentUid == request.auth.uid");
-    expect(u).toContain("request.resource.data.studentUid == request.auth.uid");
+    expect(u).toContain("studentProgressOnly()");
   });
-  it("create is teacher/admin only (no student create path)", () => {
-    const c = clause(b, "create");
+  it("create is teacher/admin only (no student create) and answer-free", () => {
+    // condition only (up to the first ';'), excluding any following comment text
+    const c = clause(b, "create").split(";")[0];
     expect(c).toContain("isSelf(u)");
-    expect(c).not.toContain("studentUid");
+    expect(c).toContain("noAnswerFields()");
+    expect(c).not.toContain("studentUid"); // no student create path
+  });
+});
+
+describe("firestore.rules — studentProgressOnly whitelists progress fields only", () => {
+  const fn = RULES.match(/function studentProgressOnly\(\)[\s\S]*?\}/)[0];
+  it("uses hasOnly with the progress field set", () => {
+    expect(fn).toMatch(/affectedKeys\(\)[\s\S]*hasOnly\(\[/);
+    for (const f of ["items", "overallProgress", "bookProgress", "updatedAt"]) {
+      expect(fn).toContain("'" + f + "'");
+    }
+  });
+  it("never allows teacher-content / ownership / authority / answer fields", () => {
+    for (const f of [
+      "title", "body", "tasks", "subject", "dueDate", "createdAt",
+      "teacherUid", "studentUid", "teacherId", "userId",
+      "role", "isTeacher", "admin", "claims", "permissions",
+      "answer", "correctAnswer", "explanation", "solution", "answerKey",
+    ]) {
+      expect(fn).not.toContain("'" + f + "'");
+    }
   });
 });
 
