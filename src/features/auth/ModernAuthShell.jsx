@@ -6,6 +6,7 @@ import { validateInviteCode } from "./inviteCode.js";
 import { CUTOVER_TITLE, CUTOVER_LINES, SIGNUP_NEW_FRIEND_ID_NOTE } from "./cutoverCopy.js";
 import { copyUserId, isCopyableUid } from "../profile/copyUserId.js";
 import OriexMark from "./OriexMark.jsx";
+import SignupIconPicker from "./SignupIconPicker.jsx";
 import { APP_VERSION_LABEL } from "../../appVersion.js";
 import "./authScreen.css";
 
@@ -40,6 +41,8 @@ export default function ModernAuthShell({ onAuthed } = {}) {
   const [inviteCode, setInviteCode] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  // Account icon chosen on the signup screen: emoji+color OR a small cropped photo.
+  const [icon, setIcon] = useState({ avatar: "", color: "", photo: "" });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [idCopied, setIdCopied] = useState(false);
@@ -79,7 +82,14 @@ export default function ModernAuthShell({ onAuthed } = {}) {
           setError("パスワードは6文字以上にしてください。");
           return;
         }
-        const { shortId } = await signUpWithInviteCode({ inviteCode, password, name });
+        const { shortId } = await signUpWithInviteCode({
+          inviteCode,
+          password,
+          name,
+          avatar: icon.avatar,
+          color: icon.color,
+          photo: icon.photo,
+        });
         setGeneratedFriendId(shortId); // a Friend ID is GENERATED, not typed
       } else {
         await loginWithFriendId({ friendId, password });
@@ -242,6 +252,13 @@ export default function ModernAuthShell({ onAuthed } = {}) {
                 autoComplete="nickname"
               />
             </label>
+          )}
+
+          {mode === "signup" && (
+            <div className="ox-auth-field">
+              <span className="ox-auth-label">アイコン</span>
+              <SignupIconPicker onChange={setIcon} />
+            </div>
           )}
 
           <label className="ox-auth-field">
