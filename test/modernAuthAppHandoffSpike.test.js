@@ -8,10 +8,10 @@ const MAIN = readFileSync("src/main.js", "utf8");
 const CLIENT = readFileSync("src/services/firebase/client.js", "utf8");
 const DOC = "MODERN_AUTH_APP_HANDOFF_SPIKE.md";
 
-describe("spike baseline — default boot is still legacy (no handoff yet)", () => {
-  it("main.js boots the legacy bundle by default (final else)", () => {
-    expect(MAIN).toContain("legacy/oriex-app.bundle.js");
-    expect(MAIN).toMatch(/}\s*else\s*{\s*startLegacyApp\(\);\s*}/);
+describe("spike baseline — modern cutover is now the default boot", () => {
+  it("main.js mounts the modern cutover by default (final else → startModernCutover)", () => {
+    expect(MAIN).toContain("legacy/oriex-app.bundle.js"); // still imported (fallback)
+    expect(MAIN).toMatch(/} else \{[\s\S]*?startModernCutover\(\);/);
   });
   it("the modern shell only mounts behind the opt-in gate (not default)", () => {
     expect(MAIN).toMatch(/isModernAuthEnabled\(oriexLocation\)/);

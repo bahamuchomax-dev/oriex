@@ -24,10 +24,14 @@
 It does **not** read/reuse any old password, does **not** read `profile/main`
 for auth, does **not** write a password to Firestore, and changes **no** rules.
 
-## ⛔ Why the default login is NOT flipped here (key finding)
+## (HISTORICAL — now resolved) Why the default login was NOT flipped at first
 
-Making modern auth the default is **blocked by an app-architecture gap, not just
-a flag**: the modern shell (`ModernAuthShell.jsx`) is an **auth-only screen** —
+> **SUPERSEDED:** the app-architecture gap below was the post-login handoff, which
+> has since been solved (legacy-path profile + localStorage seed). The default IS
+> now the modern cutover — see "DEFAULT FLIP" near the end of this doc.
+
+Making modern auth the default was once **blocked by an app-architecture gap, not
+just a flag**: the modern shell (`ModernAuthShell.jsx`) is an **auth-only screen** —
 after sign-in it shows "ログイン中" + the user's UID, and nothing else. The actual
 Oriex app is still the **legacy bundle** (`src/main.js` boots
 `src/legacy/oriex-app.bundle.js`); the modern React app (`src/App.jsx`) is the
@@ -153,8 +157,65 @@ The default-flip is a separate future PR; this PR does NOT flip it.
 the legacy plaintext-`password` writes are removed, `npm run test:rules` passes,
 and deploy is explicitly approved. Nothing here merges or deploys #21.
 
+## DEFAULT FLIP — modern cutover is now the default login (app-only)
+
+Decision (v1): the **normal URL uses the modern Firebase Auth cutover by default**.
+Existing users **re-register** with a new Friend ID (no old-data continuity yet;
+old passwords are compromised and never reused). No Firestore Rules change, no
+deploy, no `#21`.
+
+### Exact URL behavior (after this PR)
+
+- `/`, `/oriex/`, and any **no-flag** visit → **modern cutover**: modern
+  login/signup → ensure the user's own legacy profile → seed the legacy local
+  session → import the (unedited) legacy bundle → Oriex home. The returning-user
+  cutover message (`cutoverCopy.js`) is shown on the signed-out screen.
+- `?oriexModernCutover=1` → same modern cutover (it falls through to the default).
+- `?oriexAuthBridge=1` → developer probe (diagnostic), unchanged.
+- `?oriexModernAuth=1` → the standalone modern auth shell (opt-in), unchanged.
+- **`?oriexLegacyFallback=1` / `#legacy-fallback` / `localStorage.oriexLegacyFallback=1`
+  → the OLD legacy app.** ⚠️ Emergency admin/dev only; it still exposes the unsafe
+  plaintext login. Temporary; remove once the legacy login is retired.
+
+The old legacy plaintext login is **no longer the default** for anyone.
+
+### Rollback
+
+- **App rollback:** `git revert` this PR (and re-publish via the normal Pages
+  flow). That restores legacy-as-default. **Never** roll back by loosening rules,
+  re-opening `profile/main`, or restoring `allow read, write: if true`.
+- **Interim:** an admin can reach the old app via `?oriexLegacyFallback=1` without
+  a revert (emergency only).
+
+### Manual QA checklist (REQUIRED before/after publishing — not automatable here)
+
+There is **no browser E2E tooling** in this repo (no Playwright/Puppeteer) and no
+Java for `npm run test:rules`, so the items below MUST be checked by hand on a
+real device. Code-level tests prove the routing + handoff wiring + no-password
+writes, but cannot prove the live Oriex home renders.
+
+- Normal URL shows the modern cutover login (with the cutover message).
+- Signup (test invite `ORIX-TEST` + throwaway password) creates a Firebase Auth
+  user; a new Friend ID is issued and shown.
+- Logout returns to the login screen; re-login reaches **Oriex home without a
+  manual reload**.
+- Reload while signed in stays on **Oriex home**.
+- `users/{uid}/profile/main`, the artifacts legacy profile, and `customApp` have
+  **no `password` field**; no permission-denied in the console.
+- The old legacy login does **not** appear by default; `?oriexLegacyFallback=1`
+  still reaches it (admin only).
+
+### What remains blocked / out of scope
+
+- **`#21` (`noSecretFields()`) stays draft/blocked and is NOT deployed.** It can be
+  considered only after: (1) the modern default is stable in production, (2) the
+  legacy plaintext-`password` writes are removed/retired, (3) `npm run test:rules`
+  passes (needs Java), and (4) explicit deploy approval.
+- No Firestore Rules change; no Firebase deploy; existing-user data continuity
+  (teacher/admin-mediated) is a later effort.
+
 ## Next concrete step
 
-Broader manual QA of `?oriexModernCutover=1`; then decide the default-flip (a
-separate PR with the cutover message + explicit deploy approval). Until then keep
-it opt-in, do not change rules, do not deploy, and keep #21 blocked.
+Manual QA the default cutover on the published Pages site (checklist above). If a
+problem appears, use `git revert` (or `?oriexLegacyFallback=1` for emergency
+access) — never loosen rules. Keep `#21` blocked until its prerequisites are met.

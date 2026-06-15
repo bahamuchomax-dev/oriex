@@ -46,9 +46,11 @@ import { isModernAuthEnabled } from "./features/auth/modernAuthRoute.js";
 // Opt-in developer probe for the modern-auth → legacy handoff (NOT a feature,
 // NOT the default login). Tiny pure matcher; off unless explicitly requested.
 import { isAuthBridgeEnabled } from "./features/auth/authBridgeRoute.js";
-// Opt-in production-like cutover: modern Firebase Auth → real legacy app (no debug
-// overlay). NOT the default login. Tiny pure matcher; off unless requested.
-import { isModernCutoverEnabled } from "./features/auth/cutoverRoute.js";
+// The modern Firebase Auth cutover is now the DEFAULT login (see cutoverRoute.js
+// for the still-supported explicit ?oriexModernCutover=1 flag).
+// Emergency admin/dev fallback to the OLD legacy app (unsafe plaintext login) —
+// reachable ONLY via this explicit flag. Tiny pure matcher; off unless requested.
+import { isLegacyFallbackEnabled } from "./features/auth/legacyFallbackRoute.js";
 
 // The application. Currently the original production build. Screens are being
 // peeled out of here into src/features/*. The legacy bundle self-mounts the
@@ -60,14 +62,12 @@ function startLegacyApp() {
   );
 }
 
-const oriexLocation = typeof window !== "undefined" ? window.location : null;
-
-if (oriexLocation && isModernCutoverEnabled(oriexLocation)) {
-  // Opt-in cutover (?oriexModernCutover=1): modern Firebase Auth login/signup,
-  // then a clean handoff into the real legacy app (no debug overlay). Separate
-  // lazy chunk; on any failure, fall back to legacy so a normal visit (flag
-  // absent) is never affected. NOT the default login.
-  import("./features/auth/mountModernCutover.jsx")
+// DEFAULT login path: modern Firebase Auth cutover — login/signup, ensure the
+// user's own legacy profile, seed the legacy local session, then import the
+// (unedited) legacy app and show Oriex home. Separate lazy chunk; on any failure
+// it falls back to the legacy app so a normal visit is never left blank.
+function startModernCutover() {
+  return import("./features/auth/mountModernCutover.jsx")
     .then((mod) => {
       if (typeof mod.mountModernCutover === "function") mod.mountModernCutover();
       else startLegacyApp();
@@ -76,6 +76,15 @@ if (oriexLocation && isModernCutoverEnabled(oriexLocation)) {
       console.warn("[oriex] modern cutover failed to load", err);
       startLegacyApp();
     });
+}
+
+const oriexLocation = typeof window !== "undefined" ? window.location : null;
+
+if (oriexLocation && isLegacyFallbackEnabled(oriexLocation)) {
+  // ⚠️ EMERGENCY admin/dev fallback (?oriexLegacyFallback=1) to the OLD legacy app,
+  // which still has the unsafe plaintext login. Temporary, NOT a recommended user
+  // path; remove once the legacy login is retired. Changes no Firestore Rules.
+  startLegacyApp();
 } else if (oriexLocation && isAuthBridgeEnabled(oriexLocation)) {
   // Opt-in developer probe (?oriexAuthBridge=1). Mounts the bridge probe instead
   // of the normal app; it signs in via modern auth then starts legacy to observe
@@ -130,7 +139,11 @@ if (oriexLocation && isModernCutoverEnabled(oriexLocation)) {
       startLegacyApp();
     });
 } else {
-  startLegacyApp();
+  // DEFAULT: the modern Firebase Auth cutover (includes the explicit
+  // ?oriexModernCutover=1 flag, which simply falls through to here). The old
+  // legacy plaintext login is no longer the default — use ?oriexLegacyFallback=1
+  // for emergency admin/dev access only.
+  startModernCutover();
 }
 
 // Local AI (Ollama only) UI is temporarily paused. Keep the implementation in

@@ -49,23 +49,25 @@ describe("isModernCutoverEnabled — URL or localStorage opt-in", () => {
   });
 });
 
-describe("main.js wiring — cutover is opt-in; default boot stays legacy", () => {
-  it("imports the gate and mounts the cutover only when enabled", () => {
-    expect(MAIN).toContain('from "./features/auth/cutoverRoute.js"');
-    expect(MAIN).toMatch(/isModernCutoverEnabled\(oriexLocation\)/);
+describe("main.js wiring — modern cutover is the DEFAULT; legacy is emergency-only", () => {
+  it("mounts the modern cutover by default (final else → startModernCutover)", () => {
     expect(MAIN).toContain('import("./features/auth/mountModernCutover.jsx")');
+    expect(MAIN).toMatch(/} else \{[\s\S]*?startModernCutover\(\);/);
   });
-  it("falls back to legacy if the cutover fails to load", () => {
-    const branch = MAIN.slice(
-      MAIN.indexOf("isModernCutoverEnabled(oriexLocation)"),
-      MAIN.indexOf("isAuthBridgeEnabled(oriexLocation)"),
+  it("startModernCutover falls back to legacy only if the cutover chunk fails to load", () => {
+    const fn = MAIN.slice(
+      MAIN.indexOf("function startModernCutover"),
+      MAIN.indexOf("const oriexLocation"),
     );
-    expect(branch).toContain("startLegacyApp()");
+    expect(fn).toContain("startLegacyApp()");
   });
-  it("keeps the debug probe (?oriexAuthBridge=1) available and legacy as default", () => {
+  it("the old legacy login is no longer the default — reachable ONLY via the emergency flag", () => {
+    expect(MAIN).toContain('from "./features/auth/legacyFallbackRoute.js"');
+    expect(MAIN).toMatch(/isLegacyFallbackEnabled\(oriexLocation\)/);
+    // the no-flag path must NOT directly start the legacy app
+    expect(MAIN).not.toMatch(/} else \{\s*startLegacyApp\(\);\s*}/);
+    // the debug probe stays available
     expect(MAIN).toContain("isAuthBridgeEnabled(oriexLocation)");
-    expect(MAIN).toContain("legacy/oriex-app.bundle.js");
-    expect(MAIN).toMatch(/}\s*else\s*{\s*startLegacyApp\(\);\s*}/);
   });
 });
 
@@ -150,9 +152,11 @@ describe("cutover plan doc — manual PASS + flag + #21 recorded", () => {
     expect(doc).toMatch(/How to test/i);
     expect(doc).toMatch(/oriexAuthBridge/); // debug probe still documented/available
   });
-  it("documents when it can become default and keeps #21 blocked", () => {
-    expect(doc).toMatch(/become the default|default-flip/i);
+  it("documents the DEFAULT FLIP, the emergency fallback, and keeps #21 blocked", () => {
+    expect(doc).toMatch(/DEFAULT FLIP|default login/i);
+    expect(doc).toContain("oriexLegacyFallback"); // emergency fallback documented
     expect(doc).toMatch(/#21/);
-    expect(doc).toMatch(/NOT flip|not the default|do not flip/i);
+    expect(doc).toMatch(/blocked|not deployed|not be deployed/i);
+    expect(doc).toMatch(/git revert/i); // rollback documented
   });
 });
