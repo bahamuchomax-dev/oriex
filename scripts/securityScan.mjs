@@ -1,6 +1,9 @@
-#!/usr/bin/env node
 /* ============================================================
  * securityScan.mjs — GitHub 公開前の「秘密情報混入」チェック
+ * (Run via `node scripts/securityScan.mjs` / `npm run security:scan`.
+ *  No shebang: a leading `#!` is not stripped by Vitest's vite-node
+ *  transform when this file is imported by a test, which produced a
+ *  spurious "SyntaxError: Invalid or unexpected token".)
  * ------------------------------------------------------------
  * 目的: リポジトリに本物の秘密鍵 / Service Account JSON / 外部AIキー等が
  *       混入しにくくする。`npm run security:scan` で実行。

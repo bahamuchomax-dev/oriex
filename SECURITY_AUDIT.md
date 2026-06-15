@@ -91,6 +91,26 @@ does not provision the emulator reliably here.
   These are out of scope for a minimal security PR and are documented here rather
   than "fixed to make CI pass" (and no tests were removed).
 
+## PR #2 CI follow-up (Phase 2A)
+
+- CI step order was changed so `security:scan` and `build` run **before**
+  `test` and `lint` (`.github/workflows/ci.yml`). The security checks now
+  execute in CI even though the pre-existing legacy `lint`/`test` debt can still
+  fail later in the run. No steps were removed; lint/test were not weakened.
+- The pre-existing `secretScanStatic.test.js` failure was fixed at its root: the
+  imported `scripts/securityScan.mjs` started with a `#!/usr/bin/env node`
+  shebang. Node and standalone esbuild strip a shebang, but Vitest's vite-node
+  transform did not strip it when the file is imported by a test, so V8 reported
+  a spurious `SyntaxError: Invalid or unexpected token`. The shebang was removed
+  (the script is run via `node scripts/securityScan.mjs`); no assertions, banned
+  patterns, or scan coverage were changed. `secretScanStatic.test.js` now passes
+  (17/17).
+- `lint` remains RED due to ~670 pre-existing issues (unchanged here).
+- The `onSnapshot` guardrail in `firebaseSecurity.test.js` remains RED and is
+  intentionally left for a separate follow-up PR (see remaining risks above).
+- Expectation: in CI, `security:scan` and `build` now run (and pass) before the
+  pre-existing `test`/`lint` failures are reached.
+
 ## Next steps (separate PRs)
 
 - Optionally remove `@mlc-ai/web-llm` and the PoC engine code entirely if the
