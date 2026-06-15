@@ -94,3 +94,20 @@ password to log in next time.
 With the flag absent (the default), `main.js` boots the legacy app exactly as
 before. Firestore Rules are unchanged; deploying nothing is required. The #21
 rules hardening remains blocked until the migration is complete.
+
+## Auth-bridge probe (dev-only — `?oriexAuthBridge=1`)
+
+A developer feasibility **probe** (NOT a feature, NOT the default login) for the
+post-login app handoff (see `MODERN_AUTH_APP_HANDOFF_SPIKE.md`). Behind
+`?oriexAuthBridge=1` / `#auth-bridge-probe` / `localStorage["oriexAuthBridge"]=1`
+it signs in via the modern shell, then **starts the legacy app** (by importing —
+not editing — the bundle) and **observes** whether legacy adopts the same Firebase
+Auth user (`window.__oxUid == auth uid`) and whether the legacy plaintext login
+appears.
+
+- `authBridgeRoute.js` — opt-in gate. `mountAuthBridgeProbe.jsx` — overlay mount
+  (probe UI in `#oriex-bridge-probe`; `#root` is left for legacy).
+  `AuthBridgeProbe.jsx` — the probe + observations banner.
+- It reads/compares **no** password, does **no** Firestore read/write, writes
+  **no** password, and logs nothing sensitive (uid is a non-secret id). Default
+  boot is unchanged; `firestore.rules` unchanged; #21 stays blocked.
