@@ -194,6 +194,23 @@ export default function ModernCutoverBridge() {
     setPhase("signin");
   }, [user]);
 
+  // Legacy flash guard (visual-only): while the cutover is mid-transition, hide
+  // #root so the legacy app can't paint its OLD login underneath the branded
+  // overlay — covering EVERY transition phase (auth resolving, signin, starting/
+  // revealing handoff, controlled reload, logout). The class is removed the moment
+  // the legacy HOME is ready (signed in + "mounted"), so the real app shows. Only
+  // the cutover bridge sets this; the emergency ?oriexLegacyFallback=1 path never
+  // mounts the bridge, so legacy still shows there.
+  useEffect(() => {
+    if (typeof document === "undefined") return undefined;
+    const el = document.documentElement;
+    const covering = !(phase === "mounted" && !!user);
+    el.classList.toggle("ox-cutover-covering", covering);
+    return () => {
+      el.classList.remove("ox-cutover-covering");
+    };
+  }, [phase, user]);
+
   // Logout cover (visual-only): after a handoff, the instant Firebase Auth drops
   // to null (the user signed out), render a branded cover in THIS render rather
   // than null. Otherwise there is one painted frame — auth is null but the logout
