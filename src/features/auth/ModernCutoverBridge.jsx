@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { subscribeAuth, currentAuthUser } from "./modernAuthState.js";
 import { handoffToLegacy } from "./legacyHandoff.js";
+import { clearLegacyLocalSession } from "./legacyLocalSession.js";
+import { consumeCutoverReloadMarker, reloadForCutoverRelogin } from "./cutoverReload.js";
 import ModernAuthShell from "./ModernAuthShell.jsx";
 
 /* ============================================================
@@ -42,6 +44,18 @@ export default function ModernCutoverBridge() {
   const [phase, setPhase] = useState("checking"); // checking | signin | starting | mounted | error
   const startedRef = useRef(false);
   const aliveRef = useRef(true);
+  const lastUidRef = useRef(null);
+  // True once a handoff has completed in THIS page lifecycle. The legacy bundle
+  // self-mounts on its first import and its import is cached, so a second handoff
+  // (post-logout re-login) cannot re-mount it — we reload once instead. Resets on a
+  // real page reload (component unmounts), so each lifecycle reloads at most once.
+  const handedOffOnceRef = useRef(false);
+
+  // Consume any one-time reload marker left by a prior cutover re-login reload, so a
+  // later logout→re-login cycle in a NEW lifecycle can reload again if needed.
+  useEffect(() => {
+    consumeCutoverReloadMarker();
+  }, []);
 
   // The single, IDEMPOTENT handoff trigger. Called from EVERY path that can yield a
   // signed-in user — mount/restore, the auth observer, AND the embedded shell's
@@ -51,8 +65,19 @@ export default function ModernCutoverBridge() {
     if (!u || startedRef.current) return;
     startedRef.current = true;
     setPhase("starting");
+
+    // Second-cycle re-login (cutover login → home → logout → modern login →
+    // re-login) within the SAME page lifecycle: legacy was already imported and
+    // self-mounted, and its cached import is a no-op, so handoffToLegacy cannot
+    // bring it back to home — it would leave the OLD legacy login visible. The
+    // verified path home is a fresh boot with the persisted session, so reload the
+    // same URL ONCE (guarded against loops). The reload re-runs this bridge cold,
+    // where handedOffOnceRef is false again and the normal import path reaches home.
+    if (handedOffOnceRef.current && reloadForCutoverRelogin()) return;
+
     handoffToLegacy(u)
       .then(() => {
+        handedOffOnceRef.current = true;
         if (aliveRef.current) setPhase("mounted");
       })
       .catch(() => {
@@ -93,6 +118,29 @@ export default function ModernCutoverBridge() {
     }
     startHandoff(effectiveUser);
   }, [ready, user, startHandoff]);
+
+  // Logout handling: after a handoff, legacy owns #root and its own logout button
+  // signs out Firebase Auth and would show the OLD legacy login. Detect that
+  // sign-out here, clear the bridge/legacy session, and return to the MODERN login
+  // (its overlay covers legacy). A subsequent modern login re-runs the handoff.
+  useEffect(() => {
+    if (user) {
+      lastUidRef.current = user.uid;
+      return;
+    }
+    if (!startedRef.current) return; // never handed off — resolution effect shows login
+    if (typeof window !== "undefined") {
+      try {
+        window.__oxUid = undefined;
+      } catch {
+        /* ignore */
+      }
+    }
+    clearLegacyLocalSession(lastUidRef.current);
+    lastUidRef.current = null;
+    startedRef.current = false; // allow a fresh handoff on the next login
+    setPhase("signin");
+  }, [user]);
 
   // Legacy now owns #root — render nothing so only the real app shows.
   if (phase === "mounted") return null;
