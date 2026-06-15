@@ -9,6 +9,14 @@ import { readFileSync } from "node:fs";
 const SHELL = readFileSync("src/features/auth/ModernAuthShell.jsx", "utf8");
 const BRIDGE = readFileSync("src/features/auth/ModernCutoverBridge.jsx", "utf8");
 const MARK = readFileSync("src/features/auth/OriexMark.jsx", "utf8");
+const CSS = readFileSync("src/features/auth/authScreen.css", "utf8");
+
+// extract the body of a CSS rule by selector (first match), for style guards
+function cssRule(selector) {
+  const i = CSS.indexOf(selector + " {");
+  if (i < 0) return "";
+  return CSS.slice(i, CSS.indexOf("}", i));
+}
 
 describe("modern auth login — friendly Oriex copy", () => {
   it("shows the Oriex brand and friendly login/signup labels", () => {
@@ -65,6 +73,48 @@ describe("modern auth — brand mark uses the real Oriex app/PWA icon", () => {
     // the old debug-style square placeholder is gone everywhere
     expect(SHELL).not.toContain('ox-auth-logo">O');
     expect(BRIDGE).not.toContain('ox-auth-logo">O');
+  });
+});
+
+describe("modern auth — inputs are clearly visible & mobile-safe", () => {
+  it("auth inputs use the self-sufficient ox-auth-input class (not borderless rx-tf)", () => {
+    // all four possible fields (Friend ID, invite, name, password) use the class
+    expect((SHELL.match(/className="ox-auth-input"/g) || []).length).toBeGreaterThanOrEqual(4);
+    // no longer depends on the legacy .rx-tf whose --line border is undefined here
+    expect(SHELL).not.toContain("rx-tf");
+  });
+  it("ox-auth-input has a visible border, distinct background and a focus ring", () => {
+    const base = cssRule(".ox-auth-input");
+    expect(base).toMatch(/border:\s*1px solid/);
+    expect(base).toMatch(/background:/);
+    const focus = cssRule(".ox-auth-input:focus");
+    expect(focus).toMatch(/box-shadow:/);
+  });
+  it("inputs and buttons are >=16px so mobile (iOS) does not auto-zoom on tap", () => {
+    expect(cssRule(".ox-auth-input")).toMatch(/font-size:\s*16px/);
+    expect(cssRule(".ox-auth-primary")).toMatch(/font-size:\s*16px/);
+    expect(cssRule(".ox-auth-switch-btn")).toMatch(/font-size:\s*16px/);
+  });
+  it("inputs have a comfortable mobile height and no horizontal overflow", () => {
+    const base = cssRule(".ox-auth-input");
+    expect(base).toMatch(/min-height:\s*48px/);
+    expect(base).toMatch(/box-sizing:\s*border-box/);
+    expect(base).toMatch(/width:\s*100%/);
+  });
+});
+
+describe("modern auth — strengthened legacy flash guard (covers all transitions)", () => {
+  it("the bridge toggles the cutover cover class on <html> while transitioning", () => {
+    expect(BRIDGE).toContain("ox-cutover-covering");
+    // covering for every phase except a signed-in, mounted legacy home
+    expect(BRIDGE).toMatch(/!\(phase === "mounted" && !!user\)/);
+  });
+  it("the cover class hides #root (legacy) so its old login can't paint", () => {
+    expect(CSS).toMatch(/html\.ox-cutover-covering #root\s*\{[\s\S]*visibility:\s*hidden/);
+  });
+  it("signup view shares the same Oriex brand mark (no separate debug form)", () => {
+    expect(SHELL).toContain("新しく始める");
+    expect(SHELL).toContain("OriexMark");
   });
 });
 

@@ -201,7 +201,7 @@ export default function ModernAuthShell({ onAuthed } = {}) {
             <label className="ox-auth-field">
               <span className="ox-auth-label">Friend ID</span>
               <input
-                className="rx-tf ox-auth-input"
+                className="ox-auth-input"
                 value={friendId}
                 onChange={(e) => setFriendId(e.target.value)}
                 autoComplete="username"
@@ -214,7 +214,7 @@ export default function ModernAuthShell({ onAuthed } = {}) {
             <label className="ox-auth-field">
               <span className="ox-auth-label">招待コード</span>
               <input
-                className="rx-tf ox-auth-input"
+                className="ox-auth-input"
                 value={inviteCode}
                 onChange={(e) => setInviteCode(e.target.value)}
                 placeholder="招待コードを入力"
@@ -235,7 +235,7 @@ export default function ModernAuthShell({ onAuthed } = {}) {
             <label className="ox-auth-field">
               <span className="ox-auth-label">表示名（任意）</span>
               <input
-                className="rx-tf ox-auth-input"
+                className="ox-auth-input"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 autoComplete="nickname"
@@ -246,7 +246,7 @@ export default function ModernAuthShell({ onAuthed } = {}) {
           <label className="ox-auth-field">
             <span className="ox-auth-label">パスワード</span>
             <input
-              className="rx-tf ox-auth-input"
+              className="ox-auth-input"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
