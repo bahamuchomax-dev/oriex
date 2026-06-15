@@ -5,7 +5,7 @@
    - same-origin static assets (manifest, scripts, images, fonts): stale-while-revalidate
    - everything else (Firestore/Firebase/Google APIs): not intercepted -> normal network
 */
-var VERSION = 'v7.36-hamspawn';
+var VERSION = 'v7.36-pwa-starturl';
 var SHELL = 'oriex-shell-' + VERSION;
 var FONTS = 'oriex-fonts-v1';
 var SHELL_URLS = ['./', './index.html', './manifest.webmanifest', './three.min.js', './icon-180.png', './icon-192.png', './icon-512.png'];
