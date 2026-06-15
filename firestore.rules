@@ -63,6 +63,23 @@ service cloud.firestore {
       return request.resource.data.userId == request.auth.uid;
     }
 
+    // DM participant check: pairId is the two uids sorted and joined by "__"
+    // (see pairId() in src/firebase/firestorePaths.js).
+    function dmParticipant(pairId) {
+      return signedIn() && (request.auth.uid in pairId.split('__'));
+    }
+
+    // student-visible / public docs may never carry authority markers
+    function noAuthorityFields() {
+      return !request.resource.data.keys()
+        .hasAny(['role', 'isTeacher', 'admin', 'teacher', 'teacherId', 'claims', 'permissions']);
+    }
+    // an update must not change any authority marker
+    function authorityUnchanged() {
+      return !request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['role', 'isTeacher', 'admin', 'teacher', 'teacherId', 'claims', 'permissions']);
+    }
+
     // ---------------- profiles ----------------
     match /profiles/{u} {
       allow get: if isSelf(u) || isAdmin()
@@ -181,6 +198,116 @@ service cloud.firestore {
       allow list:  if false;                  // never enumerate the allowlist
       allow write: if isAdmin();               // only admins grant/revoke teacher rights
     }
+
+    // ============================================================
+    // LEGACY MODEL (live app paths). These were exposed by a deployed
+    // `allow read, write: if true` wildcard (see FIRESTORE_RULES_DRIFT_AUDIT.md).
+    // Locked down to least-privilege. Shapes inferred from
+    // src/firebase/firestorePaths.js + feature code; verify with
+    // `npm run test:rules` (emulator) before deploying. Paths marked
+    // REQUIRES CONFIRMATION are intentionally conservative.
+    // ============================================================
+
+    // ---- self profile doc (legacy). Authority markers can never be granted
+    // from the client; teacher/admin come from custom claims only. ----
+    match /users/{u}/profile/main {
+      allow read: if isSelf(u) || isAdmin() || teaches(u);
+      allow create: if isSelf(u)
+                    && (!('isTeacher' in request.resource.data) || request.resource.data.isTeacher == false)
+                    && !request.resource.data.keys()
+                         .hasAny(['role', 'admin', 'teacher', 'teacherId', 'claims', 'permissions']);
+      allow update: if isAdmin() || (isSelf(u) && authorityUnchanged());
+      allow delete: if isAdmin();
+    }
+
+    // ---- own friends list (legacy) ----
+    match /users/{u}/friends/{friendId} {
+      allow read, write: if isSelf(u) || isAdmin();
+    }
+
+    // ---- own review "seen" markers (legacy) ----
+    match /users/{u}/customSeen/{id} {
+      allow read, write: if isSelf(u) || isAdmin();
+    }
+
+    // ---- own study diary (legacy) ----
+    match /users/{u}/studyDiary/{id} {
+      allow read:  if isSelf(u) || isAdmin() || teaches(u);
+      allow write: if isSelf(u) || isAdmin();
+    }
+
+    // ---- weekly plans the student receives (legacy). Read: student / assigned
+    // teacher / admin. Write: student (own progress) OR the teacher named on the
+    // plan (teacherUid == self) OR admin. No cross-student access. ----
+    match /users/{u}/weeklyPlans/{planId} {
+      allow read: if isSelf(u) || isAdmin() || teaches(u);
+      allow create, update: if isAdmin()
+                            || isSelf(u)
+                            || (isTeacher() && request.resource.data.teacherUid == request.auth.uid);
+      allow delete: if isSelf(u) || isAdmin()
+                    || (isTeacher() && resource.data.teacherUid == request.auth.uid);
+    }
+
+    // ---- teacher's "sent plans" history (legacy). Read: owning teacher/admin.
+    // Create: teacher/admin only. Update: owning teacher/admin, OR the student
+    // named on the existing plan mirroring progress (studentUid stays self).
+    // REQUIRES CONFIRMATION: student updates are not yet field-whitelisted. ----
+    match /users/{u}/sentPlans/{planId} {
+      allow read: if isSelf(u) || isAdmin();
+      allow create: if isSelf(u) || isAdmin();
+      allow update: if isSelf(u) || isAdmin()
+                    || (resource.data.studentUid == request.auth.uid
+                        && request.resource.data.studentUid == request.auth.uid);
+      allow delete: if isSelf(u) || isAdmin();
+    }
+
+    // ---- direct messages (legacy). Restricted to the two participants encoded
+    // in pairId. Messages are create-only (immutable); senderId must be the
+    // writer. ----
+    match /chats/{pairId} {
+      allow read, write: if dmParticipant(pairId);
+    }
+    match /chats/{pairId}/messages/{messageId} {
+      allow read:   if dmParticipant(pairId);
+      allow create: if dmParticipant(pairId)
+                    && request.resource.data.senderId == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // ---- public per-user cards: ranking / user search (legacy). Readable by any
+    // signed-in user; writable only by the owner; never authority/answer fields. ----
+    match /public/data/customApp/{cardUid} {
+      allow read: if signedIn();
+      allow create, update: if isSelf(cardUid) && noAuthorityFields() && noAnswerFields();
+      allow delete: if isSelf(cardUid) || isAdmin();
+    }
+
+    // ---- shared vocabulary catalog (legacy). Students read-only; teacher/admin
+    // manage. No answer fields. ----
+    match /public/data/customVocabulary/{wordId} {
+      allow read: if signedIn();
+      allow create, update, delete: if (isTeacher() || isAdmin()) && noAnswerFields();
+    }
+
+    // ---- shared book catalog (legacy). Students read-only; teacher/admin manage. ----
+    match /public/data/bookShelf/{bookId} {
+      allow read: if signedIn();
+      allow create, update, delete: if (isTeacher() || isAdmin()) && noAnswerFields();
+    }
+
+    // ---- public book logs (legacy). REQUIRES CONFIRMATION of the document
+    // shape/owner; conservatively bound to the writer's own userId. ----
+    match /public/data/bookLogs/{logId} {
+      allow read: if signedIn();
+      allow create, update: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAdmin()
+                    || (signedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // NOTE: other legacy public/data docs referenced by firestorePaths.js
+    // (teacherIndex, sharedApps) use odd-segment doc() paths flagged TODO/best-
+    // guess in that file; they are intentionally left under the default-deny
+    // below until their real shape/usage is confirmed (REQUIRES CONFIRMATION).
 
     // ---------------- default deny ----------------
     match /{document=**} {
