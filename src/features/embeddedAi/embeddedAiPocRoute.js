@@ -9,6 +9,12 @@
  *
  * Tiny pure matcher: pulls in no React, no panel, and no engine code, so
  * importing it does not add the PoC to the initial bundle. Never throws.
+ *
+ * SECURITY / SCOPE: Browser-AI experiments belong in the separate repository
+ * oriex-embedded-ai-lab. This main-app PoC path must NOT be exposed in the
+ * normal student/teacher UI and must remain disabled / isolated (hidden URL
+ * gate only). Do not wire it into navigation, tabs, or feature flags that are
+ * on by default.
  * ============================================================ */
 
 const QUERY_KEY = "oriexProbe";
