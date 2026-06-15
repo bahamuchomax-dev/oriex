@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
+import pkg from "../package.json";
+import { APP_VERSION_LABEL } from "../src/appVersion.js";
 
 /* UI/appearance guards for the polished modern-auth login screen. These lock in
  * the friendly, app-like copy and — importantly — that the internal user id is
@@ -76,6 +78,57 @@ describe("modern auth — brand mark uses the real Oriex app/PWA icon", () => {
   });
 });
 
+describe("modern auth — out-of-#root cutover veil (stronger flash guard)", () => {
+  const MOUNT = readFileSync("src/features/auth/mountModernCutover.jsx", "utf8");
+  const VEIL = readFileSync("src/features/auth/cutoverVeil.js", "utf8");
+  it("the veil node lives outside #root with a max z-index full-screen cover", () => {
+    expect(VEIL).toContain("ox-cutover-veil");
+    expect(VEIL).toContain("document.body.appendChild");
+    expect(VEIL).toContain("2147483647");
+    expect(VEIL).toMatch(/position:fixed/);
+  });
+  it("the cutover entry raises the veil before legacy is imported (and on reload)", () => {
+    expect(MOUNT).toContain("showCutoverVeil()");
+  });
+  it("the bridge raises the veil during transitions and drops it when UI is ready", () => {
+    expect(BRIDGE).toContain("showCutoverVeil");
+    expect(BRIDGE).toContain("hideCutoverVeil");
+    // bounded reveal of the legacy home: rAF + finite timeout
+    expect(BRIDGE).toContain("requestAnimationFrame");
+    expect(BRIDGE).toMatch(/setTimeout\([\s\S]*?\d+\)/);
+  });
+});
+
+describe("modern auth — scoped mobile no-zoom on the auth screen", () => {
+  it("the bridge toggles ox-auth-nozoom and guards iOS pinch gestures (scoped)", () => {
+    expect(BRIDGE).toContain("ox-auth-nozoom");
+    expect(BRIDGE).toContain("gesturestart");
+    expect(BRIDGE).toContain("preventDefault");
+    // removed when the home is ready so the app zooms normally after login
+    expect(BRIDGE).toContain("removeEventListener");
+  });
+  it("CSS disables double-tap zoom via touch-action on the auth screen", () => {
+    expect(cssRule("html.ox-auth-nozoom,\nhtml.ox-auth-nozoom body") || CSS).toMatch(
+      /touch-action:\s*manipulation/,
+    );
+    expect(CSS).toMatch(/\.ox-auth,\s*\.ox-auth \*\s*\{[\s\S]*touch-action:\s*manipulation/);
+  });
+});
+
+describe("modern auth — version label", () => {
+  it("login & signup render the app version label from a single source", () => {
+    expect(SHELL).toContain("APP_VERSION_LABEL");
+    expect(SHELL).toContain('className="ox-auth-version"');
+  });
+  it("the version label derives from package.json (auto-updates on bump)", () => {
+    expect(APP_VERSION_LABEL).toMatch(/^v\d+\.\d+\.\d+/);
+    expect(APP_VERSION_LABEL).toBe(`v${pkg.version}`);
+  });
+  it("the version label has an unobtrusive (low-contrast) style", () => {
+    expect(cssRule(".ox-auth-version")).toMatch(/color:\s*rgba\(/);
+  });
+});
+
 describe("modern auth — inputs are clearly visible & mobile-safe", () => {
   it("auth inputs use the self-sufficient ox-auth-input class (not borderless rx-tf)", () => {
     // all four possible fields (Friend ID, invite, name, password) use the class
@@ -107,7 +160,8 @@ describe("modern auth — strengthened legacy flash guard (covers all transition
   it("the bridge toggles the cutover cover class on <html> while transitioning", () => {
     expect(BRIDGE).toContain("ox-cutover-covering");
     // covering for every phase except a signed-in, mounted legacy home
-    expect(BRIDGE).toMatch(/!\(phase === "mounted" && !!user\)/);
+    expect(BRIDGE).toMatch(/homeReady = phase === "mounted" && !!user/);
+    expect(BRIDGE).toMatch(/toggle\("ox-cutover-covering", !homeReady\)/);
   });
   it("the cover class hides #root (legacy) so its old login can't paint", () => {
     expect(CSS).toMatch(/html\.ox-cutover-covering #root\s*\{[\s\S]*visibility:\s*hidden/);
