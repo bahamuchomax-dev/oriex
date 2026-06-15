@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { subscribeAuth, currentAuthUser } from "./modernAuthState.js";
 import { handoffToLegacy } from "./legacyHandoff.js";
 import { clearLegacyLocalSession } from "./legacyLocalSession.js";
+import { consumeCutoverReloadMarker, reloadForCutoverRelogin } from "./cutoverReload.js";
 import ModernAuthShell from "./ModernAuthShell.jsx";
 
 /* ============================================================
@@ -44,6 +45,17 @@ export default function ModernCutoverBridge() {
   const startedRef = useRef(false);
   const aliveRef = useRef(true);
   const lastUidRef = useRef(null);
+  // True once a handoff has completed in THIS page lifecycle. The legacy bundle
+  // self-mounts on its first import and its import is cached, so a second handoff
+  // (post-logout re-login) cannot re-mount it — we reload once instead. Resets on a
+  // real page reload (component unmounts), so each lifecycle reloads at most once.
+  const handedOffOnceRef = useRef(false);
+
+  // Consume any one-time reload marker left by a prior cutover re-login reload, so a
+  // later logout→re-login cycle in a NEW lifecycle can reload again if needed.
+  useEffect(() => {
+    consumeCutoverReloadMarker();
+  }, []);
 
   // The single, IDEMPOTENT handoff trigger. Called from EVERY path that can yield a
   // signed-in user — mount/restore, the auth observer, AND the embedded shell's
@@ -53,8 +65,19 @@ export default function ModernCutoverBridge() {
     if (!u || startedRef.current) return;
     startedRef.current = true;
     setPhase("starting");
+
+    // Second-cycle re-login (cutover login → home → logout → modern login →
+    // re-login) within the SAME page lifecycle: legacy was already imported and
+    // self-mounted, and its cached import is a no-op, so handoffToLegacy cannot
+    // bring it back to home — it would leave the OLD legacy login visible. The
+    // verified path home is a fresh boot with the persisted session, so reload the
+    // same URL ONCE (guarded against loops). The reload re-runs this bridge cold,
+    // where handedOffOnceRef is false again and the normal import path reaches home.
+    if (handedOffOnceRef.current && reloadForCutoverRelogin()) return;
+
     handoffToLegacy(u)
       .then(() => {
+        handedOffOnceRef.current = true;
         if (aliveRef.current) setPhase("mounted");
       })
       .catch(() => {
