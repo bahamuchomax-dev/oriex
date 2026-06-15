@@ -115,10 +115,13 @@ describe("modern auth — invite-code signup gate", () => {
     expect(API_CODE).not.toMatch(/console\s*\./);
     expect(SHELL_CODE).not.toMatch(/console\s*\./);
   });
-  it("the dev invite code shown in the UI is the documented non-secret test code", () => {
-    expect(SHELL).toContain("DEV_INVITE_CODE");
+  it("does NOT display the invite code in the UI (production-ready) and is env-configurable", () => {
+    // the test code must not be shown on the production signup screen
+    expect(SHELL).not.toContain("DEV_INVITE_CODE");
     const INV = readFileSync("src/features/auth/inviteCode.js", "utf8");
     expect(INV).toMatch(/NOT A SECURITY BOUNDARY/);
+    // production code comes from a build-time env var (never committed)
+    expect(INV).toMatch(/VITE_INVITE_CODE/);
   });
 });
 
