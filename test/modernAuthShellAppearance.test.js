@@ -124,13 +124,18 @@ describe("modern auth — cutover intercepts legacy logout (no old-login render)
     expect(BRIDGE).toContain("clearLegacyLocalSession(lastUidRef.current)");
     expect(BRIDGE).toMatch(/window\.__oxUid = undefined/);
   });
-  it("after signOut it does a one-time controlled reload to a clean modern state", () => {
+  it("the auth observer drives a one-time clean reload on auth-null after handoff", () => {
     // legacy keeps live Firestore listeners that throw permission-denied after
-    // signOut; a fresh boot (auth null, legacy never imported) avoids the repaint
-    expect(BRIDGE).toContain("reloadForCutoverLogout");
-    expect(BRIDGE).toMatch(/logout\(\)[\s\S]*\.finally\(\(\) => \{[\s\S]*reloadForCutoverLogout\(\)/);
-    // the one-time logout marker is consumed on boot (no infinite reloads)
+    // signOut; the reload is triggered when auth becomes null (after sign-out has
+    // persisted) so it fires for BOTH our shield's signOut and legacy's own
+    // logout button — then a fresh boot (auth null, legacy never imported) avoids
+    // the repaint. Not gated on the click shield (which can't ID the legacy btn).
+    expect(BRIDGE).toMatch(/else if \(startedRef\.current && !logoutReloadStartedRef\.current\)[\s\S]*?reloadForCutoverLogout\(\)/);
+    // synchronous cover in the auth callback (before paint), not a React effect
+    expect(BRIDGE).toMatch(/logoutReloadStartedRef\.current = true;[\s\S]*?showCutoverVeil\(\)/);
+    // one-time: marker consumed on boot, guard reset for the next cycle
     expect(BRIDGE).toContain("consumeCutoverLogoutMarker()");
+    expect(BRIDGE).toMatch(/logoutReloadStartedRef\.current = false/);
   });
   it("sign-out is idempotent (guarded) and reset for the next cycle", () => {
     expect(BRIDGE).toMatch(/if \(loggingOutRef\.current\) return;/);
