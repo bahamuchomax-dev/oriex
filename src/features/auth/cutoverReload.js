@@ -1,24 +1,27 @@
 /* ============================================================
- * cutoverReload — one-time, guarded full reload for post-logout RE-LOGIN
+ * cutoverReload — one-time, guarded full reloads for modern cutover transitions
  * ------------------------------------------------------------
- * Why this exists: the legacy app bundle self-mounts into #root on its FIRST
- * dynamic import and has no exported remount entry point. ES module imports are
- * cached, so a SECOND in-lifecycle handoff (cutover login → home → logout →
- * modern login → re-login) cannot re-run the legacy bootstrap — legacy stays on
- * the OLD legacy login screen it rendered when Firebase Auth signed out.
+ * Two cases need a clean fresh boot because the legacy bundle self-mounts into
+ * #root the first time it is imported (cached, no remount) and keeps live
+ * Firestore listeners with no safe unmount API:
  *
- * The verified path back to Oriex home is a fresh page boot with a persisted
- * session (the "signed-in reload" flow). So on the second-cycle re-login ONLY we
- * reload the SAME URL once. A sessionStorage marker makes this strictly one-time
- * (no reload loops): it is set immediately before the reload and consumed on the
- * next page boot; if it is still present when a reload is requested, the reload is
- * suppressed.
+ *   1) RE-LOGIN after logout in the SAME lifecycle — a second handoff can't
+ *      re-mount the cached legacy bundle (CUTOVER_RELOAD_MARKER).
+ *   2) LOGOUT — after signOut, legacy's still-active onSnapshot listeners throw
+ *      permission-denied (owner-only Rules) and can repaint the OLD legacy login.
+ *      A fresh boot lands on the modern login with auth null and legacy NEVER
+ *      imported, so those listeners never exist (CUTOVER_LOGOUT_MARKER).
+ *
+ * Each reload is strictly one-time: a sessionStorage marker is set immediately
+ * before the reload and consumed on the next boot; if it is still present when a
+ * reload is requested, the reload is suppressed (no loops).
  *
  * Pure-ish + injectable for tests. Touches only window.location + sessionStorage.
  * No password/token/credential is read, written, or logged. Never throws.
  * ============================================================ */
 
 export const CUTOVER_RELOAD_MARKER = "oriexCutoverReloadOnce";
+export const CUTOVER_LOGOUT_MARKER = "oriexLogoutReloadOnce";
 
 function safeSessionStorage(win) {
   try {
@@ -29,20 +32,13 @@ function safeSessionStorage(win) {
   }
 }
 
-/**
- * Consume (clear) the one-time reload marker left by a prior cutover re-login
- * reload. Call once on bridge mount so a later cycle in a NEW page lifecycle can
- * reload again. Returns true iff a marker was present (i.e. this boot followed a
- * cutover re-login reload). Never throws.
- * @param {Window} [win]
- * @returns {boolean}
- */
-export function consumeCutoverReloadMarker(win) {
+// Consume (clear) a one-time marker. Returns true iff it was present.
+function consumeMarker(marker, win) {
   const s = safeSessionStorage(win);
   if (!s) return false;
   try {
-    if (s.getItem(CUTOVER_RELOAD_MARKER) === "1") {
-      s.removeItem(CUTOVER_RELOAD_MARKER);
+    if (s.getItem(marker) === "1") {
+      s.removeItem(marker);
       return true;
     }
   } catch {
@@ -51,23 +47,17 @@ export function consumeCutoverReloadMarker(win) {
   return false;
 }
 
-/**
- * Perform the one-time same-URL reload used for the post-logout re-login case.
- * Suppressed (returns false) when the marker is already set — i.e. a reload was
- * requested again before the fresh boot consumed it — which prevents reload loops.
- * Returns true iff it initiated the reload. Never throws.
- * @param {Window} [win]
- * @returns {boolean}
- */
-export function reloadForCutoverRelogin(win) {
+// Perform a one-time same-URL reload guarded by `marker`. Suppressed (returns
+// false) when the marker is already set, which prevents reload loops.
+function reloadOnce(marker, win) {
   try {
     const w = win || (typeof window !== "undefined" ? window : null);
     if (!w || !w.location) return false;
     const s = safeSessionStorage(w);
-    if (s && s.getItem(CUTOVER_RELOAD_MARKER) === "1") return false; // already reloaded once
+    if (s && s.getItem(marker) === "1") return false; // already reloaded once
     if (s) {
       try {
-        s.setItem(CUTOVER_RELOAD_MARKER, "1");
+        s.setItem(marker, "1");
       } catch {
         /* ignore — proceed with reload even if the marker can't be set */
       }
@@ -79,4 +69,46 @@ export function reloadForCutoverRelogin(win) {
   } catch {
     return false;
   }
+}
+
+/**
+ * Consume the one-time RE-LOGIN reload marker. Call once on bridge mount so a
+ * later cycle in a NEW page lifecycle can reload again. Returns true iff present.
+ * @param {Window} [win]
+ * @returns {boolean}
+ */
+export function consumeCutoverReloadMarker(win) {
+  return consumeMarker(CUTOVER_RELOAD_MARKER, win);
+}
+
+/**
+ * One-time same-URL reload for the post-logout RE-LOGIN case. Returns true iff it
+ * initiated the reload. Never throws.
+ * @param {Window} [win]
+ * @returns {boolean}
+ */
+export function reloadForCutoverRelogin(win) {
+  return reloadOnce(CUTOVER_RELOAD_MARKER, win);
+}
+
+/**
+ * Consume the one-time LOGOUT reload marker on boot so each logout gets its own
+ * single reload. Returns true iff present. Never throws.
+ * @param {Window} [win]
+ * @returns {boolean}
+ */
+export function consumeCutoverLogoutMarker(win) {
+  return consumeMarker(CUTOVER_LOGOUT_MARKER, win);
+}
+
+/**
+ * One-time same-URL reload for LOGOUT — boots a clean modern auth state (auth
+ * null → modern login, legacy never imported) so legacy's post-signOut
+ * permission-denied listeners can't repaint the old login. Returns true iff it
+ * initiated the reload. Never throws.
+ * @param {Window} [win]
+ * @returns {boolean}
+ */
+export function reloadForCutoverLogout(win) {
+  return reloadOnce(CUTOVER_LOGOUT_MARKER, win);
 }

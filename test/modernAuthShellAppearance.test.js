@@ -124,6 +124,14 @@ describe("modern auth — cutover intercepts legacy logout (no old-login render)
     expect(BRIDGE).toContain("clearLegacyLocalSession(lastUidRef.current)");
     expect(BRIDGE).toMatch(/window\.__oxUid = undefined/);
   });
+  it("after signOut it does a one-time controlled reload to a clean modern state", () => {
+    // legacy keeps live Firestore listeners that throw permission-denied after
+    // signOut; a fresh boot (auth null, legacy never imported) avoids the repaint
+    expect(BRIDGE).toContain("reloadForCutoverLogout");
+    expect(BRIDGE).toMatch(/logout\(\)[\s\S]*\.finally\(\(\) => \{[\s\S]*reloadForCutoverLogout\(\)/);
+    // the one-time logout marker is consumed on boot (no infinite reloads)
+    expect(BRIDGE).toContain("consumeCutoverLogoutMarker()");
+  });
   it("sign-out is idempotent (guarded) and reset for the next cycle", () => {
     expect(BRIDGE).toMatch(/if \(loggingOutRef\.current\) return;/);
     expect(BRIDGE).toMatch(/loggingOutRef\.current = false;/);
