@@ -1,7 +1,7 @@
-# WebLLM PoC — Isolation / Removal Decision (Phase 5)
+# WebLLM PoC — Isolation / Removal Decision (Phase 6)
 
 - Date: 2026-06-15
-- Audited commit (main): `09779a6`
+- Audited commit (main): `812367e`
 - Scope: decide whether the WebLLM / browser-AI PoC belongs in the main Oriex app
   now that the separate `oriex-embedded-ai-lab` repository exists.
 
@@ -31,6 +31,19 @@
   user input is processed on-device and is never sent to an AI API.
 - Guard tests already exist: `test/localAiUiPause.test.js`,
   `test/embeddedAiPocStatic.test.js`, `test/embeddedAiStatic.test.js`.
+
+## Determination (Phase 6 questions)
+
+| Question | Answer |
+| --- | --- |
+| Reachable from normal student UI? | **No** — no tab/button/link; hidden URL gate only. |
+| Reachable from normal teacher UI? | **No** — same; not wired into any teacher screen. |
+| Hidden URL only? | **Yes** — `?oriexProbe=embedded-ai-poc` / `#embedded-ai-poc` (PoC) and `?oriexProbe=embedded-ai` (device probe). |
+| Feature-flagged? | Local AI (Ollama) UI: **flag off** (`LOCAL_AI_UI_ENABLED = false`). Embedded-AI PoC: URL-gated (no normal entry). |
+| Stores prompt/generated text? | **No** — verified: no `localStorage`/`sessionStorage`/IndexedDB writes of prompt or output in `src/features/embeddedAi` or `src/features/localAi`. |
+| Calls external AI APIs? | **No** — no OpenAI/Anthropic/Gemini. WebLLM fetches model weights/runtime from HF/MLC CDNs; local AI talks only to `localhost:11434`/`127.0.0.1:11434` (and blocks external URLs). Inference is on-device. |
+| Downloads/caches large models? | **Yes, but only on the hidden PoC** — WebLLM downloads a ~0.5B model and caches weights/runtime in IndexedDB/Cache Storage when the user explicitly loads it. Never on a normal visit. |
+| Affects normal bundle size / initial load? | **No** — `@mlc-ai/web-llm` is loaded via a runtime **dynamic `import()`**, so it is code-split into a lazy chunk fetched only on the hidden PoC; it is not in the initial bundle and does not load on a normal visit. |
 
 ## Options
 
