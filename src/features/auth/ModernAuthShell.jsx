@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { signUpWithInviteCode, loginWithFriendId, logout } from "./modernAuthApi.js";
 import { subscribeAuth, currentAuthUser } from "./modernAuthState.js";
 import { safeAuthErrorMessage } from "./friendIdAuth.js";
-import { validateInviteCode, DEV_INVITE_CODE } from "./inviteCode.js";
+import { validateInviteCode } from "./inviteCode.js";
 import { CUTOVER_TITLE, CUTOVER_LINES, SIGNUP_NEW_FRIEND_ID_NOTE } from "./cutoverCopy.js";
 import { copyUserId, isCopyableUid } from "../profile/copyUserId.js";
 import OriexMark from "./OriexMark.jsx";
@@ -220,10 +220,9 @@ export default function ModernAuthShell({ onAuthed } = {}) {
                 value={inviteCode}
                 onChange={(e) => setInviteCode(e.target.value)}
                 placeholder="招待コードを入力"
+                autoComplete="one-time-code"
               />
-              <small className="ox-auth-hint">
-                テスト用招待コード（開発のみ・機密ではありません）：<code>{DEV_INVITE_CODE}</code>
-              </small>
+              <small className="ox-auth-hint">登録には招待コードが必要です。</small>
             </label>
           )}
 

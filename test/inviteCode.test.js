@@ -44,4 +44,10 @@ describe("inviteCode — security posture", () => {
     expect(SRC).toMatch(/TEST-ONLY/);
     expect(SRC).toMatch(/never written to Firestore/i);
   });
+  it("uses a build-time production code (VITE_INVITE_CODE) with the dev code as fallback", () => {
+    expect(SRC).toMatch(/import\.meta\.env\.VITE_INVITE_CODE|VITE_INVITE_CODE/);
+    expect(SRC).toMatch(/ACTIVE_INVITE_CODE/);
+    // validation compares against the ACTIVE code, not the dev code directly
+    expect(SRC).toMatch(/normalizeInviteCode\(ACTIVE_INVITE_CODE\)/);
+  });
 });
