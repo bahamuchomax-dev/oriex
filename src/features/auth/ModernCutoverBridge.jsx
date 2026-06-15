@@ -14,6 +14,7 @@ import { silenceLegacyPermissionDenied } from "./cutoverLogoutSilencer.js";
 import ModernAuthShell from "./ModernAuthShell.jsx";
 import OriexMark from "./OriexMark.jsx";
 import { showCutoverVeil, hideCutoverVeil } from "./cutoverVeil.js";
+import { showVersionBadge, hideVersionBadge } from "./appVersionBadge.js";
 import { APP_VERSION_LABEL } from "../../appVersion.js";
 import "./authScreen.css";
 
@@ -260,6 +261,11 @@ export default function ModernCutoverBridge() {
     // 1) Hide legacy under #root + lock zoom while the auth/transition UI is up.
     el.classList.toggle("ox-cutover-covering", !homeReady);
     el.classList.toggle("ox-auth-nozoom", !homeReady);
+
+    // Unify the version表記: the login card shows it pre-login; once the legacy
+    // home is up, show the same version as a subtle persistent badge.
+    if (homeReady) showVersionBadge();
+    else hideVersionBadge();
 
     // 2) iOS Safari pinch-zoom guard — scoped to the auth/transition screen only
     //    (removed once the legacy home is ready, so the app zooms normally after).

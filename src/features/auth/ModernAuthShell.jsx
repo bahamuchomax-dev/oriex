@@ -215,9 +215,12 @@ export default function ModernAuthShell({ onAuthed } = {}) {
               <input
                 className="ox-auth-input"
                 value={friendId}
-                onChange={(e) => setFriendId(e.target.value)}
+                onChange={(e) => setFriendId(e.target.value.toUpperCase())}
                 autoComplete="username"
+                autoCapitalize="characters"
+                spellCheck={false}
                 placeholder="例: 2N7422"
+                style={{ textTransform: "uppercase" }}
               />
             </label>
           )}
@@ -228,9 +231,12 @@ export default function ModernAuthShell({ onAuthed } = {}) {
               <input
                 className="ox-auth-input"
                 value={inviteCode}
-                onChange={(e) => setInviteCode(e.target.value)}
+                onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
                 placeholder="招待コードを入力"
                 autoComplete="one-time-code"
+                autoCapitalize="characters"
+                spellCheck={false}
+                style={{ textTransform: "uppercase" }}
               />
               <small className="ox-auth-hint">登録には招待コードが必要です。</small>
             </label>
