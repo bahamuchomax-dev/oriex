@@ -111,6 +111,24 @@ describe("cutover bridge — safe by construction", () => {
     const bridge = srcOf("src/features/auth/ModernCutoverBridge.jsx");
     expect(bridge).toMatch(/<ModernAuthShell onAuthed=\{\(u\) => setUser\(u\)\}/);
   });
+  it("shows a 'checking login state' loading message (waits for auth restoration)", () => {
+    const bridge = srcOf("src/features/auth/ModernCutoverBridge.jsx");
+    expect(bridge).toContain("ログイン状態を確認中");
+    // never imports legacy until auth is resolved with a user
+    expect(bridge).toMatch(/if \(!ready\)/);
+    expect(bridge).toMatch(/if \(!user\)/);
+  });
+  it("seeds legacy's localStorage cache for reload (no password) and logs nothing", () => {
+    const seed = srcOf("src/features/auth/legacyLocalSession.js");
+    const code = seed.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+    expect(srcOf("src/features/auth/legacyHandoff.js")).toContain("seedLegacyLocalSession");
+    expect(code).toContain('"genron_"');
+    expect(code).not.toMatch(/\.password\b/);
+    expect(code).not.toMatch(/\bpassword\s*:/);
+    expect(code).not.toMatch(/console\s*\./);
+    // localStorage only — no Firestore in the seed module
+    for (const banned of ["getDoc", "setDoc", "firestore"]) expect(code.toLowerCase()).not.toContain(banned.toLowerCase());
+  });
 });
 
 describe("cutover plan doc — manual PASS + flag + #21 recorded", () => {

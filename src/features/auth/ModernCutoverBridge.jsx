@@ -96,7 +96,7 @@ export default function ModernCutoverBridge() {
   if (phase === "checking") {
     return (
       <Overlay>
-        <p>認証状態を確認中...</p>
+        <p>ログイン状態を確認中...</p>
       </Overlay>
     );
   }
