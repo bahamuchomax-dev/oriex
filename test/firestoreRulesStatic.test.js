@@ -193,11 +193,37 @@ describe("firestore.rules — no public wildcard (critical fix)", () => {
     expect(RULES_CODE).not.toMatch(/allow\s+read\s*,\s*write\s*:\s*if\s+true/);
     expect(RULES_CODE).not.toMatch(/allow\s+(?:read|write|get|list|create|update|delete)[^\n]*:\s*if\s+true\b/);
   });
-  it("has no broad public/data wildcard match", () => {
-    expect(RULES).not.toMatch(/match \/public\/data\/\{[^}]*=\*\*\}/);
+  it("has no broadly-writable public/data wildcard (read-only artifacts wildcard is OK)", () => {
+    // The only public/data {document=**} wildcard is the legacy artifacts tree,
+    // and it must be READ-ONLY (signed-in read, write denied).
+    const m = RULES_CODE.match(/match \/public\/data\/\{document=\*\*\}\s*\{([\s\S]*?)\}/);
+    expect(m).toBeTruthy();
+    expect(m[1]).toContain("allow read: if signedIn()");
+    expect(m[1]).toContain("allow write: if false");
   });
   it("ends with an explicit default-deny", () => {
     expect(RULES).toMatch(/match \/\{document=\*\*\}\s*\{\s*allow read, write:\s*if false;/);
+  });
+});
+
+describe("firestore.rules — legacy artifacts live-app tree is least-privilege", () => {
+  it("covers the artifacts/{appId} tree", () => {
+    expect(RULES).toContain("match /artifacts/{appId}");
+  });
+  it("per-user subtree is owner-only (no cross-user, no signed-in-wide)", () => {
+    expect(RULES_CODE).toMatch(
+      /match \/users\/\{uid\}\/\{document=\*\*\}\s*\{\s*allow read, write: if isSelf\(uid\);/,
+    );
+  });
+  it("shared public/data is signed-in read and not broadly writable", () => {
+    expect(RULES_CODE).toMatch(
+      /match \/public\/data\/\{document=\*\*\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if false;/,
+    );
+  });
+  it("own leaderboard card is self-write only", () => {
+    expect(RULES_CODE).toMatch(
+      /match \/public\/data\/customApp\/\{cardUid\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if isSelf\(cardUid\);/,
+    );
   });
 });
 
