@@ -76,9 +76,16 @@ export function installCutoverLogoutShield({ onLogoutIntent } = {}) {
   const handler = (e) => {
     try {
       const t = e.target;
-      // Do not intercept inside the modern auth form/screen (its own logout is
-      // handled by the modern shell), only the legacy app under #root.
-      if (t && typeof t.closest === "function" && t.closest(".ox-auth")) return;
+      // Do not intercept anything in the modern cutover UI (login shell, branded
+      // loaders, and the logout CONFIRM dialog all live in #oriex-modern-cutover /
+      // .ox-auth) — only the legacy app under #root.
+      if (
+        t &&
+        typeof t.closest === "function" &&
+        (t.closest(".ox-auth") || t.closest("#oriex-modern-cutover"))
+      ) {
+        return;
+      }
       if (!isLogoutControl(t)) return;
 
       // Cancel BEFORE legacy sees it so its logout-render path never runs.
