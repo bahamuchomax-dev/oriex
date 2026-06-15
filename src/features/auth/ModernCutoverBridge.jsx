@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { subscribeAuth, currentAuthUser } from "./modernAuthState.js";
 import { handoffToLegacy } from "./legacyHandoff.js";
+import { clearLegacyLocalSession } from "./legacyLocalSession.js";
 import ModernAuthShell from "./ModernAuthShell.jsx";
 
 /* ============================================================
@@ -42,6 +43,7 @@ export default function ModernCutoverBridge() {
   const [phase, setPhase] = useState("checking"); // checking | signin | starting | mounted | error
   const startedRef = useRef(false);
   const aliveRef = useRef(true);
+  const lastUidRef = useRef(null);
 
   // The single, IDEMPOTENT handoff trigger. Called from EVERY path that can yield a
   // signed-in user — mount/restore, the auth observer, AND the embedded shell's
@@ -93,6 +95,29 @@ export default function ModernCutoverBridge() {
     }
     startHandoff(effectiveUser);
   }, [ready, user, startHandoff]);
+
+  // Logout handling: after a handoff, legacy owns #root and its own logout button
+  // signs out Firebase Auth and would show the OLD legacy login. Detect that
+  // sign-out here, clear the bridge/legacy session, and return to the MODERN login
+  // (its overlay covers legacy). A subsequent modern login re-runs the handoff.
+  useEffect(() => {
+    if (user) {
+      lastUidRef.current = user.uid;
+      return;
+    }
+    if (!startedRef.current) return; // never handed off — resolution effect shows login
+    if (typeof window !== "undefined") {
+      try {
+        window.__oxUid = undefined;
+      } catch {
+        /* ignore */
+      }
+    }
+    clearLegacyLocalSession(lastUidRef.current);
+    lastUidRef.current = null;
+    startedRef.current = false; // allow a fresh handoff on the next login
+    setPhase("signin");
+  }, [user]);
 
   // Legacy now owns #root — render nothing so only the real app shows.
   if (phase === "mounted") return null;
