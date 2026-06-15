@@ -371,9 +371,14 @@ service cloud.firestore {
         allow read: if signedIn();
         allow write: if false;
       }
-      // the user's own public card (leaderboard / search) — self-write only.
+      // The user's own public card (leaderboard / search). It is ALSO the PRIMARY
+      // Friend ID login directory: login queries `where("shortId","==", id)` on
+      // customApp FIRST (teacherIndex is only a fallback), BEFORE the user is
+      // authenticated — so READ must be PUBLIC (unauthenticated), like
+      // teacherIndex. Exposes only public card fields (uid, name, avatar, color,
+      // xp, streak, shortId); no authority, no answers. WRITE stays owner-only.
       match /public/data/customApp/{cardUid} {
-        allow read: if signedIn();
+        allow read: if true;
         allow write: if isSelf(cardUid);
       }
       // Friend ID login directory. Despite the legacy name, EVERY user has their

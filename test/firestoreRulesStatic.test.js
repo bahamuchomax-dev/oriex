@@ -194,15 +194,15 @@ describe("firestore.rules — no public wildcard (critical fix)", () => {
     expect(RULES_CODE).not.toMatch(/allow\s+read\s*,\s*write\s*:\s*if\s+true/);
     expect(RULES_CODE).not.toMatch(/allow\s+(?:write|create|update|delete)\b[^\n]*:\s*if\s+true\b/);
   });
-  it("the only public (unauthenticated) read is the teacherIndex login directory", () => {
-    // exactly one `allow read: if true`, and it is inside the teacherIndex block
+  it("public (unauthenticated) read is limited to the Friend ID login directories", () => {
+    // exactly TWO `allow read: if true` — the customApp + teacherIndex login
+    // directories used for unauthenticated Friend ID resolution. Nothing else.
     const reads = RULES_CODE.match(/allow read: if true;/g) || [];
-    expect(reads.length).toBe(1);
-    const ti = RULES_CODE.match(
-      /match \/public\/data\/teacherIndex\/\{docId\}\s*\{([\s\S]*?)\}/,
-    );
-    expect(ti).toBeTruthy();
-    expect(ti[1]).toContain("allow read: if true");
+    expect(reads.length).toBe(2);
+    // both public reads belong to the Friend ID login directories (the artifacts
+    // customApp/teacherIndex blocks; the modern top-level customApp stays signedIn)
+    expect(RULES_CODE).toMatch(/customApp\/\{cardUid\}\s*\{\s*allow read: if true;/);
+    expect(RULES_CODE).toMatch(/teacherIndex\/\{docId\}\s*\{\s*allow read: if true;/);
   });
   it("has no broadly-writable public/data wildcard (read-only artifacts wildcard is OK)", () => {
     // The only public/data {document=**} wildcard is the legacy artifacts tree,
@@ -231,9 +231,9 @@ describe("firestore.rules — legacy artifacts live-app tree is least-privilege"
       /match \/public\/data\/\{document=\*\*\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if false;/,
     );
   });
-  it("own leaderboard card is self-write only", () => {
+  it("customApp is public-read (primary Friend ID directory) but self-write only", () => {
     expect(RULES_CODE).toMatch(
-      /match \/public\/data\/customApp\/\{cardUid\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if isSelf\(cardUid\);/,
+      /match \/public\/data\/customApp\/\{cardUid\}\s*\{\s*allow read: if true;\s*allow write: if isSelf\(cardUid\);/,
     );
   });
   it("teacherIndex is public-read (Friend ID login) but owner-write, answer/authority free", () => {
