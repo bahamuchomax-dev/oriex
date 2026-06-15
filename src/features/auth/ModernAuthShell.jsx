@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../firebase/firebase.js";
 import { signUpWithFriendId, loginWithFriendId, logout } from "./modernAuthApi.js";
+import { subscribeAuth, currentAuthUser } from "./modernAuthState.js";
 import { safeAuthErrorMessage } from "./friendIdAuth.js";
 import { copyUserId, isCopyableUid } from "../profile/copyUserId.js";
 
@@ -27,13 +26,11 @@ export default function ModernAuthShell() {
   const [idCopied, setIdCopied] = useState(false);
 
   useEffect(() => {
-    // Drive UI from real Firebase Auth state. Never log the user object.
-    const unsub = onAuthStateChanged(
-      auth,
-      (u) => {
-        setUser(u);
-        setReady(true);
-      },
+    // Ongoing source of truth: restores a persisted session on mount (reload)
+    // and reflects every later change. Registered once; cleaned up on unmount.
+    // Never log the user object.
+    const unsub = subscribeAuth(
+      (u) => setUser(u),
       () => setReady(true),
     );
     return unsub;
@@ -50,6 +47,9 @@ export default function ModernAuthShell() {
         await loginWithFriendId({ friendId, password });
       }
       setPassword(""); // never retain the password in state after use
+      // Transition immediately from the authoritative current user — do NOT wait
+      // for onAuthStateChanged to re-fire (that only updated the UI on reload).
+      setUser(currentAuthUser());
     } catch (err) {
       // Only a safe, curated message — never the raw error/password/token.
       setError(safeAuthErrorMessage(err));
@@ -63,6 +63,8 @@ export default function ModernAuthShell() {
     setBusy(true);
     try {
       await logout();
+      // Reflect signed-out state immediately, without waiting for the observer.
+      setUser(null);
     } catch (err) {
       setError(safeAuthErrorMessage(err));
     } finally {
