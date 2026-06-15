@@ -109,11 +109,13 @@ export default function ModernCutoverBridge() {
     );
   }
 
-  // Signed out → modern login/signup.
+  // Signed out → modern login/signup. onAuthed makes the handoff start as soon as
+  // the embedded shell signs in, even if our own onAuthStateChanged is slow for an
+  // in-session login (which previously left the cutover stuck on the shell).
   return (
     <Overlay>
       <div style={{ width: "100%", maxWidth: 420 }}>
-        <ModernAuthShell />
+        <ModernAuthShell onAuthed={(u) => setUser(u)} />
       </div>
     </Overlay>
   );

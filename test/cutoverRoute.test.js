@@ -107,6 +107,10 @@ describe("cutover bridge — safe by construction", () => {
     expect(bridge).not.toContain("Bridge Probe"); // no debug observations banner
     expect(bridge).toMatch(/phase === "mounted"\)\s*return null/);
   });
+  it("starts the handoff on an in-session sign-in (passes onAuthed to the shell)", () => {
+    const bridge = srcOf("src/features/auth/ModernCutoverBridge.jsx");
+    expect(bridge).toMatch(/<ModernAuthShell onAuthed=\{\(u\) => setUser\(u\)\}/);
+  });
 });
 
 describe("cutover plan doc — manual PASS + flag + #21 recorded", () => {

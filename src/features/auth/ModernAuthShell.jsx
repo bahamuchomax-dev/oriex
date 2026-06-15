@@ -16,7 +16,7 @@ import { copyUserId, isCopyableUid } from "../profile/copyUserId.js";
  * ever logged. Errors are shown via safeAuthErrorMessage only.
  * ============================================================ */
 
-export default function ModernAuthShell() {
+export default function ModernAuthShell({ onAuthed } = {}) {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
   const [mode, setMode] = useState("login"); // "login" | "signup"
@@ -65,7 +65,11 @@ export default function ModernAuthShell() {
       setPassword(""); // never retain the password in state after use
       // Transition immediately from the authoritative current user — do NOT wait
       // for onAuthStateChanged to re-fire (that only updated the UI on reload).
-      setUser(currentAuthUser());
+      const authed = currentAuthUser();
+      setUser(authed);
+      // Notify a host (e.g. the cutover bridge) of the in-session sign-in, since
+      // its own onAuthStateChanged may not fire promptly for an in-session login.
+      if (onAuthed) onAuthed(authed);
     } catch (err) {
       // Only a safe, curated message — never the raw error/password/token. The
       // wording is mode-aware so a signup failure never shows login text.

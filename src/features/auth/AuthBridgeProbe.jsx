@@ -192,7 +192,7 @@ export default function AuthBridgeProbe() {
       {panel}
       {phase === "signin" && (
         <div style={{ maxHeight: "80vh", overflow: "auto", background: "transparent" }}>
-          <ModernAuthShell />
+          <ModernAuthShell onAuthed={(u) => setUser(u)} />
         </div>
       )}
     </div>
