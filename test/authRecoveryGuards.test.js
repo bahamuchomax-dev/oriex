@@ -74,6 +74,16 @@ describe("auth recovery — public (unauthenticated) read surface is locked", ()
   });
 });
 
+describe("auth recovery — rules never depend on a password field", () => {
+  it("firestore.rules code contains no `password` reference (auth owns passwords)", () => {
+    // The secure design must not read/compare a password in Rules at all —
+    // password handling belongs to Firebase Auth, never Firestore. (Ported from
+    // the superseded PR #19 guardrails.) Comments are stripped so explanatory
+    // prose cannot mask a real regression.
+    expect(RULES_CODE).not.toMatch(/password/i);
+  });
+});
+
 /* ---- source guard: modern code must not reintroduce client-side plaintext auth ---- */
 
 function walk(dir, out = []) {
