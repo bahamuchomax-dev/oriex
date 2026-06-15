@@ -121,9 +121,21 @@ describe("safeAuthErrorMessage", () => {
     expect(out).not.toContain("alice@real.example");
     expect(out).not.toContain(leaky.message);
   });
+  it("maps signup / reauth / rules-denied codes to their own safe messages", () => {
+    expect(safeAuthErrorMessage({ code: "auth/email-already-in-use" })).toMatch(/既に登録/);
+    expect(safeAuthErrorMessage({ code: "auth/requires-recent-login" })).toMatch(/再ログイン/);
+    expect(safeAuthErrorMessage({ code: "permission-denied" })).toMatch(/権限/);
+  });
+  it("accepts a raw code string as well as an error object", () => {
+    expect(safeAuthErrorMessage("auth/too-many-requests")).toMatch(/試行回数/);
+    expect(safeAuthErrorMessage("auth/wrong-password")).toBe(
+      safeAuthErrorMessage({ code: "auth/wrong-password" }),
+    );
+    expect(safeAuthErrorMessage("permission-denied")).toMatch(/権限/);
+  });
   it("falls back to the generic message for unknown / malformed input", () => {
     const generic = safeAuthErrorMessage({ code: "auth/wrong-password" });
-    for (const bad of [null, undefined, {}, "string", { code: 123 }, { code: "auth/whatever" }]) {
+    for (const bad of [null, undefined, {}, "unknown-string", { code: 123 }, { code: "auth/whatever" }]) {
       expect(safeAuthErrorMessage(bad)).toBe(generic);
     }
   });

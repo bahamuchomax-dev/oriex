@@ -64,15 +64,21 @@ export function makeInternalAuthEmailFromFriendId(friendId, domain = INTERNAL_AU
 const GENERIC_AUTH_MESSAGE = "ログインに失敗しました。IDまたはパスワードをご確認ください。";
 
 /**
- * Map a Firebase Auth error to a SAFE, user-facing Japanese message. Never
- * returns the raw `error.message` (which may carry an email/uid) and never
- * distinguishes user-not-found from wrong-password (no account enumeration).
- * @param {unknown} error
+ * Map a Firebase Auth / Firestore error to a SAFE, user-facing Japanese message.
+ * Accepts either an error object (reads `.code`) or a raw code string. Never
+ * returns the raw `error.message` (which may carry an email/uid/credential) and
+ * never distinguishes user-not-found from wrong-password (no account
+ * enumeration).
+ * @param {unknown} error  a Firebase error object, or a code string
  * @returns {string}
  */
 export function safeAuthErrorMessage(error) {
-  const code =
-    error && typeof error === "object" && typeof error.code === "string" ? error.code : "";
+  let code = "";
+  if (typeof error === "string") {
+    code = error;
+  } else if (error && typeof error === "object" && typeof error.code === "string") {
+    code = error.code;
+  }
   switch (code) {
     // Credential-class — collapse to one generic message (no enumeration).
     case "auth/invalid-credential":
@@ -82,12 +88,18 @@ export function safeAuthErrorMessage(error) {
     case "auth/invalid-email":
     case "auth/missing-password":
       return GENERIC_AUTH_MESSAGE;
+    case "auth/email-already-in-use":
+      return "このIDは既に登録されています。";
+    case "auth/requires-recent-login":
+      return "この操作には再ログインが必要です。もう一度ログインしてください。";
     case "auth/too-many-requests":
       return "試行回数が多すぎます。しばらくしてからもう一度お試しください。";
     case "auth/network-request-failed":
       return "ネットワークエラーが発生しました。接続を確認してください。";
     case "auth/user-disabled":
       return "このアカウントは無効化されています。管理者にお問い合わせください。";
+    case "permission-denied":
+      return "権限設定エラーです。管理者にお問い合わせください。";
     default:
       return GENERIC_AUTH_MESSAGE;
   }
