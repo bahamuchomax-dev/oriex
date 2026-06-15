@@ -1,0 +1,47 @@
+import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+
+/* Guards the signup icon picker: it appears on the signup screen with preview +
+ * adjustment, offers emoji+color and photo modes, and the chosen icon flows
+ * signup -> modern profile/public card -> legacy bridge so the live app shows it.
+ * No Firestore Rules change; the photo is a small resized data URL. */
+
+const SHELL = readFileSync("src/features/auth/ModernAuthShell.jsx", "utf8");
+const API = readFileSync("src/features/auth/modernAuthApi.js", "utf8");
+const BRIDGE = readFileSync("src/features/auth/legacyBridgeProfile.js", "utf8");
+const PICKER = readFileSync("src/features/auth/SignupIconPicker.jsx", "utf8");
+
+describe("signup icon picker — UI", () => {
+  it("renders on the signup screen with a live preview and adjustment", () => {
+    expect(SHELL).toContain("SignupIconPicker");
+    expect(SHELL).toMatch(/mode === "signup"[\s\S]*?SignupIconPicker/);
+    expect(PICKER).toContain("プレビュー"); // preview
+    expect(PICKER).toMatch(/type="range"/); // zoom adjust
+    expect(PICKER).toContain("onPointerMove"); // drag to reposition
+  });
+  it("offers emoji+color and photo upload modes", () => {
+    expect(PICKER).toContain("絵文字");
+    expect(PICKER).toContain("写真");
+    expect(PICKER).toContain('accept="image/*"');
+  });
+  it("never exposes the uid/debug or handles passwords (UI only)", () => {
+    expect(PICKER).not.toMatch(/password|console\s*\./i);
+  });
+});
+
+describe("signup icon — persistence wiring", () => {
+  it("signup passes the chosen avatar/color/photo to the API", () => {
+    expect(SHELL).toMatch(/signUpWithInviteCode\(\{[\s\S]*?avatar: icon\.avatar[\s\S]*?color: icon\.color[\s\S]*?photo: icon\.photo/);
+    expect(API).toMatch(/signUpWithInviteCode\(\{ inviteCode, password, name, avatar, color, photo \}/);
+  });
+  it("writes the icon to the profile + public card via assertSafePayload", () => {
+    expect(API).toContain("withIconFields");
+    expect(API).toMatch(/out\.photo = photo/);
+    expect(API).toContain("assertSafePayload(");
+  });
+  it("the bridge carries the icon to the legacy profile so the live app shows it", () => {
+    expect(BRIDGE).toMatch(/d\.avatar/);
+    expect(BRIDGE).toMatch(/d\.photo/);
+    expect(BRIDGE).toMatch(/base\.photo = photo/);
+  });
+});

@@ -43,28 +43,40 @@ export async function ensureLegacyBridgeProfile(uid) {
     };
   }
 
-  // Carry the Friend ID / display name from the user's own modern profile so the
-  // legacy app shows a consistent identity. Read own doc only; never a password.
+  // Carry the Friend ID / display name AND the chosen icon (avatar emoji + color,
+  // or a small cropped photo data URL) from the user's own modern profile so the
+  // legacy app shows a consistent identity + icon. Read own doc only; never a
+  // password. Icon fields are non-secret and optional.
   let shortId = "";
   let name = "";
+  let avatar = "";
+  let color = "";
+  let photo = "";
   try {
     const modernSnap = await getDoc(doc(db, "users", uid, "profile", "main"));
     if (modernSnap.exists()) {
       const d = modernSnap.data() || {};
       if (typeof d.shortId === "string") shortId = d.shortId;
       if (typeof d.name === "string") name = d.name;
+      if (typeof d.avatar === "string") avatar = d.avatar;
+      if (typeof d.color === "string") color = d.color;
+      if (typeof d.photo === "string") photo = d.photo;
     }
   } catch {
     /* ignore — proceed with a minimal profile */
   }
 
   const safeName = name || shortId || "";
-  const profile = assertSafePayload({
+  const base = {
     shortId,
     name: safeName,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
-  });
+  };
+  if (avatar) base.avatar = avatar;
+  if (color) base.color = color;
+  if (photo) base.photo = photo;
+  const profile = assertSafePayload(base);
   await setDoc(legacyRef, profile, { merge: true });
   return { ok: true, created: true, shortId, name: safeName };
 }

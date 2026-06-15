@@ -359,6 +359,129 @@ html.ox-auth-nozoom body {
   margin-top: 18px;
 }
 
+/* ---------- signup icon picker ---------- */
+.ox-auth-iconpick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(43, 39, 36, 0.12);
+  border-radius: 16px;
+  background: #faf6f1;
+}
+.ox-auth-iconpreview {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(43, 39, 36, 0.08), 0 8px 20px rgba(43, 39, 36, 0.18);
+  touch-action: none; /* allow drag-to-reposition without scrolling */
+  user-select: none;
+  -webkit-user-select: none;
+}
+.ox-auth-iconpreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.ox-auth-iconemoji {
+  font-size: 46px;
+  line-height: 1;
+}
+.ox-auth-icontabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(43, 39, 36, 0.06);
+}
+.ox-auth-icontab {
+  min-height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted, #8b5e3c);
+  border-radius: 9px;
+  padding: 6px 16px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.ox-auth-icontab.is-on {
+  background: #fff;
+  color: var(--accent, #c88040);
+  box-shadow: 0 1px 3px rgba(43, 39, 36, 0.12);
+}
+.ox-auth-iconrow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.ox-auth-iconchip {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(43, 39, 36, 0.14);
+  background: #fff;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.ox-auth-iconchip.is-on {
+  border-color: var(--accent, #c88040);
+  box-shadow: 0 0 0 3px rgba(200, 128, 64, 0.18);
+}
+.ox-auth-iconswatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(43, 39, 36, 0.18);
+  cursor: pointer;
+  padding: 0;
+}
+.ox-auth-iconswatch.is-on {
+  box-shadow: 0 0 0 3px var(--accent, #c88040);
+}
+.ox-auth-iconphoto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.ox-auth-iconupload {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(43, 39, 36, 0.18);
+  background: #fff;
+  color: var(--accent, #c88040);
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.ox-auth-iconzoom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-muted, #8b5e3c);
+}
+.ox-auth-iconzoom input[type="range"] {
+  flex: 1;
+}
+
 /* ---------- version label (login / signup / cover) ---------- */
 .ox-auth-version {
   margin: 14px 0 0;
