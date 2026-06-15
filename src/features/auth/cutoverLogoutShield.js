@@ -99,9 +99,14 @@ export function installCutoverLogoutShield({ onLogoutIntent } = {}) {
     }
   };
 
+  // capture: true  -> we see the press before the legacy app's own handler.
+  // passive: false -> required so preventDefault() actually works; touchstart is
+  //                   passive-by-default in Chrome, which otherwise ignores it
+  //                   (the "[Intervention] Unable to preventDefault" warning).
+  const OPTS = { capture: true, passive: false };
   const EVENTS = ["pointerdown", "touchstart", "click"];
-  EVENTS.forEach((n) => document.addEventListener(n, handler, true));
+  EVENTS.forEach((n) => document.addEventListener(n, handler, OPTS));
   return () => {
-    EVENTS.forEach((n) => document.removeEventListener(n, handler, true));
+    EVENTS.forEach((n) => document.removeEventListener(n, handler, OPTS));
   };
 }
