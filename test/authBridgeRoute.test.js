@@ -64,9 +64,9 @@ describe("main.js wiring — probe is opt-in; default boot stays legacy", () => 
     );
     expect(branch).toContain("startLegacyApp()");
   });
-  it("keeps the legacy bundle as the default boot (no flag → legacy)", () => {
-    expect(MAIN).toContain("legacy/oriex-app.bundle.js");
-    expect(MAIN).toMatch(/}\s*else\s*{\s*startLegacyApp\(\);\s*}/);
+  it("modern cutover is the default boot (no flag → cutover, not legacy)", () => {
+    expect(MAIN).toContain("legacy/oriex-app.bundle.js"); // still imported for fallback
+    expect(MAIN).toMatch(/} else \{[\s\S]*?startModernCutover\(\);/);
   });
 });
 

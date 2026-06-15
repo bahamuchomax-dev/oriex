@@ -77,9 +77,9 @@ describe("main.js wiring — opt-in shell, preserved legacy boot", () => {
     );
     expect(branch).toContain("startLegacyApp()");
   });
-  it("keeps the legacy bundle as the default boot (flag absent)", () => {
-    expect(MAIN).toContain("legacy/oriex-app.bundle.js");
-    // the final else still boots legacy
-    expect(MAIN).toMatch(/}\s*else\s*{\s*startLegacyApp\(\);\s*}/);
+  it("modern cutover is the default boot (flag absent → cutover, not legacy)", () => {
+    expect(MAIN).toContain("legacy/oriex-app.bundle.js"); // still imported for fallback
+    // the final else now starts the modern cutover (legacy is emergency-only)
+    expect(MAIN).toMatch(/} else \{[\s\S]*?startModernCutover\(\);/);
   });
 });
