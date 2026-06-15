@@ -1,21 +1,15 @@
 /* ============================================================
  * webLlmEngineLoader — Phase 3B WebLLM spike (WebGPU first candidate)
  * ------------------------------------------------------------
- * Wires a WebLLM engine into the WebGPU adapter seam. The heavy library is
- * NEVER imported at module top level: the import() lives inside the loader
- * function, which runs ONLY when loadWebGpuEmbeddedAiEngine() is called by an
- * explicit user action. Registering is cheap and imports nothing, so opening
- * the PoC page does not fetch the model or the library.
+ * Phase 6.1a: the WebLLM engine was REMOVED from the main Oriex app. The heavy
+ * `@mlc-ai/web-llm` dependency was dropped and the dynamic import deleted, so
+ * this loader no longer starts an engine. Browser-AI experiments continue in the
+ * separate `oriex-embedded-ai-lab` repository.
  *
- * Model / runtime are fetched from the engine provider (see sources below) and
- * cached on-device (IndexedDB / Cache Storage). That download is engine/weights
- * only — the user's input text is processed on-device and is never sent to an
- * external AI API.
- *
- * Verified against the installed @mlc-ai/web-llm 0.2.84:
- *   - export CreateMLCEngine(modelId, { initProgressCallback }) -> engine
- *   - engine.chat.completions.create({ messages, temperature, max_tokens })
- *   - WEBLLM_MODEL_ID exists in prebuiltAppConfig.model_list (0.5B class)
+ * The exported constants/helpers below are kept so the hidden PoC panel still
+ * builds and its static tests pass. registerWebLlmEngine() now registers a
+ * loader that simply reports the engine is unavailable here. No prompt/generated
+ * text is stored and no external AI API is called.
  * ============================================================ */
 import { registerWebGpuEngineLoader } from "./webGpuEngineAdapter.js";
 
@@ -30,17 +24,6 @@ export const WEBLLM_MODEL_WEIGHTS_SOURCE =
   "https://huggingface.co/mlc-ai/Qwen2.5-0.5B-Instruct-q4f16_1-MLC";
 export const WEBLLM_RUNTIME_SOURCE =
   "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/main/web-llm-models/";
-
-function toThreeLines(text) {
-  const s = String(text || "").trim();
-  if (!s) return "";
-  return s
-    .split(/\r?\n/)
-    .map((l) => l.trim())
-    .filter(Boolean)
-    .slice(0, 3)
-    .join("\n");
-}
 
 let wired = false;
 
@@ -93,35 +76,13 @@ export function suggestedActionForLoadError(errorType) {
 export function registerWebLlmEngine() {
   if (wired) return;
   wired = true;
-  registerWebGpuEngineLoader(async (options = {}) => {
-    // Dynamic import -> separate lazy chunk, fetched only on explicit load.
-    const webllm = await import("@mlc-ai/web-llm");
-    const onProgress = typeof options.onProgress === "function" ? options.onProgress : null;
-    const engine = await webllm.CreateMLCEngine(WEBLLM_MODEL_ID, {
-      initProgressCallback: (report) => {
-        if (onProgress) {
-          try {
-            onProgress(report);
-          } catch {
-            /* ignore progress callback errors */
-          }
-        }
-      },
-    });
-    return {
-      generate: async (prompt) => {
-        const reply = await engine.chat.completions.create({
-          messages: [{ role: "user", content: String(prompt || "") }],
-          temperature: 0.4,
-          max_tokens: 200,
-        });
-        const content =
-          reply && reply.choices && reply.choices[0] && reply.choices[0].message
-            ? reply.choices[0].message.content
-            : "";
-        return toThreeLines(content);
-      },
-    };
+  // WebLLM engine removed from the main app (Phase 6.1a). The @mlc-ai/web-llm
+  // dependency and its dynamic import were dropped; this loader now reports the
+  // engine is unavailable here. Experiments live in oriex-embedded-ai-lab.
+  registerWebGpuEngineLoader(async () => {
+    throw new Error(
+      "WebLLM engine removed from the main Oriex app; see oriex-embedded-ai-lab",
+    );
   });
 }
 
