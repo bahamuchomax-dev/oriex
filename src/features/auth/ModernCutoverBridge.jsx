@@ -262,6 +262,48 @@ export default function ModernCutoverBridge() {
     };
   }, [phase, user]);
 
+  // Logout INTENT shield (cutover-only): while the legacy HOME is mounted, a
+  // capture-phase listener raises the veil the instant a logout control is
+  // pressed — BEFORE legacy handles the event and repaints its OLD login — so it
+  // can't flash for even one frame (the auth observer fires too late). Detection
+  // is narrow: a short button/link whose text contains "ログアウト". It NEVER
+  // prevents default, so legacy logout proceeds normally; the existing auth-null
+  // handling then moves to the modern login (which drops the veil). The listener
+  // is removed when the home isn't mounted, and is never installed on the
+  // emergency ?oriexLegacyFallback=1 path (that route never mounts this bridge).
+  useEffect(() => {
+    if (typeof document === "undefined") return undefined;
+    const homeReady = phase === "mounted" && !!user;
+    if (!homeReady) return undefined;
+
+    const isLogoutTarget = (start) => {
+      let el = start;
+      for (let i = 0; el && i < 4; i++) {
+        if (el.nodeType === 1) {
+          const role = typeof el.getAttribute === "function" ? el.getAttribute("role") : null;
+          if (el.tagName === "BUTTON" || el.tagName === "A" || role === "button") {
+            const txt = (el.textContent || "").trim();
+            if (txt.length <= 12 && txt.indexOf("ログアウト") !== -1) return true;
+          }
+        }
+        el = el.parentElement;
+      }
+      return false;
+    };
+    const onLogoutIntent = (e) => {
+      try {
+        if (isLogoutTarget(e.target)) showCutoverVeil();
+      } catch {
+        /* ignore — shield is best-effort visual only */
+      }
+    };
+    const INTENT_EVENTS = ["pointerdown", "touchstart", "click"];
+    INTENT_EVENTS.forEach((n) => document.addEventListener(n, onLogoutIntent, true));
+    return () => {
+      INTENT_EVENTS.forEach((n) => document.removeEventListener(n, onLogoutIntent, true));
+    };
+  }, [phase, user]);
+
   // Logout cover (visual-only): after a handoff, the instant Firebase Auth drops
   // to null (the user signed out), render a branded cover in THIS render rather
   // than null. Otherwise there is one painted frame — auth is null but the logout

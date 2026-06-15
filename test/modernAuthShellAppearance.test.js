@@ -78,6 +78,43 @@ describe("modern auth — brand mark uses the real Oriex app/PWA icon", () => {
   });
 });
 
+describe("modern auth — mobile screen is vertically centered", () => {
+  it("the auth container fills the viewport and centers the card", () => {
+    const rule = cssRule(".ox-auth");
+    expect(rule).toMatch(/min-height:\s*100svh/);
+    expect(rule).toMatch(/place-items:\s*center/);
+  });
+  it("uses symmetric safe-area padding (no top-heavy bottom-only inset)", () => {
+    const rule = cssRule(".ox-auth");
+    expect(rule).toMatch(/safe-area-inset-top/);
+    expect(rule).toMatch(/safe-area-inset-bottom/);
+  });
+  it("falls back to top-aligned scrolling on short screens (no clipping)", () => {
+    expect(CSS).toMatch(/@media \(max-height: 720px\)[\s\S]*\.ox-auth[\s\S]*align-items:\s*start/);
+  });
+});
+
+describe("modern auth — logout intent shield raises veil before legacy paints", () => {
+  it("installs a capture-phase logout listener only while the legacy home is mounted", () => {
+    expect(BRIDGE).toMatch(/const homeReady = phase === "mounted" && !!user;\s*\n\s*if \(!homeReady\) return undefined;/);
+    expect(BRIDGE).toMatch(/addEventListener\(n, onLogoutIntent, true\)/);
+    expect(BRIDGE).toMatch(/removeEventListener\(n, onLogoutIntent, true\)/);
+  });
+  it("detects logout narrowly (short control containing ログアウト) and raises the veil", () => {
+    expect(BRIDGE).toContain("ログアウト");
+    expect(BRIDGE).toMatch(/isLogoutTarget\(e\.target\)\) showCutoverVeil\(\)/);
+    // captures the earliest signals, before legacy's own handler
+    expect(BRIDGE).toContain('"pointerdown"');
+    expect(BRIDGE).toContain('"touchstart"');
+  });
+  it("never prevents default (legacy logout proceeds normally)", () => {
+    // the intent handler only shows the veil; it must not call preventDefault
+    const start = BRIDGE.indexOf("onLogoutIntent = (e)");
+    const end = BRIDGE.indexOf("INTENT_EVENTS", start);
+    expect(BRIDGE.slice(start, end)).not.toContain("preventDefault");
+  });
+});
+
 describe("modern auth — out-of-#root cutover veil (stronger flash guard)", () => {
   const MOUNT = readFileSync("src/features/auth/mountModernCutover.jsx", "utf8");
   const VEIL = readFileSync("src/features/auth/cutoverVeil.js", "utf8");
