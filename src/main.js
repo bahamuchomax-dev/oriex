@@ -40,6 +40,9 @@ import "./services/oxHelpers.js"; // -> window.__oxBg / __oxPbg / __oxAv / __oxS
 // startup and the initial bundle are unaffected.
 import { isEmbeddedAiProbeUrl } from "./features/embeddedAi/embeddedAiProbeRoute.js";
 import { isEmbeddedAiPocUrl } from "./features/embeddedAi/embeddedAiPocRoute.js";
+// Opt-in modern Firebase Auth shell gate. Tiny pure matcher (no React/Firebase),
+// so normal startup and the initial bundle are unaffected when it is disabled.
+import { isModernAuthEnabled } from "./features/auth/modernAuthRoute.js";
 
 // The application. Currently the original production build. Screens are being
 // peeled out of here into src/features/*. The legacy bundle self-mounts the
@@ -53,7 +56,21 @@ function startLegacyApp() {
 
 const oriexLocation = typeof window !== "undefined" ? window.location : null;
 
-if (oriexLocation && isEmbeddedAiPocUrl(oriexLocation)) {
+if (oriexLocation && isModernAuthEnabled(oriexLocation)) {
+  // Opt-in modern Firebase Auth shell (preparatory; NOT the default login).
+  // Enabled only by ?oriexModernAuth=1 / #modern-auth / localStorage opt-in.
+  // Separate lazy chunk; on any failure, fall back to the legacy app so a normal
+  // visit (flag absent) is never affected.
+  import("./features/auth/mountModernAuth.jsx")
+    .then((mod) => {
+      if (typeof mod.mountModernAuth === "function") mod.mountModernAuth();
+      else startLegacyApp();
+    })
+    .catch((err) => {
+      console.warn("[oriex] modern auth shell failed to load", err);
+      startLegacyApp();
+    });
+} else if (oriexLocation && isEmbeddedAiPocUrl(oriexLocation)) {
   // Hidden WebGPU PoC route (phase 3A). Separate lazy chunk; never on a normal
   // visit. Falls back to the normal app on failure (no white screen).
   import("./features/embeddedAi/mountPoc.jsx")

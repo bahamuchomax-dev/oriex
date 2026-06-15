@@ -38,3 +38,35 @@ identity re-key / forced password reset) is the migration work in
 > supersedes the earlier draft in PR #19 (`secure-auth-recovery-sprint`): the
 > strict 6-char Friend ID validation, the no-leak/no-log error handling, and the
 > extra error codes from #19 are all folded in here.
+
+## Modern Firebase Auth login shell (opt-in — NOT the default login)
+
+An **opt-in** Firebase Auth login/signup shell that uses real Firebase Auth and
+the `friendIdAuth.js` helpers. It does **not** replace the served legacy login and
+does **not** touch the legacy bundle. It is preparatory: existing-user migration,
+password reset, Cloud Functions, the #21 rules hardening, and production cutover
+are all intentionally out of scope.
+
+- `modernAuthRoute.js` — tiny pure gate. `isModernAuthEnabled(location)` is true
+  only when explicitly opted in.
+- `modernAuthApi.js` — `signUpWithFriendId`, `loginWithFriendId`, `logout`.
+  Firebase Auth owns the password; it is passed **only** to the Auth SDK, never
+  written to Firestore (every Firestore write runs through `assertSafePayload`,
+  which rejects credential/authority/answer fields). Login derives the internal
+  email deterministically — it reads no other user's `profile/main` and does no
+  client-side password comparison (the module imports no Firestore read primitive).
+- `ModernAuthShell.jsx` — `onAuthStateChanged`-driven UI; signed-out shows
+  login/signup, signed-in shows the user's own UID (copy) + logout. Errors are
+  shown only via `safeAuthErrorMessage`. Nothing is logged.
+- `mountModernAuth.jsx` — lazy mount; `src/main.js` loads it (separate chunk)
+  only when enabled, falling back to the legacy app on any failure.
+
+### How to enable (opt-in)
+
+- URL query: `…/?oriexModernAuth=1`
+- URL hash: `…/#modern-auth`
+- localStorage: `localStorage.setItem("oriexModernAuth", "1")` (clear it to disable)
+
+With the flag absent (the default), `main.js` boots the legacy app exactly as
+before. Firestore Rules are unchanged; deploying nothing is required. The #21
+rules hardening remains blocked until the migration is complete.
