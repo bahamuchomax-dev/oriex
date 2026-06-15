@@ -189,9 +189,20 @@ describe("firestore.rules — admin not exempt from answer ban & owner-limited d
 const RULES_CODE = RULES.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
 
 describe("firestore.rules — no public wildcard (critical fix)", () => {
-  it("never grants read/write if true anywhere (comments ignored)", () => {
+  it("never grants a write or full read+write via `if true` (comments ignored)", () => {
+    // No full read+write wildcard, and no mutation may be `if true`.
     expect(RULES_CODE).not.toMatch(/allow\s+read\s*,\s*write\s*:\s*if\s+true/);
-    expect(RULES_CODE).not.toMatch(/allow\s+(?:read|write|get|list|create|update|delete)[^\n]*:\s*if\s+true\b/);
+    expect(RULES_CODE).not.toMatch(/allow\s+(?:write|create|update|delete)\b[^\n]*:\s*if\s+true\b/);
+  });
+  it("the only public (unauthenticated) read is the teacherIndex login directory", () => {
+    // exactly one `allow read: if true`, and it is inside the teacherIndex block
+    const reads = RULES_CODE.match(/allow read: if true;/g) || [];
+    expect(reads.length).toBe(1);
+    const ti = RULES_CODE.match(
+      /match \/public\/data\/teacherIndex\/\{docId\}\s*\{([\s\S]*?)\}/,
+    );
+    expect(ti).toBeTruthy();
+    expect(ti[1]).toContain("allow read: if true");
   });
   it("has no broadly-writable public/data wildcard (read-only artifacts wildcard is OK)", () => {
     // The only public/data {document=**} wildcard is the legacy artifacts tree,
@@ -225,9 +236,15 @@ describe("firestore.rules — legacy artifacts live-app tree is least-privilege"
       /match \/public\/data\/customApp\/\{cardUid\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if isSelf\(cardUid\);/,
     );
   });
-  it("per-user friend/username index (teacherIndex) is owner-write, answer/authority free", () => {
+  it("teacherIndex is public-read (Friend ID login) but owner-write, answer/authority free", () => {
     expect(RULES_CODE).toMatch(
-      /match \/public\/data\/teacherIndex\/\{docId\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if isSelf\(docId\) && noAuthorityFields\(\) && noAnswerFields\(\);/,
+      /match \/public\/data\/teacherIndex\/\{docId\}\s*\{\s*allow read: if true;\s*allow write: if isSelf\(docId\) && noAuthorityFields\(\) && noAnswerFields\(\);/,
+    );
+  });
+  it("other shared public/data stays signed-in read (not public)", () => {
+    // the public/data wildcard read must require auth (only teacherIndex is public)
+    expect(RULES_CODE).toMatch(
+      /match \/public\/data\/\{document=\*\*\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if false;/,
     );
   });
 });
