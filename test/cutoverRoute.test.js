@@ -107,16 +107,20 @@ describe("cutover bridge — safe by construction", () => {
     expect(bridge).not.toContain("Bridge Probe"); // no debug observations banner
     expect(bridge).toMatch(/phase === "mounted"\)\s*return null/);
   });
-  it("starts the handoff on an in-session sign-in (passes onAuthed to the shell)", () => {
+  it("FRESH login: onAuthed calls startHandoff directly (immediate, not via effect re-run)", () => {
     const bridge = srcOf("src/features/auth/ModernCutoverBridge.jsx");
-    expect(bridge).toMatch(/<ModernAuthShell onAuthed=\{\(u\) => setUser\(u\)\}/);
+    // onAuthed both sets state AND kicks the idempotent handoff
+    expect(bridge).toMatch(/onAuthed=\{\(u\) => \{[\s\S]*setUser\(u\);[\s\S]*startHandoff\(u\);[\s\S]*\}\}/);
+    // a single idempotent trigger guarded against duplicate legacy imports
+    expect(bridge).toMatch(/const startHandoff = useCallback\(\(u\) => \{/);
+    expect(bridge).toMatch(/if \(!u \|\| startedRef\.current\) return;/);
+    expect(bridge).toContain("handoffToLegacy(u)");
   });
-  it("hands off a RESTORED persisted session via the currentAuthUser fallback", () => {
-    // a restored signed-in user must trigger handoffToLegacy automatically — the
-    // signed-in shell must NOT be the final state in cutover mode.
+  it("RESTORED session also hands off (observer + currentAuthUser fallback call startHandoff)", () => {
     const bridge = srcOf("src/features/auth/ModernCutoverBridge.jsx");
+    expect(bridge).toMatch(/if \(u\) startHandoff\(u\)/); // auth observer
     expect(bridge).toMatch(/const effectiveUser = user \|\| currentAuthUser\(\)/);
-    expect(bridge).toMatch(/handoffToLegacy\(effectiveUser\)/);
+    expect(bridge).toMatch(/startHandoff\(effectiveUser\)/);
   });
   it("shows a 'checking login state' loading message (waits for auth restoration)", () => {
     const bridge = srcOf("src/features/auth/ModernCutoverBridge.jsx");
