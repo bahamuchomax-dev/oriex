@@ -5,6 +5,8 @@ import { clearLegacyLocalSession } from "./legacyLocalSession.js";
 import { consumeCutoverReloadMarker, reloadForCutoverRelogin } from "./cutoverReload.js";
 import ModernAuthShell from "./ModernAuthShell.jsx";
 import OriexMark from "./OriexMark.jsx";
+import { showCutoverVeil, hideCutoverVeil } from "./cutoverVeil.js";
+import { APP_VERSION_LABEL } from "../../appVersion.js";
 import "./authScreen.css";
 
 /* ============================================================
@@ -47,6 +49,7 @@ function BrandedLoader({ message }) {
         <h1 className="ox-auth-title">Oriex</h1>
         <div className="ox-auth-spinner" aria-hidden="true" />
         <p role="status">{message}</p>
+        <p className="ox-auth-version">{APP_VERSION_LABEL}</p>
       </div>
     </div>
   );
@@ -204,10 +207,58 @@ export default function ModernCutoverBridge() {
   useEffect(() => {
     if (typeof document === "undefined") return undefined;
     const el = document.documentElement;
-    const covering = !(phase === "mounted" && !!user);
-    el.classList.toggle("ox-cutover-covering", covering);
+    const homeReady = phase === "mounted" && !!user;
+
+    // 1) Hide legacy under #root + lock zoom while the auth/transition UI is up.
+    el.classList.toggle("ox-cutover-covering", !homeReady);
+    el.classList.toggle("ox-auth-nozoom", !homeReady);
+
+    // 2) iOS Safari pinch-zoom guard — scoped to the auth/transition screen only
+    //    (removed once the legacy home is ready, so the app zooms normally after).
+    const stopGesture = (e) => {
+      try {
+        e.preventDefault();
+      } catch {
+        /* ignore */
+      }
+    };
+    const GESTURES = ["gesturestart", "gesturechange", "gestureend"];
+    if (!homeReady) {
+      GESTURES.forEach((n) => document.addEventListener(n, stopGesture, { passive: false }));
+    }
+
+    // 3) Veil control: keep the out-of-#root veil up during transitions; drop it
+    //    when the modern login (React overlay) is the target UI, or — bounded by
+    //    two frames + a short timeout — once the legacy home has painted.
+    let raf1 = 0;
+    let raf2 = 0;
+    let timer = 0;
+    const w = typeof window !== "undefined" ? window : null;
+    if (homeReady) {
+      if (w && typeof w.requestAnimationFrame === "function") {
+        raf1 = w.requestAnimationFrame(() => {
+          raf2 = w.requestAnimationFrame(() => {
+            timer = w.setTimeout(hideCutoverVeil, 300);
+          });
+        });
+      } else {
+        timer = setTimeout(hideCutoverVeil, 300);
+      }
+    } else if (phase === "signin") {
+      hideCutoverVeil();
+    } else {
+      showCutoverVeil();
+    }
+
     return () => {
+      GESTURES.forEach((n) => document.removeEventListener(n, stopGesture));
+      if (w && typeof w.cancelAnimationFrame === "function") {
+        if (raf1) w.cancelAnimationFrame(raf1);
+        if (raf2) w.cancelAnimationFrame(raf2);
+      }
+      if (timer) clearTimeout(timer);
       el.classList.remove("ox-cutover-covering");
+      el.classList.remove("ox-auth-nozoom");
     };
   }, [phase, user]);
 

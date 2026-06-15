@@ -6,6 +6,7 @@ import { validateInviteCode, DEV_INVITE_CODE } from "./inviteCode.js";
 import { CUTOVER_TITLE, CUTOVER_LINES, SIGNUP_NEW_FRIEND_ID_NOTE } from "./cutoverCopy.js";
 import { copyUserId, isCopyableUid } from "../profile/copyUserId.js";
 import OriexMark from "./OriexMark.jsx";
+import { APP_VERSION_LABEL } from "../../appVersion.js";
 import "./authScreen.css";
 
 /* ============================================================
@@ -175,6 +176,7 @@ export default function ModernAuthShell({ onAuthed } = {}) {
             ログアウト
           </button>
           {error && <p className="ox-auth-error">{error}</p>}
+          <p className="ox-auth-version">{APP_VERSION_LABEL}</p>
         </div>
       </div>
     );
@@ -280,6 +282,8 @@ export default function ModernAuthShell({ onAuthed } = {}) {
             {mode === "signup" ? "ログインに戻る" : "新しく始める"}
           </button>
         </div>
+
+        <p className="ox-auth-version">{APP_VERSION_LABEL}</p>
       </form>
     </div>
   );

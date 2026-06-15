@@ -293,3 +293,31 @@
 html.ox-cutover-covering #root {
   visibility: hidden !important;
 }
+
+/* ---------- scoped mobile no-zoom (auth screen only) ----------
+ * The login/signup screen must behave like a native mobile screen. While the
+ * modern auth UI is active the bridge adds `ox-auth-nozoom` to <html> (and the
+ * iOS pinch gesture* events are prevented in JS); the class disables double-tap
+ * zoom and bounces scroll. It is REMOVED once the legacy home is ready, so the
+ * app scrolls/zooms normally after login. Inputs are >=16px so iOS never
+ * auto-zooms on focus (see .ox-auth-input). */
+html.ox-auth-nozoom,
+html.ox-auth-nozoom body {
+  touch-action: manipulation;
+  overscroll-behavior: contain;
+  overflow-x: hidden;
+}
+.ox-auth,
+.ox-auth * {
+  touch-action: manipulation;
+}
+
+/* ---------- version label (login / signup / cover) ---------- */
+.ox-auth-version {
+  margin: 14px 0 0;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: rgba(43, 39, 36, 0.38);
+}
