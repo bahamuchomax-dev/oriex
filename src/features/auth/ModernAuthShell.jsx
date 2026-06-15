@@ -51,6 +51,11 @@ export default function ModernAuthShell() {
           setError("招待コードが正しくありません");
           return;
         }
+        // Firebase requires ≥ 6 chars; pre-check so we don't round-trip a 400.
+        if (!password || password.length < 6) {
+          setError("パスワードは6文字以上にしてください。");
+          return;
+        }
         const { shortId } = await signUpWithInviteCode({ inviteCode, password, name });
         setGeneratedFriendId(shortId); // a Friend ID is GENERATED, not typed
       } else {
@@ -61,8 +66,9 @@ export default function ModernAuthShell() {
       // for onAuthStateChanged to re-fire (that only updated the UI on reload).
       setUser(currentAuthUser());
     } catch (err) {
-      // Only a safe, curated message — never the raw error/password/token.
-      setError(safeAuthErrorMessage(err));
+      // Only a safe, curated message — never the raw error/password/token. The
+      // wording is mode-aware so a signup failure never shows login text.
+      setError(safeAuthErrorMessage(err, mode === "signup" ? "signup" : "login"));
     } finally {
       setBusy(false);
     }

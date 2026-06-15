@@ -112,13 +112,12 @@ describe("makeInternalAuthEmailFromFriendId", () => {
 });
 
 describe("safeAuthErrorMessage", () => {
-  it("collapses all credential-class errors to one generic message (no enumeration)", () => {
+  it("collapses credential-class errors to one generic message (no enumeration)", () => {
     const generic = safeAuthErrorMessage({ code: "auth/wrong-password" });
     for (const code of [
       "auth/invalid-credential",
       "auth/invalid-login-credentials",
       "auth/user-not-found",
-      "auth/invalid-email",
       "auth/missing-password",
     ]) {
       expect(safeAuthErrorMessage({ code })).toBe(generic);
@@ -128,8 +127,32 @@ describe("safeAuthErrorMessage", () => {
       safeAuthErrorMessage({ code: "auth/wrong-password" }),
     );
   });
-  it("maps rate-limit / network / disabled to their own safe messages", () => {
-    expect(safeAuthErrorMessage({ code: "auth/too-many-requests" })).toMatch(/試行回数/);
+  it("base wording is mode-aware: signup says 登録, login says ログイン", () => {
+    expect(safeAuthErrorMessage({ code: "auth/wrong-password" }, "login")).toMatch(/ログインに失敗/);
+    expect(safeAuthErrorMessage({ code: "auth/wrong-password" }, "signup")).toMatch(/登録に失敗/);
+    // login-specific text must NOT appear on a signup failure
+    expect(safeAuthErrorMessage({ code: "auth/wrong-password" }, "signup")).not.toMatch(/ログインに失敗/);
+    // default context is login
+    expect(safeAuthErrorMessage({ code: "auth/wrong-password" })).toMatch(/ログインに失敗/);
+  });
+  it("maps provider/setup + signup-class codes to their own safe messages", () => {
+    expect(safeAuthErrorMessage({ code: "auth/operation-not-allowed" })).toMatch(/メール\/パスワードログインが有効になっていません/);
+    expect(safeAuthErrorMessage({ code: "auth/weak-password" })).toMatch(/6文字以上/);
+    expect(safeAuthErrorMessage({ code: "auth/email-already-in-use" })).toMatch(/すでに登録/);
+    expect(safeAuthErrorMessage({ code: "auth/invalid-email" })).toMatch(/内部ログインIDの形式/);
+    expect(safeAuthErrorMessage({ code: "auth/too-many-requests" })).toMatch(/時間をおいて/);
+  });
+  it("classifies raw REST tokens in error.message (SDK code absent)", () => {
+    const rest = (msg) => safeAuthErrorMessage({ message: "Error: " + msg });
+    expect(rest("OPERATION_NOT_ALLOWED")).toMatch(/有効になっていません/);
+    expect(rest("WEAK_PASSWORD : Password should be at least 6 characters")).toMatch(/6文字以上/);
+    expect(rest("EMAIL_EXISTS")).toMatch(/すでに登録/);
+    expect(rest("INVALID_EMAIL")).toMatch(/内部ログインID/);
+    expect(rest("TOO_MANY_ATTEMPTS_TRY_LATER")).toMatch(/時間をおいて/);
+  });
+  it("maps reauth / rules-denied / network / disabled to their own safe messages", () => {
+    expect(safeAuthErrorMessage({ code: "auth/requires-recent-login" })).toMatch(/再ログイン/);
+    expect(safeAuthErrorMessage({ code: "permission-denied" })).toMatch(/権限/);
     expect(safeAuthErrorMessage({ code: "auth/network-request-failed" })).toMatch(/ネットワーク/);
     expect(safeAuthErrorMessage({ code: "auth/user-disabled" })).toMatch(/無効化/);
   });
@@ -142,11 +165,6 @@ describe("safeAuthErrorMessage", () => {
     expect(out).not.toContain("hunter2");
     expect(out).not.toContain("alice@real.example");
     expect(out).not.toContain(leaky.message);
-  });
-  it("maps signup / reauth / rules-denied codes to their own safe messages", () => {
-    expect(safeAuthErrorMessage({ code: "auth/email-already-in-use" })).toMatch(/既に登録/);
-    expect(safeAuthErrorMessage({ code: "auth/requires-recent-login" })).toMatch(/再ログイン/);
-    expect(safeAuthErrorMessage({ code: "permission-denied" })).toMatch(/権限/);
   });
   it("accepts a raw code string as well as an error object", () => {
     expect(safeAuthErrorMessage("auth/too-many-requests")).toMatch(/試行回数/);

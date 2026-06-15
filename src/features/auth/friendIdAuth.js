@@ -84,48 +84,86 @@ export function makeInternalAuthEmailFromFriendId(friendId, domain = INTERNAL_AU
   return `${normalized.toLowerCase()}@${domain}`;
 }
 
-// Generic, non-enumerating message: credential-class failures must NOT reveal
-// whether the account exists or which factor was wrong.
-const GENERIC_AUTH_MESSAGE = "ログインに失敗しました。IDまたはパスワードをご確認ください。";
+// Generic, non-enumerating messages: credential-class failures must NOT reveal
+// whether the account exists or which factor was wrong. The base wording is
+// context-aware so a SIGNUP failure never shows login-specific text.
+const GENERIC_LOGIN_MESSAGE = "ログインに失敗しました。IDまたはパスワードをご確認ください。";
+const GENERIC_SIGNUP_MESSAGE = "登録に失敗しました。もう一度お試しください。";
+
+// REST tokens (accounts:signUp / signInWithPassword return these in the body).
+// The Firebase JS SDK usually maps them to auth/* codes, but classify by message
+// too so a raw REST error is still handled. We READ the message only to classify
+// — we never display it.
+const REST_TOKENS = [
+  "OPERATION_NOT_ALLOWED",
+  "WEAK_PASSWORD",
+  "EMAIL_EXISTS",
+  "INVALID_EMAIL",
+  "TOO_MANY_ATTEMPTS_TRY_LATER",
+  "PASSWORD_LOGIN_DISABLED",
+];
+
+// Extract a normalized classification key from a code string, an error object's
+// `.code`, or (as a fallback) a REST token found in `.message`. Never returns the
+// raw message.
+function classifyAuthError(error) {
+  if (typeof error === "string") return error;
+  if (!error || typeof error !== "object") return "";
+  if (typeof error.code === "string" && error.code) return error.code;
+  const msg = typeof error.message === "string" ? error.message : "";
+  for (const token of REST_TOKENS) {
+    if (msg.includes(token)) return token;
+  }
+  return "";
+}
 
 /**
  * Map a Firebase Auth / Firestore error to a SAFE, user-facing Japanese message.
- * Accepts either an error object (reads `.code`) or a raw code string. Never
- * returns the raw `error.message` (which may carry an email/uid/credential) and
- * never distinguishes user-not-found from wrong-password (no account
- * enumeration).
+ * Accepts an error object (reads `.code`, falls back to a REST token in
+ * `.message`) or a raw code string. Never returns the raw `error.message` (which
+ * may carry an email/uid/credential) and never distinguishes user-not-found from
+ * wrong-password (no account enumeration).
  * @param {unknown} error  a Firebase error object, or a code string
+ * @param {"login"|"signup"} [context="login"]  drives the generic wording
  * @returns {string}
  */
-export function safeAuthErrorMessage(error) {
-  let code = "";
-  if (typeof error === "string") {
-    code = error;
-  } else if (error && typeof error === "object" && typeof error.code === "string") {
-    code = error.code;
-  }
+export function safeAuthErrorMessage(error, context = "login") {
+  const generic = context === "signup" ? GENERIC_SIGNUP_MESSAGE : GENERIC_LOGIN_MESSAGE;
+  const code = classifyAuthError(error);
   switch (code) {
-    // Credential-class — collapse to one generic message (no enumeration).
-    case "auth/invalid-credential":
-    case "auth/invalid-login-credentials":
-    case "auth/wrong-password":
-    case "auth/user-not-found":
-    case "auth/invalid-email":
-    case "auth/missing-password":
-      return GENERIC_AUTH_MESSAGE;
+    // Provider / sign-in method not enabled in the Firebase project settings.
+    case "auth/operation-not-allowed":
+    case "OPERATION_NOT_ALLOWED":
+    case "PASSWORD_LOGIN_DISABLED":
+      return "Firebase Authentication のメール/パスワードログインが有効になっていません。";
+    case "auth/weak-password":
+    case "WEAK_PASSWORD":
+      return "パスワードは6文字以上にしてください。";
     case "auth/email-already-in-use":
-      return "このIDは既に登録されています。";
+    case "EMAIL_EXISTS":
+      return "このIDはすでに登録されています。ログインしてください。";
+    case "auth/invalid-email":
+    case "INVALID_EMAIL":
+      return "内部ログインIDの形式に問題があります。";
+    case "auth/too-many-requests":
+    case "TOO_MANY_ATTEMPTS_TRY_LATER":
+      return "試行回数が多すぎます。時間をおいてお試しください。";
     case "auth/requires-recent-login":
       return "この操作には再ログインが必要です。もう一度ログインしてください。";
-    case "auth/too-many-requests":
-      return "試行回数が多すぎます。しばらくしてからもう一度お試しください。";
     case "auth/network-request-failed":
       return "ネットワークエラーが発生しました。接続を確認してください。";
     case "auth/user-disabled":
       return "このアカウントは無効化されています。管理者にお問い合わせください。";
     case "permission-denied":
       return "権限設定エラーです。管理者にお問い合わせください。";
+    // Credential-class — collapse to the generic message (no enumeration).
+    case "auth/invalid-credential":
+    case "auth/invalid-login-credentials":
+    case "auth/wrong-password":
+    case "auth/user-not-found":
+    case "auth/missing-password":
+      return generic;
     default:
-      return GENERIC_AUTH_MESSAGE;
+      return generic;
   }
 }
