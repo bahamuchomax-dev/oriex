@@ -102,8 +102,13 @@ describe("modern auth — cutover intercepts legacy logout (no old-login render)
     expect(SHIELD).toContain("stopPropagation");
     expect(SHIELD).toContain("stopImmediatePropagation");
     // capture phase so it fires before legacy's own handler
-    expect(SHIELD).toMatch(/addEventListener\([^,]+,\s*handler,\s*true\)/);
-    expect(SHIELD).toMatch(/removeEventListener\([^,]+,\s*handler,\s*true\)/);
+    // capture + passive:false so preventDefault works on touch (touchstart is
+    // passive-by-default in Chrome — otherwise the [Intervention] warning + a
+    // legacy logout that isn't actually blocked).
+    expect(SHIELD).toMatch(/capture:\s*true/);
+    expect(SHIELD).toMatch(/passive:\s*false/);
+    expect(SHIELD).toMatch(/addEventListener\(n, handler, OPTS\)/);
+    expect(SHIELD).toMatch(/removeEventListener\(n, handler, OPTS\)/);
   });
   it("detects logout by label, short text, OR the language-independent icon path", () => {
     expect(SHIELD).toContain("ログアウト");
@@ -130,6 +135,9 @@ describe("modern auth — cutover intercepts legacy logout (no old-login render)
     // clears the safe legacy fast-start session + uid global (no password/token)
     expect(BRIDGE).toContain("clearLegacyLocalSession(lastUidRef.current)");
     expect(BRIDGE).toMatch(/window\.__oxUid = undefined/);
+    // reloads directly from the confirm path (so a legacy self-signout flood of
+    // permission-denied can't accumulate while waiting on the cross-instance observer)
+    expect(BRIDGE).toMatch(/logout\(\)[\s\S]*?\.finally\(\(\) => \{[\s\S]*?reloadForCutoverLogout\(\)/);
   });
   it("the auth observer drives a one-time clean reload on auth-null after handoff", () => {
     // legacy keeps live Firestore listeners that throw permission-denied after

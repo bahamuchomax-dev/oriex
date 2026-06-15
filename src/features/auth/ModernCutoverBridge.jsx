@@ -335,9 +335,20 @@ export default function ModernCutoverBridge() {
       /* ignore */
     }
     clearLegacyLocalSession(lastUidRef.current);
-    logout().catch(() => {
-      /* swallow — nothing sensitive to surface */
-    });
+    // Sign out, then immediately do the one-time clean reload. We reload from HERE
+    // (not only from the auth observer) because when legacy signs out on its own
+    // instance the modern observer may not fire promptly — leaving legacy's
+    // onSnapshot listeners retrying permission-denied in a flood. Reloading right
+    // after sign-out persists boots a clean modern login (legacy never imported),
+    // which stops the listeners entirely. Veil stays up across the reload; the
+    // observer remains a backstop. Never log credentials.
+    logout()
+      .catch(() => {
+        /* swallow — nothing sensitive to surface */
+      })
+      .finally(() => {
+        reloadForCutoverLogout();
+      });
   }, []);
 
   // Install the capture-phase logout shield ONLY while the legacy home is
