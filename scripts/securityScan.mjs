@@ -1,6 +1,9 @@
-#!/usr/bin/env node
 /* ============================================================
  * securityScan.mjs — GitHub 公開前の「秘密情報混入」チェック
+ * (Run via `node scripts/securityScan.mjs` / `npm run security:scan`.
+ *  No shebang: a leading `#!` is not stripped by Vitest's vite-node
+ *  transform when this file is imported by a test, which produced a
+ *  spurious "SyntaxError: Invalid or unexpected token".)
  * ------------------------------------------------------------
  * 目的: リポジトリに本物の秘密鍵 / Service Account JSON / 外部AIキー等が
  *       混入しにくくする。`npm run security:scan` で実行。
@@ -79,6 +82,27 @@ export const WARN = [
   },
 ];
 
+// DOM: 危険な DOM/コード実行 API → FAIL（exit 1）。誤検知を避けるため、
+// 凍結済みレガシー（src/legacy/** と *.min.js）には適用しない（isDomScanned で制御）。
+export const DOM = [
+  { id: "dangerouslySetInnerHTML", re: /dangerouslySetInnerHTML/, note: "React の生 HTML 注入" },
+  { id: "innerHTML", re: /\.innerHTML\b/, note: "innerHTML 代入/参照" },
+  { id: "outerHTML", re: /\.outerHTML\b/, note: "outerHTML 代入/参照" },
+  { id: "insertAdjacentHTML", re: /insertAdjacentHTML\s*\(/, note: "insertAdjacentHTML" },
+  { id: "document-write", re: /document\.write(?:ln)?\s*\(/, note: "document.write" },
+  { id: "eval", re: /\beval\s*\(/, note: "eval()" },
+  { id: "new-function", re: /\bnew\s+Function\s*\(/, note: "new Function()" },
+  { id: "javascript-url", re: /['"`]\s*javascript:/i, note: "javascript: URL（文字列）" },
+];
+
+// モデル重みファイルはこのリポジトリに含めない → FAIL（exit 1）。
+export const WEIGHT_EXT = new Set([".onnx", ".gguf", ".safetensors", ".bin"]);
+
+// 危険な DOM スキャン対象か（凍結レガシー / minified は除外して誤検知を防ぐ）。
+export function isDomScanned(rel) {
+  return rel.startsWith("src/") && !rel.startsWith("src/legacy/") && !rel.endsWith(".min.js");
+}
+
 function toPosix(p) {
   return p.split(sep).join("/");
 }
@@ -108,7 +132,7 @@ function redact(line) {
 }
 
 /* 1ファイル分のテキストを走査して findings を返す（純粋関数・テスト容易）。 */
-export function scanContent(text, { rel = "", allowName = false } = {}) {
+export function scanContent(text, { rel = "", allowName = false, scanDom = false } = {}) {
   const findings = [];
   const lines = text.split(/\r?\n/);
   for (let i = 0; i < lines.length; i++) {
@@ -121,6 +145,11 @@ export function scanContent(text, { rel = "", allowName = false } = {}) {
     if (!allowName) {
       for (const tok of NAME) {
         if (line.includes(tok)) findings.push({ sev: "FAIL", id: "name:" + tok, note: "秘密情報の名称/外部AIエンドポイント", rel, line: i + 1, snippet: redact(line) });
+      }
+    }
+    if (scanDom) {
+      for (const d of DOM) {
+        if (d.re.test(line)) findings.push({ sev: "FAIL", id: "dom:" + d.id, note: "危険な DOM/コード実行 API: " + d.note, rel, line: i + 1, snippet: redact(line) });
       }
     }
     for (const w of WARN) {
@@ -159,13 +188,31 @@ export function runScan(root = process.cwd()) {
   const all = [];
   for (const abs of files) {
     const rel = toPosix(relative(root, abs));
+    // モデル重みファイルは内容に関わらず存在自体を禁止（FAIL）。
+    if (WEIGHT_EXT.has(extname(abs).toLowerCase())) {
+      all.push({ sev: "FAIL", id: "model-weight", note: "モデル重みファイルは repo に含めない", rel, line: 1, snippet: rel });
+      continue;
+    }
     let text;
     try {
       text = readFileSync(abs, "utf8");
     } catch {
       continue; // 読めない/バイナリはスキップ
     }
-    all.push(...scanContent(text, { rel, allowName: isNameExempt(rel) }));
+    all.push(...scanContent(text, { rel, allowName: isNameExempt(rel), scanDom: isDomScanned(rel) }));
+  }
+  // .env / .env.* の混入禁止（.env.example のみ許可）。リポジトリ直下を確認。
+  for (const name of readdirSync(root)) {
+    if (/^\.env($|\.)/.test(name) && name !== ".env.example") {
+      const abs = join(root, name);
+      try {
+        if (statSync(abs).isFile()) {
+          all.push({ sev: "FAIL", id: "dotenv", note: ".env ファイルは repo に含めない（.env.example のみ可）", rel: name, line: 1, snippet: name });
+        }
+      } catch {
+        // ignore
+      }
+    }
   }
   return all;
 }
