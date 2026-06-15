@@ -48,6 +48,11 @@ describe("modern auth — driven by Firebase Auth, errors are safe", () => {
     expect(SHELL).toMatch(/function ModernAuthShell\(\{ onAuthed \}/);
     expect(SHELL).toMatch(/if \(onAuthed\) onAuthed\(authed\)/);
   });
+  it("also notifies onAuthed for a RESTORED persisted session (not only fresh login)", () => {
+    // the subscribe callback fires onAuthed for any signed-in user, so the cutover
+    // never dead-ends on the signed-in shell after a reload.
+    expect(SHELL).toMatch(/if \(u && onAuthed\) onAuthed\(u\)/);
+  });
   it("transitions to signed-out immediately after logout (no reload)", () => {
     expect(SHELL).toContain("setUser(null)");
   });

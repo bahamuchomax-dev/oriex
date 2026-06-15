@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { subscribeAuth } from "./modernAuthState.js";
+import { subscribeAuth, currentAuthUser } from "./modernAuthState.js";
 import { shouldMountLegacy } from "./authBridgeController.js";
 import { handoffToLegacy } from "./legacyHandoff.js";
 import ModernAuthShell from "./ModernAuthShell.jsx";
@@ -57,18 +57,21 @@ export default function ModernCutoverBridge() {
       setPhase("checking");
       return;
     }
-    if (!user) {
+    // Fall back to the authoritative current user: a RESTORED persisted session
+    // must hand off even if our subscription didn't deliver the user to state.
+    const effectiveUser = user || currentAuthUser();
+    if (!effectiveUser) {
       setPhase("signin");
       return;
     }
-    if (!shouldMountLegacy({ ready, hasUser: !!user, alreadyMounted: startedRef.current })) {
+    if (!shouldMountLegacy({ ready, hasUser: true, alreadyMounted: startedRef.current })) {
       return;
     }
     startedRef.current = true;
 
     let cancelled = false;
     setPhase("starting");
-    handoffToLegacy(user)
+    handoffToLegacy(effectiveUser)
       .then(() => {
         if (!cancelled) setPhase("mounted");
       })
