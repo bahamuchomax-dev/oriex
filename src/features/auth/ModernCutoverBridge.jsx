@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { subscribeAuth, currentAuthUser } from "./modernAuthState.js";
-import { shouldMountLegacy } from "./authBridgeController.js";
 import { handoffToLegacy } from "./legacyHandoff.js";
 import ModernAuthShell from "./ModernAuthShell.jsx";
 
@@ -38,50 +37,62 @@ function Overlay({ children }) {
 }
 
 export default function ModernCutoverBridge() {
-  const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
+  const [user, setUser] = useState(null);
   const [phase, setPhase] = useState("checking"); // checking | signin | starting | mounted | error
   const startedRef = useRef(false);
+  const aliveRef = useRef(true);
 
-  useEffect(
-    () =>
-      subscribeAuth(
-        (u) => setUser(u),
-        () => setReady(true),
-      ),
-    [],
-  );
+  // The single, IDEMPOTENT handoff trigger. Called from EVERY path that can yield a
+  // signed-in user — mount/restore, the auth observer, AND the embedded shell's
+  // onAuthed (fresh login) — so a fresh in-session login hands off immediately and
+  // never dead-ends on the signed-in shell, without depending on an effect re-run.
+  const startHandoff = useCallback((u) => {
+    if (!u || startedRef.current) return;
+    startedRef.current = true;
+    setPhase("starting");
+    handoffToLegacy(u)
+      .then(() => {
+        if (aliveRef.current) setPhase("mounted");
+      })
+      .catch(() => {
+        if (aliveRef.current) setPhase("error");
+      });
+  }, []);
 
+  // Auth observer: source of truth for restore + later changes. On any user,
+  // start the handoff immediately.
   useEffect(() => {
+    aliveRef.current = true;
+    const unsub = subscribeAuth(
+      (u) => {
+        setUser(u);
+        if (u) startHandoff(u);
+      },
+      () => setReady(true),
+    );
+    return () => {
+      aliveRef.current = false;
+      unsub();
+    };
+  }, [startHandoff]);
+
+  // Once auth has resolved: a persisted user (from state OR the authoritative
+  // current user) hands off; otherwise show login. Does not touch the phase once
+  // the handoff has started (startHandoff owns it then).
+  useEffect(() => {
+    if (startedRef.current) return;
     if (!ready) {
       setPhase("checking");
       return;
     }
-    // Fall back to the authoritative current user: a RESTORED persisted session
-    // must hand off even if our subscription didn't deliver the user to state.
     const effectiveUser = user || currentAuthUser();
     if (!effectiveUser) {
       setPhase("signin");
       return;
     }
-    if (!shouldMountLegacy({ ready, hasUser: true, alreadyMounted: startedRef.current })) {
-      return;
-    }
-    startedRef.current = true;
-
-    let cancelled = false;
-    setPhase("starting");
-    handoffToLegacy(effectiveUser)
-      .then(() => {
-        if (!cancelled) setPhase("mounted");
-      })
-      .catch(() => {
-        if (!cancelled) setPhase("error");
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [ready, user]);
+    startHandoff(effectiveUser);
+  }, [ready, user, startHandoff]);
 
   // Legacy now owns #root — render nothing so only the real app shows.
   if (phase === "mounted") return null;
@@ -112,13 +123,18 @@ export default function ModernCutoverBridge() {
     );
   }
 
-  // Signed out → modern login/signup. onAuthed makes the handoff start as soon as
-  // the embedded shell signs in, even if our own onAuthStateChanged is slow for an
-  // in-session login (which previously left the cutover stuck on the shell).
+  // Signed out → modern login/signup. onAuthed starts the handoff the instant the
+  // embedded shell signs in (fresh login) — deterministically, not via an effect
+  // re-run — so the signed-in shell is never the final state.
   return (
     <Overlay>
       <div style={{ width: "100%", maxWidth: 420 }}>
-        <ModernAuthShell onAuthed={(u) => setUser(u)} />
+        <ModernAuthShell
+          onAuthed={(u) => {
+            setUser(u);
+            startHandoff(u);
+          }}
+        />
       </div>
     </Overlay>
   );
