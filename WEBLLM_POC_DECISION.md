@@ -77,3 +77,30 @@
 - Keep `LOCAL_AI_UI_ENABLED = false`.
 - Keep the PoC URL-gated and lazy; do not wire it into navigation or default flags.
 - Keep the guard tests green (UI does not expose the PoC).
+
+## Phase 6.1a — WebLLM engine dependency removed (this PR)
+
+A minimal first step toward Option B (full removal). Done here:
+
+- Removed the `@mlc-ai/web-llm` dependency from `package.json` / `package-lock.json`.
+- Neutralized `src/features/embeddedAi/engines/webLlmEngineLoader.js`: the
+  `await import("@mlc-ai/web-llm")` and engine creation were deleted;
+  `registerWebLlmEngine()` now registers a loader that reports the engine is
+  unavailable in the main app. Exported constants/helpers are kept so the hidden
+  PoC panel still builds and its static tests pass.
+- Deleted the dedicated `test/embeddedAiWebLlmEngine.test.js` (it asserted the
+  removed dynamic import and the removed dependency).
+
+Deliberately NOT done in this PR (deferred to a later, separately-confirmed PR):
+
+- Full deletion of `src/features/embeddedAi` and `src/features/localAi`.
+- Editing the coupled non-PoC tests (`reactMigrationPlan`, `profileReactMigration`,
+  `recordsReactMigration`, `reviewReactMigration`, `appShellStatic`,
+  `pdfTextExtractor`) that currently assert those PoC files exist.
+- Removing `pdfjs-dist` (used only by `localAi/pdfTextExtractor.js`).
+
+Result: the heaviest browser-AI dependency is gone from the main app and the
+embedded-AI PoC can no longer start a WebLLM engine. Browser-AI / WebLLM
+experiments continue in the `oriex-embedded-ai-lab` repository. No external AI
+API, API key, `.env`, service account, or model weights were added; no
+prompt/generated text is stored in the main app.
