@@ -23,6 +23,33 @@ hardening + deploy (project `genro-b74de`).
   login onto the modern `src/features/auth/AuthProvider.jsx` (which drives state
   from `onAuthStateChanged`). That is a separate, larger effort.
 
+## 1b. Friend ID re-login still failed (customApp is the PRIMARY directory)
+
+- Friend ID login resolves the ID to a uid by querying, **while unauthenticated**:
+  1. `artifacts/{appId}/public/data/customApp` `where("shortId","==", id)` — **primary**, then
+  2. `artifacts/{appId}/public/data/teacherIndex` `where("shortId","==", id)` — fallback.
+- PR #17 made only `teacherIndex` public, so the **primary `customApp` query was
+  still denied** (signed-in read) and re-login failed before reaching the fallback.
+- Fix: make `customApp` read public too (`allow read: if true`), same scoped
+  tradeoff as teacherIndex. Write stays owner-only (`isSelf(cardUid)`).
+- Now exactly TWO collections are public-read (the Friend ID login directories:
+  `customApp`, `teacherIndex`). All other `public/data` stays signed-in read;
+  `users/{uid}/**` stays owner-only; default-deny preserved.
+
+## 1c. Account deletion / 退会 failure
+
+- The legacy bundle surfaces `requires-recent-login` (Firebase Auth). Deleting an
+  Auth user requires a recent sign-in; if the session is old, `deleteUser()`
+  throws `auth/requires-recent-login`.
+- **This is an Auth requirement, not a Firestore rules problem** and cannot be
+  fixed in rules or without editing the frozen legacy bundle. Mitigation: the user
+  must re-login immediately before deleting (re-authentication), or a re-auth flow
+  must be added in a future modern-auth migration.
+- The Firestore-side cleanup IS permitted: a user may delete their own
+  `users/{uid}/**`, `customApp/{uid}`, and `teacherIndex/{uid}` (owner-only).
+  Cross-user friend-mirror cleanup (`users/{otherUid}/friends/{myUid}`) remains
+  denied by design (no cross-user writes); that is a separate, non-blocking item.
+
 ## 2. OAuth "authorized domain" console warning
 
 Console warning:
