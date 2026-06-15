@@ -1,15 +1,26 @@
-// Invite-code gate for the OPT-IN modern auth signup.
+// Invite-code gate for the modern auth signup.
 //
-// NOT A SECURITY BOUNDARY. This is a documented, NON-SECRET, TEST-ONLY gate so
-// the opt-in modern shell (`?oriexModernAuth=1`) can be exercised manually. It is
-// client-side only and trivially bypassable, so it provides ZERO real protection
-// -- the real protections are Firebase Auth + Firestore Rules. A production
-// cutover must replace this with a server/backend-validated invite (a real
-// secret, never shipped in client source). The code is never written to Firestore
-// and never logged.
+// NOT A SECURITY BOUNDARY. It is client-side only and trivially bypassable, so it
+// provides ZERO real protection -- the real protections are Firebase Auth +
+// Firestore Rules. A full production cutover should replace this with a
+// server/backend-validated invite. The code is never written to Firestore and
+// never logged.
+//
+// PRODUCTION: the active code is supplied at build time via the VITE_INVITE_CODE
+// env var (NEVER committed to source). When that env var is unset (local dev /
+// tests) it falls back to the documented, non-secret, TEST-ONLY DEV_INVITE_CODE
+// so the suite and manual dev still work. The code is NOT shown in the UI.
 
-/** Documented, non-secret, TEST-ONLY development invite code. */
+const ENV_INVITE_CODE =
+  (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_INVITE_CODE) || "";
+
+/** Documented, non-secret, TEST-ONLY dev fallback (used only when VITE_INVITE_CODE
+ * is unset, e.g. local dev / tests). Never the production code. */
 export const DEV_INVITE_CODE = "ORIX-TEST";
+
+/** The ACTIVE invite code: the build-time VITE_INVITE_CODE (production, never
+ * committed) when set, otherwise the dev fallback. */
+const ACTIVE_INVITE_CODE = ENV_INVITE_CODE || DEV_INVITE_CODE;
 
 /**
  * Canonicalize an entered invite code so copy/paste, full-width input, casing,
@@ -32,5 +43,5 @@ export function normalizeInviteCode(input) {
  */
 export function validateInviteCode(input) {
   const entered = normalizeInviteCode(input);
-  return entered.length > 0 && entered === normalizeInviteCode(DEV_INVITE_CODE);
+  return entered.length > 0 && entered === normalizeInviteCode(ACTIVE_INVITE_CODE);
 }
