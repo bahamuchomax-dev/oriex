@@ -105,11 +105,14 @@ describe("modern auth — cutover intercepts legacy logout (no old-login render)
     expect(SHIELD).toMatch(/addEventListener\([^,]+,\s*handler,\s*true\)/);
     expect(SHIELD).toMatch(/removeEventListener\([^,]+,\s*handler,\s*true\)/);
   });
-  it("detects logout controls narrowly and skips the modern auth UI", () => {
+  it("detects logout by label, short text, OR the language-independent icon path", () => {
     expect(SHIELD).toContain("ログアウト");
+    // title / aria-label and the distinctive legacy logout-icon svg path
+    expect(SHIELD).toMatch(/aria-label|title/);
+    expect(SHIELD).toContain("M15 12H3");
+    expect(SHIELD).toContain('path[d^=');
     // does not hijack the modern shell's own logout/controls
     expect(SHIELD).toMatch(/closest\("\.ox-auth"\)/);
-    expect(SHIELD).toMatch(/BUTTON|tagName/);
   });
   it("the bridge installs the shield only while the legacy home is mounted", () => {
     expect(BRIDGE).toContain("installCutoverLogoutShield");

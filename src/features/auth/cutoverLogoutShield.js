@@ -18,21 +18,45 @@
 // Narrow, near-exact logout labels. Kept short so a big container that merely
 // contains the word is not matched (we also bound the element text length).
 const LOGOUT_TEXTS = ["ログアウト", "サインアウト", "logout", "log out", "sign out"];
+// The legacy bundle's distinctive logout-icon SVG path. Language-INDEPENDENT and
+// stable for this app, so it matches the icon-style logout control even though
+// the bundle stores its Japanese labels as \uXXXX escapes (and the control may
+// be a <div>/<span>, not a <button>).
+const LOGOUT_ICON_PATH_PREFIX = "M15 12H3";
 
 /** True iff `start` (or a close ancestor) is a narrow legacy logout control. */
 export function isLogoutControl(start) {
   let el = start;
-  for (let i = 0; el && i < 4; i++) {
+  for (let i = 0; el && i < 6; i++) {
     if (el.nodeType === 1) {
       // never treat the modern auth UI's own controls as a legacy logout
       if (el.classList && el.classList.contains("ox-auth")) return false;
-      const role = typeof el.getAttribute === "function" ? el.getAttribute("role") : null;
-      if (el.tagName === "BUTTON" || el.tagName === "A" || role === "button") {
-        const txt = (el.textContent || "").trim().toLowerCase();
-        if (txt.length <= 16) {
-          for (const t of LOGOUT_TEXTS) {
-            if (txt.indexOf(t.toLowerCase()) !== -1) return true;
+
+      // 1) title / aria-label (the icon-only logout button carries title="ログアウト")
+      const label =
+        typeof el.getAttribute === "function"
+          ? (el.getAttribute("title") || el.getAttribute("aria-label") || "")
+          : "";
+      const labelLc = label.toLowerCase();
+      for (const t of LOGOUT_TEXTS) {
+        if (labelLc.indexOf(t.toLowerCase()) !== -1) return true;
+      }
+
+      // Bound to a SMALL control so we don't match a big container that merely
+      // contains a logout item somewhere deeper.
+      const txt = (el.textContent || "").trim();
+      if (txt.length <= 24) {
+        const txtLc = txt.toLowerCase();
+        for (const t of LOGOUT_TEXTS) {
+          if (txtLc.indexOf(t.toLowerCase()) !== -1) return true;
+        }
+        // 2) distinctive logout icon path (works regardless of tag/language)
+        try {
+          if (el.querySelector && el.querySelector('path[d^="' + LOGOUT_ICON_PATH_PREFIX + '"]')) {
+            return true;
           }
+        } catch {
+          /* ignore selector errors */
         }
       }
     }
