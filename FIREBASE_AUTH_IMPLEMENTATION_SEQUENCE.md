@@ -122,6 +122,29 @@ for *why*; this is the *how/when*.
 - **No permission-denied on allowed paths**; other users' private docs unreadable.
 - No password/token/credential/auth-user object logged anywhere.
 
+### 8a. Manual verification log
+
+**2026-06-15 — opt-in modern shell (`?oriexModernAuth=1`) — PASS.** Covers PRs
+#25/#26 (shell + sign-in state transition) and the in-review #27/#28 (invite-code
+signup + signup error handling). Verified against project `genro-b74de` after
+enabling the Email/Password provider in the Firebase Console:
+
+- Firebase Console → Authentication → Sign-in method → **Email/Password enabled**
+  (the prerequisite for `accounts:signUp`; a console setting, not a rules change).
+- **Signup succeeded**; a Friend ID was **generated** (`KWFAQA`) and displayed
+  (the user does not type one).
+- **Logout succeeded.**
+- **Re-login** with the generated Friend ID + the same password **succeeded**,
+  and the UI transitioned to signed-in **without a reload**.
+- `users/{uid}/profile/main` contained **only** `name`, `shortId`, `updatedAt` —
+  **no `password` field present** (the security contract held end-to-end).
+- **No deploy** was performed. `firestore.rules` unchanged. **#21 remains
+  draft/blocked.**
+
+Scope note: this validates the **new-account** flow only. Existing-user
+migration (reset / re-registration) is unverified and is planned separately in
+`EXISTING_USER_RESET_PLAN.md`.
+
 ## 9. Rollback
 
 - Roll back the **app** to the previous version if the new flow misbehaves.
