@@ -120,7 +120,7 @@ describe("cutover bridge — safe by construction", () => {
   });
   it("RESTORED session also hands off (observer + currentAuthUser fallback call startHandoff)", () => {
     const bridge = srcOf("src/features/auth/ModernCutoverBridge.jsx");
-    expect(bridge).toMatch(/if \(u\) startHandoff\(u\)/); // auth observer
+    expect(bridge).toMatch(/if \(u\)\s*\{?\s*startHandoff\(u\)/); // auth observer
     expect(bridge).toMatch(/const effectiveUser = user \|\| currentAuthUser\(\)/);
     expect(bridge).toMatch(/startHandoff\(effectiveUser\)/);
   });

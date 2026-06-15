@@ -76,6 +76,10 @@ export default function ModernCutoverBridge() {
   // Guards the cutover sign-out so a pointerdown+click pair triggers it once;
   // reset on the next signed-out resolution so a later cycle can log out again.
   const loggingOutRef = useRef(false);
+  // Guards the one-time clean logout reload (driven by the auth observer on
+  // auth -> null after a handoff). Separate from loggingOutRef so the reload
+  // fires whether WE signed out (shield) or legacy signed out itself.
+  const logoutReloadStartedRef = useRef(false);
   // True once a handoff has completed in THIS page lifecycle. The legacy bundle
   // self-mounts on its first import and its import is cached, so a second handoff
   // (post-logout re-login) cannot re-mount it — we reload once instead. Resets on a
@@ -158,7 +162,30 @@ export default function ModernCutoverBridge() {
     const unsub = subscribeAuth(
       (u) => {
         setUser(u);
-        if (u) startHandoff(u);
+        if (u) {
+          startHandoff(u);
+        } else if (startedRef.current && !logoutReloadStartedRef.current) {
+          // Signed out AFTER a handoff — by our shield's signOut OR by legacy's
+          // own logout button (which we can't reliably identify in the minified
+          // bundle). Legacy still owns #root with live Firestore listeners that
+          // now throw permission-denied and would repaint the OLD login. Cover
+          // SYNCHRONOUSLY here (in the auth callback, before any paint) and do a
+          // one-time controlled reload to a clean modern boot (auth null -> modern
+          // login, legacy never imported). This runs only AFTER sign-out has
+          // persisted, so the fresh boot is genuinely logged out, and fires on the
+          // real logout regardless of which control legacy used.
+          logoutReloadStartedRef.current = true;
+          showCutoverVeil();
+          try {
+            if (typeof window !== "undefined") window.__oxUid = undefined;
+          } catch {
+            /* ignore */
+          }
+          clearLegacyLocalSession(lastUidRef.current);
+          // false (no sessionStorage) -> the in-page logout effect transitions to
+          // the modern login as a fallback.
+          reloadForCutoverLogout();
+        }
       },
       () => setReady(true),
     );
@@ -206,6 +233,7 @@ export default function ModernCutoverBridge() {
     lastUidRef.current = null;
     startedRef.current = false; // allow a fresh handoff on the next login
     loggingOutRef.current = false; // allow a fresh logout on the next cycle
+    logoutReloadStartedRef.current = false; // allow the clean reload next cycle
     setPhase("signin");
   }, [user]);
 
@@ -292,21 +320,14 @@ export default function ModernCutoverBridge() {
       /* ignore */
     }
     clearLegacyLocalSession(lastUidRef.current);
-    // Sign out (Firebase Auth is the source of truth; never log credentials),
-    // then do a one-time controlled reload to a CLEAN modern auth state. Legacy
-    // still owns #root with live Firestore onSnapshot listeners that throw
-    // permission-denied after signOut and can repaint the OLD legacy login; a
-    // fresh boot lands on the modern login with auth null and legacy never
-    // imported, so those listeners never exist. The veil stays up across it. If
-    // the reload is suppressed (no sessionStorage), the auth observer still drives
-    // the in-page transition to the modern login as a fallback.
-    logout()
-      .catch(() => {
-        /* swallow — nothing sensitive to surface */
-      })
-      .finally(() => {
-        reloadForCutoverLogout();
-      });
+    // Sign out (Firebase Auth is the source of truth; never log credentials). The
+    // auth observer then runs the one-time clean reload when auth becomes null —
+    // AFTER sign-out has persisted — so the reloaded page boots genuinely logged
+    // out into the modern login (legacy never imported, no permission-denied
+    // repaint). The veil raised above stays up across the reload.
+    logout().catch(() => {
+      /* swallow — nothing sensitive to surface */
+    });
   }, []);
 
   // Install the capture-phase logout shield ONLY while the legacy home is
