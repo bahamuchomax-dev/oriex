@@ -111,16 +111,20 @@ describe("modern auth — cutover intercepts legacy logout (no old-login render)
     expect(SHIELD).toMatch(/aria-label|title/);
     expect(SHIELD).toContain("M15 12H3");
     expect(SHIELD).toContain('path[d^=');
-    // does not hijack the modern shell's own logout/controls
+    // does not hijack the modern cutover UI (login shell, loaders, confirm dialog)
     expect(SHIELD).toMatch(/closest\("\.ox-auth"\)/);
+    expect(SHIELD).toContain("oriex-modern-cutover");
   });
   it("the bridge installs the shield only while the legacy home is mounted", () => {
     expect(BRIDGE).toContain("installCutoverLogoutShield");
     expect(BRIDGE).toMatch(/homeReady = phase === "mounted" && !!user;\s*\n\s*if \(!homeReady\) return undefined;\s*\n\s*return installCutoverLogoutShield/);
   });
-  it("cutover logout runs the MODERN sign-out path (not legacy's)", () => {
+  it("logout intent opens the confirm dialog (does not sign out immediately)", () => {
+    expect(BRIDGE).toMatch(/onLogoutIntent = useCallback\(\(\) => \{[\s\S]*?setConfirmingLogout\(true\)/);
+  });
+  it("confirming runs the MODERN sign-out path (not legacy's)", () => {
     expect(BRIDGE).toMatch(/import \{ logout \} from "\.\/modernAuthApi\.js"/);
-    expect(BRIDGE).toMatch(/onLogoutIntent = useCallback/);
+    expect(BRIDGE).toMatch(/confirmLogout = useCallback/);
     expect(BRIDGE).toContain("logout()");
     expect(BRIDGE).toContain("showCutoverVeil()");
     // clears the safe legacy fast-start session + uid global (no password/token)
@@ -145,9 +149,27 @@ describe("modern auth — cutover intercepts legacy logout (no old-login render)
     expect(BRIDGE).toMatch(/loggingOutRef\.current = false;/);
   });
   it("does not log credentials on sign-out failure", () => {
-    const start = BRIDGE.indexOf("onLogoutIntent = useCallback");
+    const start = BRIDGE.indexOf("confirmLogout = useCallback");
     const seg = BRIDGE.slice(start, start + 600);
     expect(seg).not.toMatch(/console\s*\./);
+  });
+});
+
+describe("modern auth — logout confirmation dialog", () => {
+  it("renders a confirm dialog over the legacy home on logout intent", () => {
+    expect(BRIDGE).toContain("confirmingLogout");
+    expect(BRIDGE).toMatch(/if \(confirmingLogout && user\)/);
+    expect(BRIDGE).toContain("ログアウトしますか？");
+    expect(BRIDGE).toContain('role="dialog"');
+  });
+  it("wires confirm -> sign-out and cancel -> dismiss", () => {
+    expect(BRIDGE).toMatch(/onClick=\{confirmLogout\}/);
+    expect(BRIDGE).toMatch(/onClick=\{cancelLogout\}/);
+    expect(BRIDGE).toMatch(/cancelLogout = useCallback\(\(\) => setConfirmingLogout\(false\)/);
+  });
+  it("the dialog backdrop is a dim scrim pinned above #root", () => {
+    expect(CSS).toMatch(/\.ox-auth-modal-backdrop\s*\{[\s\S]*?z-index:\s*2147483646/);
+    expect(CSS).toMatch(/\.ox-auth-modal-backdrop\s*\{[\s\S]*?background:\s*rgba\(/);
   });
 });
 

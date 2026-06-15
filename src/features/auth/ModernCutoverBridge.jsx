@@ -70,6 +70,10 @@ export default function ModernCutoverBridge() {
   // brief, BOUNDED moment so the legacy home paints BEHIND it — then drop the
   // cover. This prevents the old legacy login/home from flashing on reveal.
   const [phase, setPhase] = useState("checking");
+  // Modern logout confirmation dialog (replaces legacy's window.confirm, which our
+  // shield suppresses by intercepting the logout press). Shown over the legacy
+  // home; only an explicit confirm performs the sign-out.
+  const [confirmingLogout, setConfirmingLogout] = useState(false);
   const startedRef = useRef(false);
   const aliveRef = useRef(true);
   const lastUidRef = useRef(null);
@@ -302,15 +306,26 @@ export default function ModernCutoverBridge() {
     };
   }, [phase, user]);
 
-  // Logout INTENT, the cutover way: in modern cutover mode we must NOT let the
-  // legacy logout handler run — it renders the OLD legacy login in #root before
-  // the auth observer can react. This callback is invoked by the capture-phase
-  // shield (which has already cancelled the event) to drive sign-out from the
-  // cutover layer instead: raise the veil, clear the safe legacy fast-start keys
-  // (genron_uid + genron_profile_<uid>) and the uid global, then run the MODERN
-  // Firebase sign-out. The auth observer then moves the bridge to the modern
-  // login. Idempotent (guarded) so a pointerdown+click pair signs out only once.
+  // Logout INTENT, the cutover way: the capture-phase shield has already cancelled
+  // the legacy logout press (so legacy's own handler + its window.confirm never
+  // run). Instead of signing out immediately, OPEN the modern confirmation dialog
+  // over the legacy home. Only an explicit confirm performs the sign-out.
   const onLogoutIntent = useCallback(() => {
+    if (loggingOutRef.current) return; // a sign-out is already in flight
+    setConfirmingLogout(true);
+  }, []);
+
+  // Dismiss the confirmation — stay on the legacy home, nothing signed out.
+  const cancelLogout = useCallback(() => setConfirmingLogout(false), []);
+
+  // Confirmed: run the cutover sign-out. Raise the veil, clear the safe legacy
+  // fast-start keys (genron_uid + genron_profile_<uid>) and the uid global, then
+  // MODERN Firebase sign-out. The auth observer then runs the one-time clean
+  // reload once auth is null (after sign-out persisted) so the page boots into the
+  // modern login (legacy never imported, no permission-denied repaint). Never logs
+  // credentials. Idempotent.
+  const confirmLogout = useCallback(() => {
+    setConfirmingLogout(false);
     if (loggingOutRef.current) return;
     loggingOutRef.current = true;
     showCutoverVeil();
@@ -320,11 +335,6 @@ export default function ModernCutoverBridge() {
       /* ignore */
     }
     clearLegacyLocalSession(lastUidRef.current);
-    // Sign out (Firebase Auth is the source of truth; never log credentials). The
-    // auth observer then runs the one-time clean reload when auth becomes null —
-    // AFTER sign-out has persisted — so the reloaded page boots genuinely logged
-    // out into the modern login (legacy never imported, no permission-denied
-    // repaint). The veil raised above stays up across the reload.
     logout().catch(() => {
       /* swallow — nothing sensitive to surface */
     });
@@ -355,6 +365,37 @@ export default function ModernCutoverBridge() {
       <Overlay>
         <BrandedLoader message="ログアウトしています…" />
       </Overlay>
+    );
+  }
+
+  // Logout confirmation: shown OVER the legacy home (dimmed backdrop). Replaces
+  // legacy's suppressed window.confirm. Lives inside the cutover host, so the
+  // shield's modern-UI skip ignores these buttons.
+  if (confirmingLogout && user) {
+    return (
+      <div
+        className="ox-auth ox-auth-modal-backdrop"
+        role="dialog"
+        aria-modal="true"
+        aria-label="ログアウトの確認"
+      >
+        <div className="ox-auth-card" style={{ textAlign: "center" }}>
+          <OriexMark />
+          <h2 className="ox-auth-title" style={{ fontSize: 20, marginBottom: 4 }}>
+            ログアウトしますか？
+          </h2>
+          <p className="ox-auth-subtitle">またのご利用をお待ちしています。</p>
+          <div className="ox-auth-modal-actions">
+            <button type="button" className="ox-auth-primary" onClick={confirmLogout}>
+              ログアウト
+            </button>
+            <button type="button" className="ox-auth-switch-btn" onClick={cancelLogout}>
+              キャンセル
+            </button>
+          </div>
+          <p className="ox-auth-version">{APP_VERSION_LABEL}</p>
+        </div>
+      </div>
     );
   }
 
