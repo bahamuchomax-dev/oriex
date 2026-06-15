@@ -68,6 +68,28 @@ describe("modern auth — brand mark uses the real Oriex app/PWA icon", () => {
   });
 });
 
+describe("modern auth — logout covers the legacy login flash", () => {
+  it("renders a branded cover the frame auth drops to null after a handoff", () => {
+    // synchronous render-time guard (not an effect) so legacy can't flash for a
+    // frame; uses the branded loader (OriexMark + calm copy)
+    expect(BRIDGE).toMatch(/if \(startedRef\.current && !user\)/);
+    expect(BRIDGE).toContain("ログアウトしています");
+    // the cover guard sits BEFORE the mounted->null return
+    const coverIdx = BRIDGE.indexOf("startedRef.current && !user");
+    const nullIdx = BRIDGE.indexOf('phase === "mounted") return null');
+    expect(coverIdx).toBeGreaterThan(-1);
+    expect(nullIdx).toBeGreaterThan(coverIdx);
+  });
+  it("after auth-null it clears session state and returns to the modern signin", () => {
+    expect(BRIDGE).toContain("clearLegacyLocalSession");
+    expect(BRIDGE).toMatch(/startedRef\.current = false;[\s\S]*setPhase\("signin"\)/);
+  });
+  it("legacy login is not terminal: the bridge never renders the legacy login", () => {
+    // the only signed-out terminal UI is the modern ModernAuthShell
+    expect(BRIDGE).toContain("ModernAuthShell");
+  });
+});
+
 describe("modern auth — handoff covers the legacy flash, bounded (no infinite load)", () => {
   it("holds a 'revealing' cover until legacy paints, then drops to mounted->null", () => {
     expect(BRIDGE).toContain('setPhase("revealing")');
