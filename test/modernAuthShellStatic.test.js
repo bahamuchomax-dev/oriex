@@ -52,7 +52,7 @@ describe("modern auth — driven by Firebase Auth, errors are safe", () => {
     expect(SHELL_CODE).toMatch(/useEffect\(\(\) => \{[\s\S]*subscribeAuth\([\s\S]*return unsub;[\s\S]*\}, \[\]\)/);
   });
   it("the shell uses the API for signup/login/logout (real Firebase Auth)", () => {
-    expect(SHELL).toContain("signUpWithFriendId");
+    expect(SHELL).toContain("signUpWithInviteCode");
     expect(SHELL).toContain("loginWithFriendId");
     expect(SHELL).toContain("logout");
     expect(API).toContain("createUserWithEmailAndPassword");
@@ -82,5 +82,30 @@ describe("modern auth — current user shows UID only (no claims/role/token)", (
     for (const forbidden of ["token", "claims", "getIdToken", "isTeacher", "role", "admin", "password"]) {
       expect(seg.toLowerCase()).not.toContain(forbidden.toLowerCase());
     }
+  });
+});
+
+describe("modern auth — invite-code signup gate", () => {
+  const API_FULL = readFileSync("src/features/auth/modernAuthApi.js", "utf8");
+  it("the shell validates the invite code and shows the specific safe error", () => {
+    expect(SHELL).toContain("validateInviteCode");
+    expect(SHELL).toContain("招待コードが正しくありません");
+  });
+  it("the API gates signup on the invite code and GENERATES the Friend ID (not typed)", () => {
+    expect(API_FULL).toContain("validateInviteCode");
+    expect(API_FULL).toContain("generateFriendId()");
+    expect(API_FULL).toContain("invalid-invite-code");
+  });
+  it("the invite code is never written to a Firestore payload (only validated)", () => {
+    // assertSafePayload payloads are built from {shortId,uid,name,updatedAt} only
+    expect(API_CODE).not.toMatch(/inviteCode\s*:/);
+    // and the invite code is not logged anywhere
+    expect(API_CODE).not.toMatch(/console\s*\./);
+    expect(SHELL_CODE).not.toMatch(/console\s*\./);
+  });
+  it("the dev invite code shown in the UI is the documented non-secret test code", () => {
+    expect(SHELL).toContain("DEV_INVITE_CODE");
+    const INV = readFileSync("src/features/auth/inviteCode.js", "utf8");
+    expect(INV).toMatch(/NOT A SECURITY BOUNDARY/);
   });
 });

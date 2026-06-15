@@ -22,7 +22,9 @@ import {
   normalizeFriendId,
   validateFriendIdFormat,
   makeInternalAuthEmailFromFriendId,
+  generateFriendId,
 } from "./friendIdAuth.js";
+import { validateInviteCode } from "./inviteCode.js";
 
 // Fields a client may write to its own profile / public card. Anything else —
 // and in particular any credential / authority / answer field — is rejected.
@@ -57,13 +59,18 @@ async function writeOwnProfile(uid, { shortId, name }) {
 }
 
 /**
- * Sign up with a Friend ID + password. Creates a real Firebase Auth user keyed by
- * the deterministic internal email, then writes the owner's profile (NO password).
+ * Sign up with an INVITE CODE + password. The Friend ID is GENERATED (a new user
+ * does not type one); the gate is the invite code. Creates a real Firebase Auth
+ * user keyed by the deterministic internal email derived from the generated
+ * Friend ID, then writes the owner's profile (NO password, NO invite code).
+ *
+ * The invite code is validated but NEVER written to Firestore and NEVER logged.
  * @returns {Promise<{ uid: string, shortId: string }>}
  */
-export async function signUpWithFriendId({ friendId, password, name } = {}) {
-  const shortId = normalizeFriendId(friendId);
-  if (!validateFriendIdFormat(shortId)) throw new Error("invalid-friend-id-format");
+export async function signUpWithInviteCode({ inviteCode, password, name } = {}) {
+  if (!validateInviteCode(inviteCode)) throw new Error("invalid-invite-code");
+
+  const shortId = generateFriendId();
   const email = makeInternalAuthEmailFromFriendId(shortId);
 
   const cred = await createUserWithEmailAndPassword(auth, email, password);

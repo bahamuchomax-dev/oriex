@@ -6,8 +6,30 @@ import {
   normalizeFriendId,
   validateFriendIdFormat,
   makeInternalAuthEmailFromFriendId,
+  generateFriendId,
   safeAuthErrorMessage,
 } from "../src/features/auth/friendIdAuth.js";
+
+describe("generateFriendId", () => {
+  it("always returns a valid, canonical Friend ID", () => {
+    for (let i = 0; i < 500; i++) {
+      const id = generateFriendId();
+      expect(validateFriendIdFormat(id)).toBe(true);
+      expect(id).toHaveLength(FRIEND_ID_LENGTH);
+    }
+  });
+  it("uses only the Friend ID alphabet (no ambiguous I O 0 1)", () => {
+    for (let i = 0; i < 200; i++) {
+      for (const ch of generateFriendId()) expect(FRIEND_ID_ALPHABET).toContain(ch);
+    }
+  });
+  it("has enough entropy to be effectively unique across many draws", () => {
+    const seen = new Set();
+    for (let i = 0; i < 2000; i++) seen.add(generateFriendId());
+    // 32^6 ≈ 1.07e9 space; 2000 draws should essentially never collide
+    expect(seen.size).toBeGreaterThan(1990);
+  });
+});
 
 describe("normalizeFriendId", () => {
   it("trims, uppercases, and strips spaces and hyphens", () => {
