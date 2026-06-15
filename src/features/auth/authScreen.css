@@ -37,44 +37,63 @@
 }
 
 .ox-auth-card {
+  position: relative;
   width: 100%;
-  max-width: 380px;
+  max-width: 392px;
   box-sizing: border-box;
   background: var(--surface, #ffffff);
   border: 1px solid var(--border, #e7ddd0);
-  border-radius: 22px;
-  padding: 26px 22px 22px;
-  box-shadow: 0 18px 48px rgba(43, 39, 36, 0.12);
+  border-radius: 24px;
+  padding: 32px 26px 24px;
+  /* layered, soft elevation for a polished, app-like card */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 2px 6px rgba(43, 39, 36, 0.05),
+    0 22px 54px rgba(43, 39, 36, 0.14);
+  overflow: hidden;
+}
+/* slim brand-accent bar along the top edge of the card */
+.ox-auth-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent, #c88040), #e0a766 60%, #f0c89a);
 }
 
 /* ---------- brand / header ---------- */
 .ox-auth-brand {
   text-align: center;
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
 /* The Oriex app/PWA icon (see OriexMark.jsx) — matches the installed app. */
 .ox-auth-logo-img {
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 10px;
+  width: 64px;
+  height: 64px;
+  margin: 2px auto 12px;
   display: block;
-  border-radius: 16px;
+  border-radius: 18px;
   object-fit: cover;
-  box-shadow: 0 8px 20px rgba(43, 39, 36, 0.16);
+  box-shadow:
+    0 0 0 1px rgba(43, 39, 36, 0.06),
+    0 10px 24px rgba(200, 128, 64, 0.28);
   -webkit-user-select: none;
   user-select: none;
 }
 .ox-auth-title {
   margin: 0;
-  font-size: 26px;
+  font-size: 27px;
   font-weight: 900;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   color: var(--text, #2b2724);
 }
 .ox-auth-subtitle {
-  margin: 4px 0 0;
+  margin: 5px 0 0;
   font-size: 14px;
   font-weight: 700;
+  letter-spacing: 0.2px;
   color: var(--text-muted, #8b5e3c);
 }
 
@@ -103,17 +122,19 @@
 .ox-auth-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 .ox-auth-field {
   display: block;
 }
 .ox-auth-label {
   display: block;
-  margin-bottom: 6px;
-  font-size: 12.5px;
+  margin-bottom: 7px;
+  font-size: 12px;
   font-weight: 800;
-  color: var(--text, #2b2724);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--text-muted, #8b5e3c);
 }
 /* Self-sufficient input style (does NOT depend on the legacy .rx-tf / --line,
    which is undefined on the auth screen and left the fields borderless). Clear
@@ -131,14 +152,15 @@
   font-weight: 600;
   line-height: 1.3;
   color: var(--text, #2b2724);
-  background: #fcfaf7;
-  border: 1px solid rgba(43, 39, 36, 0.22);
-  border-radius: 12px;
+  background: #faf6f1;
+  border: 1px solid rgba(43, 39, 36, 0.16);
+  border-radius: 13px;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
   -webkit-appearance: none;
   appearance: none;
 }
 .ox-auth-input::placeholder {
-  color: rgba(43, 39, 36, 0.40);
+  color: rgba(43, 39, 36, 0.38);
   font-weight: 500;
 }
 .ox-auth-input:focus {
@@ -162,22 +184,28 @@
 
 .ox-auth-primary {
   width: 100%;
-  margin-top: 4px;
-  min-height: 48px;
+  margin-top: 6px;
+  min-height: 50px;
   border: none;
   border-radius: 14px;
-  padding: 13px 16px;
-  background: var(--accent, #c88040);
+  padding: 14px 16px;
+  /* gentle two-stop accent (depth without gradient overload) */
+  background: linear-gradient(180deg, #d08a48, var(--accent, #c88040));
   color: #fff;
   font: inherit;
   font-size: 16px;
   font-weight: 800;
+  letter-spacing: 0.3px;
   cursor: pointer;
-  box-shadow: 0 10px 22px rgba(200, 128, 64, 0.28);
-  transition: transform 0.1s ease, opacity 0.1s ease;
+  box-shadow: 0 12px 24px rgba(200, 128, 64, 0.30);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
+}
+.ox-auth-primary:hover {
+  box-shadow: 0 14px 28px rgba(200, 128, 64, 0.36);
 }
 .ox-auth-primary:active {
   transform: translateY(1px);
+  box-shadow: 0 8px 18px rgba(200, 128, 64, 0.28);
 }
 .ox-auth-primary:disabled {
   opacity: 0.55;
