@@ -1,7 +1,7 @@
 {
   "name": "oriex",
   "private": true,
-  "version": "7.43.1",
+  "version": "7.43.2",
   "type": "module",
   "description": "Oriex study app — staged React/Vite restructure of the original monolithic build.",
   "scripts": {

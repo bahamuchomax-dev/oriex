@@ -10,6 +10,7 @@ import {
 } from "./cutoverReload.js";
 import { logout } from "./modernAuthApi.js";
 import { installCutoverLogoutShield } from "./cutoverLogoutShield.js";
+import { silenceLegacyPermissionDenied } from "./cutoverLogoutSilencer.js";
 import ModernAuthShell from "./ModernAuthShell.jsx";
 import OriexMark from "./OriexMark.jsx";
 import { showCutoverVeil, hideCutoverVeil } from "./cutoverVeil.js";
@@ -179,6 +180,9 @@ export default function ModernCutoverBridge() {
           // persisted, so the fresh boot is genuinely logged out, and fires on the
           // real logout regardless of which control legacy used.
           logoutReloadStartedRef.current = true;
+          // Contain the benign legacy permission-denied snapshot log for the brief
+          // window before the reload navigates away (scoped + temporary).
+          silenceLegacyPermissionDenied();
           showCutoverVeil();
           try {
             if (typeof window !== "undefined") window.__oxUid = undefined;
@@ -328,6 +332,9 @@ export default function ModernCutoverBridge() {
     setConfirmingLogout(false);
     if (loggingOutRef.current) return;
     loggingOutRef.current = true;
+    // Contain the one benign legacy permission-denied snapshot log during the
+    // signOut -> reload window (legacy listeners can't be detached). Scoped + temporary.
+    silenceLegacyPermissionDenied();
     showCutoverVeil();
     try {
       if (typeof window !== "undefined") window.__oxUid = undefined;
