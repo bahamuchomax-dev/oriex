@@ -72,16 +72,24 @@
 }
 .ox-auth-title {
   margin: 0;
-  font-size: 27px;
-  font-weight: 900;
-  letter-spacing: 0.6px;
-  color: var(--text, #2b2724);
+  /* stylish rounded display wordmark with a warm Oriex gradient */
+  font-family: "Quicksand", "Comfortaa", "Zen Maru Gothic", system-ui, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  line-height: 1.1;
+  background: linear-gradient(120deg, #c88040 0%, #e0a766 45%, #9060b8 110%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: var(--accent, #c88040); /* fallback if background-clip unsupported */
+  -webkit-text-fill-color: transparent;
 }
 .ox-auth-subtitle {
-  margin: 5px 0 0;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  padding-left: 4px; /* balance the wide tracking */
   color: var(--text-muted, #8b5e3c);
 }
 
