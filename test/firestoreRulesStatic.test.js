@@ -182,3 +182,107 @@ describe("firestore.rules — admin not exempt from answer ban & owner-limited d
     expect(r).not.toContain("studentUid"); // A: no assigned-student read
   });
 });
+
+/* ---- Phase 4.6: critical fix — no public wildcard + legacy least-privilege ---- */
+// Rules source with comments stripped, so doc comments that quote the old
+// `allow read, write: if true` wildcard do not cause false positives.
+const RULES_CODE = RULES.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+
+describe("firestore.rules — no public wildcard (critical fix)", () => {
+  it("never grants read/write if true anywhere (comments ignored)", () => {
+    expect(RULES_CODE).not.toMatch(/allow\s+read\s*,\s*write\s*:\s*if\s+true/);
+    expect(RULES_CODE).not.toMatch(/allow\s+(?:read|write|get|list|create|update|delete)[^\n]*:\s*if\s+true\b/);
+  });
+  it("has no broad public/data wildcard match", () => {
+    expect(RULES).not.toMatch(/match \/public\/data\/\{[^}]*=\*\*\}/);
+  });
+  it("ends with an explicit default-deny", () => {
+    expect(RULES).toMatch(/match \/\{document=\*\*\}\s*\{\s*allow read, write:\s*if false;/);
+  });
+});
+
+describe("firestore.rules — legacy profile/main authority lockdown", () => {
+  const b = block("/users/{u}/profile/main");
+  it("self create cannot set isTeacher true and bans authority fields", () => {
+    const c = clause(b, "create");
+    expect(c).toContain("isSelf(u)");
+    expect(c).toContain("request.resource.data.isTeacher == false");
+    for (const f of ["role", "admin", "teacher", "teacherId", "claims", "permissions"]) {
+      expect(c).toContain("'" + f + "'");
+    }
+  });
+  it("self update cannot change authority fields", () => {
+    expect(clause(b, "update")).toContain("authorityUnchanged()");
+  });
+  it("is not world-readable", () => {
+    const r = clause(b, "read");
+    expect(r).toContain("isSelf(u)");
+    expect(r).not.toContain("if signedIn()");
+  });
+});
+
+describe("firestore.rules — legacy weeklyPlans scoping", () => {
+  const b = block("/users/{u}/weeklyPlans/{planId}");
+  it("read is not public; limited to self/admin/assigned teacher", () => {
+    const r = clause(b, "read");
+    expect(r).toContain("isSelf(u)");
+    expect(r).toContain("teaches(u)");
+    expect(r).not.toContain("if signedIn()");
+  });
+  it("teacher writes are bound to teacherUid == request.auth.uid", () => {
+    expect(clause(b, "create, update")).toContain(
+      "request.resource.data.teacherUid == request.auth.uid",
+    );
+  });
+});
+
+describe("firestore.rules — legacy sentPlans student mirror bound to studentUid", () => {
+  const b = block("/users/{u}/sentPlans/{planId}");
+  it("student update requires studentUid == self (existing and new)", () => {
+    const u = clause(b, "update");
+    expect(u).toContain("resource.data.studentUid == request.auth.uid");
+    expect(u).toContain("request.resource.data.studentUid == request.auth.uid");
+  });
+  it("create is teacher/admin only (no student create path)", () => {
+    const c = clause(b, "create");
+    expect(c).toContain("isSelf(u)");
+    expect(c).not.toContain("studentUid");
+  });
+});
+
+describe("firestore.rules — legacy DM is participant-only", () => {
+  const b = block("/chats/{pairId}/messages/{messageId}");
+  it("read limited to participants", () => {
+    expect(clause(b, "read")).toContain("dmParticipant(pairId)");
+  });
+  it("create requires participant and senderId == auth.uid", () => {
+    const c = clause(b, "create");
+    expect(c).toContain("dmParticipant(pairId)");
+    expect(c).toContain("request.resource.data.senderId == request.auth.uid");
+  });
+  it("messages are immutable (no update/delete)", () => {
+    expect(clause(b, "update, delete")).toContain("if false");
+  });
+  it("dmParticipant checks pairId participants", () => {
+    const fn = RULES.match(/function dmParticipant\(pairId\)[\s\S]*?\}/)[0];
+    expect(fn).toContain("request.auth.uid in pairId.split('__')");
+  });
+});
+
+describe("firestore.rules — legacy public/data is not broadly writable", () => {
+  it("customApp card is owner-write only", () => {
+    expect(clause(block("/public/data/customApp/{cardUid}"), "create, update")).toContain(
+      "isSelf(cardUid)",
+    );
+  });
+  for (const path of [
+    "/public/data/customVocabulary/{wordId}",
+    "/public/data/bookShelf/{bookId}",
+  ]) {
+    it(`${path} write is teacher/admin only and answer-free`, () => {
+      const c = clause(block(path), "create, update, delete");
+      expect(c).toContain("isTeacher() || isAdmin()");
+      expect(c).toContain("noAnswerFields()");
+    });
+  }
+});
