@@ -194,6 +194,23 @@ export default function ModernCutoverBridge() {
     setPhase("signin");
   }, [user]);
 
+  // Logout cover (visual-only): after a handoff, the instant Firebase Auth drops
+  // to null (the user signed out), render a branded cover in THIS render rather
+  // than null. Otherwise there is one painted frame — auth is null but the logout
+  // effect below hasn't run yet, so phase is still "mounted" and we'd render null
+  // — in which legacy repaints its OLD login underneath. The cover is fixed and
+  // sits on top (max z-index), so legacy's login can't flash even if it repaints
+  // in the same frame. The effect then clears session state and moves to "signin".
+  // Bounded: this branch is only reachable while signed out, so logout failure
+  // (user stays present) never leaves an infinite cover.
+  if (startedRef.current && !user) {
+    return (
+      <Overlay>
+        <BrandedLoader message="ログアウトしています…" />
+      </Overlay>
+    );
+  }
+
   // Legacy now owns #root — render nothing so only the real app shows.
   if (phase === "mounted") return null;
 
