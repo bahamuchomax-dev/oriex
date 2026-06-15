@@ -42,9 +42,9 @@ describe("cutover copy — rendered in the modern shell (signed-out view)", () =
   });
   it("keeps signup issuing a generated Friend ID (no user-typed ID at signup)", () => {
     // signup uses the invite code, not a typed Friend ID; the Friend ID field is
-    // login-only
+    // login-only (the label reads "Friend ID" in the polished UI).
     expect(SHELL).toContain("signUpWithInviteCode");
-    expect(SHELL).toMatch(/mode === "login" && \(\s*<label>\s*フレンドID/);
+    expect(SHELL).toMatch(/mode === "login" && \(\s*<label[^>]*>\s*<span[^>]*>Friend ID/);
   });
 });
 

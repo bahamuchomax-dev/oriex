@@ -4,6 +4,7 @@ import { handoffToLegacy } from "./legacyHandoff.js";
 import { clearLegacyLocalSession } from "./legacyLocalSession.js";
 import { consumeCutoverReloadMarker, reloadForCutoverRelogin } from "./cutoverReload.js";
 import ModernAuthShell from "./ModernAuthShell.jsx";
+import "./authScreen.css";
 
 /* ============================================================
  * ModernCutoverBridge — opt-in cutover: modern Firebase Auth → real legacy app
@@ -27,13 +28,25 @@ function Overlay({ children }) {
         position: "fixed",
         inset: 0,
         zIndex: 2147483600,
-        background: "var(--bg, #ffffff)",
-        display: "grid",
-        placeItems: "center",
+        background: "var(--bg, #fbf8f3)",
         overflow: "auto",
       }}
     >
       {children}
+    </div>
+  );
+}
+
+// Calm, branded waiting state — replaces the bare debug-style text. UI only.
+function BrandedLoader({ message }) {
+  return (
+    <div className="ox-auth">
+      <div className="ox-auth-card ox-auth-loading">
+        <div className="ox-auth-logo">O</div>
+        <h1 className="ox-auth-title">Oriex</h1>
+        <div className="ox-auth-spinner" aria-hidden="true" />
+        <p role="status">{message}</p>
+      </div>
     </div>
   );
 }
@@ -148,17 +161,24 @@ export default function ModernCutoverBridge() {
   if (phase === "error") {
     return (
       <Overlay>
-        <p style={{ color: "var(--danger, #c0392b)", fontSize: 14, textAlign: "center" }}>
-          ログインの引き継ぎに失敗しました。ページを再読み込みしてください。
-        </p>
+        <div className="ox-auth">
+          <div className="ox-auth-card ox-auth-loading">
+            <div className="ox-auth-logo">O</div>
+            <h1 className="ox-auth-title">Oriex</h1>
+            <p className="ox-auth-error" role="alert" style={{ marginTop: 14, textAlign: "left" }}>
+              うまく開けませんでした。お手数ですが、ページを再読み込みしてください。
+            </p>
+          </div>
+        </div>
       </Overlay>
     );
   }
 
   if (phase === "checking") {
+    // Keep the "checking login state" wording; present it as a calm Oriex splash.
     return (
       <Overlay>
-        <p>ログイン状態を確認中...</p>
+        <BrandedLoader message="ログイン状態を確認中…" />
       </Overlay>
     );
   }
@@ -166,24 +186,23 @@ export default function ModernCutoverBridge() {
   if (phase === "starting") {
     return (
       <Overlay>
-        <p>アプリを起動中...</p>
+        <BrandedLoader message="Oriex を準備しています…" />
       </Overlay>
     );
   }
 
   // Signed out → modern login/signup. onAuthed starts the handoff the instant the
   // embedded shell signs in (fresh login) — deterministically, not via an effect
-  // re-run — so the signed-in shell is never the final state.
+  // re-run — so the signed-in shell is never the final state. The shell renders
+  // its own full-bleed Oriex-style login, so no extra wrapper is needed.
   return (
     <Overlay>
-      <div style={{ width: "100%", maxWidth: 420 }}>
-        <ModernAuthShell
-          onAuthed={(u) => {
-            setUser(u);
-            startHandoff(u);
-          }}
-        />
-      </div>
+      <ModernAuthShell
+        onAuthed={(u) => {
+          setUser(u);
+          startHandoff(u);
+        }}
+      />
     </Overlay>
   );
 }
