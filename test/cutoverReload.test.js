@@ -2,8 +2,11 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { readFileSync } from "node:fs";
 import {
   CUTOVER_RELOAD_MARKER,
+  CUTOVER_LOGOUT_MARKER,
   consumeCutoverReloadMarker,
   reloadForCutoverRelogin,
+  consumeCutoverLogoutMarker,
+  reloadForCutoverLogout,
 } from "../src/features/auth/cutoverReload.js";
 
 /* The one-time, guarded same-URL reload used ONLY for the post-logout re-login
@@ -85,6 +88,40 @@ describe("reloadForCutoverRelogin — one-time guarded same-URL reload", () => {
     expect(reloadForCutoverRelogin()).toBe(false);
     globalThis.window = { location: { href: "x", replace() {} } }; // no sessionStorage
     expect(reloadForCutoverRelogin()).toBe(true); // still reloads (best-effort, unguarded)
+  });
+});
+
+describe("reloadForCutoverLogout — one-time guarded reload (separate marker)", () => {
+  it("reloads once, sets its OWN logout marker, and suppresses a repeat (no loop)", () => {
+    expect(reloadForCutoverLogout()).toBe(true);
+    expect(globalThis.window._store.get(CUTOVER_LOGOUT_MARKER)).toBe("1");
+    expect(reloadForCutoverLogout()).toBe(false); // suppressed within same lifecycle
+    expect(globalThis.window._calls.replace).toHaveLength(1);
+  });
+  it("uses a marker independent of the re-login reload (no cross-suppression)", () => {
+    expect(reloadForCutoverRelogin()).toBe(true); // relogin marker set
+    expect(reloadForCutoverLogout()).toBe(true); // logout still allowed (different marker)
+    expect(globalThis.window._calls.replace).toHaveLength(2);
+  });
+  it("allows another logout reload only after the marker is consumed (next boot)", () => {
+    expect(reloadForCutoverLogout()).toBe(true);
+    expect(reloadForCutoverLogout()).toBe(false);
+    expect(consumeCutoverLogoutMarker()).toBe(true);
+    expect(reloadForCutoverLogout()).toBe(true);
+    expect(globalThis.window._calls.replace).toHaveLength(2);
+  });
+});
+
+describe("consumeCutoverLogoutMarker", () => {
+  it("returns true and clears the logout marker when present", () => {
+    globalThis.window._store.set(CUTOVER_LOGOUT_MARKER, "1");
+    expect(consumeCutoverLogoutMarker()).toBe(true);
+    expect(globalThis.window._store.has(CUTOVER_LOGOUT_MARKER)).toBe(false);
+  });
+  it("returns false when absent and never throws", () => {
+    expect(consumeCutoverLogoutMarker()).toBe(false);
+    globalThis.window = undefined;
+    expect(consumeCutoverLogoutMarker()).toBe(false);
   });
 });
 
