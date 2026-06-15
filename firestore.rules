@@ -376,15 +376,16 @@ service cloud.firestore {
         allow read: if signedIn();
         allow write: if isSelf(cardUid);
       }
-      // per-user friend / username index. Despite the legacy name, EVERY user
-      // writes their OWN entry here during signup/profile bootstrap: the doc id
-      // is the user's uid and it holds {shortId, uid, name, avatar, color} for
-      // friend-search by shortId. Owner-bound (doc id == uid) and answer/authority
-      // free — it grants no teacher/admin rights. Restoring this self-write
-      // unblocks the post-login bootstrap (it was denied by the public/data
-      // default, which made the UI fail to transition until reload).
+      // Friend ID login directory. Despite the legacy name, EVERY user has their
+      // OWN entry here (doc id = the user's uid; fields {shortId, uid, name,
+      // avatar, color}). Friend ID login resolves a Friend ID -> uid by querying
+      // `where("shortId","==", id)` BEFORE the user is authenticated, so READ
+      // must be PUBLIC (unauthenticated). This is a scoped, intentional public
+      // login directory — NOT the rest of public/data, which stays signed-in
+      // read. It exposes only public lookup fields; no authority, no answers.
+      // WRITE stays owner-only (doc id == uid) and authority/answer free.
       match /public/data/teacherIndex/{docId} {
-        allow read: if signedIn();
+        allow read: if true;
         allow write: if isSelf(docId) && noAuthorityFields() && noAnswerFields();
       }
     }
