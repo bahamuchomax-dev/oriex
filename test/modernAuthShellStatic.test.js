@@ -31,8 +31,25 @@ describe("modern auth — no client-side plaintext password handling", () => {
 });
 
 describe("modern auth — driven by Firebase Auth, errors are safe", () => {
-  it("the shell drives UI from onAuthStateChanged", () => {
-    expect(SHELL).toContain("onAuthStateChanged");
+  it("the shell drives UI from the auth observer (subscribeAuth → onAuthStateChanged)", () => {
+    expect(SHELL).toContain("subscribeAuth");
+    const STATE = readFileSync("src/features/auth/modernAuthState.js", "utf8");
+    expect(STATE).toContain("onAuthStateChanged");
+  });
+  it("transitions IMMEDIATELY after sign-in/up (does not wait for a reload/observer)", () => {
+    // the awaited login/signup handler sets the user from the authoritative
+    // current user, so the signed-in view shows without a reload.
+    expect(SHELL).toContain("setUser(currentAuthUser())");
+  });
+  it("transitions to signed-out immediately after logout (no reload)", () => {
+    expect(SHELL).toContain("setUser(null)");
+  });
+  it("clears the busy/submitting state in finally on both success and failure", () => {
+    // one finally per handler (onSubmit, onLogout), each resetting busy
+    expect((SHELL.match(/finally\s*{\s*setBusy\(false\);\s*}/g) || []).length).toBeGreaterThanOrEqual(2);
+  });
+  it("the subscription is registered once on mount and cleaned up on unmount", () => {
+    expect(SHELL_CODE).toMatch(/useEffect\(\(\) => \{[\s\S]*subscribeAuth\([\s\S]*return unsub;[\s\S]*\}, \[\]\)/);
   });
   it("the shell uses the API for signup/login/logout (real Firebase Auth)", () => {
     expect(SHELL).toContain("signUpWithFriendId");
