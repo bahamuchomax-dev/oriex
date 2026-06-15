@@ -32,9 +32,14 @@ export default function ModernAuthShell({ onAuthed } = {}) {
   useEffect(() => {
     // Ongoing source of truth: restores a persisted session on mount (reload)
     // and reflects every later change. Registered once; cleaned up on unmount.
-    // Never log the user object.
+    // Never log the user object. Notify a host (e.g. the cutover bridge) of ANY
+    // signed-in user — including a RESTORED persisted session, not only a fresh
+    // login — so it never dead-ends on the signed-in shell.
     const unsub = subscribeAuth(
-      (u) => setUser(u),
+      (u) => {
+        setUser(u);
+        if (u && onAuthed) onAuthed(u);
+      },
       () => setReady(true),
     );
     return unsub;

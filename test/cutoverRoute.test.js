@@ -111,12 +111,19 @@ describe("cutover bridge — safe by construction", () => {
     const bridge = srcOf("src/features/auth/ModernCutoverBridge.jsx");
     expect(bridge).toMatch(/<ModernAuthShell onAuthed=\{\(u\) => setUser\(u\)\}/);
   });
+  it("hands off a RESTORED persisted session via the currentAuthUser fallback", () => {
+    // a restored signed-in user must trigger handoffToLegacy automatically — the
+    // signed-in shell must NOT be the final state in cutover mode.
+    const bridge = srcOf("src/features/auth/ModernCutoverBridge.jsx");
+    expect(bridge).toMatch(/const effectiveUser = user \|\| currentAuthUser\(\)/);
+    expect(bridge).toMatch(/handoffToLegacy\(effectiveUser\)/);
+  });
   it("shows a 'checking login state' loading message (waits for auth restoration)", () => {
     const bridge = srcOf("src/features/auth/ModernCutoverBridge.jsx");
     expect(bridge).toContain("ログイン状態を確認中");
     // never imports legacy until auth is resolved with a user
     expect(bridge).toMatch(/if \(!ready\)/);
-    expect(bridge).toMatch(/if \(!user\)/);
+    expect(bridge).toMatch(/if \(!effectiveUser\)/);
   });
   it("seeds legacy's localStorage cache for reload (no password) and logs nothing", () => {
     const seed = srcOf("src/features/auth/legacyLocalSession.js");
