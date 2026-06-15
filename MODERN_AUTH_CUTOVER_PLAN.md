@@ -99,8 +99,62 @@ Safety constraints for the flag (when built):
 3. Whether/when to build the teacher admin continuity tool (needs Admin SDK /
    Blaze) — not required for v1.
 
+## Update — post-login handoff SOLVED; opt-in cutover flag implemented
+
+The handoff blocker (above) is resolved. Root cause was a **profile path
+mismatch**: legacy reads `artifacts/gen-ron-kai-app-v1/users/{uid}/profile/main`
+while modern signup wrote the top-level `users/{uid}/profile/main`. Writing the
+user's OWN minimal legacy-path profile (no password, owner-only, no rules change)
+makes legacy's existing `onAuthStateChanged` adopt the session and enter the real
+app. See PR #35.
+
+### Manual PASS (first load)
+
+`?oriexAuthBridge=1` probe, first load: Auth user YES · `__oxUid == auth uid` YES ·
+legacy mounted YES · legacy-path profile **created** · old password field **NO** ·
+**Oriex home appeared immediately**. The modern Firebase Auth → legacy handoff
+works; Option A is feasible; bridge timing is stable on first load.
+
+### Opt-in cutover flag (this PR — still NOT the default)
+
+A production-like, **opt-in** cutover that reuses the verified handoff without the
+debug overlay:
+
+- **Enable:** `?oriexModernCutover=1` / `#modern-cutover` /
+  `localStorage["oriexModernCutover"]=1`.
+- **Flow:** modern Firebase Auth login/signup → on a user, `handoffToLegacy`
+  (set `window.__oxUid`, ensure the user's own legacy-path profile, import the
+  legacy bundle) → the real Oriex app, **no old login/register gate, no debug
+  overlay**.
+- **Files:** `cutoverRoute.js` (gate), `ModernCutoverBridge.jsx` (clean bridge,
+  renders null once legacy owns `#root`), `mountModernCutover.jsx`,
+  `legacyHandoff.js` (shared handoff). The debug probe `?oriexAuthBridge=1` stays
+  available for diagnosis.
+- **Unchanged:** with no flag, `main.js` boots legacy exactly as before;
+  `firestore.rules` unchanged; legacy bundle imported (not edited).
+
+### How to test
+
+`npm run build && npm run preview`, open `…/?oriexModernCutover=1`, sign up
+(invite `ORIX-TEST`, password ≥ 6) or log in → expect the real Oriex home with no
+old login/register gate and no debug overlay. The probe `?oriexAuthBridge=1` shows
+the diagnostic observations if needed.
+
+### When this can become the default
+
+Only after: (1) broader manual QA of the cutover across roles/devices, (2) the
+cutover message (`cutoverCopy.js`) shown for returning users, (3) a decision to
+retire the legacy plaintext login UI, and (4) explicit approval + an app deploy.
+The default-flip is a separate future PR; this PR does NOT flip it.
+
+### #21 stays blocked
+
+`#21` (`noSecretFields()`) is deployed only AFTER the cutover is the served login,
+the legacy plaintext-`password` writes are removed, `npm run test:rules` passes,
+and deploy is explicitly approved. Nothing here merges or deploys #21.
+
 ## Next concrete step
 
-Decide the post-login handoff (#1 above). Until it exists, keep the modern shell
-opt-in and the cutover message prepared; do not flip the default, do not change
-rules, do not deploy, and keep #21 blocked.
+Broader manual QA of `?oriexModernCutover=1`; then decide the default-flip (a
+separate PR with the cutover message + explicit deploy approval). Until then keep
+it opt-in, do not change rules, do not deploy, and keep #21 blocked.
