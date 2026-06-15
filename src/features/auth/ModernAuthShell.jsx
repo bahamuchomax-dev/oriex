@@ -5,16 +5,30 @@ import { safeAuthErrorMessage } from "./friendIdAuth.js";
 import { validateInviteCode, DEV_INVITE_CODE } from "./inviteCode.js";
 import { CUTOVER_TITLE, CUTOVER_LINES, SIGNUP_NEW_FRIEND_ID_NOTE } from "./cutoverCopy.js";
 import { copyUserId, isCopyableUid } from "../profile/copyUserId.js";
+import "./authScreen.css";
 
 /* ============================================================
- * ModernAuthShell — opt-in Firebase Auth login/signup shell
+ * ModernAuthShell — Firebase Auth login/signup, in Oriex app style
  * ------------------------------------------------------------
- * Mounted ONLY behind the opt-in flag (see modernAuthRoute.js); it is NOT the
- * default served login and does not touch the legacy bundle. Real Firebase Auth
- * drives the UI via onAuthStateChanged. No password is written to Firestore, no
- * other user's profile/main is read, and nothing (password/token/user object) is
- * ever logged. Errors are shown via safeAuthErrorMessage only.
+ * The DEFAULT login experience: real Firebase Auth drives the UI via
+ * onAuthStateChanged. This file is UI/appearance only — no password is written
+ * to Firestore, no other user's profile/main is read, no password is compared
+ * client-side, and nothing (password/token/user object) is ever logged. Errors
+ * are shown via safeAuthErrorMessage only. The internal user ID (uid) is NOT
+ * shown to normal users — it appears only behind the explicit ?oriexAuthDebug=1
+ * support flag.
  * ============================================================ */
+
+// Support-only: reveal the internal uid (for "tell us your ID" diagnostics).
+// Pure read of the URL; never throws; off unless ?oriexAuthDebug=1 is present.
+function isAuthDebugEnabled() {
+  try {
+    if (typeof window === "undefined" || !window.location) return false;
+    return new URLSearchParams(window.location.search).get("oriexAuthDebug") === "1";
+  } catch {
+    return false;
+  }
+}
 
 export default function ModernAuthShell({ onAuthed } = {}) {
   const [user, setUser] = useState(null);
@@ -28,6 +42,7 @@ export default function ModernAuthShell({ onAuthed } = {}) {
   const [busy, setBusy] = useState(false);
   const [idCopied, setIdCopied] = useState(false);
   const [generatedFriendId, setGeneratedFriendId] = useState("");
+  const debug = isAuthDebugEnabled();
 
   useEffect(() => {
     // Ongoing source of truth: restores a persisted session on mount (reload)
@@ -107,86 +122,85 @@ export default function ModernAuthShell({ onAuthed } = {}) {
 
   if (!ready) {
     return (
-      <div className="app-shell">
-        <main className="app-main" style={{ display: "grid", placeItems: "center" }}>
+      <div className="ox-auth">
+        <div className="ox-auth-card ox-auth-loading">
+          <div className="ox-auth-logo">O</div>
           <p>読み込み中…</p>
-        </main>
+        </div>
       </div>
     );
   }
 
   if (user) {
+    // Rarely seen in the cutover flow (it hands off to the app immediately). A
+    // calm confirmation — no debug-style "logged in" label, and the internal id
+    // is shown only behind the support flag.
     return (
-      <div className="app-shell">
-        <main className="app-main" style={{ display: "grid", placeItems: "center" }}>
-          <div className="feature-placeholder" style={{ textAlign: "center", maxWidth: 360 }}>
-            <h2 style={{ color: "var(--accent)" }}>ログイン中</h2>
-            {generatedFriendId && (
-              <p style={{ fontSize: 14 }}>
-                あなたのフレンドID:{" "}
-                <strong style={{ fontFamily: "monospace" }}>{generatedFriendId}</strong>
-                <br />
-                次回のログインに使います。お控えください。
-              </p>
-            )}
-            <div className="rx-pid">
+      <div className="ox-auth">
+        <div className="ox-auth-card ox-auth-welcome">
+          <div className="ox-auth-logo">O</div>
+          <h2>ようこそ Oriex へ</h2>
+          {generatedFriendId ? (
+            <div className="ox-auth-friendid" style={{ marginTop: 12, textAlign: "left" }}>
+              あなたの Friend ID：<strong>{generatedFriendId}</strong>
+              <br />
+              次回のログインに使います。お控えください。
+            </div>
+          ) : (
+            <p>アプリを開いています…</p>
+          )}
+          {debug && (
+            <div className="ox-auth-debug">
               ID: {user.uid}
               {isCopyableUid(user.uid) && (
                 <button
                   type="button"
-                  className="rx-mini"
+                  className="ox-auth-switch-btn"
                   onClick={onCopyId}
                   aria-label="ユーザーIDをコピー"
-                  style={{ marginLeft: 8 }}
+                  style={{ width: "auto", display: "inline-block", marginLeft: 8, padding: "4px 10px" }}
                 >
                   {idCopied ? "コピーしました" : "コピー"}
                 </button>
               )}
             </div>
-            <p style={{ fontSize: 12, color: "var(--text-muted)" }}>
-              お問い合わせの際はこのIDをお伝えください。
-            </p>
-            <button className="btn-primary" onClick={onLogout} disabled={busy}>
-              ログアウト
-            </button>
-            {error && <p style={{ color: "var(--danger)", fontSize: 13 }}>{error}</p>}
-          </div>
-        </main>
+          )}
+          <button
+            className="ox-auth-primary"
+            onClick={onLogout}
+            disabled={busy}
+            style={{ marginTop: 16 }}
+          >
+            ログアウト
+          </button>
+          {error && <p className="ox-auth-error">{error}</p>}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="app-shell">
-      <main className="app-main" style={{ display: "grid", placeItems: "center" }}>
-        <form className="feature-placeholder" style={{ maxWidth: 360, width: "100%" }} onSubmit={onSubmit}>
-          <h2 style={{ color: "var(--accent)", textAlign: "center" }}>
-            Oriex {mode === "signup" ? "新規登録" : "ログイン"}
-          </h2>
-          <section
-            className="rx-notice"
-            aria-label="ログイン方式の変更について"
-            style={{
-              fontSize: 12,
-              lineHeight: 1.5,
-              padding: "8px 10px",
-              marginBottom: 12,
-              borderRadius: 8,
-              background: "var(--surface-2, rgba(0,0,0,0.04))",
-            }}
-          >
-            <strong>{CUTOVER_TITLE}</strong>
-            {CUTOVER_LINES.map((line) => (
-              <p key={line} style={{ margin: "4px 0 0" }}>
-                {line}
-              </p>
-            ))}
-          </section>
+    <div className="ox-auth">
+      <form className="ox-auth-card" onSubmit={onSubmit}>
+        <div className="ox-auth-brand">
+          <div className="ox-auth-logo">O</div>
+          <h1 className="ox-auth-title">Oriex</h1>
+          <p className="ox-auth-subtitle">{mode === "signup" ? "新しく始める" : "ログイン"}</p>
+        </div>
+
+        <section className="ox-auth-notice" aria-label="ログイン方式の変更について">
+          <strong>{CUTOVER_TITLE}</strong>
+          {CUTOVER_LINES.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </section>
+
+        <div className="ox-auth-form">
           {mode === "login" && (
-            <label>
-              フレンドID
+            <label className="ox-auth-field">
+              <span className="ox-auth-label">Friend ID</span>
               <input
-                className="rx-tf"
+                className="rx-tf ox-auth-input"
                 value={friendId}
                 onChange={(e) => setFriendId(e.target.value)}
                 autoComplete="username"
@@ -194,67 +208,78 @@ export default function ModernAuthShell({ onAuthed } = {}) {
               />
             </label>
           )}
+
           {mode === "signup" && (
-            <label>
-              招待コード
+            <label className="ox-auth-field">
+              <span className="ox-auth-label">招待コード</span>
               <input
-                className="rx-tf"
+                className="rx-tf ox-auth-input"
                 value={inviteCode}
                 onChange={(e) => setInviteCode(e.target.value)}
                 placeholder="招待コードを入力"
               />
-              <small style={{ display: "block", color: "var(--text-muted)", fontSize: 11, marginTop: 4 }}>
-                ※テスト用招待コード（開発のみ・機密ではありません）：<code>{DEV_INVITE_CODE}</code>
-                。本番では別の招待方式に置き換えます。
+              <small className="ox-auth-hint">
+                テスト用招待コード（開発のみ・機密ではありません）：<code>{DEV_INVITE_CODE}</code>
               </small>
             </label>
           )}
+
           {mode === "signup" && (
-            <p style={{ fontSize: 12, color: "var(--text-muted)", margin: "0 0 4px" }}>
+            <p className="ox-auth-hint" style={{ marginTop: 0 }}>
               {SIGNUP_NEW_FRIEND_ID_NOTE}
             </p>
           )}
+
           {mode === "signup" && (
-            <label>
-              表示名（任意）
+            <label className="ox-auth-field">
+              <span className="ox-auth-label">表示名（任意）</span>
               <input
-                className="rx-tf"
+                className="rx-tf ox-auth-input"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 autoComplete="nickname"
               />
             </label>
           )}
-          <label>
-            パスワード
+
+          <label className="ox-auth-field">
+            <span className="ox-auth-label">パスワード</span>
             <input
-              className="rx-tf"
+              className="rx-tf ox-auth-input"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete={mode === "signup" ? "new-password" : "current-password"}
             />
           </label>
-          <button className="btn-primary" type="submit" disabled={busy}>
+
+          <button className="ox-auth-primary" type="submit" disabled={busy}>
             {mode === "signup" ? "登録する" : "ログイン"}
           </button>
+        </div>
+
+        {error && (
+          <p role="alert" className="ox-auth-error">
+            {error}
+          </p>
+        )}
+
+        <div className="ox-auth-switch">
+          <span className="ox-auth-switch-label">
+            {mode === "signup" ? "アカウントをお持ちですか？" : "はじめての方はこちら"}
+          </span>
           <button
             type="button"
-            className="rx-mini"
+            className="ox-auth-switch-btn"
             onClick={() => {
               setError("");
               setMode(mode === "signup" ? "login" : "signup");
             }}
           >
-            {mode === "signup" ? "ログインに切り替え" : "新規登録に切り替え"}
+            {mode === "signup" ? "ログインに戻る" : "新しく始める"}
           </button>
-          {error && (
-            <p role="alert" style={{ color: "var(--danger)", fontSize: 13, marginTop: 8 }}>
-              {error}
-            </p>
-          )}
-        </form>
-      </main>
+        </div>
+      </form>
     </div>
   );
 }
