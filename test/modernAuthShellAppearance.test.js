@@ -8,6 +8,7 @@ import { readFileSync } from "node:fs";
 
 const SHELL = readFileSync("src/features/auth/ModernAuthShell.jsx", "utf8");
 const BRIDGE = readFileSync("src/features/auth/ModernCutoverBridge.jsx", "utf8");
+const MARK = readFileSync("src/features/auth/OriexMark.jsx", "utf8");
 
 describe("modern auth login — friendly Oriex copy", () => {
   it("shows the Oriex brand and friendly login/signup labels", () => {
@@ -48,5 +49,33 @@ describe("modern auth — calm branded loaders in the cutover bridge", () => {
     expect(BRIDGE).toContain("BrandedLoader");
     expect(BRIDGE).toContain("ログイン状態を確認中");
     expect(BRIDGE).toContain('import "./authScreen.css"');
+  });
+});
+
+describe("modern auth — brand mark uses the real Oriex app/PWA icon", () => {
+  it("OriexMark renders the existing public app icon (no new heavy asset)", () => {
+    expect(MARK).toContain("icon-192.png");
+    // BASE_URL keeps the path correct under the GitHub Pages project subpath
+    expect(MARK).toContain("import.meta.env.BASE_URL");
+    expect(MARK).toContain('alt="Oriex"');
+  });
+  it("the login + handoff screens use OriexMark, not the square 'O' placeholder", () => {
+    expect(SHELL).toContain("OriexMark");
+    expect(BRIDGE).toContain("OriexMark");
+    // the old debug-style square placeholder is gone everywhere
+    expect(SHELL).not.toContain('ox-auth-logo">O');
+    expect(BRIDGE).not.toContain('ox-auth-logo">O');
+  });
+});
+
+describe("modern auth — handoff covers the legacy flash, bounded (no infinite load)", () => {
+  it("holds a 'revealing' cover until legacy paints, then drops to mounted->null", () => {
+    expect(BRIDGE).toContain('setPhase("revealing")');
+    expect(BRIDGE).toMatch(/phase === "revealing"/);
+    // the reveal is bounded: animation frames + a finite timeout, then mounted
+    expect(BRIDGE).toContain("requestAnimationFrame");
+    expect(BRIDGE).toMatch(/setTimeout\([\s\S]*?\d+\)/);
+    expect(BRIDGE).toMatch(/setPhase\("mounted"\)/);
+    expect(BRIDGE).toMatch(/phase === "mounted"\)\s*return null/);
   });
 });

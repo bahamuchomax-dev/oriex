@@ -5,6 +5,7 @@ import { safeAuthErrorMessage } from "./friendIdAuth.js";
 import { validateInviteCode, DEV_INVITE_CODE } from "./inviteCode.js";
 import { CUTOVER_TITLE, CUTOVER_LINES, SIGNUP_NEW_FRIEND_ID_NOTE } from "./cutoverCopy.js";
 import { copyUserId, isCopyableUid } from "../profile/copyUserId.js";
+import OriexMark from "./OriexMark.jsx";
 import "./authScreen.css";
 
 /* ============================================================
@@ -124,7 +125,7 @@ export default function ModernAuthShell({ onAuthed } = {}) {
     return (
       <div className="ox-auth">
         <div className="ox-auth-card ox-auth-loading">
-          <div className="ox-auth-logo">O</div>
+          <OriexMark />
           <p>読み込み中…</p>
         </div>
       </div>
@@ -138,7 +139,7 @@ export default function ModernAuthShell({ onAuthed } = {}) {
     return (
       <div className="ox-auth">
         <div className="ox-auth-card ox-auth-welcome">
-          <div className="ox-auth-logo">O</div>
+          <OriexMark />
           <h2>ようこそ Oriex へ</h2>
           {generatedFriendId ? (
             <div className="ox-auth-friendid" style={{ marginTop: 12, textAlign: "left" }}>
@@ -183,7 +184,7 @@ export default function ModernAuthShell({ onAuthed } = {}) {
     <div className="ox-auth">
       <form className="ox-auth-card" onSubmit={onSubmit}>
         <div className="ox-auth-brand">
-          <div className="ox-auth-logo">O</div>
+          <OriexMark />
           <h1 className="ox-auth-title">Oriex</h1>
           <p className="ox-auth-subtitle">{mode === "signup" ? "新しく始める" : "ログイン"}</p>
         </div>
