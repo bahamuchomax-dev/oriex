@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { subscribeAuth } from "./modernAuthState.js";
 import { shouldMountLegacy, bridgeUid } from "./authBridgeController.js";
+import { ensureLegacyBridgeProfile } from "./legacyBridgeProfile.js";
 import ModernAuthShell from "./ModernAuthShell.jsx";
 
 /* ============================================================
@@ -62,6 +63,19 @@ export default function AuthBridgeProbe() {
       // Set the uid global BEFORE legacy starts (observed; non-secret).
       if (typeof window !== "undefined" && authUid) window.__oxUid = authUid;
 
+      // Ensure the user's OWN legacy-path profile exists so legacy adopts the
+      // session and enters the app instead of its old registration gate. Own docs
+      // only; no password; no rules change. Non-fatal if it fails (legacy would
+      // then show its gate — which the observation surfaces).
+      let legacyProfileEnsured = "skipped";
+      try {
+        const r = await ensureLegacyBridgeProfile(authUid);
+        legacyProfileEnsured = r && r.ok ? (r.created ? "created" : "existed") : "failed";
+      } catch {
+        legacyProfileEnsured = "error";
+      }
+      if (cancelled) return;
+
       setPhase("mounting");
       try {
         // Import (not edit) the legacy bundle; it self-mounts into #root.
@@ -90,6 +104,7 @@ export default function AuthBridgeProbe() {
           oxUidBefore,
           oxUidAfter,
           oxUidMatchesAuth: !!authUid && oxUidAfter === authUid,
+          legacyProfileEnsured,
           legacyPasswordInputPresent,
         });
       }, 2000);
@@ -159,6 +174,7 @@ export default function AuthBridgeProbe() {
                 <strong>{obs.oxUidMatchesAuth ? "YES ✅" : "NO ❌"}</strong>
               </li>
               <li>legacy mounted: <strong>YES ✅</strong></li>
+              <li>legacy-path profile: <code>{show(obs.legacyProfileEnsured)}</code></li>
               <li>
                 旧ログイン画面（passwordフィールド）が出ている?{" "}
                 <strong>{obs.legacyPasswordInputPresent ? "YES ⚠️" : "NO ✅"}</strong>

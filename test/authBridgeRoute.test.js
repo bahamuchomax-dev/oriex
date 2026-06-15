@@ -133,4 +133,30 @@ describe("auth bridge probe — waits for auth restoration before mounting legac
     expect(PROBE).toContain("mountedRef");
     expect(PROBE).toContain("mountedRef.current = true");
   });
+  it("ensures the legacy-path profile BEFORE importing legacy (so legacy enters the app)", () => {
+    const ensureIdx = PROBE.indexOf("ensureLegacyBridgeProfile(authUid)");
+    const importIdx = PROBE.indexOf('import("../../legacy/oriex-app.bundle.js")');
+    expect(ensureIdx).toBeGreaterThan(-1);
+    expect(importIdx).toBeGreaterThan(-1);
+    expect(ensureIdx).toBeLessThan(importIdx);
+  });
+});
+
+describe("legacyBridgeProfile — own-uid, no-password, no legacy edit", () => {
+  const SRC = srcOf("src/features/auth/legacyBridgeProfile.js");
+  const CODE = SRC.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+  it("writes to the legacy artifacts path for the user's OWN uid only", () => {
+    expect(SRC).toContain('LEGACY_APP_ID = "gen-ron-kai-app-v1"');
+    expect(CODE).toMatch(/doc\(db, "artifacts", LEGACY_APP_ID, "users", uid, "profile", "main"\)/);
+    expect(CODE).toMatch(/doc\(db, "users", uid, "profile", "main"\)/);
+  });
+  it("reads no `.password`, does no plaintext compare, writes no `password:` field", () => {
+    expect(CODE).not.toMatch(/\.password\b/);
+    expect(CODE).not.toMatch(/\.password\s*[!=]==?/);
+    expect(CODE).not.toMatch(/\bpassword\s*:/);
+  });
+  it("runs every write through assertSafePayload and logs nothing", () => {
+    expect(CODE).toContain("assertSafePayload(");
+    expect(CODE).not.toMatch(/console\s*\./);
+  });
 });
