@@ -129,6 +129,13 @@ describe("cutover bridge — safe by construction", () => {
     expect(bridge).toMatch(/if \(!ready\)/);
     expect(bridge).toMatch(/if \(!effectiveUser\)/);
   });
+  it("returns to the MODERN login on logout (clears legacy session; legacy login is not terminal)", () => {
+    const bridge = srcOf("src/features/auth/ModernCutoverBridge.jsx");
+    // on sign-out AFTER a handoff: clear the legacy session, reset, show modern login
+    expect(bridge).toContain("clearLegacyLocalSession");
+    expect(bridge).toMatch(/window\.__oxUid = undefined/);
+    expect(bridge).toMatch(/startedRef\.current = false;[\s\S]*setPhase\("signin"\)/);
+  });
   it("seeds legacy's localStorage cache for reload (no password) and logs nothing", () => {
     const seed = srcOf("src/features/auth/legacyLocalSession.js");
     const code = seed.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");

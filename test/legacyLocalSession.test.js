@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { seedLegacyLocalSession } from "../src/features/auth/legacyLocalSession.js";
+import {
+  seedLegacyLocalSession,
+  clearLegacyLocalSession,
+} from "../src/features/auth/legacyLocalSession.js";
 
 /* seedLegacyLocalSession writes legacy's localStorage fast-start cache so legacy
  * boots logged-in on reload (it reads `_i("profile")` = genron_profile_<uid> on
@@ -64,5 +67,26 @@ describe("seedLegacyLocalSession", () => {
   it("never throws when localStorage is unavailable", () => {
     globalThis.window = {};
     expect(seedLegacyLocalSession("U", {})).toBe(false);
+  });
+});
+
+describe("clearLegacyLocalSession (logout)", () => {
+  it("removes the cached uid and that uid's profile", () => {
+    store.setItem("genron_uid", JSON.stringify("U123"));
+    store.setItem("genron_profile_U123", JSON.stringify({ uid: "U123", shortId: "X" }));
+    const ok = clearLegacyLocalSession("U123");
+    expect(ok).toBe(true);
+    expect(store.getItem("genron_uid")).toBe(null);
+    expect(store.getItem("genron_profile_U123")).toBe(null);
+  });
+  it("does not touch other users' cached profiles", () => {
+    store.setItem("genron_profile_OTHER", JSON.stringify({ uid: "OTHER" }));
+    clearLegacyLocalSession("U123");
+    expect(store.getItem("genron_profile_OTHER")).not.toBe(null);
+  });
+  it("never throws without a uid or without localStorage", () => {
+    expect(clearLegacyLocalSession()).toBe(true); // clears genron_uid only
+    globalThis.window = {};
+    expect(clearLegacyLocalSession("U")).toBe(false);
   });
 });

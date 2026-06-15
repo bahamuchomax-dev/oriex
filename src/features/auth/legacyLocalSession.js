@@ -46,3 +46,23 @@ export function seedLegacyLocalSession(uid, profile) {
     return false;
   }
 }
+
+/**
+ * Clear the legacy fast-start session keys on logout so a subsequent reload does
+ * NOT fast-start as the signed-out user. Removes only the session keys (the cached
+ * uid + that uid's profile); Firestore stays the source of truth. Never throws.
+ * @param {string} [uid]
+ * @returns {boolean}
+ */
+export function clearLegacyLocalSession(uid) {
+  if (typeof window === "undefined" || !window.localStorage) return false;
+  try {
+    window.localStorage.removeItem(legacyKey("uid", uid));
+    if (uid && typeof uid === "string") {
+      window.localStorage.removeItem(legacyKey("profile", uid));
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
