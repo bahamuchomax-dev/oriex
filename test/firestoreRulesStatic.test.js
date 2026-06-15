@@ -225,6 +225,11 @@ describe("firestore.rules — legacy artifacts live-app tree is least-privilege"
       /match \/public\/data\/customApp\/\{cardUid\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if isSelf\(cardUid\);/,
     );
   });
+  it("per-user friend/username index (teacherIndex) is owner-write, answer/authority free", () => {
+    expect(RULES_CODE).toMatch(
+      /match \/public\/data\/teacherIndex\/\{docId\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if isSelf\(docId\) && noAuthorityFields\(\) && noAnswerFields\(\);/,
+    );
+  });
 });
 
 describe("firestore.rules — legacy profile/main authority lockdown", () => {
