@@ -64,4 +64,25 @@ describe("handoffToLegacy", () => {
     expect(res.uid).toBe(null);
     expect(globalThis.window.__oxUid).toBeUndefined();
   });
+
+  it("seeds legacy's localStorage fast-start cache BEFORE importing legacy (reload-proof)", async () => {
+    const store = new Map();
+    globalThis.window = {
+      localStorage: {
+        getItem: (k) => (store.has(k) ? store.get(k) : null),
+        setItem: (k, v) => store.set(k, String(v)),
+      },
+    };
+    let profileAtImport;
+    const importLegacy = vi.fn(async () => {
+      profileAtImport = store.get("genron_profile_U1"); // must already be seeded
+    });
+    await handoffToLegacy({ uid: "U1" }, importLegacy);
+
+    expect(profileAtImport).toBeTruthy(); // seeded before the import ran
+    expect(store.get("genron_uid")).toBe(JSON.stringify("U1"));
+    const prof = JSON.parse(store.get("genron_profile_U1"));
+    expect(prof.uid).toBe("U1");
+    expect(Object.keys(prof)).not.toContain("password");
+  });
 });

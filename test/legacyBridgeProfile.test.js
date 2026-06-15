@@ -29,10 +29,13 @@ const MODERN_PATH = "users/UID/profile/main";
 beforeEach(() => vi.clearAllMocks());
 
 describe("ensureLegacyBridgeProfile", () => {
-  it("does nothing if the legacy-path profile already exists", async () => {
-    fs.getDoc.mockResolvedValueOnce({ exists: () => true });
+  it("does nothing if the legacy-path profile already exists (returns its shortId/name)", async () => {
+    fs.getDoc.mockResolvedValueOnce({
+      exists: () => true,
+      data: () => ({ shortId: "EX1234", name: "既存" }),
+    });
     const r = await ensureLegacyBridgeProfile("UID");
-    expect(r).toEqual({ ok: true, created: false });
+    expect(r).toEqual({ ok: true, created: false, shortId: "EX1234", name: "既存" });
     expect(fs.setDoc).not.toHaveBeenCalled();
   });
 
@@ -45,7 +48,7 @@ describe("ensureLegacyBridgeProfile", () => {
         data: () => ({ shortId: "KWFAQA", name: "太郎", password: "should-not-copy" }),
       });
     const r = await ensureLegacyBridgeProfile("UID");
-    expect(r).toEqual({ ok: true, created: true });
+    expect(r).toEqual({ ok: true, created: true, shortId: "KWFAQA", name: "太郎" });
 
     // read own legacy + own modern profile only
     const readPaths = fs.doc.mock.calls.map((c) => c.slice(1).join("/"));

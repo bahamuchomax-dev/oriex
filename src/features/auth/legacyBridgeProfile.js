@@ -33,7 +33,15 @@ export async function ensureLegacyBridgeProfile(uid) {
 
   const legacyRef = doc(db, "artifacts", LEGACY_APP_ID, "users", uid, "profile", "main");
   const legacySnap = await getDoc(legacyRef);
-  if (legacySnap.exists()) return { ok: true, created: false };
+  if (legacySnap.exists()) {
+    const d = legacySnap.data() || {};
+    return {
+      ok: true,
+      created: false,
+      shortId: typeof d.shortId === "string" ? d.shortId : "",
+      name: typeof d.name === "string" ? d.name : "",
+    };
+  }
 
   // Carry the Friend ID / display name from the user's own modern profile so the
   // legacy app shows a consistent identity. Read own doc only; never a password.
@@ -50,12 +58,13 @@ export async function ensureLegacyBridgeProfile(uid) {
     /* ignore — proceed with a minimal profile */
   }
 
+  const safeName = name || shortId || "";
   const profile = assertSafePayload({
     shortId,
-    name: name || shortId || "",
+    name: safeName,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
   await setDoc(legacyRef, profile, { merge: true });
-  return { ok: true, created: true };
+  return { ok: true, created: true, shortId, name: safeName };
 }
