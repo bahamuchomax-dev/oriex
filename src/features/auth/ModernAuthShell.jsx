@@ -41,8 +41,10 @@ export default function ModernAuthShell({ onAuthed } = {}) {
   const [inviteCode, setInviteCode] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  // Account icon chosen on the signup screen: emoji+color OR a small cropped photo.
-  const [icon, setIcon] = useState({ avatar: "", color: "", photo: "" });
+  // Account icon chosen on signup. `avatar` is either a character key OR a small
+  // cropped photo data URL (the legacy app renders avatar as <img src>). `color`
+  // is the background.
+  const [icon, setIcon] = useState({ avatar: "", color: "" });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [idCopied, setIdCopied] = useState(false);
@@ -88,7 +90,6 @@ export default function ModernAuthShell({ onAuthed } = {}) {
           name,
           avatar: icon.avatar,
           color: icon.color,
-          photo: icon.photo,
         });
         setGeneratedFriendId(shortId); // a Friend ID is GENERATED, not typed
       } else {

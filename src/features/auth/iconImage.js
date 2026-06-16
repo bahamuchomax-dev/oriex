@@ -13,12 +13,12 @@
  * Functions are best-effort and reject/return safely on bad input.
  * ============================================================ */
 
-export const ICON_SIZE = 256; // output square px — crisp on mobile, tiny on disk
-export const ICON_QUALITY = 0.82; // JPEG quality — small but clean
+export const ICON_SIZE = 384; // output square px — higher quality, still small
+export const ICON_QUALITY = 0.88; // JPEG quality — crisper but compact
 // Reject obviously-too-large source files up front (raw bytes, pre-resize).
-export const MAX_SOURCE_BYTES = 12 * 1024 * 1024; // 12 MB
+export const MAX_SOURCE_BYTES = 16 * 1024 * 1024; // 16 MB
 // Safety cap for the ENCODED data URL we will store (well under Firestore's 1 MB).
-export const MAX_ENCODED_BYTES = 200 * 1024; // ~200 KB
+export const MAX_ENCODED_BYTES = 320 * 1024; // ~320 KB
 
 /** Load an image File into an HTMLImageElement. Resolves null on failure. */
 export function fileToImage(file) {

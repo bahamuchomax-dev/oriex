@@ -49,18 +49,26 @@ describe("signup icon picker — UI (same as profile edit)", () => {
 });
 
 describe("signup icon — persistence wiring", () => {
-  it("signup passes the chosen avatar/color/photo to the API", () => {
-    expect(SHELL).toMatch(/signUpWithInviteCode\(\{[\s\S]*?avatar: icon\.avatar[\s\S]*?color: icon\.color[\s\S]*?photo: icon\.photo/);
-    expect(API).toMatch(/signUpWithInviteCode\(\{ inviteCode, password, name, avatar, color, photo \}/);
+  it("a custom photo is stored in `avatar` (the field the legacy app renders)", () => {
+    // legacy renders <img src={avatar}> — so the photo data URL goes in `avatar`,
+    // not a separate `photo` field
+    expect(PICKER).toMatch(/onChange\(\{ avatar: photo, color \}\)/);
+    // onChange must NOT emit a separate `photo` field (legacy reads `avatar`)
+    expect(PICKER).not.toMatch(/onChange\(\{[^}]*\bphoto:/);
+  });
+  it("signup passes the chosen avatar/color to the API", () => {
+    expect(SHELL).toMatch(/signUpWithInviteCode\(\{[\s\S]*?avatar: icon\.avatar[\s\S]*?color: icon\.color/);
+    expect(API).toMatch(/signUpWithInviteCode\(\{ inviteCode, password, name, avatar, color \}/);
   });
   it("writes the icon to the profile + public card via assertSafePayload", () => {
     expect(API).toContain("withIconFields");
-    expect(API).toMatch(/out\.photo = photo/);
+    expect(API).toMatch(/out\.avatar = avatar/);
     expect(API).toContain("assertSafePayload(");
+    expect(API).not.toContain("out.photo");
   });
-  it("the bridge carries the icon to the legacy profile so the live app shows it", () => {
+  it("the bridge carries avatar (char OR photo data URL) to the legacy profile", () => {
     expect(BRIDGE).toMatch(/d\.avatar/);
-    expect(BRIDGE).toMatch(/d\.photo/);
-    expect(BRIDGE).toMatch(/base\.photo = photo/);
+    expect(BRIDGE).toMatch(/base\.avatar = avatar/);
+    expect(BRIDGE).not.toContain("base.photo");
   });
 });
