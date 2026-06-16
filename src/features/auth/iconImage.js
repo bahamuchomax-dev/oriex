@@ -82,6 +82,47 @@ export function renderIconDataUrl(img, opts = {}) {
   }
 }
 
+/**
+ * Render the icon from a WYSIWYG crop stage: a square frame of `stageSize` display
+ * px in which the source image is cover-fit, scaled by `zoom`, and offset by the
+ * pan (panX/panY, display px = the image's top-left within the frame). Produces the
+ * exact square the user framed. Returns a JPEG data URL, or "" on failure.
+ * @param {HTMLImageElement} img
+ * @param {{ stageSize:number, zoom?:number, panX?:number, panY?:number, out?:number, quality?:number }} opts
+ */
+export function renderCroppedIcon(img, opts = {}) {
+  try {
+    if (!img || typeof document === "undefined") return "";
+    const stageSize = opts.stageSize || ICON_SIZE;
+    const zoom = Math.max(1, opts.zoom || 1);
+    const out = opts.out || ICON_SIZE;
+    const quality = opts.quality || ICON_QUALITY;
+    const iw = img.naturalWidth || img.width;
+    const ih = img.naturalHeight || img.height;
+    if (!iw || !ih) return "";
+
+    const base = Math.max(stageSize / iw, stageSize / ih); // cover-fit
+    const scale = base * zoom;
+    // the frame [0..stageSize] maps to this source rect (image px)
+    const sx = -(opts.panX || 0) / scale;
+    const sy = -(opts.panY || 0) / scale;
+    const sSize = stageSize / scale;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = out;
+    canvas.height = out;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return "";
+    ctx.imageSmoothingQuality = "high";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, out, out);
+    ctx.drawImage(img, sx, sy, sSize, sSize, 0, 0, out, out);
+    return canvas.toDataURL("image/jpeg", quality);
+  } catch {
+    return "";
+  }
+}
+
 /** Approximate byte length of a data URL's payload (for the size guard). */
 export function dataUrlByteLength(dataUrl) {
   if (typeof dataUrl !== "string") return 0;

@@ -1,24 +1,32 @@
 import { useEffect, useRef, useState } from "react";
-import { fileToImage, renderIconDataUrl, isIconWithinLimit } from "./iconImage.js";
+import { fileToImage, renderCroppedIcon, isIconWithinLimit } from "./iconImage.js";
 import { AvatarArt, AVATAR_CHARS, DEFAULT_AVATAR_CHAR } from "./avatarArt.jsx";
 
 /* ============================================================
  * SignupIconPicker — set an account icon on signup, SAME as profile-edit.
  * ------------------------------------------------------------
- * Two modes, both with a live PREVIEW and ADJUSTMENT — matching the legacy
- * profile editor's icon setting:
- *   - illustration: pick one of the SAME 9 character illustrations the profile
- *     editor offers (avatarArt.jsx, rendered from the identical SVG) + a
- *     background color. Stored as avatar:"<char>" — the exact key the app renders.
- *   - photo: upload an image, then ZOOM (slider) and reposition (drag / 範囲指定);
- *     it is square-cropped to a compact JPEG the same way the editor encodes its
- *     icon photo, so it stays tiny and saves reliably.
- * Reports the chosen icon via onChange({ avatar, color, photo }).
- * UI only — no auth/secret handling.
+ *   - illustration: the SAME 9 character illustrations (avatarArt.jsx) + a
+ *     background color. Stored as avatar:"<char>" (the key the app renders).
+ *   - photo: a WYSIWYG crop stage — drag to move HORIZONTALLY/VERTICALLY, slider
+ *     to ZOOM, with a live circular PREVIEW. The framed square is encoded to a
+ *     compact JPEG, so it stays tiny and saves reliably.
+ * Reports the chosen icon via onChange({ avatar, color, photo }). UI only.
  * ============================================================ */
 
 const COLORS = ["#c88040", "#9060b8", "#208050", "#14b8a6", "#ef4444", "#3b82f6"];
+const STAGE = 176; // crop stage display px
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+function dispDims(img, zoom) {
+  const iw = img.naturalWidth || img.width;
+  const ih = img.naturalHeight || img.height;
+  const base = Math.max(STAGE / iw, STAGE / ih); // cover-fit
+  return { w: iw * base * zoom, h: ih * base * zoom };
+}
+function clampPan(pan, img, zoom) {
+  const { w, h } = dispDims(img, zoom);
+  return { x: clamp(pan.x, STAGE - w, 0), y: clamp(pan.y, STAGE - h, 0) };
+}
 
 export default function SignupIconPicker({ onChange } = {}) {
   const [mode, setMode] = useState("illust"); // "illust" | "photo"
@@ -26,7 +34,7 @@ export default function SignupIconPicker({ onChange } = {}) {
   const [color, setColor] = useState(COLORS[0]);
   const [img, setImg] = useState(null);
   const [zoom, setZoom] = useState(1);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [pan, setPan] = useState({ x: 0, y: 0 });
   const [photo, setPhoto] = useState("");
   const [error, setError] = useState("");
   const dragRef = useRef(null);
@@ -37,9 +45,10 @@ export default function SignupIconPicker({ onChange } = {}) {
     else onChange({ avatar: char, color, photo: "" });
   }, [mode, char, color, photo, onChange]);
 
+  // Re-render the cropped photo whenever the source / zoom / pan changes.
   useEffect(() => {
     if (mode !== "photo" || !img) return;
-    const url = renderIconDataUrl(img, { zoom, offsetX: offset.x, offsetY: offset.y });
+    const url = renderCroppedIcon(img, { stageSize: STAGE, zoom, panX: pan.x, panY: pan.y });
     if (!url) {
       setError("画像を処理できませんでした。");
       return;
@@ -50,7 +59,7 @@ export default function SignupIconPicker({ onChange } = {}) {
     }
     setError("");
     setPhoto(url);
-  }, [mode, img, zoom, offset]);
+  }, [mode, img, zoom, pan]);
 
   const onFile = async (e) => {
     const file = e.target.files && e.target.files[0];
@@ -60,44 +69,47 @@ export default function SignupIconPicker({ onChange } = {}) {
       setError("この画像は読み込めません。別の画像をお試しください。");
       return;
     }
+    const { w, h } = dispDims(loaded, 1);
     setImg(loaded);
     setZoom(1);
-    setOffset({ x: 0, y: 0 });
+    setPan({ x: (STAGE - w) / 2, y: (STAGE - h) / 2 }); // centered
     setMode("photo");
   };
 
+  const onZoom = (z) => {
+    const nz = Math.max(1, Number(z) || 1);
+    setZoom(nz);
+    if (img) setPan((p) => clampPan(p, img, nz));
+  };
+
   const onPointerDown = (e) => {
-    if (mode !== "photo" || !img) return;
-    dragRef.current = { x: e.clientX, y: e.clientY, ox: offset.x, oy: offset.y };
+    if (!img) return;
+    dragRef.current = { x: e.clientX, y: e.clientY, px: pan.x, py: pan.y };
+    if (e.currentTarget.setPointerCapture) {
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+    }
   };
   const onPointerMove = (e) => {
-    if (!dragRef.current) return;
-    const dx = (e.clientX - dragRef.current.x) / 90;
-    const dy = (e.clientY - dragRef.current.y) / 90;
-    setOffset({
-      x: clamp(dragRef.current.ox - dx, -1, 1),
-      y: clamp(dragRef.current.oy - dy, -1, 1),
-    });
+    if (!dragRef.current || !img) return;
+    const nx = dragRef.current.px + (e.clientX - dragRef.current.x);
+    const ny = dragRef.current.py + (e.clientY - dragRef.current.y);
+    setPan(clampPan({ x: nx, y: ny }, img, zoom));
   };
   const onPointerUp = () => {
     dragRef.current = null;
   };
 
+  const stageDims = img ? dispDims(img, zoom) : { w: STAGE, h: STAGE };
   const showPhoto = mode === "photo" && photo;
 
   return (
     <div className="ox-auth-iconpick">
-      <div
-        className="ox-auth-iconpreview"
-        style={{ background: color }}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerLeave={onPointerUp}
-        role="img"
-        aria-label="アイコンのプレビュー"
-        title={showPhoto ? "ドラッグで位置を調整" : undefined}
-      >
+      {/* live final preview */}
+      <div className="ox-auth-iconpreview" style={{ background: color }} role="img" aria-label="アイコンのプレビュー">
         {showPhoto ? <img src={photo} alt="" draggable="false" /> : <AvatarArt char={char} size={64} />}
       </div>
 
@@ -152,38 +164,69 @@ export default function SignupIconPicker({ onChange } = {}) {
 
       {mode === "photo" && (
         <div className="ox-auth-iconphoto">
-          <label className="ox-auth-iconupload">
-            写真を選ぶ
-            <input type="file" accept="image/*" onChange={onFile} hidden />
-          </label>
-          {img && (
-            <label className="ox-auth-iconzoom">
-              ズーム
-              <input
-                type="range"
-                min="1"
-                max="3"
-                step="0.01"
-                value={zoom}
-                onChange={(e) => setZoom(Number(e.target.value) || 1)}
-              />
+          {!img && (
+            <label className="ox-auth-iconupload">
+              写真を選ぶ
+              <input type="file" accept="image/*" onChange={onFile} hidden />
             </label>
           )}
-          {img && <p className="ox-auth-hint">ドラッグで範囲（位置）を調整できます。</p>}
           {img && (
-            <button
-              type="button"
-              className="ox-auth-iconremove"
-              onClick={() => {
-                setImg(null);
-                setPhoto("");
-                setZoom(1);
-                setOffset({ x: 0, y: 0 });
-                setMode("illust");
-              }}
-            >
-              写真を削除してイラストに戻す
-            </button>
+            <>
+              <div
+                className="ox-auth-cropstage"
+                onPointerDown={onPointerDown}
+                onPointerMove={onPointerMove}
+                onPointerUp={onPointerUp}
+                onPointerCancel={onPointerUp}
+                aria-label="ドラッグで上下左右に移動、スライダーで拡大"
+              >
+                <img
+                  src={img.src}
+                  alt=""
+                  draggable="false"
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    width: stageDims.w,
+                    height: stageDims.h,
+                    transform: `translate(${pan.x}px, ${pan.y}px)`,
+                  }}
+                />
+                <div className="ox-auth-cropring" aria-hidden="true" />
+              </div>
+              <label className="ox-auth-iconzoom">
+                ズーム
+                <input
+                  type="range"
+                  min="1"
+                  max="3"
+                  step="0.01"
+                  value={zoom}
+                  onChange={(e) => onZoom(e.target.value)}
+                />
+              </label>
+              <p className="ox-auth-hint">ドラッグで上下左右に移動できます。</p>
+              <div className="ox-auth-iconphoto-actions">
+                <label className="ox-auth-iconupload sm">
+                  別の写真
+                  <input type="file" accept="image/*" onChange={onFile} hidden />
+                </label>
+                <button
+                  type="button"
+                  className="ox-auth-iconremove"
+                  onClick={() => {
+                    setImg(null);
+                    setPhoto("");
+                    setZoom(1);
+                    setPan({ x: 0, y: 0 });
+                    setMode("illust");
+                  }}
+                >
+                  イラストに戻す
+                </button>
+              </div>
+            </>
           )}
         </div>
       )}
