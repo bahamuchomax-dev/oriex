@@ -128,6 +128,40 @@ function outlineMenuIconsOnce() {
   }
 }
 
+// On a photo background the top profile header (avatar + name + 現論会 校名 +
+// streak) sits directly on the photo and can be hard to read. That header uses
+// only generic utility classes, so we find it by its org label ("現論会…") and
+// back the nearest ancestor row that contains the avatar image. Photo-bg only.
+const HEADER_BACK = "rgba(255,255,255,0.66)";
+
+function backProfileHeaderOnce() {
+  try {
+    if (typeof document === "undefined" || !document.body) return;
+    if (!document.body.classList || !document.body.classList.contains("oxbg-on")) return;
+    const spans = document.querySelectorAll("span");
+    for (let i = 0; i < spans.length; i++) {
+      if ((spans[i].textContent || "").trim().indexOf("現論会") !== 0) continue;
+      let el = spans[i].parentElement;
+      let hops = 0;
+      while (el && hops < 6) {
+        if (el.querySelector && el.querySelector('img[data-oxav], img[alt="avatar"]')) break;
+        el = el.parentElement;
+        hops += 1;
+      }
+      if (el && el.style && String(el.style.background).indexOf("255, 255, 255, 0.66") < 0) {
+        el.style.background = HEADER_BACK;
+        el.style.borderRadius = "16px";
+        el.style.padding = "6px 10px";
+        el.style.backdropFilter = "blur(6px)";
+        el.style.webkitBackdropFilter = "blur(6px)";
+      }
+      return;
+    }
+  } catch {
+    /* cosmetic only */
+  }
+}
+
 function swapHamsterIconsOnce() {
   try {
     if (typeof document === "undefined" || !document.querySelectorAll) return;
@@ -196,6 +230,7 @@ export function installUiPatches(map = RELABELS) {
       hideSectionsOnce(HIDE_SECTION_HEADINGS);
       swapHamsterIconsOnce();
       outlineMenuIconsOnce();
+      backProfileHeaderOnce();
     };
 
     if (document.readyState !== "loading") setTimeout(run, 0);
