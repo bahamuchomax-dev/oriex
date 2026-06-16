@@ -8,6 +8,9 @@
 import { bridgeUid } from "./authBridgeController.js";
 import { ensureLegacyBridgeProfile } from "./legacyBridgeProfile.js";
 import { seedLegacyLocalSession } from "./legacyLocalSession.js";
+// TEMPORARY save/auth tracing (?oriexAuthDebug=1); no-op when the flag is absent.
+import { authDebugOn, installFsHook, logAuthIdentity, scheduleAuthIdentityProbes } from "./authDebug.js";
+import { currentAuthUser } from "./modernAuthState.js";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -51,6 +54,39 @@ export async function handoffToLegacy(user, importLegacy) {
   // mirrors legacy's key format.
   if (uid) seedLegacyLocalSession(uid, { shortId, name, avatar, color, isTeacher });
 
+  // Debug-only: install the legacy setDoc/getDoc/getDocs hook and record the auth
+  // identity BEFORE legacy boots, so we can see the uid/isAnonymous at every later
+  // write/read. Safe metadata only; no document data. No-op unless ?oriexAuthDebug=1.
+  if (authDebugOn()) {
+    installFsHook(() => {
+      try {
+        return currentAuthUser();
+      } catch {
+        return null;
+      }
+    });
+    logAuthIdentity("before-legacy-import", (() => {
+      try {
+        return currentAuthUser();
+      } catch {
+        return null;
+      }
+    })());
+  }
+
   await (importLegacy || defaultImportLegacy)();
+
+  // Debug-only: re-check the identity after boot settles, to catch a delayed
+  // anonymous-session replacement (uid/isAnonymous at 1s and 4s).
+  if (authDebugOn()) {
+    scheduleAuthIdentityProbes(() => {
+      try {
+        return currentAuthUser();
+      } catch {
+        return null;
+      }
+    });
+  }
+
   return { uid, ensured };
 }

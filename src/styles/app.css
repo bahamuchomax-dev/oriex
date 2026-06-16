@@ -68,3 +68,40 @@ body.oxbg-on button[data-ox-subject-card]{
 body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"]{
   background:rgba(255,255,255,.96)!important;
 }
+
+/* ── stage / study-mode screen: tighter vertical rhythm ──────────────────────
+   The subject stage / mode-selection screen left too much unused vertical space
+   and showed too few mode cards in the initial mobile viewport. These rules
+   shave a little top/header, tab and card spacing so the card area extends
+   naturally lower and more of the next card is visible — SHARED across every
+   subject (these are the legacy `.rx-*` classes the screen renders, not a
+   per-subject rule). Conservative: touch targets and readability are preserved,
+   and the bottom safe-area / nav clearance (--app-bottom-pad, .rx-tabbar) is
+   left untouched so content is never hidden behind the bottom bar. */
+.rx-back{ padding:4px 0 6px !important; }            /* 戻る — was 6px 0 8px */
+.rx-cats{ padding-bottom:10px !important; }          /* subject-pill row — was 16px */
+.rx-path{ padding:4px 0 8px !important; }             /* stage path — was 6px 0 10px */
+.rx-node{ margin-bottom:12px !important; }            /* stage node gap — was 16px */
+.rx-dirbtn{ padding:11px 8px !important; }            /* 単語→意味 / 意味→単語 tabs — was 13px 8px */
+.rx-bigcards{ gap:11px !important; }                  /* mode-card grid gap — was 14px */
+.rx-bc{ min-height:104px !important; padding:15px !important; } /* mode cards — were 118px / 18px */
+
+/* Bottom reserve / footer blank: the legacy nav is --nav-height (≈64px + safe-area),
+   but content reserved --app-bottom-pad = safe + 92px — ~28px MORE than the nav
+   needs, which is the tall bottom blank around the "Oriex vX" label that clipped
+   the next card. Trim the reserve to nav + a small gap so the card list extends
+   lower (shared across ALL subjects), while KEEPING env(safe-area-inset-bottom)
+   so nothing sits under the home indicator / behind the nav. The opt-in React
+   home (.rx-home) uses a taller floating nav, so it keeps the original reserve. */
+html, body, #root{ --app-bottom-pad: calc(env(safe-area-inset-bottom, 0px) + 72px) !important; }
+.rx-home{ --app-bottom-pad: calc(env(safe-area-inset-bottom, 0px) + 92px) !important; }
+
+/* Mode-select screen (ステージ選択後の 単語→意味 / 例文モード タブ + カード) scroll
+   range. Every .rx-home screen (home / stage / records / …) renders with an INLINE
+   height:auto and lets the PAGE scroll — except the mode-select screen, which is the
+   only one that did NOT inline-override the legacy class default height:100%. So its
+   content was clamped to the (content-sized) parent and only an INNER scroll revealed
+   the lower cards ("下が上の方で途切れる / スクロールすると見える"). Default the class to
+   height:auto so the mode screen grows with its content and scrolls like the others;
+   the 9 other screens already set height:auto inline, so they are unaffected. */
+.rx-home{ height: auto; min-height: auto; }
