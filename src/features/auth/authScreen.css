@@ -259,6 +259,20 @@
 .ox-auth-switch-btn:active {
   transform: translateY(1px);
 }
+/* small "forgot password" text link under the login switch */
+.ox-auth-forgot-link {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted, #587a68);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 /* ---------- error ---------- */
 .ox-auth-error {

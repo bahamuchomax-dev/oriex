@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { signUpWithInviteCode, loginWithFriendId, logout } from "./modernAuthApi.js";
 import { subscribeAuth, currentAuthUser } from "./modernAuthState.js";
-import { safeAuthErrorMessage } from "./friendIdAuth.js";
+import { safeAuthErrorMessage, normalizeFriendId, validateFriendIdFormat } from "./friendIdAuth.js";
 import { validateInviteCode } from "./inviteCode.js";
 import { CUTOVER_TITLE, CUTOVER_LINES, SIGNUP_NEW_FRIEND_ID_NOTE } from "./cutoverCopy.js";
 import { copyUserId, isCopyableUid } from "../profile/copyUserId.js";
@@ -36,7 +36,9 @@ function isAuthDebugEnabled() {
 export default function ModernAuthShell({ onAuthed } = {}) {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
-  const [mode, setMode] = useState("login"); // "login" | "signup"
+  const [mode, setMode] = useState("login"); // "login" | "signup" | "forgot"
+  // forgot-password: the Friend ID the user submitted, so we can show reset guidance.
+  const [forgotShownFor, setForgotShownFor] = useState("");
   const [friendId, setFriendId] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [password, setPassword] = useState("");
@@ -72,6 +74,18 @@ export default function ModernAuthShell({ onAuthed } = {}) {
     setError("");
     setBusy(true);
     try {
+      if (mode === "forgot") {
+        // Friend ID accounts use a NON-deliverable internal email, so Firebase's
+        // email password-reset cannot be used. The reset is done by the teacher /
+        // admin (Admin SDK). Validate the Friend ID and show how to get it reset.
+        const fid = normalizeFriendId(friendId);
+        if (!validateFriendIdFormat(fid)) {
+          setError("Friend ID は6文字で入力してください。");
+          return;
+        }
+        setForgotShownFor(fid);
+        return;
+      }
       if (mode === "signup") {
         // Specific, safe feedback before hitting Firebase. The invite code is a
         // TEST-ONLY gate; it is never written to Firestore and never logged.
@@ -210,7 +224,7 @@ export default function ModernAuthShell({ onAuthed } = {}) {
         </section>
 
         <div className="ox-auth-form">
-          {mode === "login" && (
+          {(mode === "login" || mode === "forgot") && (
             <label className="ox-auth-field">
               <span className="ox-auth-label">Friend ID</span>
               <input
@@ -224,6 +238,20 @@ export default function ModernAuthShell({ onAuthed } = {}) {
                 style={{ textTransform: "uppercase" }}
               />
             </label>
+          )}
+
+          {mode === "forgot" && !forgotShownFor && (
+            <p className="ox-auth-hint" style={{ marginTop: 0 }}>
+              パスワードのリセットは先生（管理者）が行います。あなたの Friend ID を入力して「リセット方法を確認」を押してください。
+            </p>
+          )}
+          {mode === "forgot" && forgotShownFor && (
+            <div className="ox-auth-notice">
+              <strong>パスワードのリセット手順</strong>
+              <p>
+                先生に Friend ID「<b>{forgotShownFor}</b>」を伝えて、パスワードのリセットを依頼してください。先生がリセットすると、新しいパスワードでログインできます。
+              </p>
+            </div>
           )}
 
           {mode === "signup" && (
@@ -268,20 +296,24 @@ export default function ModernAuthShell({ onAuthed } = {}) {
             </div>
           )}
 
-          <label className="ox-auth-field">
-            <span className="ox-auth-label">パスワード</span>
-            <input
-              className="ox-auth-input"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete={mode === "signup" ? "new-password" : "current-password"}
-            />
-          </label>
+          {mode !== "forgot" && (
+            <label className="ox-auth-field">
+              <span className="ox-auth-label">パスワード</span>
+              <input
+                className="ox-auth-input"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete={mode === "signup" ? "new-password" : "current-password"}
+              />
+            </label>
+          )}
 
-          <button className="ox-auth-primary" type="submit" disabled={busy}>
-            {mode === "signup" ? "登録する" : "ログイン"}
-          </button>
+          {!(mode === "forgot" && forgotShownFor) && (
+            <button className="ox-auth-primary" type="submit" disabled={busy}>
+              {mode === "signup" ? "登録する" : mode === "forgot" ? "リセット方法を確認" : "ログイン"}
+            </button>
+          )}
         </div>
 
         {error && (
@@ -291,19 +323,48 @@ export default function ModernAuthShell({ onAuthed } = {}) {
         )}
 
         <div className="ox-auth-switch">
-          <span className="ox-auth-switch-label">
-            {mode === "signup" ? "アカウントをお持ちですか？" : "はじめての方はこちら"}
-          </span>
-          <button
-            type="button"
-            className="ox-auth-switch-btn"
-            onClick={() => {
-              setError("");
-              setMode(mode === "signup" ? "login" : "signup");
-            }}
-          >
-            {mode === "signup" ? "ログインに戻る" : "新しく始める"}
-          </button>
+          {mode === "forgot" ? (
+            <button
+              type="button"
+              className="ox-auth-switch-btn"
+              onClick={() => {
+                setError("");
+                setForgotShownFor("");
+                setMode("login");
+              }}
+            >
+              ログインに戻る
+            </button>
+          ) : (
+            <>
+              <span className="ox-auth-switch-label">
+                {mode === "signup" ? "アカウントをお持ちですか？" : "はじめての方はこちら"}
+              </span>
+              <button
+                type="button"
+                className="ox-auth-switch-btn"
+                onClick={() => {
+                  setError("");
+                  setMode(mode === "signup" ? "login" : "signup");
+                }}
+              >
+                {mode === "signup" ? "ログインに戻る" : "新しく始める"}
+              </button>
+              {mode === "login" && (
+                <button
+                  type="button"
+                  className="ox-auth-forgot-link"
+                  onClick={() => {
+                    setError("");
+                    setForgotShownFor("");
+                    setMode("forgot");
+                  }}
+                >
+                  パスワードを忘れた方
+                </button>
+              )}
+            </>
+          )}
         </div>
 
         <p className="ox-auth-version">{APP_VERSION_LABEL}</p>
