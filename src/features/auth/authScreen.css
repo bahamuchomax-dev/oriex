@@ -491,6 +491,44 @@ html.ox-auth-nozoom body {
 .ox-auth-iconzoom input[type="range"] {
   flex: 1;
 }
+/* WYSIWYG crop stage: drag to move H/V, slider to zoom; circular live preview */
+.ox-auth-cropstage {
+  position: relative;
+  width: 176px;
+  height: 176px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #efe7dd;
+  touch-action: none; /* drag-to-pan without scrolling the page */
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 0 0 1px rgba(43, 39, 36, 0.10), 0 10px 24px rgba(43, 39, 36, 0.18);
+}
+.ox-auth-cropstage:active {
+  cursor: grabbing;
+}
+.ox-auth-cropstage img {
+  pointer-events: none;
+}
+/* subtle inner ring so the user sees the crop boundary */
+.ox-auth-cropring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+}
+.ox-auth-iconphoto-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.ox-auth-iconupload.sm {
+  min-height: 36px;
+  padding: 7px 14px;
+  font-size: 13px;
+}
 .ox-auth-iconremove {
   border: none;
   background: transparent;

@@ -27,6 +27,14 @@ describe("signup icon picker — UI (same as profile edit)", () => {
     expect(PICKER).toContain("写真");
     expect(PICKER).toContain('accept="image/*"');
   });
+  it("photo can be moved horizontally AND vertically (crop stage + pan) with live preview", () => {
+    expect(PICKER).toContain("ox-auth-cropstage");
+    expect(PICKER).toMatch(/translate\(\$\{pan\.x\}px, \$\{pan\.y\}px\)/);
+    expect(PICKER).toMatch(/renderCroppedIcon\(img, \{ stageSize: STAGE, zoom, panX: pan\.x, panY: pan\.y \}\)/);
+    const IMG = readFileSync("src/features/auth/iconImage.js", "utf8");
+    expect(IMG).toContain("export function renderCroppedIcon");
+    expect(IMG).toMatch(/drawImage\(img, sx, sy/); // pan maps to the source crop rect
+  });
   it("ports the 9 legacy character illustrations (same chars the app renders)", () => {
     for (const c of ["bear", "fox", "penguin", "owl", "cat2", "hamster", "gorilla", "rabbit", "teacher"]) {
       expect(ART).toContain('export const ' + c + ' =');
