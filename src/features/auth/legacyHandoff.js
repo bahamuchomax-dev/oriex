@@ -14,6 +14,7 @@ import { currentAuthUser } from "./modernAuthState.js";
 import { installAttendanceSync } from "../../services/attendanceSync.js";
 import { installPasswordChangeSync } from "../../services/passwordChangeSync.js";
 import { installTeacherAdmin } from "../teacherAdmin/mountTeacherAdmin.jsx";
+import { installAvatarBake } from "../../services/avatarBake.js";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -103,6 +104,14 @@ export async function handoffToLegacy(user, importLegacy) {
     installTeacherAdmin();
   } catch {
     /* non-fatal: the legacy admin still works */
+  }
+
+  // Bake the icon zoom/position adjustment into the saved image on save, so it
+  // actually shows (the legacy applied it only at display time on one element).
+  try {
+    installAvatarBake();
+  } catch {
+    /* non-fatal */
   }
 
 
