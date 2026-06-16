@@ -14,7 +14,6 @@ import { currentAuthUser } from "./modernAuthState.js";
 import { installAttendanceSync } from "../../services/attendanceSync.js";
 import { installPasswordChangeSync } from "../../services/passwordChangeSync.js";
 import { installTeacherAdmin } from "../teacherAdmin/mountTeacherAdmin.jsx";
-import { installProfileIcon } from "../teacherAdmin/mountProfileIcon.jsx";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -106,13 +105,6 @@ export async function handoffToLegacy(user, importLegacy) {
     /* non-fatal: the legacy admin still works */
   }
 
-  // Profile-edit avatar: tapping アイコンを調整 opens a React editor that BAKES the
-  // crop (consistent everywhere) instead of the legacy display-time adjustment.
-  try {
-    installProfileIcon();
-  } catch {
-    /* non-fatal */
-  }
 
   // Debug-only: re-check the identity after boot settles, to catch a delayed
   // anonymous-session replacement (uid/isAnonymous at 1s and 4s).
