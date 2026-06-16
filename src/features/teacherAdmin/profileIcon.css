@@ -1,0 +1,65 @@
+/* ProfileIconEditor — modal that replaces the legacy "アイコンを調整" flow. */
+.ox-pie-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(43, 39, 36, 0.45);
+}
+.ox-pie-modal {
+  width: 100%;
+  max-width: 480px;
+  max-height: 92vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  padding: 20px 18px calc(env(safe-area-inset-bottom, 0px) + 20px);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.2);
+  font-family: "Zen Maru Gothic", "Zen Kaku Gothic New", system-ui, sans-serif;
+  color: #2b2724;
+}
+.ox-pie-h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 900;
+}
+.ox-pie-save {
+  width: 100%;
+  margin-top: 14px;
+  min-height: 48px;
+  border: none;
+  border-radius: 14px;
+  background: #2e9e6b;
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.ox-pie-save:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.ox-pie-note {
+  margin: 10px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2e9e6b;
+  text-align: center;
+}
+.ox-pie-close {
+  width: 100%;
+  margin-top: 10px;
+  min-height: 46px;
+  border: 1px solid rgba(43, 39, 36, 0.2);
+  border-radius: 14px;
+  background: #fff;
+  color: #2b2724;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
