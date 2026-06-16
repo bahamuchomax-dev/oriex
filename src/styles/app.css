@@ -106,6 +106,12 @@ html, body, #root{ --app-bottom-pad: calc(env(safe-area-inset-bottom, 0px) + 72p
    the 9 other screens already set height:auto inline, so they are unaffected. */
 .rx-home{ height: auto; min-height: auto; }
 
+/* Friend ID / ID-search inputs: display typed text in UPPERCASE. Friend IDs are
+   uppercase and the lookup normalizes to uppercase anyway, so this just makes the
+   field match (matched by the bundle's placeholders "6桁のID" / "6桁のFriend ID…"). */
+input[placeholder*="Friend ID"],
+input[placeholder*="桁のID"]{ text-transform: uppercase; }
+
 /* ── photo-background readability: BACKING on the home header only ──────────────
    Earlier we outlined all text on the photo veil, but on elements that already
    have their own background (the はじめる CTA, stage nodes, colored cards) the halo
