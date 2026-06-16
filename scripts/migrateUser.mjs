@@ -141,11 +141,19 @@ async function main() {
     password,
   });
 
-  // 2) stamp the Friend ID into the legacy profile + the Friend ID directory so
-  //    the app shows/finds it (never writes a password to Firestore).
+  // 2) stamp the Friend ID into the legacy profile + the correct directory so the
+  //    app shows/finds it (never writes a password to Firestore). The legacy app
+  //    splits the directory by role: STUDENTS go in public/data/customApp (also the
+  //    primary Friend-ID login lookup), TEACHERS in public/data/teacherIndex.
+  //    Writing a student into teacherIndex makes the app treat them as a teacher.
+  const prof = (await db.doc(`artifacts/${LEGACY_APP_ID}/users/${uid}/profile/main`).get()).data() || {};
   const namePatch = opts.name ? { name: opts.name } : {};
   await db.doc(`artifacts/${LEGACY_APP_ID}/users/${uid}/profile/main`).set({ shortId: friendId, ...namePatch }, { merge: true });
-  await db.doc(`artifacts/${LEGACY_APP_ID}/public/data/teacherIndex/${uid}`).set({ shortId: friendId, uid, ...namePatch }, { merge: true });
+  const dir = prof.isTeacher === true ? "teacherIndex" : "customApp";
+  await db.doc(`artifacts/${LEGACY_APP_ID}/public/data/${dir}/${uid}`).set(
+    { shortId: friendId, uid, name: namePatch.name || prof.name || "", avatar: prof.avatar || "", color: prof.color || "" },
+    { merge: true },
+  );
 
   console.log("[migrateUser] done — the student keeps ALL their data (same uid).");
   console.log("  uid      : " + uid);
