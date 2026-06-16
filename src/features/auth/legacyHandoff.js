@@ -11,6 +11,7 @@ import { seedLegacyLocalSession } from "./legacyLocalSession.js";
 // TEMPORARY save/auth tracing (?oriexAuthDebug=1); no-op when the flag is absent.
 import { authDebugOn, installFsHook, logAuthIdentity, scheduleAuthIdentityProbes } from "./authDebug.js";
 import { currentAuthUser } from "./modernAuthState.js";
+import { installAttendanceSync } from "../../services/attendanceSync.js";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -75,6 +76,16 @@ export async function handoffToLegacy(user, importLegacy) {
   }
 
   await (importLegacy || defaultImportLegacy)();
+
+  // Server-persist the legacy 登校スタンプ (attendance stamps), which the bundle
+  // otherwise keeps only in localStorage. Writes mirror to the user's OWN Firestore
+  // subtree on change; reads happen on tab-open (+ a fresh-device restore). Frontend
+  // only — the bundle is untouched and no Firestore rules change is required.
+  try {
+    installAttendanceSync();
+  } catch {
+    /* non-fatal: attendance still works locally */
+  }
 
   // Debug-only: re-check the identity after boot settles, to catch a delayed
   // anonymous-session replacement (uid/isAnonymous at 1s and 4s).
