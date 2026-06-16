@@ -274,7 +274,7 @@ window.__oxPbg=(function(){
   function applyEls(){try{var els=document.querySelectorAll("[data-oxpbg-cover]");for(var i=0;i<els.length;i++){els[i].style.backgroundSize=sizeStr();els[i].style.backgroundPosition=posStr();}}catch(e){}}
   var pv,pvUrl;
   function applyPreview(){if(!pv)return;if(pvUrl){pv.style.backgroundImage="url('"+pvUrl+"')";pv.style.backgroundSize=sizeStr();pv.style.backgroundPosition=posStr();pv.textContent="";}else{pv.style.backgroundImage="none";pv.textContent="\u5199\u771F\u306A\u3057";}}
-  function refresh(){var u=uid();if(u!==cur.uid){cur.uid=u;cur.settings=load(u);applyEls();}}
+  function refresh(){var u=uid();if(u!==cur.uid){cur.uid=u;cur.settings=load(u);}applyEls();}
   try{setInterval(refresh,800);}catch(e){}
   try{setTimeout(function(){cur.uid=uid();cur.settings=load(cur.uid);applyEls();},0);}catch(e){}
   function setSettings(part){cur.settings=Object.assign({},cur.settings,part||{});save(uid(),cur.settings);applyEls();applyPreview();}
@@ -323,7 +323,7 @@ window.__oxAv=(function(){
   function applyEls(){try{var els=document.querySelectorAll("[data-oxav]");for(var i=0;i<els.length;i++){els[i].style.objectPosition=posStr();els[i].style.transform=scaleStr();els[i].style.transformOrigin=posStr();}}catch(e){}}
   var pv,pvUrl;
   function applyPreview(){if(!pv)return;if(pvUrl){pv.style.backgroundImage="url('"+pvUrl+"')";pv.style.backgroundSize=(100*(cur.settings.scale||1))+"%";pv.style.backgroundPosition=posStr();pv.textContent="";}else{pv.style.backgroundImage="none";pv.textContent="\u5199\u771F\u306A\u3057";}}
-  function refresh(){var u=uid();if(u!==cur.uid){cur.uid=u;cur.settings=load(u);applyEls();}}
+  function refresh(){var u=uid();if(u!==cur.uid){cur.uid=u;cur.settings=load(u);}applyEls();}
   try{setInterval(refresh,800);}catch(e){}
   try{setTimeout(function(){cur.uid=uid();cur.settings=load(cur.uid);applyEls();},0);}catch(e){}
   function setSettings(part){cur.settings=Object.assign({},cur.settings,part||{});save(uid(),cur.settings);applyEls();applyPreview();}
