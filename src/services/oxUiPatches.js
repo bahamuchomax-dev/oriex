@@ -218,8 +218,12 @@ function lightenAdminOnce() {
     if (container.classList && !container.classList.contains("ox-admin-light")) {
       container.classList.add("ox-admin-light");
     }
-    if (isDarkOpaqueColor(window.getComputedStyle(container).backgroundColor)) {
+    // The container's own dark fill may be a GRADIENT (A.bg), which the solid-only
+    // check missed — so the whole navy backdrop stayed dark while text went dark
+    // too (invisible). Use the gradient-aware check here as well.
+    if (hasDarkBackground(window.getComputedStyle(container))) {
       container.style.setProperty("background", "#fbf8f3", "important");
+      container.style.setProperty("background-image", "none", "important");
     }
     const els = container.querySelectorAll("*");
     for (let i = 0; i < els.length; i++) {
