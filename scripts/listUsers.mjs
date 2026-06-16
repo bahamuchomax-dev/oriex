@@ -1,11 +1,11 @@
 /* ============================================================
  * listUsers.mjs — ADMIN-ONLY: list every Firebase Auth user (read-only).
  * ------------------------------------------------------------
- * Use this to see the accounts that piled up during testing so you can pick the
- * test students to remove with scripts/deleteUsers.mjs. Reads nothing sensitive:
- * prints uid, Friend ID (decoded from the deterministic internal email), display
- * name, role (from custom claims), and created / last-sign-in times. No password
- * is ever read or shown.
+ * Use this to see the accounts that piled up during testing so you can pick who
+ * to keep / remove with scripts/deleteUsers.mjs. Prints uid, Friend ID (decoded
+ * from the deterministic internal email), the display NAME (from the user's
+ * Firestore profile — the legacy profile first, then modern), role (from custom
+ * claims), and created / last-sign-in times. No password is ever read or shown.
  *
  * Usage:
  *   ORIEX_SA_KEY=/abs/path/to/admin-credentials.json node scripts/listUsers.mjs
@@ -17,7 +17,10 @@
 import { readFileSync } from "node:fs";
 import { initializeApp, cert } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
+import { getFirestore } from "firebase-admin/firestore";
 import { INTERNAL_AUTH_EMAIL_DOMAIN } from "../src/features/auth/friendIdAuth.js";
+
+const LEGACY_APP_ID = "gen-ron-kai-app-v1";
 
 function fail(msg) {
   console.error("[listUsers] " + msg);
@@ -38,14 +41,14 @@ try {
 
 initializeApp({ credential: cert(creds) });
 const auth = getAuth();
+const db = getFirestore();
 
 /** Recover the public Friend ID from a user's deterministic internal email. */
 export function friendIdFromEmail(email) {
   if (typeof email !== "string") return "";
   const suffix = "@" + INTERNAL_AUTH_EMAIL_DOMAIN;
   const lower = email.toLowerCase();
-  if (!lower.endsWith(suffix)) return "";
-  return lower.slice(0, -suffix.length).toUpperCase();
+  return lower.endsWith(suffix) ? lower.slice(0, -suffix.length).toUpperCase() : "";
 }
 
 /** Role from server-set custom claims (never client-writable). */
@@ -54,6 +57,28 @@ export function roleOf(user) {
   if (c.admin === true) return "admin";
   if (c.teacher === true) return "teacher";
   return "student";
+}
+
+/** Best-known display name for a uid: legacy profile → modern profile → profiles
+ *  → Auth displayName. Reads only `name` (never a password). Never throws. */
+export async function profileName(uid, authDisplayName) {
+  const paths = [
+    `artifacts/${LEGACY_APP_ID}/users/${uid}/profile/main`,
+    `users/${uid}/profile/main`,
+    `profiles/${uid}`,
+  ];
+  for (const path of paths) {
+    try {
+      const snap = await db.doc(path).get();
+      if (snap.exists) {
+        const n = snap.data() && snap.data().name;
+        if (typeof n === "string" && n.trim()) return n.trim();
+      }
+    } catch {
+      /* ignore and try the next path */
+    }
+  }
+  return (authDisplayName || "").trim();
 }
 
 async function listAll() {
@@ -69,25 +94,28 @@ async function listAll() {
 
 async function main() {
   const users = await listAll();
-  const rows = users
-    .map((u) => ({
-      role: roleOf(u),
+  const rows = [];
+  for (const u of users) {
+    const role = roleOf(u);
+    if (studentsOnly && role !== "student") continue;
+    rows.push({
+      role,
       friendId: friendIdFromEmail(u.email) || "(non-friend-id)",
       uid: u.uid,
       created: u.metadata.creationTime || "",
       lastSignIn: u.metadata.lastSignInTime || "(never)",
-      name: u.displayName || "",
-    }))
-    .filter((r) => (studentsOnly ? r.role === "student" : true))
-    .sort((a, b) => new Date(a.created) - new Date(b.created));
+      name: await profileName(u.uid, u.displayName),
+    });
+  }
+  rows.sort((a, b) => new Date(a.created) - new Date(b.created));
 
   const counts = rows.reduce((m, r) => ((m[r.role] = (m[r.role] || 0) + 1), m), {});
   console.log(
     `# ${rows.length} user(s)  student:${counts.student || 0}  teacher:${counts.teacher || 0}  admin:${counts.admin || 0}`,
   );
-  console.log(["role", "friendId", "uid", "created", "lastSignIn", "name"].join("\t"));
+  console.log(["role", "friendId", "uid", "name", "created", "lastSignIn"].join("\t"));
   for (const r of rows) {
-    console.log([r.role, r.friendId, r.uid, r.created, r.lastSignIn, r.name].join("\t"));
+    console.log([r.role, r.friendId, r.uid, r.name || "(no name)", r.created, r.lastSignIn].join("\t"));
   }
 }
 

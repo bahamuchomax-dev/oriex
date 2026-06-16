@@ -1,24 +1,29 @@
 /* ============================================================
  * deleteUsers.mjs — ADMIN-ONLY: bulk-delete users (auth + their data).
  * ------------------------------------------------------------
- * For cleaning up the many test STUDENT accounts that pile up during testing.
- * Deletes the same things as deleteUser.mjs, for many users at once. DRY-RUN by
- * default — it only PRINTS what it would delete until you pass --yes. Teacher /
- * admin accounts are SKIPPED unless you pass --include-staff. No password is ever
- * read or logged.
+ * For cleaning up the many test accounts that pile up during testing. Deletes the
+ * same things as deleteUser.mjs, for many users at once. DRY-RUN by default — it
+ * only PRINTS what it would delete until you pass --yes. ADMIN accounts are NEVER
+ * deleted by this tool. No password is ever read or logged.
  *
- * Pick targets one of three ways:
- *   - explicit list:  ABC234 DEF567 <uid> ...
- *   - from a file:    --file ids.txt        (one Friend ID or uid per line; # comments ok)
- *   - all students:   --all-students        (every account WITHOUT a teacher/admin claim)
+ * Choose WHO to delete:
+ *   - explicit list:   ABC234 DEF567 <uid> ...
+ *   - from a file:     --file ids.txt            (one Friend ID/uid per line; # comments ok)
+ *   - all students:    --all-students            (every account with NO teacher/admin claim)
+ *   - all non-admins:  --all-users               (students AND teachers; admins still protected)
  *
- * Optional date filters (creation time, ISO or YYYY-MM-DD), handy for test eras:
+ * Choose WHO to KEEP (excluded from deletion; repeatable):
+ *   --keep ABC234        keep this Friend ID / uid
+ *   --keep-name てぃも    keep anyone whose profile name CONTAINS this text
+ *
+ * Optional creation-time filters (ISO or YYYY-MM-DD):
  *   --created-after 2026-06-01   --created-before 2026-06-16
  *
- * Examples:
- *   ORIEX_SA_KEY=/abs/creds.json node scripts/deleteUsers.mjs ABC234 DEF567        # preview
- *   ORIEX_SA_KEY=... node scripts/deleteUsers.mjs --file ids.txt --yes
- *   ORIEX_SA_KEY=... node scripts/deleteUsers.mjs --all-students --created-after 2026-06-01 --yes
+ * Example — keep only てぃも / みわちゃん (students) and the KGNS4Q teacher,
+ * delete every other student + teacher (admins stay), preview then run:
+ *   ORIEX_SA_KEY=/abs/creds.json node scripts/deleteUsers.mjs --all-users \
+ *     --keep KGNS4Q --keep-name てぃも --keep-name みわちゃん
+ *   # add --yes once the dry-run list looks right.
  *
  * Prereqs: npm i firebase-admin ; ORIEX_SA_KEY = path to Admin SDK creds (never commit).
  * ============================================================ */
@@ -42,14 +47,18 @@ function fail(msg) {
 
 // ---- parse argv -------------------------------------------------------------
 const argv = process.argv.slice(2);
-const opts = { yes: false, allStudents: false, includeStaff: false, file: null, after: null, before: null };
+const opts = { yes: false, allStudents: false, allUsers: false, file: null, after: null, before: null };
 const ids = [];
+const keepTokens = [];
+const keepNames = [];
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   if (a === "--yes") opts.yes = true;
   else if (a === "--all-students") opts.allStudents = true;
-  else if (a === "--include-staff") opts.includeStaff = true;
+  else if (a === "--all-users") opts.allUsers = true;
   else if (a === "--file") opts.file = argv[++i];
+  else if (a === "--keep") keepTokens.push(argv[++i]);
+  else if (a === "--keep-name") keepNames.push((argv[++i] || "").trim().toLowerCase());
   else if (a === "--created-after") opts.after = new Date(argv[++i]);
   else if (a === "--created-before") opts.before = new Date(argv[++i]);
   else if (a.startsWith("--")) fail("unknown flag: " + a);
@@ -67,8 +76,8 @@ if (opts.file) {
     if (t) ids.push(t);
   }
 }
-if (!opts.allStudents && ids.length === 0) {
-  fail("nothing to do: pass Friend IDs/uids, or --file <path>, or --all-students");
+if (!opts.allStudents && !opts.allUsers && ids.length === 0) {
+  fail("nothing to do: pass Friend IDs/uids, or --file <path>, or --all-students / --all-users");
 }
 
 const keyPath = process.env.ORIEX_SA_KEY;
@@ -104,6 +113,27 @@ function inDateRange(user) {
   return true;
 }
 
+/** Best-known display name for a uid (legacy → modern → profiles → Auth). */
+async function profileName(uid, authDisplayName) {
+  const paths = [
+    `artifacts/${LEGACY_APP_ID}/users/${uid}/profile/main`,
+    `users/${uid}/profile/main`,
+    `profiles/${uid}`,
+  ];
+  for (const path of paths) {
+    try {
+      const snap = await db.doc(path).get();
+      if (snap.exists) {
+        const n = snap.data() && snap.data().name;
+        if (typeof n === "string" && n.trim()) return n.trim();
+      }
+    } catch {
+      /* ignore, try next */
+    }
+  }
+  return (authDisplayName || "").trim();
+}
+
 /** Resolve one Friend ID / uid token to a Firebase UserRecord (or null). */
 async function resolveUser(token) {
   const fid = normalizeFriendId(token);
@@ -129,7 +159,7 @@ async function listAll() {
   return out;
 }
 
-/** Delete one user's data + auth account. Mirrors deleteUser.mjs (plus the
+/** Per-user deletion: data + auth account. Mirrors deleteUser.mjs (plus the
  *  top-level profiles/{uid} role doc). Missing docs delete as no-ops. */
 async function deleteOneUser(uid) {
   await db.recursiveDelete(db.doc(`artifacts/${LEGACY_APP_ID}/users/${uid}`));
@@ -142,11 +172,13 @@ async function deleteOneUser(uid) {
 }
 
 async function main() {
-  // gather target UserRecords (deduped by uid)
+  // 1) candidate UserRecords (deduped by uid)
   const byUid = new Map();
-  if (opts.allStudents) {
+  if (opts.allStudents || opts.allUsers) {
     for (const u of await listAll()) {
-      if (roleOf(u) === "student" && inDateRange(u)) byUid.set(u.uid, u);
+      const role = roleOf(u);
+      const wanted = opts.allUsers ? role !== "admin" : role === "student";
+      if (wanted && inDateRange(u)) byUid.set(u.uid, u);
     }
   }
   for (const token of ids) {
@@ -154,25 +186,47 @@ async function main() {
     if (u) byUid.set(u.uid, u);
   }
 
-  // safety: never touch teacher/admin unless explicitly allowed
-  const targets = [];
-  const skippedStaff = [];
-  for (const u of byUid.values()) {
-    const role = roleOf(u);
-    if ((role === "teacher" || role === "admin") && !opts.includeStaff) skippedStaff.push(u);
-    else targets.push(u);
+  // 2) keep set (by uid). resolve --keep tokens; --keep-name matched per-user below.
+  const keepUids = new Set();
+  for (const token of keepTokens) {
+    const u = await resolveUser(token);
+    if (u) keepUids.add(u.uid);
   }
 
-  if (skippedStaff.length) {
-    console.log(`# protected (teacher/admin) — NOT deleting ${skippedStaff.length}: ` +
-      skippedStaff.map((u) => friendIdFromEmail(u.email) || u.uid).join(", "));
+  // 3) classify each candidate
+  const targets = [];
+  const kept = [];
+  const protectedAdmins = [];
+  for (const u of byUid.values()) {
+    const name = await profileName(u.uid, u.displayName);
+    const role = roleOf(u);
+    u.__name = name;
+    u.__role = role;
+    if (role === "admin") {
+      protectedAdmins.push(u);
+      continue;
+    }
+    const keptByName = keepNames.some((s) => s && name.toLowerCase().includes(s));
+    if (keepUids.has(u.uid) || keptByName) {
+      kept.push(u);
+      continue;
+    }
+    targets.push(u);
   }
-  if (targets.length === 0) fail("no deletable targets after filters/safety. Nothing done.");
+
+  const fid = (u) => friendIdFromEmail(u.email) || u.uid;
+  if (protectedAdmins.length) {
+    console.log(`# admins (always protected): ${protectedAdmins.map(fid).join(", ")}`);
+  }
+  if (kept.length) {
+    console.log(`# KEEP (${kept.length}): ` + kept.map((u) => `${fid(u)}/${u.__name || "?"}`).join(", "));
+  }
+  if (targets.length === 0) fail("no deletable targets after keep/admin filters. Nothing done.");
 
   console.log(`\n# ${opts.yes ? "DELETING" : "DRY-RUN (no --yes) would delete"} ${targets.length} user(s):`);
-  console.log(["role", "friendId", "uid", "created", "name"].join("\t"));
+  console.log(["role", "friendId", "uid", "name", "created"].join("\t"));
   for (const u of targets) {
-    console.log([roleOf(u), friendIdFromEmail(u.email) || "(non-fid)", u.uid, u.metadata.creationTime, u.displayName || ""].join("\t"));
+    console.log([u.__role, fid(u), u.uid, u.__name || "(no name)", u.metadata.creationTime].join("\t"));
   }
 
   if (!opts.yes) {
@@ -186,9 +240,9 @@ async function main() {
     try {
       await deleteOneUser(u.uid);
       ok++;
-      console.log(`[deleteUsers] deleted ${friendIdFromEmail(u.email) || u.uid} (auth + own data).`);
+      console.log(`[deleteUsers] deleted ${fid(u)} (${u.__name || "no name"}).`);
     } catch (e) {
-      failed.push({ id: friendIdFromEmail(u.email) || u.uid, err: e && e.message ? e.message : String(e) });
+      failed.push({ id: fid(u), err: e && e.message ? e.message : String(e) });
     }
   }
   console.log(`\n# done: ${ok} deleted, ${failed.length} failed.`);
