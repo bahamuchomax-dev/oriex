@@ -95,3 +95,13 @@ body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"]{
    home (.rx-home) uses a taller floating nav, so it keeps the original reserve. */
 html, body, #root{ --app-bottom-pad: calc(env(safe-area-inset-bottom, 0px) + 72px) !important; }
 .rx-home{ --app-bottom-pad: calc(env(safe-area-inset-bottom, 0px) + 92px) !important; }
+
+/* Mode-select screen (ステージ選択後の 単語→意味 / 例文モード タブ + カード) scroll
+   range. Every .rx-home screen (home / stage / records / …) renders with an INLINE
+   height:auto and lets the PAGE scroll — except the mode-select screen, which is the
+   only one that did NOT inline-override the legacy class default height:100%. So its
+   content was clamped to the (content-sized) parent and only an INNER scroll revealed
+   the lower cards ("下が上の方で途切れる / スクロールすると見える"). Default the class to
+   height:auto so the mode screen grows with its content and scrolls like the others;
+   the 9 other screens already set height:auto inline, so they are unaffected. */
+.rx-home{ height: auto; min-height: auto; }
