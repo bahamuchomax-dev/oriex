@@ -1,0 +1,151 @@
+/* ============================================================
+ * home.css — scoped under .oxh so it never collides with legacy.
+ * No asset URLs here (the component imports/sets them), so Vite base
+ * paths and GitHub Pages just work.
+ * ============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap");
+
+.oxh {
+  --red: #e01f2b; --red2: #b8121d;
+  --cream: #f6f1ea; --ink: #241d1b; --ink-soft: #6f635c;
+  --light: #f4efe8; --line: rgba(255, 255, 255, .10); --blue: #2f7fe0;
+  position: relative; width: 100%; max-width: 430px; min-height: 100vh; margin: 0 auto;
+  background: #0c0a0d; overflow: hidden; padding: 0 0 86px;
+  font-family: "Zen Kaku Gothic New", system-ui, sans-serif; color: var(--light);
+  -webkit-tap-highlight-color: transparent;
+}
+.oxh * { box-sizing: border-box; }
+.oxh button { cursor: pointer; }
+
+.oxh-bg { position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: top center; }
+.oxh-bg::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(12,10,13,0) 46%, rgba(12,10,13,.55) 66%, #0c0a0d 86%); }
+
+.oxh-wrap { position: relative; z-index: 3; padding: 14px 14px 0; }
+
+/* hero + props */
+.oxh-hero { position: absolute; top: 54px; right: -26px; width: 74%; max-width: 330px; z-index: 1;
+  filter: drop-shadow(0 12px 24px rgba(0,0,0,.55)); pointer-events: none; }
+.oxh-bag { position: absolute; z-index: 2; width: 32%; max-width: 142px; right: 17%; top: 292px;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,.55)); pointer-events: none; }
+.oxh-shaker { position: absolute; z-index: 2; width: 17%; max-width: 76px; right: 3%; top: 268px;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,.5)); pointer-events: none; }
+.oxh-hero, .oxh-bag img, .oxh-shaker img { width: 100%; display: block; }
+
+.oxh-brand { position: absolute; top: 20px; right: 16px; z-index: 4; display: flex; align-items: center; gap: 6px;
+  font-family: "Zen Maru Gothic"; font-weight: 900; letter-spacing: .12em; font-size: 20px; color: #fff;
+  text-shadow: 0 2px 10px rgba(0,0,0,.6); }
+.oxh-hs { width: 22px; height: 22px; color: var(--red); }
+.oxh-brand .oxh-hs { width: 22px; height: 22px; }
+
+/* topbar */
+.oxh-topbar { display: flex; gap: 14px; position: relative; z-index: 4; }
+.oxh-tbtn { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: none; border: none; color: #efe7e0; font-size: 10px; font-weight: 700; }
+.oxh-tbtn i { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center;
+  background: rgba(20,14,16,.55); border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(6px); }
+.oxh-tbtn svg { width: 20px; height: 20px; fill: none; stroke: #f3ece6; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.oxh-badge { position: absolute; top: -4px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 9px;
+  background: var(--red); color: #fff; font-size: 10px; font-weight: 800; display: grid; place-items: center; border: 1.5px solid #161015; }
+
+/* profile card */
+.oxh-pcard { position: relative; z-index: 4; margin-top: 14px; width: 73%;
+  background: linear-gradient(160deg, rgba(40,16,20,.92), rgba(18,12,14,.92));
+  border: 1px solid rgba(224,31,43,.45); border-radius: 20px; padding: 12px 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+.oxh-pcard-top { display: flex; align-items: center; gap: 10px; }
+.oxh-pcard-av { width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--red); object-fit: cover; }
+.oxh-pcard-name { display: flex; align-items: center; gap: 6px; font-family: "Zen Maru Gothic"; font-weight: 900; font-size: 19px; }
+.oxh-pcard-name svg { width: 15px; height: 15px; stroke: #cdbfb8; fill: none; stroke-width: 1.8; }
+.oxh-pcard-name .oxh-hs { margin-left: auto; width: 22px; height: 22px; color: var(--red); stroke-width: 2.2; }
+.oxh-lvrow { display: flex; align-items: center; gap: 8px; margin-top: 7px; }
+.oxh-lv { background: var(--red); color: #fff; font-weight: 800; font-size: 12px; padding: 2px 9px; border-radius: 8px; font-family: "Zen Maru Gothic"; }
+.oxh-expwrap { flex: 1; display: flex; align-items: center; gap: 6px; }
+.oxh-exp { flex: 1; height: 7px; border-radius: 5px; background: rgba(255,255,255,.14); overflow: hidden; }
+.oxh-exp i { display: block; height: 100%; border-radius: 5px; background: linear-gradient(90deg, #2f7fe0, #56c0ff); }
+.oxh-lvrow small { font-size: 10px; color: #cbbfb8; font-weight: 700; }
+.oxh-pstats { display: flex; gap: 10px; margin-top: 11px; }
+.oxh-pstat { flex: 1; }
+.oxh-pstat > span { font-size: 10px; color: #c9bdb6; font-weight: 700; }
+.oxh-pstat > div { display: flex; align-items: baseline; gap: 4px; margin-top: 2px; font-family: "Zen Maru Gothic"; }
+.oxh-pstat b { font-size: 21px; font-weight: 900; line-height: 1; }
+.oxh-pstat b small { font-size: 11px; font-weight: 800; margin-left: 1px; }
+.oxh-sub { font-size: 9.5px; color: #9b8f88; font-weight: 600; margin-top: 3px; display: block; }
+.oxh-pstat svg { width: 14px; height: 14px; stroke: #c9bdb6; fill: none; stroke-width: 1.8; vertical-align: -2px; margin-right: 2px; }
+
+/* today card */
+.oxh-today { position: relative; z-index: 4; margin: 200px 0 0 auto; width: 60%; min-width: 230px;
+  background: rgba(247,241,234,.97); color: var(--ink); border-radius: 18px; padding: 12px 13px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.4); }
+.oxh-today-h { display: flex; align-items: center; gap: 5px; color: var(--red); font-family: "Zen Maru Gothic"; font-weight: 900; font-size: 15px; }
+.oxh-today-h .oxh-hs { width: 18px; height: 18px; color: var(--red); }
+.oxh-today-goal { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 11px; font-weight: 800; }
+.oxh-tag { background: var(--red); color: #fff; border-radius: 5px; padding: 1px 6px; font-size: 10px; }
+.oxh-today-line { flex: 1; height: 4px; border-radius: 3px; background: linear-gradient(90deg, var(--red) 50%, #e7ddd2 50%); }
+.oxh-today-big { font-family: "Zen Maru Gothic"; font-weight: 900; font-size: 30px; margin: 6px 0 0; line-height: 1; }
+.oxh-today-big small { font-size: 14px; color: var(--ink-soft); font-weight: 800; }
+.oxh-today-note { font-size: 11px; font-weight: 800; margin-top: 2px; }
+.oxh-today-btn { margin-top: 10px; width: 100%; border: none; border-radius: 30px; color: #fff; font-family: "Zen Maru Gothic"; font-weight: 900; font-size: 14px;
+  background: linear-gradient(180deg, #ec2330, #b8121d); box-shadow: 0 6px 16px rgba(184,18,29,.5);
+  padding: 11px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.oxh-today-btn svg { width: 20px; height: 20px; stroke: #fff; fill: none; stroke-width: 2; }
+
+/* greeting */
+.oxh-greet { position: relative; z-index: 4; margin-top: 16px; display: flex; align-items: center; gap: 10px;
+  background: linear-gradient(160deg, rgba(34,16,20,.9), rgba(16,11,13,.9));
+  border: 1px solid var(--line); border-radius: 18px; padding: 10px 14px; }
+.oxh-greet img { width: 54px; height: 54px; object-fit: contain; flex: none; }
+.oxh-greet-t b { font-family: "Zen Maru Gothic"; font-weight: 900; font-size: 15px; }
+.oxh-greet-t p { margin: 2px 0 0; font-size: 11.5px; color: #d8cdc6; font-weight: 600; }
+.oxh-chev { margin-left: auto; color: #b9aaa3; font-size: 22px; }
+
+/* two cards */
+.oxh-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-top: 14px; position: relative; z-index: 4; }
+.oxh-lcard { background: var(--cream); color: var(--ink); border-radius: 18px; padding: 12px 11px; box-shadow: 0 10px 24px rgba(0,0,0,.35); }
+.oxh-lcard-h { display: flex; align-items: center; gap: 5px; font-family: "Zen Maru Gothic"; font-weight: 900; font-size: 13px; }
+.oxh-lcard-h svg { width: 15px; height: 15px; }
+.oxh-more { margin-left: auto; font-size: 9.5px; font-weight: 800; color: var(--ink-soft); background: #e7ddd1; border-radius: 10px; padding: 2px 8px; }
+.oxh-chart { display: flex; align-items: flex-end; justify-content: space-between; gap: 3px; height: 104px; margin-top: 12px; padding-bottom: 2px; }
+.oxh-bar { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 3px; }
+.oxh-bar-val { font-size: 8.5px; font-weight: 800; color: #8a7d75; }
+.oxh-bar i { width: 64%; max-width: 15px; border-radius: 4px 4px 2px 2px; background: linear-gradient(180deg, #ec2733, #c0151f); display: block; }
+.oxh-bar-lbl { font-size: 9px; font-weight: 700; color: #8a7d75; }
+.oxh-bar--today i { background: #dce9fb; border: 1.4px dashed #4f8be6; }
+.oxh-bar--today .oxh-bar-val { color: var(--blue); }
+.oxh-chart-avg { text-align: center; font-size: 10.5px; font-weight: 800; margin-top: 8px; }
+.oxh-chart-avg svg { width: 13px; height: 13px; vertical-align: -2px; margin-right: 2px; }
+.oxh-plan { display: flex; flex-direction: column; gap: 7px; margin-top: 11px; }
+.oxh-pl { display: flex; align-items: center; gap: 7px; font-size: 10.5px; font-weight: 700; }
+.oxh-pl-box { width: 15px; height: 15px; border-radius: 5px; border: 1.8px solid #c3b6ab; flex: none; display: grid; place-items: center; }
+.oxh-pl-box--on { background: var(--red); border-color: var(--red); }
+.oxh-ck { width: 11px; height: 11px; stroke: #fff; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.oxh-pl-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oxh-pl-min { font-weight: 800; color: #6f635c; }
+.oxh-pl--done .oxh-pl-name { color: var(--ink); }
+.oxh-plan-foot { text-align: center; font-size: 12px; font-weight: 900; font-family: "Zen Maru Gothic"; margin-top: 11px; border-top: 1px solid #e6dccf; padding-top: 9px; }
+
+/* tools */
+.oxh-tools-h { margin: 18px 4px 10px; font-family: "Zen Maru Gothic"; font-weight: 900; font-size: 14px; color: #fff; position: relative; z-index: 4; }
+.oxh-tools { display: flex; gap: 4px; justify-content: space-between; padding: 0 0 4px; position: relative; z-index: 4; }
+.oxh-tool { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1 1 0; min-width: 0; }
+.oxh-tool-ico { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; box-shadow: 0 5px 12px rgba(0,0,0,.4); }
+.oxh-tool-ico svg { width: 22px; height: 22px; fill: none; stroke: #fff; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.oxh-tool-lbl { font-size: 8.5px; font-weight: 800; color: #eadfd8; white-space: nowrap; }
+.t-red { background: linear-gradient(150deg, #ef3b46, #c11622); }
+.t-blue { background: linear-gradient(150deg, #3f7fe6, #2056c0); }
+.t-purple { background: linear-gradient(150deg, #8b5cf0, #6a37c9); }
+.t-crim { background: linear-gradient(150deg, #e0394f, #a01230); }
+.t-teal { background: linear-gradient(150deg, #2db5c9, #1784a8); }
+.t-orange { background: linear-gradient(150deg, #f8923a, #e36412); }
+.t-green { background: linear-gradient(150deg, #1fb98a, #138a73); }
+.t-gray { background: linear-gradient(150deg, #7d7470, #544e4b); }
+
+/* bottom nav */
+.oxh-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; z-index: 20;
+  display: flex; justify-content: space-around; padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(18,10,12,.86), rgba(10,7,9,.98));
+  border-top: 1px solid rgba(224,31,43,.35); backdrop-filter: blur(10px); }
+.oxh-nav button { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 3px; color: #9b8f88; font-size: 10px; font-weight: 800; position: relative; }
+.oxh-nav svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.oxh-nav .oxh-on, .oxh-nav button.oxh-on { color: var(--red); }
+.oxh-dot { position: absolute; top: -2px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--red); }
