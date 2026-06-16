@@ -85,3 +85,13 @@ body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"]{
 .rx-dirbtn{ padding:11px 8px !important; }            /* 単語→意味 / 意味→単語 tabs — was 13px 8px */
 .rx-bigcards{ gap:11px !important; }                  /* mode-card grid gap — was 14px */
 .rx-bc{ min-height:104px !important; padding:15px !important; } /* mode cards — were 118px / 18px */
+
+/* Bottom reserve / footer blank: the legacy nav is --nav-height (≈64px + safe-area),
+   but content reserved --app-bottom-pad = safe + 92px — ~28px MORE than the nav
+   needs, which is the tall bottom blank around the "Oriex vX" label that clipped
+   the next card. Trim the reserve to nav + a small gap so the card list extends
+   lower (shared across ALL subjects), while KEEPING env(safe-area-inset-bottom)
+   so nothing sits under the home indicator / behind the nav. The opt-in React
+   home (.rx-home) uses a taller floating nav, so it keeps the original reserve. */
+html, body, #root{ --app-bottom-pad: calc(env(safe-area-inset-bottom, 0px) + 72px) !important; }
+.rx-home{ --app-bottom-pad: calc(env(safe-area-inset-bottom, 0px) + 92px) !important; }
