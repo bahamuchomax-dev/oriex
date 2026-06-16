@@ -381,6 +381,15 @@ service cloud.firestore {
         allow read: if signedIn();
         allow create, update, delete: if isTeacher();
       }
+      // global app lock / emergency stop (legacy live path: the bundle writes
+      // artifacts/{appId}/public/data/system/appLock = {locked, message, updatedAt}).
+      // Signed-in clients read it via the public/data wildcard above (no extra read
+      // rule here, so unauthenticated read stays limited to the login directories);
+      // only a teacher/admin may SET it. Firestore ORs the allow rules, so this
+      // grants the teacher write while other public/data writes stay denied.
+      match /public/data/system/{docId} {
+        allow write: if isTeacher();
+      }
       // The user's own public card (leaderboard / search). It is ALSO the PRIMARY
       // Friend ID login directory: login queries `where("shortId","==", id)` on
       // customApp FIRST (teacherIndex is only a fallback), BEFORE the user is

@@ -12,6 +12,7 @@ import { seedLegacyLocalSession } from "./legacyLocalSession.js";
 import { authDebugOn, installFsHook, logAuthIdentity, scheduleAuthIdentityProbes } from "./authDebug.js";
 import { currentAuthUser } from "./modernAuthState.js";
 import { installAttendanceSync } from "../../services/attendanceSync.js";
+import { installPasswordChangeSync } from "../../services/passwordChangeSync.js";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -85,6 +86,14 @@ export async function handoffToLegacy(user, importLegacy) {
     installAttendanceSync();
   } catch {
     /* non-fatal: attendance still works locally */
+  }
+
+  // Make the legacy in-app "パスワード変更" actually update Firebase Auth (the
+  // legacy screen only writes a dead Firestore plaintext field). Frontend only.
+  try {
+    installPasswordChangeSync();
+  } catch {
+    /* non-fatal */
   }
 
   // Debug-only: re-check the identity after boot settles, to catch a delayed
