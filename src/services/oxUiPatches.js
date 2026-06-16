@@ -93,13 +93,33 @@ export function firstGradientColor(bg) {
   return m ? m[1].trim() : "";
 }
 
+// Recolor a glyph node to `color` robustly: the white glyph may be painted via a
+// fill attr, a stroke attr, currentColor, or CSS, so don't rely on matching the
+// exact white token. Fill: set to color UNLESS it is explicitly "none" (so a
+// stroke-only/outline icon is not filled in). Stroke: set to color when present.
 function paintNode(el, color) {
-  ["fill", "stroke"].forEach((attr) => {
-    const v = el.getAttribute && el.getAttribute(attr);
-    if (v && v !== "none" && /^(#fff|#ffffff|white|currentcolor)$/i.test(v)) {
-      el.setAttribute(attr, color);
+  if (!el || !el.getAttribute) return;
+  const f = el.getAttribute("fill");
+  if (f !== "none") {
+    try {
+      el.setAttribute("fill", color);
+    } catch {
+      /* ignore */
     }
-  });
+  }
+  const s = el.getAttribute("stroke");
+  if (s && s !== "none") {
+    try {
+      el.setAttribute("stroke", color);
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
+/** A light tint (hex8) of a #rrggbb color for the tile fill, else "" (use white). */
+export function tintOf(color) {
+  return /^#[0-9a-f]{6}$/i.test(color || "") ? color + "26" : "";
 }
 
 function outlineMenuIconsOnce() {
@@ -111,13 +131,17 @@ function outlineMenuIconsOnce() {
       if (tile.offsetWidth > 80) continue; // menu tiles are 52px; skip big gradients
       const color = firstGradientColor(tile.style.background || tile.style.backgroundImage || "");
       if (!color) continue;
-      tile.style.background = "#fff";
+      // light tint instead of a solid fill, with a clear colored border — so each
+      // tile stays distinguishable by color (a plain white tile + faint glyph was
+      // unreadable). Glyph recolored to the color so it's visible on the tint.
+      tile.style.background = tintOf(color) || "#ffffff";
       tile.style.backgroundImage = "none";
-      tile.style.border = "2px solid " + color;
+      tile.style.border = "2.5px solid " + color;
       tile.style.boxShadow = "none";
       const svg = tile.querySelector("svg");
       if (svg) {
         svg.style.color = color; // for glyphs that use currentColor
+        svg.style.fill = color;
         paintNode(svg, color);
         const kids = svg.querySelectorAll("*");
         for (let k = 0; k < kids.length; k++) paintNode(kids[k], color);
@@ -221,6 +245,38 @@ function backProfileHeaderOnce() {
   }
 }
 
+// Section headings that sit directly on the photo veil (no card backing). On a
+// photo background give just these a white halo so they stay legible — they have
+// mixed markup (.rx-sec h3 AND inline-styled headings) so we match by exact text.
+export const VEIL_HALO_TEXTS = [
+  "プレイリスト",
+  "つながり",
+  "お知らせ",
+  "クイックメニュー",
+  "最近の記録",
+  "アカウント",
+];
+const VEIL_HALO =
+  "0 1px 2px rgba(255,255,255,.95), 0 0 8px rgba(255,255,255,.75), 0 0 2px rgba(255,255,255,.9)";
+
+function haloVeilHeadingsOnce() {
+  try {
+    if (typeof document === "undefined" || !document.body) return;
+    if (!document.body.classList || !document.body.classList.contains("oxbg-on")) return;
+    const nodes = document.querySelectorAll("h1,h2,h3,h4,b,span,div,p");
+    for (let i = 0; i < nodes.length; i++) {
+      const el = nodes[i];
+      if (el.childElementCount !== 0) continue;
+      if (VEIL_HALO_TEXTS.indexOf((el.textContent || "").trim()) < 0) continue;
+      if (String(el.style.textShadow).indexOf("255, 255, 255") < 0) {
+        el.style.textShadow = VEIL_HALO;
+      }
+    }
+  } catch {
+    /* cosmetic only */
+  }
+}
+
 function swapHamsterIconsOnce() {
   try {
     if (typeof document === "undefined" || !document.querySelectorAll) return;
@@ -291,6 +347,7 @@ export function installUiPatches(map = RELABELS) {
       outlineMenuIconsOnce();
       backProfileHeaderOnce();
       lightenAdminOnce();
+      haloVeilHeadingsOnce();
     };
 
     if (document.readyState !== "loading") setTimeout(run, 0);

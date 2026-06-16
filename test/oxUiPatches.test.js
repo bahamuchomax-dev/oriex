@@ -7,6 +7,7 @@ import {
   isHamsterIconSrc,
   firstGradientColor,
   isDarkOpaqueColor,
+  tintOf,
 } from "../src/services/oxUiPatches.js";
 
 /* nextLabel holds the relabel decision (exact whole-text match, idempotent),
@@ -117,5 +118,18 @@ describe("isDarkOpaqueColor — admin dark backgrounds to lighten", () => {
     expect(isDarkOpaqueColor("rgba(0,0,0,0.2)")).toBe(false); // mostly transparent
     expect(isDarkOpaqueColor("")).toBe(false);
     expect(isDarkOpaqueColor(null)).toBe(false);
+  });
+});
+
+describe("tintOf — menu tile light tint", () => {
+  it("appends alpha to a #rrggbb hex", () => {
+    expect(tintOf("#eba36a")).toBe("#eba36a26");
+    expect(tintOf("#E8989B")).toBe("#E8989B26");
+  });
+  it("returns '' for non-hex colors (caller falls back to white)", () => {
+    expect(tintOf("rgb(1,2,3)")).toBe("");
+    expect(tintOf("#fff")).toBe("");
+    expect(tintOf("")).toBe("");
+    expect(tintOf(null)).toBe("");
   });
 });
