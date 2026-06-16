@@ -66,6 +66,10 @@ import { isLegacyFallbackEnabled } from "./features/auth/legacyFallbackRoute.js"
 // the initial bundle. Enabled only by ?oriexHome=1 / #oriex-home / localStorage.
 import { isHomePreviewEnabled } from "./features/home/homePreviewRoute.js";
 
+// TEMPORARY debug-only instrumentation (?oriexAuthDebug=1). No-op when the flag
+// is absent — production behaviour is unchanged. Remove before the prod fix.
+import { dlog, authDebugOn } from "./features/auth/authDebug.js";
+
 // The application. Currently the original production build. Screens are being
 // peeled out of here into src/features/*. The legacy bundle self-mounts the
 // React app into <div id="root"> when loaded; the globals above are installed
@@ -93,6 +97,31 @@ function startModernCutover() {
 }
 
 const oriexLocation = typeof window !== "undefined" ? window.location : null;
+
+// Debug-only (?oriexAuthDebug=1): record which startup route is chosen. Guarded
+// by authDebugOn() so the matchers are not even evaluated in normal startup.
+// NOTE: the matchers are intentionally called through a local alias `dbgLoc`
+// (NOT `oriexLocation`). The route-structure tests slice main.js between the
+// literal `isX(oriexLocation)` tokens, so this debug block must not duplicate
+// them — keeping the real branch chain below as the first/only canonical use.
+if (oriexLocation && authDebugOn()) {
+  const dbgLoc = oriexLocation;
+  dlog("route", {
+    chosen: isHomePreviewEnabled(dbgLoc)
+      ? "home-preview"
+      : isLegacyFallbackEnabled(dbgLoc)
+        ? "legacy-fallback"
+        : isAuthBridgeEnabled(dbgLoc)
+          ? "auth-bridge"
+          : isModernAuthEnabled(dbgLoc)
+            ? "modern-auth"
+            : isEmbeddedAiPocUrl(dbgLoc)
+              ? "embedded-ai-poc"
+              : isEmbeddedAiProbeUrl(dbgLoc)
+                ? "embedded-ai-probe"
+                : "modern-cutover-default",
+  });
+}
 
 if (oriexLocation && isHomePreviewEnabled(oriexLocation)) {
   // Opt-in NEW React home (?oriexHome=1 / #oriex-home / localStorage). Separate

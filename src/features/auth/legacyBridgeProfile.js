@@ -16,6 +16,8 @@
 import { db } from "../../firebase/firebase.js";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { assertSafePayload } from "./modernAuthApi.js";
+// TEMPORARY debug-only instrumentation (?oriexAuthDebug=1); no-op when absent.
+import { authDebugOn, dlog, safeProfileSummary } from "./authDebug.js";
 
 // The legacy app's `artifacts/{appId}` namespace (a public, non-secret id).
 export const LEGACY_APP_ID = "gen-ron-kai-app-v1";
@@ -33,6 +35,18 @@ export async function ensureLegacyBridgeProfile(uid) {
 
   const legacyRef = doc(db, "artifacts", LEGACY_APP_ID, "users", uid, "profile", "main");
   const legacySnap = await getDoc(legacyRef);
+
+  // Debug-only: log the EXACT legacy profile path read, whether it exists, and a
+  // SAFE boolean field summary (never field values / password). This is the doc
+  // legacy itself reads on reload, so it confirms (B): doc-missing vs doc-empty.
+  if (authDebugOn()) {
+    dlog("ensureProfile.legacyRead", {
+      path: legacyRef.path,
+      exists: legacySnap.exists(),
+      fields: legacySnap.exists() ? safeProfileSummary(legacySnap.data()) : null,
+    });
+  }
+
   if (legacySnap.exists()) {
     const d = legacySnap.data() || {};
     let shortId = typeof d.shortId === "string" ? d.shortId : "";
@@ -50,7 +64,15 @@ export async function ensureLegacyBridgeProfile(uid) {
     // (isTeacher stays admin-provisioned and is never written from the client).
     if (!name || !shortId || !avatar || !color) {
       try {
-        const modernSnap = await getDoc(doc(db, "users", uid, "profile", "main"));
+        const modernRef = doc(db, "users", uid, "profile", "main");
+        const modernSnap = await getDoc(modernRef);
+        if (authDebugOn()) {
+          dlog("ensureProfile.modernRead", {
+            path: modernRef.path,
+            exists: modernSnap.exists(),
+            fields: modernSnap.exists() ? safeProfileSummary(modernSnap.data()) : null,
+          });
+        }
         if (modernSnap.exists()) {
           const m = modernSnap.data() || {};
           const patch = {};

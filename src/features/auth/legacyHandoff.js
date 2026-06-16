@@ -8,6 +8,9 @@
 import { bridgeUid } from "./authBridgeController.js";
 import { ensureLegacyBridgeProfile } from "./legacyBridgeProfile.js";
 import { seedLegacyLocalSession } from "./legacyLocalSession.js";
+// TEMPORARY debug-only instrumentation (?oriexAuthDebug=1); no-op when absent.
+import { authDebugOn, dlog, probeVisibleProfileName } from "./authDebug.js";
+import { currentAuthUser } from "./modernAuthState.js";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -51,6 +54,34 @@ export async function handoffToLegacy(user, importLegacy) {
   // mirrors legacy's key format.
   if (uid) seedLegacyLocalSession(uid, { shortId, name, avatar, color, isTeacher });
 
+  // Debug-only: log the IDENTITY the handoff is using just before legacy boots —
+  // the prime suspect for the reload fallback is a uid mismatch (legacy reads a
+  // different uid than auth.currentUser) or an empty profile. uids are non-secret
+  // ids (NOT the full user object / token). No-op unless ?oriexAuthDebug=1.
+  if (authDebugOn()) {
+    let authCurrentUid = null;
+    try {
+      authCurrentUid = currentAuthUser()?.uid ?? null;
+    } catch {
+      /* ignore */
+    }
+    const windowOxUid = (typeof window !== "undefined" && window.__oxUid) || null;
+    dlog("handoff", {
+      bridgeUid: uid || null,
+      authCurrentUid,
+      windowOxUid,
+      uidMatchAuth: !!uid && !!authCurrentUid && uid === authCurrentUid,
+      uidMatchWindow: !!uid && !!windowOxUid && uid === windowOxUid,
+      ensured,
+      ensuredProfile: { hasName: !!name, hasShortId: !!shortId, hasAvatar: !!avatar, isTeacher: isTeacher === true },
+    });
+  }
+
   await (importLegacy || defaultImportLegacy)();
+
+  // Debug-only: after legacy paints, classify the VISIBLE profile name
+  // (empty / "User" / other) so we can correlate it with the data summary above.
+  if (authDebugOn()) probeVisibleProfileName();
+
   return { uid, ensured };
 }
