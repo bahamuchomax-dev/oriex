@@ -393,6 +393,23 @@ service cloud.firestore {
         allow read: if true;
         allow write: if isSelf(docId) && noAuthorityFields() && noAnswerFields();
       }
+
+      // ---- direct messages (legacy live path). The legacy app stores DMs at
+      // artifacts/{appId}/chats/{pairId}, where pairId is the two uids sorted and
+      // joined by "_" (see [a,b].sort().join("_")). Restricted to the two
+      // participants (Firebase uids are alphanumeric, so split('_') yields the two
+      // uids). Each message records its sender as `uid`; messages are create-only
+      // (immutable). No cross-user access. ----
+      match /chats/{pairId} {
+        allow read, write: if signedIn() && (request.auth.uid in pairId.split('_'));
+        match /messages/{messageId} {
+          allow read: if signedIn() && (request.auth.uid in pairId.split('_'));
+          allow create: if signedIn()
+                        && (request.auth.uid in pairId.split('_'))
+                        && request.resource.data.uid == request.auth.uid;
+          allow update, delete: if false;
+        }
+      }
     }
 
     // ---------------- default deny ----------------

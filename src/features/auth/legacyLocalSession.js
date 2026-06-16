@@ -49,19 +49,36 @@ export function seedLegacyLocalSession(uid, profile) {
       if (p.color) minimal.color = p.color;
       if (typeof p.isTeacher === "boolean") minimal.isTeacher = p.isTeacher;
       window.localStorage.setItem(profileKey, JSON.stringify(minimal));
-    } else if (typeof p.isTeacher === "boolean") {
-      // Existing cache: refresh ONLY the authoritative teacher flag (so a teacher
-      // no longer reverts to "user" on reload) without clobbering richer synced fields.
+    } else {
+      // Existing cache: refresh the AUTHORITATIVE identity fields (name / avatar /
+      // color / isTeacher) from the server profile so a reload shows the CURRENT
+      // account — fixes a stale cached name (e.g. reverting to an old "ユウキ") and a
+      // teacher reverting to "user". shortId and any richer synced fields
+      // (totalExp, etc.) are preserved (never clobbered).
       let existing = {};
       try {
         existing = JSON.parse(raw) || {};
       } catch {
         existing = {};
       }
-      if (existing.isTeacher !== p.isTeacher) {
-        existing.isTeacher = p.isTeacher;
-        window.localStorage.setItem(profileKey, JSON.stringify(existing));
+      let changed = false;
+      if (p.name && existing.name !== p.name) {
+        existing.name = p.name;
+        changed = true;
       }
+      if (p.avatar && existing.avatar !== p.avatar) {
+        existing.avatar = p.avatar;
+        changed = true;
+      }
+      if (p.color && existing.color !== p.color) {
+        existing.color = p.color;
+        changed = true;
+      }
+      if (typeof p.isTeacher === "boolean" && existing.isTeacher !== p.isTeacher) {
+        existing.isTeacher = p.isTeacher;
+        changed = true;
+      }
+      if (changed) window.localStorage.setItem(profileKey, JSON.stringify(existing));
     }
     return true;
   } catch {
