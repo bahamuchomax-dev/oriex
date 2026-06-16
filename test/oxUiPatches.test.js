@@ -5,6 +5,7 @@ import {
   isHideHeading,
   HIDE_SECTION_HEADINGS,
   isHamsterIconSrc,
+  firstGradientColor,
 } from "../src/services/oxUiPatches.js";
 
 /* nextLabel holds the relabel decision (exact whole-text match, idempotent),
@@ -83,5 +84,21 @@ describe("isHamsterIconSrc", () => {
     expect(isHamsterIconSrc("/hamster.png")).toBe(false); // already swapped
     expect(isHamsterIconSrc("")).toBe(false);
     expect(isHamsterIconSrc(null)).toBe(false);
+  });
+});
+
+describe("firstGradientColor — menu tile outline color", () => {
+  it("extracts the first color of a 145deg linear-gradient", () => {
+    expect(firstGradientColor("linear-gradient(145deg, #eba36a, #d4823f)")).toBe("#eba36a");
+    expect(firstGradientColor("linear-gradient(145deg,#e8989b,#d4757a)")).toBe("#e8989b");
+    expect(firstGradientColor("width: 52px; background: linear-gradient(145deg, rgb(1,2,3), #000)")).toBe(
+      "rgb(1,2,3)",
+    );
+  });
+  it("returns '' when there is no 145deg gradient", () => {
+    expect(firstGradientColor("linear-gradient(90deg, #fff, #000)")).toBe("");
+    expect(firstGradientColor("#ff0000")).toBe("");
+    expect(firstGradientColor("")).toBe("");
+    expect(firstGradientColor(null)).toBe("");
   });
 });

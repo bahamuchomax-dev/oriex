@@ -78,6 +78,56 @@ export function isHamsterIconSrc(src, prefixes = HAMSTER_SRC_PREFIXES) {
   return prefixes.some((p) => s.indexOf(p) === 0);
 }
 
+// Hamburger MENU icon tiles are a 52x52 rounded div with a
+// `linear-gradient(145deg, <c1>, <c2>)` FILL and a white glyph. The user wants
+// them OUTLINED in that color instead of filled: white tile + colored border +
+// colored glyph. We read the gradient's first color and restyle. After restyle
+// the background is no longer a gradient, so the element stops matching the
+// selector (idempotent); a React re-render restores the gradient and we re-apply.
+const MENU_TILE_SELECTOR = 'div[style*="linear-gradient(145deg"]';
+
+/** Extract the first color of a `linear-gradient(145deg, C, K)` string. Pure. */
+export function firstGradientColor(bg) {
+  const s = typeof bg === "string" ? bg : "";
+  const m = s.match(/linear-gradient\(\s*145deg\s*,\s*([^,]+?)\s*,/i);
+  return m ? m[1].trim() : "";
+}
+
+function paintNode(el, color) {
+  ["fill", "stroke"].forEach((attr) => {
+    const v = el.getAttribute && el.getAttribute(attr);
+    if (v && v !== "none" && /^(#fff|#ffffff|white|currentcolor)$/i.test(v)) {
+      el.setAttribute(attr, color);
+    }
+  });
+}
+
+function outlineMenuIconsOnce() {
+  try {
+    if (typeof document === "undefined" || !document.querySelectorAll) return;
+    const tiles = document.querySelectorAll(MENU_TILE_SELECTOR);
+    for (let i = 0; i < tiles.length; i++) {
+      const tile = tiles[i];
+      if (tile.offsetWidth > 80) continue; // menu tiles are 52px; skip big gradients
+      const color = firstGradientColor(tile.style.background || tile.style.backgroundImage || "");
+      if (!color) continue;
+      tile.style.background = "#fff";
+      tile.style.backgroundImage = "none";
+      tile.style.border = "2px solid " + color;
+      tile.style.boxShadow = "none";
+      const svg = tile.querySelector("svg");
+      if (svg) {
+        svg.style.color = color; // for glyphs that use currentColor
+        paintNode(svg, color);
+        const kids = svg.querySelectorAll("*");
+        for (let k = 0; k < kids.length; k++) paintNode(kids[k], color);
+      }
+    }
+  } catch {
+    /* cosmetic only */
+  }
+}
+
 function swapHamsterIconsOnce() {
   try {
     if (typeof document === "undefined" || !document.querySelectorAll) return;
@@ -145,6 +195,7 @@ export function installUiPatches(map = RELABELS) {
       relabelOnce(map);
       hideSectionsOnce(HIDE_SECTION_HEADINGS);
       swapHamsterIconsOnce();
+      outlineMenuIconsOnce();
     };
 
     if (document.readyState !== "loading") setTimeout(run, 0);
