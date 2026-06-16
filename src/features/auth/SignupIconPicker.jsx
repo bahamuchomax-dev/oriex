@@ -110,10 +110,39 @@ export default function SignupIconPicker({ onChange } = {}) {
 
   return (
     <div className="ox-auth-iconpick">
-      {/* live final preview */}
-      <div className="ox-auth-iconpreview" style={{ background: color }} role="img" aria-label="アイコンのプレビュー">
-        {showPhoto ? <img src={photo} alt="" draggable="false" /> : <AvatarArt char={char} size={64} />}
-      </div>
+      {/* SINGLE preview. In photo mode it IS the live circular crop editor —
+          drag to move H/V + slider to zoom — so there is no separate 2nd preview. */}
+      {showPhoto ? (
+        <div
+          className="ox-auth-cropstage"
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          style={{ background: color }}
+          role="img"
+          aria-label="アイコンのプレビュー（ドラッグで上下左右に移動、スライダーで拡大）"
+        >
+          <img
+            src={img.src}
+            alt=""
+            draggable="false"
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              width: stageDims.w,
+              height: stageDims.h,
+              transform: `translate(${pan.x}px, ${pan.y}px)`,
+            }}
+          />
+          <div className="ox-auth-cropring" aria-hidden="true" />
+        </div>
+      ) : (
+        <div className="ox-auth-iconpreview" style={{ background: color }} role="img" aria-label="アイコンのプレビュー">
+          <AvatarArt char={char} size={64} />
+        </div>
+      )}
 
       <div className="ox-auth-icontabs" role="tablist">
         <button
@@ -174,29 +203,6 @@ export default function SignupIconPicker({ onChange } = {}) {
           )}
           {img && (
             <>
-              <div
-                className="ox-auth-cropstage"
-                onPointerDown={onPointerDown}
-                onPointerMove={onPointerMove}
-                onPointerUp={onPointerUp}
-                onPointerCancel={onPointerUp}
-                aria-label="ドラッグで上下左右に移動、スライダーで拡大"
-              >
-                <img
-                  src={img.src}
-                  alt=""
-                  draggable="false"
-                  style={{
-                    position: "absolute",
-                    left: 0,
-                    top: 0,
-                    width: stageDims.w,
-                    height: stageDims.h,
-                    transform: `translate(${pan.x}px, ${pan.y}px)`,
-                  }}
-                />
-                <div className="ox-auth-cropring" aria-hidden="true" />
-              </div>
               <label className="ox-auth-iconzoom">
                 ズーム
                 <input
