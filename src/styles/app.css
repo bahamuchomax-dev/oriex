@@ -105,3 +105,15 @@ html, body, #root{ --app-bottom-pad: calc(env(safe-area-inset-bottom, 0px) + 72p
    height:auto so the mode screen grows with its content and scrolls like the others;
    the 9 other screens already set height:auto inline, so they are unaffected. */
 .rx-home{ height: auto; min-height: auto; }
+
+/* ── remove the per-subject dot pattern on the study (学習) background ─────────
+   The frozen bundle paints a decorative dot overlay behind the study screens:
+     <div style="position:absolute;inset:0;
+                 background-image:radial-gradient(<dotColor> 1.2px,transparent 1.2px);
+                 background-size:28px 28px;pointer-events:none">
+   <dotColor> is per-theme, so the dots differ per subject ("全教科の模様"). The
+   28px-28px tile is unique to THIS overlay, so the match below hits only the dot
+   layer — the soft orb glows (radial-gradient circles with border-radius:50% /
+   filter:blur) and every other gradient are left untouched. CSS-only + reversible;
+   the bundle stays frozen. */
+div[style*="radial-gradient"][style*="28px 28px"]{ display:none !important; }

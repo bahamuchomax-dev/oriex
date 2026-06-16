@@ -24,6 +24,14 @@ try {
   /* ignore */
 }
 
+// Opt-in Firestore READ METER (diagnostic). No-op unless ?oxReadMeter=1 /
+// #ox-read-meter / localStorage.oxReadMeter==="1". Installed here — BEFORE the
+// legacy bundle or modern shell loads — so it observes every Firestore response
+// from the very first read. When off it wraps nothing and adds no overhead.
+// Console: __oxReads.table() / .snapshot() / .reset().
+import { installReadMeter } from "./services/diagnostics/readMeter.js";
+installReadMeter();
+
 function staticSourceAssetBaseUrl() {
   if (typeof document !== "undefined") {
     const entry = document.querySelector('script[type="module"][src$="/src/main.js"], script[type="module"][src$="./src/main.js"]');
@@ -42,6 +50,12 @@ function staticSourceAssetBaseUrl() {
 // Globals the app relies on (now editable modules).
 import "./features/hamster/oriexHamu3D.js"; // -> window.OriexHamu3D
 import "./services/oxHelpers.js"; // -> window.__oxBg / __oxPbg / __oxAv / __oxStudy
+
+// Durable runtime relabels over the frozen legacy bundle's DOM (e.g. nav
+// "マイ" → "マイページ"). Self-defers until the DOM exists and re-applies on
+// re-render, like oxHelpers. No-op outside the browser.
+import { installUiPatches } from "./services/oxUiPatches.js";
+installUiPatches();
 
 // Hidden diagnostic route. The embedded-AI device probe is NOT part of the
 // normal app: it opens ONLY when the URL explicitly asks for it

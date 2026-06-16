@@ -10,6 +10,9 @@ vi.mock("firebase/auth", () => ({
   createUserWithEmailAndPassword: vi.fn(async () => ({ user: { uid: "UID_NEW" } })),
   signInWithEmailAndPassword: vi.fn(async () => ({ user: { uid: "UID_LOGIN" } })),
   signOut: vi.fn(async () => {}),
+  EmailAuthProvider: { credential: vi.fn((email, pw) => ({ __cred: true, email, pw })) },
+  reauthenticateWithCredential: vi.fn(async () => {}),
+  updatePassword: vi.fn(async () => {}),
 }));
 vi.mock("firebase/firestore", () => ({
   doc: vi.fn((_db, ...path) => ({ __path: path.join("/") })),
@@ -19,10 +22,12 @@ vi.mock("firebase/firestore", () => ({
 
 import * as fbAuth from "firebase/auth";
 import * as fs from "firebase/firestore";
+import { auth } from "../src/firebase/firebase.js";
 import {
   signUpWithInviteCode,
   loginWithFriendId,
   logout,
+  changePassword,
   assertSafePayload,
 } from "../src/features/auth/modernAuthApi.js";
 import { DEV_INVITE_CODE } from "../src/features/auth/inviteCode.js";
@@ -102,6 +107,52 @@ describe("logout", () => {
   it("calls Firebase signOut", async () => {
     await logout();
     expect(fbAuth.signOut).toHaveBeenCalledWith({ __auth: true });
+  });
+});
+
+describe("changePassword", () => {
+  const NEW_PW = "brandNew-pw-9";
+  beforeEach(() => {
+    auth.currentUser = { uid: "UID_ME", email: EMAIL };
+  });
+
+  it("reauthenticates with the current password, then updates to the new one", async () => {
+    const r = await changePassword({ currentPassword: PASSWORD, newPassword: NEW_PW });
+    expect(r).toEqual({ uid: "UID_ME" });
+    // reauth uses the signed-in user's own email + the CURRENT password
+    expect(fbAuth.EmailAuthProvider.credential).toHaveBeenCalledWith(EMAIL, PASSWORD);
+    expect(fbAuth.reauthenticateWithCredential).toHaveBeenCalledWith(auth.currentUser, {
+      __cred: true,
+      email: EMAIL,
+      pw: PASSWORD,
+    });
+    // then the NEW password is set on Auth — and only after reauth
+    expect(fbAuth.updatePassword).toHaveBeenCalledWith(auth.currentUser, NEW_PW);
+    const reauthOrder = fbAuth.reauthenticateWithCredential.mock.invocationCallOrder[0];
+    const updateOrder = fbAuth.updatePassword.mock.invocationCallOrder[0];
+    expect(reauthOrder).toBeLessThan(updateOrder);
+  });
+
+  it("touches Firestore for NOTHING (password never written) ", async () => {
+    await changePassword({ currentPassword: PASSWORD, newPassword: NEW_PW });
+    expect(fs.doc).not.toHaveBeenCalled();
+    expect(fs.setDoc).not.toHaveBeenCalled();
+  });
+
+  it("rejects when nobody is signed in", async () => {
+    auth.currentUser = null;
+    await expect(changePassword({ currentPassword: PASSWORD, newPassword: NEW_PW })).rejects.toThrow(
+      /not-signed-in/,
+    );
+    expect(fbAuth.reauthenticateWithCredential).not.toHaveBeenCalled();
+  });
+
+  it("rejects a weak (<6) new password before any Auth call", async () => {
+    await expect(changePassword({ currentPassword: PASSWORD, newPassword: "123" })).rejects.toThrow(
+      /weak-password/,
+    );
+    expect(fbAuth.reauthenticateWithCredential).not.toHaveBeenCalled();
+    expect(fbAuth.updatePassword).not.toHaveBeenCalled();
   });
 });
 

@@ -16,6 +16,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import {
@@ -108,6 +111,36 @@ export async function loginWithFriendId({ friendId, password } = {}) {
 
   const cred = await signInWithEmailAndPassword(auth, email, password);
   return { uid: cred.user.uid };
+}
+
+/**
+ * Change the CURRENT user's own password through Firebase Auth (the only place a
+ * password actually lives now). Firebase requires a recent login for this, so we
+ * reauthenticate with the current password first, then updatePassword.
+ *
+ * IMPORTANT: the legacy in-app "password change" wrote a plaintext `password`
+ * field to Firestore, which modern login (signInWithEmailAndPassword) never
+ * reads — so those changes never took effect. This is the correct, reflected
+ * path. Nothing is written to Firestore and no password is logged.
+ *
+ * NOTE: this changes the SIGNED-IN user's own password only. Changing ANOTHER
+ * user's password (admin action) cannot be done from the client SDK — use the
+ * Admin SDK (scripts/migrateUser.mjs <FriendID> --password <pw>) or a callable
+ * admin Cloud Function.
+ *
+ * @returns {Promise<{ uid: string }>}
+ */
+export async function changePassword({ currentPassword, newPassword } = {}) {
+  const user = auth.currentUser;
+  if (!user || !user.email) throw new Error("not-signed-in");
+  if (typeof newPassword !== "string" || newPassword.length < 6) {
+    throw new Error("weak-password");
+  }
+  // Reauthenticate (Firebase rejects updatePassword without a recent login).
+  const credential = EmailAuthProvider.credential(user.email, currentPassword);
+  await reauthenticateWithCredential(user, credential);
+  await updatePassword(user, newPassword);
+  return { uid: user.uid };
 }
 
 /** Sign the current user out of Firebase Auth. */
