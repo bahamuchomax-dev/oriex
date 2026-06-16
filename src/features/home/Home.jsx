@@ -133,9 +133,9 @@ export default function Home({
           </div>
           <div className="oxh-lvrow">
             <span className="oxh-lv">Lv. {p.level}</span>
-            <div className="oxh-expwrap"><div className="oxh-exp"><i style={{ width: `${p.expPct}%` }} /></div></div>
             <small>EXP {p.expPct}%</small>
           </div>
+          <div className="oxh-exp"><i style={{ width: `${p.expPct}%` }} /></div>
           <div className="oxh-pstats">
             <div className="oxh-pstat">
               <span>累計学習時間</span>
@@ -155,13 +155,15 @@ export default function Home({
 
         {/* today card */}
         <div className="oxh-today">
-          <div className="oxh-today-h">{HS}きょうの学習</div>
-          <div className="oxh-today-goal"><span className="oxh-tag">目標</span>{goal.target}分<i className="oxh-today-line" /></div>
-          <div className="oxh-today-big">{goal.current} <small>/ {goal.target} 分</small></div>
-          <div className="oxh-today-note">目標達成まであと {remain}分！</div>
+          <div className="oxh-today-l">
+            <div className="oxh-today-h">{HS}きょうの学習 ✨</div>
+            <div className="oxh-today-goal"><span className="oxh-tag">目標</span>{goal.target}分<i className="oxh-today-line" /></div>
+            <div className="oxh-today-big">{goal.current} <small>/ {goal.target} 分</small></div>
+            <div className="oxh-today-note">目標達成まであと {remain}分！</div>
+          </div>
           <button className="oxh-today-btn" onClick={() => onOpen("timer")}>
             <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2" /></svg>
-            タイマーをはじめる »
+            タイマーを<br />はじめる »
           </button>
         </div>
 
@@ -218,7 +220,7 @@ export default function Home({
         </div>
 
         {/* tools */}
-        <div className="oxh-tools-h">✨ 学習ツール ✨</div>
+        <div className="oxh-tools-h">✨ 学習ツール</div>
         <div className="oxh-tools">
           {TOOLS.map((t) => (
             <button className="oxh-tool" key={t.label} onClick={() => onOpen(t.key)}>

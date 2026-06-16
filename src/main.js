@@ -61,6 +61,10 @@ import { isAuthBridgeEnabled } from "./features/auth/authBridgeRoute.js";
 // Emergency admin/dev fallback to the OLD legacy app (unsafe plaintext login) —
 // reachable ONLY via this explicit flag. Tiny pure matcher; off unless requested.
 import { isLegacyFallbackEnabled } from "./features/auth/legacyFallbackRoute.js";
+// Opt-in preview of the new React home (NOT the default). Tiny pure matcher
+// (no React / no home code), so importing it never affects normal startup or
+// the initial bundle. Enabled only by ?oriexHome=1 / #oriex-home / localStorage.
+import { isHomePreviewEnabled } from "./features/home/homePreviewRoute.js";
 
 // The application. Currently the original production build. Screens are being
 // peeled out of here into src/features/*. The legacy bundle self-mounts the
@@ -90,7 +94,20 @@ function startModernCutover() {
 
 const oriexLocation = typeof window !== "undefined" ? window.location : null;
 
-if (oriexLocation && isLegacyFallbackEnabled(oriexLocation)) {
+if (oriexLocation && isHomePreviewEnabled(oriexLocation)) {
+  // Opt-in NEW React home (?oriexHome=1 / #oriex-home / localStorage). Separate
+  // lazy chunk; never on a normal visit. Falls back to legacy on any failure so
+  // a normal visit is never left blank.
+  import("./features/home/mountHome.jsx")
+    .then((mod) => {
+      if (typeof mod.mountHomePreview === "function") mod.mountHomePreview();
+      else startLegacyApp();
+    })
+    .catch((err) => {
+      console.warn("[oriex] new home failed to load", err);
+      startLegacyApp();
+    });
+} else if (oriexLocation && isLegacyFallbackEnabled(oriexLocation)) {
   // ⚠️ EMERGENCY admin/dev fallback (?oriexLegacyFallback=1) to the OLD legacy app,
   // which still has the unsafe plaintext login. Temporary, NOT a recommended user
   // path; remove once the legacy login is retired. Changes no Firestore Rules.
