@@ -21,6 +21,27 @@ import { assertSafePayload } from "./modernAuthApi.js";
 export const LEGACY_APP_ID = "gen-ron-kai-app-v1";
 
 /**
+ * Also write the user's OWN legacy DIRECTORY CARD at
+ * artifacts/{appId}/public/data/customApp/{uid}. Without it, Friend ID search
+ * (`where("shortId","==", id)`) and the connections/leaderboard list cannot FIND
+ * a newly-registered user — they only had a private profile/main, never the
+ * public lookup card. Rules allow a self write to this card (isSelf(cardUid)), so
+ * no rules change. Non-secret card fields only (no password/authority/answer).
+ */
+async function ensureLegacyCard(uid, { shortId, name, avatar, color } = {}) {
+  if (!uid || !shortId) return; // no Friend ID yet → nothing to index
+  try {
+    const cardRef = doc(db, "artifacts", LEGACY_APP_ID, "public", "data", "customApp", uid);
+    const card = { shortId, uid, name: name || shortId, updatedAt: serverTimestamp() };
+    if (avatar) card.avatar = avatar;
+    if (color) card.color = color;
+    await setDoc(cardRef, assertSafePayload(card), { merge: true });
+  } catch {
+    /* non-fatal: the private profile still exists; card is a lookup convenience */
+  }
+}
+
+/**
  * Ensure the signed-in user's OWN legacy-path profile exists. Idempotent: if it is
  * already present, does nothing. If missing, copies `shortId`/`name` from the
  * user's own modern top-level profile (no password) and writes a minimal profile
@@ -80,6 +101,10 @@ export async function ensureLegacyBridgeProfile(uid) {
       }
     }
 
+    // Back-fill the public directory card too (Friend ID search / connections),
+    // which earlier bridges never wrote — so existing users become findable.
+    await ensureLegacyCard(uid, { shortId, name, avatar, color });
+
     return {
       ok: true,
       created: false,
@@ -127,5 +152,8 @@ export async function ensureLegacyBridgeProfile(uid) {
   // freshly-bridged user is never a teacher (isTeacher:false).
   const profile = assertSafePayload(base);
   await setDoc(legacyRef, profile, { merge: true });
+  // Make the new user findable: write their public directory card (Friend ID
+  // search + connections/leaderboard) alongside the private profile.
+  await ensureLegacyCard(uid, { shortId, name: safeName, avatar, color });
   return { ok: true, created: true, shortId, name: safeName, avatar, color, isTeacher: false };
 }

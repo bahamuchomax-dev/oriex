@@ -25,6 +25,7 @@ import {
 
 const LEGACY_PATH = `artifacts/${LEGACY_APP_ID}/users/UID/profile/main`;
 const MODERN_PATH = "users/UID/profile/main";
+const CARD_PATH = `artifacts/${LEGACY_APP_ID}/public/data/customApp/UID`;
 
 beforeEach(() => vi.clearAllMocks());
 
@@ -37,7 +38,11 @@ describe("ensureLegacyBridgeProfile", () => {
     const r = await ensureLegacyBridgeProfile("UID");
     expect(r).toEqual({ ok: true, created: false, shortId: "EX1234", name: "既存", avatar: "cat", color: "#abc", isTeacher: false });
     expect(fs.getDoc).toHaveBeenCalledTimes(1); // legacy doc only — no modern read needed
-    expect(fs.setDoc).not.toHaveBeenCalled();
+    // the public DIRECTORY CARD is (idempotently) written so Friend ID search /
+    // connections can find them — the profile itself is left as-is.
+    expect(fs.setDoc).toHaveBeenCalledTimes(1);
+    expect(fs.setDoc.mock.calls[0][0].__path).toBe(CARD_PATH);
+    expect(fs.setDoc.mock.calls[0][1].shortId).toBe("EX1234");
   });
 
   it("self-heals: back-fills missing name/icon from the modern profile and persists to the legacy doc (fixes the reload→'ユウキ' revert)", async () => {
@@ -50,8 +55,9 @@ describe("ensureLegacyBridgeProfile", () => {
     const r = await ensureLegacyBridgeProfile("UID");
     expect(r).toEqual({ ok: true, created: false, shortId: "EX1234", name: "本名", avatar: "bear", color: "#c80", isTeacher: false });
 
-    // back-fill written to the LEGACY path, identity fields only, NO credential/authority
-    expect(fs.setDoc).toHaveBeenCalledTimes(1);
+    // back-fill written to the LEGACY path (call 0); the directory card is call 1.
+    expect(fs.setDoc).toHaveBeenCalledTimes(2);
+    expect(fs.setDoc.mock.calls[1][0].__path).toBe(CARD_PATH);
     const [ref, payload] = fs.setDoc.mock.calls[0];
     expect(ref.__path).toBe(LEGACY_PATH);
     expect(payload.name).toBe("本名");
@@ -80,7 +86,10 @@ describe("ensureLegacyBridgeProfile", () => {
       .mockResolvedValueOnce({ exists: () => false }); // modern missing → nothing to back-fill
     const r = await ensureLegacyBridgeProfile("UID");
     expect(r.name).toBe("");
-    expect(fs.setDoc).not.toHaveBeenCalled();
+    // no profile back-fill (nothing to fill), but the directory card is still
+    // written so the user is findable (shortId present).
+    expect(fs.setDoc).toHaveBeenCalledTimes(1);
+    expect(fs.setDoc.mock.calls[0][0].__path).toBe(CARD_PATH);
   });
 
   it("creates a minimal legacy profile (own paths), carrying shortId/name, NO password", async () => {
@@ -99,8 +108,10 @@ describe("ensureLegacyBridgeProfile", () => {
     expect(readPaths).toContain(LEGACY_PATH);
     expect(readPaths).toContain(MODERN_PATH);
 
-    // wrote to the LEGACY path with shortId/name and NO credential field
-    expect(fs.setDoc).toHaveBeenCalledTimes(1);
+    // wrote the profile (call 0, LEGACY path) AND the directory card (call 1).
+    expect(fs.setDoc).toHaveBeenCalledTimes(2);
+    expect(fs.setDoc.mock.calls[1][0].__path).toBe(CARD_PATH);
+    expect(fs.setDoc.mock.calls[1][1].shortId).toBe("KWFAQA");
     const [ref, payload] = fs.setDoc.mock.calls[0];
     expect(ref.__path).toBe(LEGACY_PATH);
     expect(payload.shortId).toBe("KWFAQA");

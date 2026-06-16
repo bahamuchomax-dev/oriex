@@ -89,7 +89,8 @@ const MENU_TILE_SELECTOR = 'div[style*="linear-gradient(145deg"]';
 /** Extract the first color of a `linear-gradient(145deg, C, K)` string. Pure. */
 export function firstGradientColor(bg) {
   const s = typeof bg === "string" ? bg : "";
-  const m = s.match(/linear-gradient\(\s*145deg\s*,\s*([^,]+?)\s*,/i);
+  // First color may be #hex, rgb()/rgba() (which contain commas) or a name.
+  const m = s.match(/linear-gradient\(\s*145deg\s*,\s*(#[0-9a-f]{3,8}|rgba?\([^)]*\)|[a-z]+)/i);
   return m ? m[1].trim() : "";
 }
 
