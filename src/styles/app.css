@@ -106,6 +106,30 @@ html, body, #root{ --app-bottom-pad: calc(env(safe-area-inset-bottom, 0px) + 72p
    the 9 other screens already set height:auto inline, so they are unaffected. */
 .rx-home{ height: auto; min-height: auto; }
 
+/* ── photo-background readability: halo for text sitting on the photo veil ──────
+   When a theme background PHOTO is set, oxHelpers adds body.oxbg-on and lays a
+   ~72% white veil over the photo; cards get white surfaces. But headings/labels
+   that sit DIRECTLY on the veil (outside a card) can still be low-contrast over a
+   bright/busy photo. Give just those (dark-ink) text elements a soft white halo so
+   they stay legible. On the white cards the halo is invisible (white-on-white), and
+   we deliberately DON'T touch white-on-accent text (CTAs, selected tabs), so the
+   design is unchanged off the photo background. */
+body.oxbg-on .rx-greet,
+body.oxbg-on .rx-title,
+body.oxbg-on .rx-sec h3,
+body.oxbg-on .rx-sec a,
+body.oxbg-on .rx-goal-l,
+body.oxbg-on .rx-goal-n,
+body.oxbg-on .rx-goal-s,
+body.oxbg-on .rx-pname,
+body.oxbg-on .rx-pid,
+body.oxbg-on .rx-nlab,
+body.oxbg-on .rx-nsub,
+body.oxbg-on .rx-cat:not(.on),
+body.oxbg-on .rx-back{
+  text-shadow:0 1px 2px rgba(255,255,255,.75), 0 0 7px rgba(255,255,255,.55) !important;
+}
+
 /* ── remove the per-subject dot pattern on the study (学習) background ─────────
    The frozen bundle paints a decorative dot overlay behind the study screens:
      <div style="position:absolute;inset:0;
