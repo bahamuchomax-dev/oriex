@@ -58,6 +58,26 @@ describe("seedLegacyLocalSession", () => {
     expect(prof.totalExp).toBe(99);
   });
 
+  it("seeds avatar/color + isTeacher when provided (reload shows the right identity/role)", () => {
+    seedLegacyLocalSession("T1", { shortId: "AAA234", name: "先生", avatar: "bear", color: "#c88040", isTeacher: true });
+    const prof = JSON.parse(store.getItem("genron_profile_T1"));
+    expect(prof.avatar).toBe("bear");
+    expect(prof.color).toBe("#c88040");
+    expect(prof.isTeacher).toBe(true);
+  });
+
+  it("refreshes isTeacher on an EXISTING cache without clobbering richer fields", () => {
+    store.setItem(
+      "genron_profile_T2",
+      JSON.stringify({ uid: "T2", shortId: "RICH", totalExp: 50, isTeacher: false }),
+    );
+    seedLegacyLocalSession("T2", { isTeacher: true });
+    const prof = JSON.parse(store.getItem("genron_profile_T2"));
+    expect(prof.isTeacher).toBe(true); // teacher no longer reverts to user on reload
+    expect(prof.totalExp).toBe(50); // richer field preserved
+    expect(prof.shortId).toBe("RICH");
+  });
+
   it("is a no-op for a missing uid", () => {
     expect(seedLegacyLocalSession("", { shortId: "X" })).toBe(false);
     expect(seedLegacyLocalSession(null)).toBe(false);

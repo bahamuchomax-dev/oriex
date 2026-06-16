@@ -28,21 +28,28 @@ export async function handoffToLegacy(user, importLegacy) {
   let ensured = "skipped";
   let shortId = "";
   let name = "";
+  let avatar = "";
+  let color = "";
+  let isTeacher;
   try {
     const r = await ensureLegacyBridgeProfile(uid);
     ensured = r && r.ok ? (r.created ? "created" : "existed") : "failed";
     if (r) {
       shortId = r.shortId || "";
       name = r.name || "";
+      avatar = r.avatar || "";
+      color = r.color || "";
+      if (typeof r.isTeacher === "boolean") isTeacher = r.isTeacher;
     }
   } catch {
     ensured = "error";
   }
 
   // Seed legacy's localStorage fast-start cache so it boots logged-in on RELOAD
-  // too — independent of legacy's own Firebase-Auth restoration timing. No
-  // password; mirrors legacy's key format.
-  if (uid) seedLegacyLocalSession(uid, { shortId, name });
+  // too — independent of legacy's own Firebase-Auth restoration timing. Carries
+  // the icon + teacher flag so a reload shows the right identity/role. No password;
+  // mirrors legacy's key format.
+  if (uid) seedLegacyLocalSession(uid, { shortId, name, avatar, color, isTeacher });
 
   await (importLegacy || defaultImportLegacy)();
   return { uid, ensured };

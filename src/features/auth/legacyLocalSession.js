@@ -32,14 +32,36 @@ export function seedLegacyLocalSession(uid, profile) {
     window.localStorage.setItem(legacyKey("uid", uid), JSON.stringify(uid));
 
     const profileKey = legacyKey("profile", uid);
-    // Don't clobber a richer profile legacy already cached/synced.
-    if (window.localStorage.getItem(profileKey) == null) {
+    const p = profile || {};
+    const raw = window.localStorage.getItem(profileKey);
+    if (raw == null) {
+      // Fresh fast-start cache (no password). Mirror the icon (avatar/color) and
+      // the teacher flag from the server profile so a RELOAD shows the right
+      // identity/role immediately. isTeacher here is a DISPLAY mirror only — real
+      // teacher access is gated by the custom claim + Firestore Rules, so this
+      // (client-editable) cache can never grant authority.
       const minimal = {
         uid,
-        shortId: (profile && profile.shortId) || "",
-        name: (profile && profile.name) || "",
+        shortId: p.shortId || "",
+        name: p.name || "",
       };
+      if (p.avatar) minimal.avatar = p.avatar;
+      if (p.color) minimal.color = p.color;
+      if (typeof p.isTeacher === "boolean") minimal.isTeacher = p.isTeacher;
       window.localStorage.setItem(profileKey, JSON.stringify(minimal));
+    } else if (typeof p.isTeacher === "boolean") {
+      // Existing cache: refresh ONLY the authoritative teacher flag (so a teacher
+      // no longer reverts to "user" on reload) without clobbering richer synced fields.
+      let existing = {};
+      try {
+        existing = JSON.parse(raw) || {};
+      } catch {
+        existing = {};
+      }
+      if (existing.isTeacher !== p.isTeacher) {
+        existing.isTeacher = p.isTeacher;
+        window.localStorage.setItem(profileKey, JSON.stringify(existing));
+      }
     }
     return true;
   } catch {
