@@ -10,19 +10,30 @@ const SHELL = readFileSync("src/features/auth/ModernAuthShell.jsx", "utf8");
 const API = readFileSync("src/features/auth/modernAuthApi.js", "utf8");
 const BRIDGE = readFileSync("src/features/auth/legacyBridgeProfile.js", "utf8");
 const PICKER = readFileSync("src/features/auth/SignupIconPicker.jsx", "utf8");
+const ART = readFileSync("src/features/auth/avatarArt.jsx", "utf8");
 
-describe("signup icon picker — UI", () => {
+describe("signup icon picker — UI (same as profile edit)", () => {
   it("renders on the signup screen with a live preview and adjustment", () => {
     expect(SHELL).toContain("SignupIconPicker");
     expect(SHELL).toMatch(/mode === "signup"[\s\S]*?SignupIconPicker/);
     expect(PICKER).toContain("プレビュー"); // preview
-    expect(PICKER).toMatch(/type="range"/); // zoom adjust
+    expect(PICKER).toMatch(/type="range"/); // zoom adjust (範囲指定)
     expect(PICKER).toContain("onPointerMove"); // drag to reposition
   });
-  it("offers emoji+color and photo upload modes", () => {
-    expect(PICKER).toContain("絵文字");
+  it("offers the SAME character illustrations as profile-edit, plus photo", () => {
+    expect(PICKER).toContain("AvatarArt");
+    expect(PICKER).toContain("AVATAR_CHARS");
+    expect(PICKER).toContain("イラスト");
     expect(PICKER).toContain("写真");
     expect(PICKER).toContain('accept="image/*"');
+  });
+  it("ports the 9 legacy character illustrations (same chars the app renders)", () => {
+    for (const c of ["bear", "fox", "penguin", "owl", "cat2", "hamster", "gorilla", "rabbit", "teacher"]) {
+      expect(ART).toContain('export const ' + c + ' =');
+    }
+    // rendered from the legacy SVG via the React jsx-runtime (verbatim port)
+    expect(ART).toMatch(/from "react\/jsx-runtime"/);
+    expect(ART).toContain('viewBox:"0 0 80 80"');
   });
   it("never exposes the uid/debug or handles passwords (UI only)", () => {
     expect(PICKER).not.toMatch(/password|console\s*\./i);

@@ -1,27 +1,28 @@
 import { useEffect, useRef, useState } from "react";
 import { fileToImage, renderIconDataUrl, isIconWithinLimit } from "./iconImage.js";
+import { AvatarArt, AVATAR_CHARS, DEFAULT_AVATAR_CHAR } from "./avatarArt.jsx";
 
 /* ============================================================
- * SignupIconPicker — choose an account icon on the signup screen.
+ * SignupIconPicker — set an account icon on signup, SAME as profile-edit.
  * ------------------------------------------------------------
- * Two modes, both with a live PREVIEW and ADJUSTMENT:
- *   - emoji: pick an emoji + a background color (always works),
- *   - photo: upload an image, then ZOOM (slider) and reposition (drag) it; the
- *     result is downscaled/cropped to a small square JPEG (see iconImage.js), so
- *     it stays well under Firestore's size limit and SAVES reliably (fixes the
- *     "アイコン保存エラー").
+ * Two modes, both with a live PREVIEW and ADJUSTMENT — matching the legacy
+ * profile editor's icon setting:
+ *   - illustration: pick one of the SAME 9 character illustrations the profile
+ *     editor offers (avatarArt.jsx, rendered from the identical SVG) + a
+ *     background color. Stored as avatar:"<char>" — the exact key the app renders.
+ *   - photo: upload an image, then ZOOM (slider) and reposition (drag / 範囲指定);
+ *     it is square-cropped to a compact JPEG the same way the editor encodes its
+ *     icon photo, so it stays tiny and saves reliably.
  * Reports the chosen icon via onChange({ avatar, color, photo }).
  * UI only — no auth/secret handling.
  * ============================================================ */
 
-const EMOJIS = ["🐹", "🐱", "🐶", "🦊", "🐻", "🐼", "🐧", "🦉", "🐰", "🐯", "⭐", "🌸"];
 const COLORS = ["#c88040", "#9060b8", "#208050", "#14b8a6", "#ef4444", "#3b82f6"];
-
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
 export default function SignupIconPicker({ onChange } = {}) {
-  const [mode, setMode] = useState("emoji"); // "emoji" | "photo"
-  const [emoji, setEmoji] = useState(EMOJIS[0]);
+  const [mode, setMode] = useState("illust"); // "illust" | "photo"
+  const [char, setChar] = useState(DEFAULT_AVATAR_CHAR);
   const [color, setColor] = useState(COLORS[0]);
   const [img, setImg] = useState(null);
   const [zoom, setZoom] = useState(1);
@@ -30,14 +31,12 @@ export default function SignupIconPicker({ onChange } = {}) {
   const [error, setError] = useState("");
   const dragRef = useRef(null);
 
-  // Notify the parent of the current icon selection.
   useEffect(() => {
     if (typeof onChange !== "function") return;
     if (mode === "photo" && photo) onChange({ avatar: "", color, photo });
-    else onChange({ avatar: emoji, color, photo: "" });
-  }, [mode, emoji, color, photo, onChange]);
+    else onChange({ avatar: char, color, photo: "" });
+  }, [mode, char, color, photo, onChange]);
 
-  // Re-render the cropped photo whenever the source / zoom / position changes.
   useEffect(() => {
     if (mode !== "photo" || !img) return;
     const url = renderIconDataUrl(img, { zoom, offsetX: offset.x, offsetY: offset.y });
@@ -90,7 +89,7 @@ export default function SignupIconPicker({ onChange } = {}) {
     <div className="ox-auth-iconpick">
       <div
         className="ox-auth-iconpreview"
-        style={showPhoto ? undefined : { background: color }}
+        style={{ background: color }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -99,20 +98,16 @@ export default function SignupIconPicker({ onChange } = {}) {
         aria-label="アイコンのプレビュー"
         title={showPhoto ? "ドラッグで位置を調整" : undefined}
       >
-        {showPhoto ? (
-          <img src={photo} alt="" draggable="false" />
-        ) : (
-          <span className="ox-auth-iconemoji">{emoji}</span>
-        )}
+        {showPhoto ? <img src={photo} alt="" draggable="false" /> : <AvatarArt char={char} size={64} />}
       </div>
 
       <div className="ox-auth-icontabs" role="tablist">
         <button
           type="button"
-          className={"ox-auth-icontab" + (mode === "emoji" ? " is-on" : "")}
-          onClick={() => setMode("emoji")}
+          className={"ox-auth-icontab" + (mode === "illust" ? " is-on" : "")}
+          onClick={() => setMode("illust")}
         >
-          絵文字
+          イラスト
         </button>
         <button
           type="button"
@@ -123,18 +118,19 @@ export default function SignupIconPicker({ onChange } = {}) {
         </button>
       </div>
 
-      {mode === "emoji" && (
+      {mode === "illust" && (
         <>
-          <div className="ox-auth-iconrow" aria-label="絵文字を選ぶ">
-            {EMOJIS.map((e) => (
+          <div className="ox-auth-iconrow" aria-label="イラストを選ぶ">
+            {AVATAR_CHARS.map((a) => (
               <button
-                key={e}
+                key={a.char}
                 type="button"
-                className={"ox-auth-iconchip" + (emoji === e ? " is-on" : "")}
-                onClick={() => setEmoji(e)}
-                aria-pressed={emoji === e}
+                className={"ox-auth-iconchip" + (char === a.char ? " is-on" : "")}
+                onClick={() => setChar(a.char)}
+                aria-pressed={char === a.char}
+                title={a.label}
               >
-                {e}
+                <AvatarArt char={a.char} size={34} />
               </button>
             ))}
           </div>
@@ -173,7 +169,7 @@ export default function SignupIconPicker({ onChange } = {}) {
               />
             </label>
           )}
-          {img && <p className="ox-auth-hint">ドラッグで位置を調整できます。</p>}
+          {img && <p className="ox-auth-hint">ドラッグで範囲（位置）を調整できます。</p>}
           {img && (
             <button
               type="button"
@@ -183,10 +179,10 @@ export default function SignupIconPicker({ onChange } = {}) {
                 setPhoto("");
                 setZoom(1);
                 setOffset({ x: 0, y: 0 });
-                setMode("emoji");
+                setMode("illust");
               }}
             >
-              写真を削除して絵文字に戻す
+              写真を削除してイラストに戻す
             </button>
           )}
         </div>
