@@ -130,14 +130,16 @@ body.oxbg-on .rx-back{
   text-shadow:0 1px 2px rgba(255,255,255,.75), 0 0 7px rgba(255,255,255,.55) !important;
 }
 
-/* ── remove the per-subject dot pattern on the study (学習) background ─────────
-   The frozen bundle paints a decorative dot overlay behind the study screens:
-     <div style="position:absolute;inset:0;
-                 background-image:radial-gradient(<dotColor> 1.2px,transparent 1.2px);
-                 background-size:28px 28px;pointer-events:none">
-   <dotColor> is per-theme, so the dots differ per subject ("全教科の模様"). The
-   28px-28px tile is unique to THIS overlay, so the match below hits only the dot
-   layer — the soft orb glows (radial-gradient circles with border-radius:50% /
-   filter:blur) and every other gradient are left untouched. CSS-only + reversible;
-   the bundle stays frozen. */
+/* ── remove the study STAGE-MAP background pattern (全教科) ────────────────────
+   The stage-map screen paints a decorative SVG pattern layer:
+     <div class="stage-map-bg" style="position:absolute;inset:0;...
+          background-image:url("data:image/svg+xml,...");background-repeat:repeat-y">
+   It has a stable class, so hide it directly (per-subject color lives in the SVG,
+   so this clears it for every subject). CSS-only + reversible; bundle untouched. */
+.stage-map-bg{ display:none !important; }
+
+/* Also clear the per-theme dot overlay used on the OTHER study screens
+   (review/wordbook/play/modeSelect): an inset radial-gradient dot tile (28px grid).
+   The 28px-28px tile is unique to this overlay, so it never touches the soft orb
+   glows (radial-gradient circles with border-radius:50% / filter:blur). */
 div[style*="radial-gradient"][style*="28px 28px"]{ display:none !important; }
