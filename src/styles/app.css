@@ -106,28 +106,36 @@ html, body, #root{ --app-bottom-pad: calc(env(safe-area-inset-bottom, 0px) + 72p
    the 9 other screens already set height:auto inline, so they are unaffected. */
 .rx-home{ height: auto; min-height: auto; }
 
-/* ── photo-background readability: halo for text sitting on the photo veil ──────
-   When a theme background PHOTO is set, oxHelpers adds body.oxbg-on and lays a
-   ~72% white veil over the photo; cards get white surfaces. But headings/labels
-   that sit DIRECTLY on the veil (outside a card) can still be low-contrast over a
-   bright/busy photo. Give just those (dark-ink) text elements a soft white halo so
-   they stay legible. On the white cards the halo is invisible (white-on-white), and
-   we deliberately DON'T touch white-on-accent text (CTAs, selected tabs), so the
-   design is unchanged off the photo background. */
-body.oxbg-on .rx-greet,
-body.oxbg-on .rx-title,
-body.oxbg-on .rx-sec h3,
-body.oxbg-on .rx-sec a,
-body.oxbg-on .rx-goal-l,
-body.oxbg-on .rx-goal-n,
-body.oxbg-on .rx-goal-s,
-body.oxbg-on .rx-pname,
-body.oxbg-on .rx-pid,
-body.oxbg-on .rx-nlab,
-body.oxbg-on .rx-nsub,
-body.oxbg-on .rx-cat:not(.on),
-body.oxbg-on .rx-back{
-  text-shadow:0 1px 2px rgba(255,255,255,.75), 0 0 7px rgba(255,255,255,.55) !important;
+/* ── photo-background readability: OUTLINE all text on the photo ────────────────
+   When a theme background PHOTO is set, oxHelpers adds body.oxbg-on. Over a bright
+   or busy photo, text on the veil can still be hard to read, so give ALL screen
+   text a white halo "outline" (multi-direction text-shadow). On the white cards
+   the white halo is invisible (white-on-white), so it only helps the text sitting
+   on the photo. We turn the outline OFF for white-text-on-colored controls (CTAs,
+   selected tabs/pills, colored mode cards) — those already have a solid colored
+   backing, where a white halo would just blur the text. */
+body.oxbg-on .rx-home, body.oxbg-on .rx-mp,
+body.oxbg-on .rx-home *, body.oxbg-on .rx-mp *{
+  text-shadow:
+    0 0 3px rgba(255,255,255,.95),
+    1px 1px 2px rgba(255,255,255,.85),
+    -1px 1px 2px rgba(255,255,255,.85),
+    1px -1px 2px rgba(255,255,255,.85),
+    -1px -1px 2px rgba(255,255,255,.85) !important;
+}
+/* white-on-color controls: no halo (solid colored backing already legible) */
+body.oxbg-on .rx-cta, body.oxbg-on .rx-cta *,
+body.oxbg-on .rx-bigedit,
+body.oxbg-on .rx-bc, body.oxbg-on .rx-bc *,
+body.oxbg-on .rx-talkbtn, body.oxbg-on .rx-talkbtn *,
+body.oxbg-on .rx-tabbar button.on, body.oxbg-on .rx-tabbar button.on *,
+body.oxbg-on .rx-cat.on,
+body.oxbg-on .rx-dirbtn.on, body.oxbg-on .rx-dirbtn.on *,
+body.oxbg-on .rx-cal-day.on,
+body.oxbg-on .rx-planbtn .rx-tm,
+body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"],
+body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"] *{
+  text-shadow:none !important;
 }
 
 /* ── remove the study STAGE-MAP background pattern (全教科) ────────────────────

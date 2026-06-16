@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { nextLabel, RELABELS, isHideHeading, HIDE_SECTION_HEADINGS } from "../src/services/oxUiPatches.js";
+import {
+  nextLabel,
+  RELABELS,
+  isHideHeading,
+  HIDE_SECTION_HEADINGS,
+  isHamsterIconSrc,
+} from "../src/services/oxUiPatches.js";
 
 /* nextLabel holds the relabel decision (exact whole-text match, idempotent),
  * which is the part worth pinning. The DOM glue mirrors the trusted oxHelpers
@@ -63,5 +69,19 @@ describe("isHideHeading — admin sections to remove", () => {
       "先生管理",
       "ユーザー管理",
     ]);
+  });
+});
+
+describe("isHamsterIconSrc", () => {
+  it("matches the two embedded hamster-icon base64 webp prefixes", () => {
+    expect(isHamsterIconSrc("data:image/webp;base64,UklGRkIeAABXRUJQ...")).toBe(true);
+    expect(isHamsterIconSrc("data:image/webp;base64,UklGRuQmAABXRUJQ...")).toBe(true);
+  });
+  it("does NOT match the run-animation frames or other images", () => {
+    expect(isHamsterIconSrc("data:image/webp;base64,UklGRsRQAABXRUJQ...")).toBe(false); // run frame
+    expect(isHamsterIconSrc("data:image/png;base64,iVBORw0KGgo...")).toBe(false);
+    expect(isHamsterIconSrc("/hamster.png")).toBe(false); // already swapped
+    expect(isHamsterIconSrc("")).toBe(false);
+    expect(isHamsterIconSrc(null)).toBe(false);
   });
 });

@@ -59,6 +59,40 @@ export function isHideHeading(text, headings = HIDE_SECTION_HEADINGS) {
   return headings.indexOf(t) >= 0;
 }
 
+// The hamster "house + wheel" icon is embedded in the frozen bundle as base64
+// webp and shown on the home / cards. Swap just those <img> srcs to the new
+// public/hamster.png (the run-animation frames use DIFFERENT prefixes, so they
+// keep animating). Matched by the exact base64 head of each embedded variant.
+export const HAMSTER_SRC_PREFIXES = [
+  "data:image/webp;base64,UklGRkIe",
+  "data:image/webp;base64,UklGRuQm",
+];
+const HAMSTER_URL =
+  (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL
+    ? import.meta.env.BASE_URL
+    : "/") + "hamster.png";
+
+/** True iff this <img> src is one of the embedded hamster-icon images. Pure. */
+export function isHamsterIconSrc(src, prefixes = HAMSTER_SRC_PREFIXES) {
+  const s = typeof src === "string" ? src : "";
+  return prefixes.some((p) => s.indexOf(p) === 0);
+}
+
+function swapHamsterIconsOnce() {
+  try {
+    if (typeof document === "undefined" || !document.querySelectorAll) return;
+    const imgs = document.querySelectorAll('img[src^="data:image/webp;base64,UklGR"]');
+    for (let i = 0; i < imgs.length; i++) {
+      const img = imgs[i];
+      if (isHamsterIconSrc(img.getAttribute("src") || "")) {
+        img.setAttribute("src", HAMSTER_URL); // no longer matches the prefix -> idempotent
+      }
+    }
+  } catch {
+    /* a cosmetic swap must never break the app */
+  }
+}
+
 function hideSectionsOnce(headings) {
   try {
     if (typeof document === "undefined" || !document.querySelectorAll) return;
@@ -100,6 +134,7 @@ export function installUiPatches(map = RELABELS) {
     const run = () => {
       relabelOnce(map);
       hideSectionsOnce(HIDE_SECTION_HEADINGS);
+      swapHamsterIconsOnce();
     };
 
     if (document.readyState !== "loading") setTimeout(run, 0);
