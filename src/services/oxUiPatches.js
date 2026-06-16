@@ -128,6 +128,65 @@ function outlineMenuIconsOnce() {
   }
 }
 
+// The 先生用管理 (teacher admin / settingsApp) screen is dark-themed (navy bg +
+// white/gray/teal text via the bundle's `A` palette) while every other tab is
+// light, so its gray-on-navy body text is hard to read. Convert it to the light
+// look: light container + light cards + dark text. Detected by its title, since
+// the screen uses only generic utility classes.
+function parseRgb(s) {
+  const m = typeof s === "string" && s.match(/rgba?\(([^)]+)\)/);
+  if (!m) return null;
+  const p = m[1].split(",").map((x) => parseFloat(x.trim()));
+  return { r: p[0], g: p[1], b: p[2], a: p[3] == null ? 1 : p[3] };
+}
+/** True iff a CSS color string is an opaque, dark color. Pure + tested. */
+export function isDarkOpaqueColor(s) {
+  const c = parseRgb(s);
+  if (!c || c.a < 0.5) return false;
+  return 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b < 120;
+}
+
+function findAdminContainer() {
+  const nodes = document.querySelectorAll("h1,h2,h3,div,span");
+  for (let i = 0; i < nodes.length; i++) {
+    if ((nodes[i].textContent || "").trim() === "先生用管理") {
+      let p = nodes[i];
+      for (let up = 0; up < 8 && p; up += 1) {
+        if (p.style && p.style.position === "absolute") return p;
+        p = p.parentElement;
+      }
+      return nodes[i].parentElement;
+    }
+  }
+  return null;
+}
+
+function lightenAdminOnce() {
+  try {
+    if (typeof document === "undefined" || !document.querySelectorAll || !window.getComputedStyle) return;
+    const container = findAdminContainer();
+    if (!container) return;
+    if (container.classList && !container.classList.contains("ox-admin-light")) {
+      container.classList.add("ox-admin-light");
+    }
+    if (isDarkOpaqueColor(window.getComputedStyle(container).backgroundColor)) {
+      container.style.setProperty("background", "#fbf8f3", "important");
+    }
+    const els = container.querySelectorAll("*");
+    for (let i = 0; i < els.length; i++) {
+      const el = els[i];
+      if (el.tagName === "SVG" || el.tagName === "PATH") continue;
+      const bgc = window.getComputedStyle(el).backgroundColor;
+      if (isDarkOpaqueColor(bgc)) {
+        el.style.setProperty("background-color", "#ffffff", "important");
+        el.style.setProperty("background-image", "none", "important");
+      }
+    }
+  } catch {
+    /* cosmetic only */
+  }
+}
+
 // On a photo background the top profile header (avatar + name + 現論会 校名 +
 // streak) sits directly on the photo and can be hard to read. That header uses
 // only generic utility classes, so we find it by its org label ("現論会…") and
@@ -231,6 +290,7 @@ export function installUiPatches(map = RELABELS) {
       swapHamsterIconsOnce();
       outlineMenuIconsOnce();
       backProfileHeaderOnce();
+      lightenAdminOnce();
     };
 
     if (document.readyState !== "loading") setTimeout(run, 0);

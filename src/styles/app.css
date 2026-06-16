@@ -113,6 +113,14 @@ html, body, #root{ --app-bottom-pad: calc(env(safe-area-inset-bottom, 0px) + 72p
    header block above "今日の勉強" (greeting / name / streak / avatar peek) sits
    directly on the photo, so give just that row a soft translucent backing so the
    name + icon stay readable. Only under body.oxbg-on (photo background on). */
+/* ── 先生用管理 (teacher admin) light theme ────────────────────────────────────
+   oxUiPatches tags the dark admin screen .ox-admin-light and lightens its dark
+   container/cards. Here we force the text dark and give cards a soft border so it
+   reads like the other (light) tabs instead of gray-on-navy. */
+.ox-admin-light, .ox-admin-light *{ color:#2b2724 !important; }
+.ox-admin-light input, .ox-admin-light textarea{ color:#2b2724 !important; }
+.ox-admin-light input::placeholder, .ox-admin-light textarea::placeholder{ color:rgba(43,39,36,.45) !important; }
+
 body.oxbg-on .rx-topbar{
   background:rgba(255,255,255,.66) !important;
   border-radius:18px !important;

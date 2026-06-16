@@ -6,6 +6,7 @@ import {
   HIDE_SECTION_HEADINGS,
   isHamsterIconSrc,
   firstGradientColor,
+  isDarkOpaqueColor,
 } from "../src/services/oxUiPatches.js";
 
 /* nextLabel holds the relabel decision (exact whole-text match, idempotent),
@@ -100,5 +101,21 @@ describe("firstGradientColor — menu tile outline color", () => {
     expect(firstGradientColor("#ff0000")).toBe("");
     expect(firstGradientColor("")).toBe("");
     expect(firstGradientColor(null)).toBe("");
+  });
+});
+
+describe("isDarkOpaqueColor — admin dark backgrounds to lighten", () => {
+  it("flags opaque dark colors (navy/near-black)", () => {
+    expect(isDarkOpaqueColor("rgb(30, 26, 58)")).toBe(true); // admin navy
+    expect(isDarkOpaqueColor("rgb(0, 0, 0)")).toBe(true);
+    expect(isDarkOpaqueColor("rgba(20, 20, 40, 1)")).toBe(true);
+  });
+  it("does NOT flag light, or transparent, colors", () => {
+    expect(isDarkOpaqueColor("rgb(255, 255, 255)")).toBe(false);
+    expect(isDarkOpaqueColor("rgb(251, 248, 243)")).toBe(false);
+    expect(isDarkOpaqueColor("rgba(0,0,0,0)")).toBe(false); // transparent → leave it
+    expect(isDarkOpaqueColor("rgba(0,0,0,0.2)")).toBe(false); // mostly transparent
+    expect(isDarkOpaqueColor("")).toBe(false);
+    expect(isDarkOpaqueColor(null)).toBe(false);
   });
 });
