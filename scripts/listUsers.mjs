@@ -28,6 +28,10 @@ function fail(msg) {
 }
 
 const studentsOnly = process.argv.includes("--students");
+// --no-names: skip the Firestore profile lookups entirely (0 billed reads — only
+// Auth data: uid, Friend ID, role, created, lastSignIn). Names show as Auth
+// displayName (usually blank). Use it when you only need to count / pick by id.
+const noNames = process.argv.includes("--no-names");
 
 const keyPath = process.env.ORIEX_SA_KEY;
 if (!keyPath) fail("set ORIEX_SA_KEY to the path of your Admin SDK credentials JSON (never commit it)");
@@ -104,7 +108,7 @@ async function main() {
       uid: u.uid,
       created: u.metadata.creationTime || "",
       lastSignIn: u.metadata.lastSignInTime || "(never)",
-      name: await profileName(u.uid, u.displayName),
+      name: noNames ? (u.displayName || "") : await profileName(u.uid, u.displayName),
     });
   }
   rows.sort((a, b) => new Date(a.created) - new Date(b.created));

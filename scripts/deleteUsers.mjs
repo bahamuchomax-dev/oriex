@@ -59,6 +59,7 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === "--file") opts.file = argv[++i];
   else if (a === "--keep") keepTokens.push(argv[++i]);
   else if (a === "--keep-name") keepNames.push((argv[++i] || "").trim().toLowerCase());
+  else if (a === "--show-names") opts.showNames = true; // force profile-name display (extra Firestore reads)
   else if (a === "--created-after") opts.after = new Date(argv[++i]);
   else if (a === "--created-before") opts.before = new Date(argv[++i]);
   else if (a.startsWith("--")) fail("unknown flag: " + a);
@@ -197,8 +198,12 @@ async function main() {
   const targets = [];
   const kept = [];
   const protectedAdmins = [];
+  // Only read Firestore profile names when --keep-name needs them (or --show-names
+  // is set). With uid/Friend-ID keeps this does ZERO Firestore reads — selection
+  // is pure Auth (listUsers / getUser are Auth ops, not billed Firestore reads).
+  const needNames = keepNames.length > 0 || process.argv.includes("--show-names");
   for (const u of byUid.values()) {
-    const name = await profileName(u.uid, u.displayName);
+    const name = needNames ? await profileName(u.uid, u.displayName) : (u.displayName || "");
     const role = roleOf(u);
     u.__name = name;
     u.__role = role;
