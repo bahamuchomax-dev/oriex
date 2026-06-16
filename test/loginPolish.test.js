@@ -7,7 +7,8 @@ import { readFileSync } from "node:fs";
 const SHELL = readFileSync("src/features/auth/ModernAuthShell.jsx", "utf8");
 const CSS = readFileSync("src/features/auth/authScreen.css", "utf8");
 const BRIDGE = readFileSync("src/features/auth/ModernCutoverBridge.jsx", "utf8");
-const BADGE = readFileSync("src/features/auth/appVersionBadge.js", "utf8");
+const MAIN = readFileSync("src/main.js", "utf8");
+const LEGACY = readFileSync("src/legacy/oriex-app.bundle.js", "utf8");
 
 describe("login — stylish brand wordmark", () => {
   it("the Oriex title uses a display font + gradient text", () => {
@@ -30,14 +31,16 @@ describe("login — inputs auto-uppercase (password excluded)", () => {
   });
 });
 
-describe("version表記 — unified after login", () => {
-  it("a persistent version badge is shown once the legacy home is ready", () => {
-    expect(BRIDGE).toContain("showVersionBadge");
-    expect(BRIDGE).toMatch(/if \(homeReady\) showVersionBadge\(\);\s*\n\s*else hideVersionBadge\(\)/);
+describe("version表記 — unified after login (legacy home, no overlapping badge)", () => {
+  it("main.js exposes the current version on window before legacy loads", () => {
+    expect(MAIN).toContain("window.__OX_APP_VERSION = APP_VERSION_LABEL");
+    expect(MAIN).toMatch(/import \{ APP_VERSION_LABEL \} from "\.\/appVersion\.js"/);
   });
-  it("the badge shows the same APP_VERSION_LABEL as the login card", () => {
-    expect(BADGE).toContain("APP_VERSION_LABEL");
-    expect(BADGE).toContain("ox-version-badge");
-    expect(BADGE).toMatch(/pointer-events:none/); // non-interactive over the app
+  it("the legacy home reads the current version (no hard-coded v7.36)", () => {
+    expect(LEGACY).not.toContain('"Oriex v7.36"'); // old hard-coded label removed
+    expect(LEGACY).toContain("window.__OX_APP_VERSION"); // reads the unified version
+  });
+  it("no floating version badge remains (it overlapped the home bar)", () => {
+    expect(BRIDGE).not.toContain("VersionBadge");
   });
 });

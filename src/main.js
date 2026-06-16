@@ -14,6 +14,16 @@
 const VITE_ENV = import.meta.env || {};
 const APP_BASE_URL = VITE_ENV.BASE_URL || "./";
 
+// Unified app version: expose it on window BEFORE the legacy app loads so the
+// legacy home shows the current version (it reads window.__OX_APP_VERSION) instead
+// of its old hard-coded "v7.36". Same value as the modern login version label.
+import { APP_VERSION_LABEL } from "./appVersion.js";
+try {
+  if (typeof window !== "undefined") window.__OX_APP_VERSION = APP_VERSION_LABEL;
+} catch {
+  /* ignore */
+}
+
 function staticSourceAssetBaseUrl() {
   if (typeof document !== "undefined") {
     const entry = document.querySelector('script[type="module"][src$="/src/main.js"], script[type="module"][src$="./src/main.js"]');
