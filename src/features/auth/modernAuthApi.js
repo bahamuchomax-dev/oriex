@@ -45,24 +45,23 @@ export function assertSafePayload(data) {
   return data;
 }
 
-// Optional non-secret icon fields chosen at signup. `photo` is a small,
-// pre-resized JPEG data URL (see iconImage.js) that stays well under Firestore's
-// document size limit, so it saves reliably (fixes the "アイコン保存エラー"). None of
-// these are credential / authority / answer fields, so assertSafePayload accepts
-// them. Only included when actually set, so we never write empty noise.
-function withIconFields(base, { avatar, color, photo } = {}) {
+// Optional non-secret icon fields chosen at signup. `avatar` is either a
+// character key OR a small pre-resized JPEG data URL (see iconImage.js) — the
+// legacy app renders it as <img src={avatar}>. Both stay well under Firestore's
+// document size limit. Neither is a credential/authority/answer field, so
+// assertSafePayload accepts them. Only included when actually set.
+function withIconFields(base, { avatar, color } = {}) {
   const out = { ...base };
   if (typeof avatar === "string" && avatar) out.avatar = avatar;
   if (typeof color === "string" && color) out.color = color;
-  if (typeof photo === "string" && photo) out.photo = photo;
   return out;
 }
 
 // Write the authenticated user's OWN profile + public directory card. No
 // password, no authority, no answers — guarded by assertSafePayload.
-async function writeOwnProfile(uid, { shortId, name, avatar, color, photo }) {
+async function writeOwnProfile(uid, { shortId, name, avatar, color }) {
   const safeName = typeof name === "string" && name.trim() ? name.trim() : shortId;
-  const icon = { avatar, color, photo };
+  const icon = { avatar, color };
 
   const profile = assertSafePayload(
     withIconFields({ shortId, name: safeName, updatedAt: serverTimestamp() }, icon),
@@ -85,7 +84,7 @@ async function writeOwnProfile(uid, { shortId, name, avatar, color, photo }) {
  * The invite code is validated but NEVER written to Firestore and NEVER logged.
  * @returns {Promise<{ uid: string, shortId: string }>}
  */
-export async function signUpWithInviteCode({ inviteCode, password, name, avatar, color, photo } = {}) {
+export async function signUpWithInviteCode({ inviteCode, password, name, avatar, color } = {}) {
   if (!validateInviteCode(inviteCode)) throw new Error("invalid-invite-code");
 
   const shortId = generateFriendId();
@@ -93,7 +92,7 @@ export async function signUpWithInviteCode({ inviteCode, password, name, avatar,
 
   const cred = await createUserWithEmailAndPassword(auth, email, password);
   const uid = cred.user.uid;
-  await writeOwnProfile(uid, { shortId, name, avatar, color, photo });
+  await writeOwnProfile(uid, { shortId, name, avatar, color });
   return { uid, shortId };
 }
 

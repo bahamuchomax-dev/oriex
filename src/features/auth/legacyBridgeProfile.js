@@ -51,16 +51,15 @@ export async function ensureLegacyBridgeProfile(uid) {
   let name = "";
   let avatar = "";
   let color = "";
-  let photo = "";
   try {
     const modernSnap = await getDoc(doc(db, "users", uid, "profile", "main"));
     if (modernSnap.exists()) {
       const d = modernSnap.data() || {};
       if (typeof d.shortId === "string") shortId = d.shortId;
       if (typeof d.name === "string") name = d.name;
+      // `avatar` is a character key OR a photo data URL (legacy renders <img src>)
       if (typeof d.avatar === "string") avatar = d.avatar;
       if (typeof d.color === "string") color = d.color;
-      if (typeof d.photo === "string") photo = d.photo;
     }
   } catch {
     /* ignore — proceed with a minimal profile */
@@ -75,7 +74,6 @@ export async function ensureLegacyBridgeProfile(uid) {
   };
   if (avatar) base.avatar = avatar;
   if (color) base.color = color;
-  if (photo) base.photo = photo;
   const profile = assertSafePayload(base);
   await setDoc(legacyRef, profile, { merge: true });
   return { ok: true, created: true, shortId, name: safeName };

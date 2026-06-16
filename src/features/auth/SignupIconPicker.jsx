@@ -41,8 +41,10 @@ export default function SignupIconPicker({ onChange } = {}) {
 
   useEffect(() => {
     if (typeof onChange !== "function") return;
-    if (mode === "photo" && photo) onChange({ avatar: "", color, photo });
-    else onChange({ avatar: char, color, photo: "" });
+    // The legacy app renders the avatar as <img src={avatar}>, so a custom photo
+    // is stored in `avatar` as a data URL; a character is stored as its char key.
+    if (mode === "photo" && photo) onChange({ avatar: photo, color });
+    else onChange({ avatar: char, color });
   }, [mode, char, color, photo, onChange]);
 
   // Re-render the cropped photo whenever the source / zoom / pan changes.
