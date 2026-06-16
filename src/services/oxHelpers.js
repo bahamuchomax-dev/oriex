@@ -322,7 +322,11 @@ window.__oxAv=(function(){
   window.__oxAvScale=function(){return scaleStr();};
   function applyEls(){try{var els=document.querySelectorAll("[data-oxav]");for(var i=0;i<els.length;i++){els[i].style.objectPosition=posStr();els[i].style.transform=scaleStr();els[i].style.transformOrigin=posStr();}}catch(e){}}
   var pv,pvUrl;
-  function applyPreview(){if(!pv)return;if(pvUrl){pv.style.backgroundImage="url('"+pvUrl+"')";pv.style.backgroundSize=(100*(cur.settings.scale||1))+"%";pv.style.backgroundPosition=posStr();pv.textContent="";}else{pv.style.backgroundImage="none";pv.textContent="\u5199\u771F\u306A\u3057";}}
+  // Render the modal preview the SAME way the real avatar (applyEls -> [data-oxav]
+  // <img>) is drawn \u2014 object-fit:cover + object-position + transform:scale \u2014 so the
+  // preview MATCHES what actually shows on screen (the old background-size/position
+  // method drew a different crop, so preview != actual).
+  function applyPreview(){if(!pv)return;if(pvUrl){pv.style.backgroundImage="none";pv.style.overflow="hidden";var im=pv.querySelector("img.oxav-pv");if(!im){pv.textContent="";im=document.createElement("img");im.className="oxav-pv";im.style.cssText="width:100%;height:100%;object-fit:cover;display:block";pv.appendChild(im);}im.src=pvUrl;im.style.objectPosition=posStr();im.style.transform=scaleStr();im.style.transformOrigin=posStr();}else{var ex=pv.querySelector("img.oxav-pv");if(ex&&ex.parentNode)ex.parentNode.removeChild(ex);pv.style.backgroundImage="none";pv.textContent="\u5199\u771F\u306A\u3057";}}
   function refresh(){var u=uid();if(u!==cur.uid){cur.uid=u;cur.settings=load(u);}applyEls();}
   try{setInterval(refresh,800);}catch(e){}
   try{setTimeout(function(){cur.uid=uid();cur.settings=load(cur.uid);applyEls();},0);}catch(e){}

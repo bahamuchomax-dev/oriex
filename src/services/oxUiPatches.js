@@ -384,7 +384,6 @@ export function installUiPatches(map = RELABELS) {
       swapHamsterIconsOnce();
       outlineMenuIconsOnce();
       backProfileHeaderOnce();
-      lightenAdminOnce();
       haloVeilHeadingsOnce();
     };
 
