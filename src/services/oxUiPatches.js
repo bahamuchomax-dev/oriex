@@ -159,7 +159,14 @@ function outlineMenuIconsOnce() {
 // look: light container + light cards + dark text. Detected by its title, since
 // the screen uses only generic utility classes.
 function parseRgb(s) {
-  const m = typeof s === "string" && s.match(/rgba?\(([^)]+)\)/);
+  if (typeof s !== "string") return null;
+  const h = s.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (h) {
+    let hex = h[1];
+    if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    return { r: parseInt(hex.slice(0, 2), 16), g: parseInt(hex.slice(2, 4), 16), b: parseInt(hex.slice(4, 6), 16), a: 1 };
+  }
+  const m = s.match(/rgba?\(([^)]+)\)/);
   if (!m) return null;
   const p = m[1].split(",").map((x) => parseFloat(x.trim()));
   return { r: p[0], g: p[1], b: p[2], a: p[3] == null ? 1 : p[3] };
@@ -169,6 +176,23 @@ export function isDarkOpaqueColor(s) {
   const c = parseRgb(s);
   if (!c || c.a < 0.5) return false;
   return 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b < 120;
+}
+/** True iff the element's computed background (solid OR gradient) is mostly dark. */
+function hasDarkBackground(cs) {
+  if (isDarkOpaqueColor(cs.backgroundColor)) return true;
+  const bi = cs.backgroundImage || "";
+  if (bi.indexOf("gradient") < 0) return false;
+  const cols = bi.match(/rgba?\([^)]*\)|#[0-9a-fA-F]{3,6}/g) || [];
+  let opaque = 0;
+  let dark = 0;
+  for (let i = 0; i < cols.length; i++) {
+    const c = parseRgb(cols[i]);
+    if (c && c.a >= 0.5) {
+      opaque += 1;
+      if (0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b < 120) dark += 1;
+    }
+  }
+  return opaque > 0 && dark / opaque > 0.5;
 }
 
 function findAdminContainer() {
@@ -200,11 +224,16 @@ function lightenAdminOnce() {
     const els = container.querySelectorAll("*");
     for (let i = 0; i < els.length; i++) {
       const el = els[i];
-      if (el.tagName === "SVG" || el.tagName === "PATH") continue;
-      const bgc = window.getComputedStyle(el).backgroundColor;
-      if (isDarkOpaqueColor(bgc)) {
+      const tag = el.tagName;
+      if (tag === "svg" || tag === "SVG" || tag === "path" || tag === "PATH") continue;
+      // lighten any DARK background — solid color OR a dark gradient (the cards
+      // are gradients, which the solid-color check alone missed) — and give cards
+      // a soft border so they read on the now-light surface.
+      if (hasDarkBackground(window.getComputedStyle(el))) {
         el.style.setProperty("background-color", "#ffffff", "important");
         el.style.setProperty("background-image", "none", "important");
+        el.style.setProperty("border-color", "rgba(15,23,42,.12)", "important");
+        el.style.setProperty("box-shadow", "0 1px 3px rgba(15,23,42,.06)", "important");
       }
     }
   } catch {
@@ -257,8 +286,12 @@ export const VEIL_HALO_TEXTS = [
   "最近の記録",
   "アカウント",
 ];
+// Stronger, thicker white outline (8-direction 1px ring + glow) so headings stay
+// bold and legible on busy/bright photos.
 const VEIL_HALO =
-  "0 1px 2px rgba(255,255,255,.95), 0 0 8px rgba(255,255,255,.75), 0 0 2px rgba(255,255,255,.9)";
+  "1px 1px 0 #fff, -1px 1px 0 #fff, 1px -1px 0 #fff, -1px -1px 0 #fff, " +
+  "0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff, " +
+  "0 0 4px rgba(255,255,255,.95), 0 0 9px rgba(255,255,255,.8)";
 
 function haloVeilHeadingsOnce() {
   try {
