@@ -220,7 +220,7 @@ export default function ModernAuthShell({ onAuthed } = {}) {
                 autoComplete="username"
                 autoCapitalize="characters"
                 spellCheck={false}
-                placeholder="例: 2N7422"
+                placeholder="6文字のID"
                 style={{ textTransform: "uppercase" }}
               />
             </label>
