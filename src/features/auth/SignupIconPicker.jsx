@@ -174,6 +174,21 @@ export default function SignupIconPicker({ onChange } = {}) {
             </label>
           )}
           {img && <p className="ox-auth-hint">ドラッグで位置を調整できます。</p>}
+          {img && (
+            <button
+              type="button"
+              className="ox-auth-iconremove"
+              onClick={() => {
+                setImg(null);
+                setPhoto("");
+                setZoom(1);
+                setOffset({ x: 0, y: 0 });
+                setMode("emoji");
+              }}
+            >
+              写真を削除して絵文字に戻す
+            </button>
+          )}
         </div>
       )}
 

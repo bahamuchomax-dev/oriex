@@ -489,6 +489,17 @@ html.ox-auth-nozoom body {
 .ox-auth-iconzoom input[type="range"] {
   flex: 1;
 }
+.ox-auth-iconremove {
+  border: none;
+  background: transparent;
+  color: var(--text-muted, #8b5e3c);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 6px 8px;
+}
 
 /* ---------- version label (login / signup / cover) ---------- */
 .ox-auth-version {
