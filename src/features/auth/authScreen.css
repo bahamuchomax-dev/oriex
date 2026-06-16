@@ -21,9 +21,11 @@
     max(16px, env(safe-area-inset-right, 0px))
     max(16px, env(safe-area-inset-bottom, 0px))
     max(16px, env(safe-area-inset-left, 0px));
+  /* green, gradient backdrop (requested) — a soft top glow over a diagonal
+     green wash so the login/signup feels fresh rather than flat. */
   background:
-    radial-gradient(1100px 540px at 50% -12%, rgba(47, 128, 196, 0.10), transparent 62%),
-    var(--bg, #eef3f9);
+    radial-gradient(1150px 560px at 50% -14%, rgba(46, 158, 107, 0.18), transparent 60%),
+    linear-gradient(165deg, #f1faf4 0%, #e3f3ea 50%, #cfe9d9 100%);
   font-family: "Zen Maru Gothic", "Zen Kaku Gothic New", system-ui, -apple-system,
     "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
 }
@@ -41,7 +43,7 @@
   max-width: 392px;
   box-sizing: border-box;
   background: var(--surface, #ffffff);
-  border: 1px solid var(--border, #d6e1ee);
+  border: 1px solid var(--border, #d2e7d9);
   border-radius: 24px;
   padding: 30px 26px 24px;
   /* layered, soft elevation for a polished, app-like card (no colored edge) */
@@ -66,7 +68,7 @@
   object-fit: cover;
   box-shadow:
     0 0 0 1px rgba(43, 39, 36, 0.06),
-    0 10px 24px rgba(47, 128, 196, 0.28);
+    0 10px 24px rgba(46, 158, 107, 0.28);
   -webkit-user-select: none;
   user-select: none;
 }
@@ -78,10 +80,10 @@
   font-weight: 700;
   letter-spacing: 1.5px;
   line-height: 1.1;
-  background: linear-gradient(120deg, #2f80c4 0%, #6fb3e0 45%, #9060b8 110%);
+  background: linear-gradient(120deg, #2e9e6b 0%, #7fd0a8 45%, #14a896 110%);
   -webkit-background-clip: text;
   background-clip: text;
-  color: var(--accent, #2f80c4); /* fallback if background-clip unsupported */
+  color: var(--accent, #2e9e6b); /* fallback if background-clip unsupported */
   -webkit-text-fill-color: transparent;
 }
 .ox-auth-subtitle {
@@ -90,7 +92,7 @@
   font-weight: 800;
   letter-spacing: 4px;
   padding-left: 4px; /* balance the wide tracking */
-  color: var(--text-muted, #56708a);
+  color: var(--text-muted, #587a68);
 }
 
 /* ---------- new-login notice (calm) ---------- */
@@ -98,8 +100,8 @@
   margin: 0 0 16px;
   padding: 12px 14px;
   border-radius: 14px;
-  background: rgba(47, 128, 196, 0.08);
-  border: 1px solid rgba(47, 128, 196, 0.18);
+  background: rgba(46, 158, 107, 0.08);
+  border: 1px solid rgba(46, 158, 107, 0.18);
   font-size: 12.5px;
   line-height: 1.6;
   color: var(--text, #2b2724);
@@ -108,7 +110,7 @@
   display: block;
   margin-bottom: 4px;
   font-size: 13px;
-  color: var(--accent, #2f80c4);
+  color: var(--accent, #2e9e6b);
 }
 .ox-auth-notice p {
   margin: 2px 0 0;
@@ -130,7 +132,7 @@
   font-weight: 800;
   letter-spacing: 0.3px;
   text-transform: uppercase;
-  color: var(--text-muted, #56708a);
+  color: var(--text-muted, #587a68);
 }
 /* Self-sufficient input style (does NOT depend on the legacy .rx-tf / --line,
    which is undefined on the auth screen and left the fields borderless). Clear
@@ -148,7 +150,7 @@
   font-weight: 600;
   line-height: 1.3;
   color: var(--text, #2b2724);
-  background: #f1f6fb;
+  background: #f0f7f2;
   border: 1px solid rgba(43, 39, 36, 0.16);
   border-radius: 13px;
   transition: border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
@@ -161,16 +163,16 @@
 }
 .ox-auth-input:focus {
   outline: none;
-  border-color: var(--accent, #2f80c4);
+  border-color: var(--accent, #2e9e6b);
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(47, 128, 196, 0.18);
+  box-shadow: 0 0 0 3px rgba(46, 158, 107, 0.18);
 }
 .ox-auth-hint {
   display: block;
   margin-top: 6px;
   font-size: 11px;
   line-height: 1.5;
-  color: var(--text-muted, #56708a);
+  color: var(--text-muted, #587a68);
 }
 .ox-auth-hint code {
   background: rgba(0, 0, 0, 0.05);
@@ -186,22 +188,22 @@
   border-radius: 14px;
   padding: 14px 16px;
   /* gentle two-stop accent (depth without gradient overload) */
-  background: linear-gradient(180deg, #4a96d4, var(--accent, #2f80c4));
+  background: linear-gradient(180deg, #46b07d, var(--accent, #2e9e6b));
   color: #fff;
   font: inherit;
   font-size: 16px;
   font-weight: 800;
   letter-spacing: 0.3px;
   cursor: pointer;
-  box-shadow: 0 12px 24px rgba(47, 128, 196, 0.30);
+  box-shadow: 0 12px 24px rgba(46, 158, 107, 0.30);
   transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
 }
 .ox-auth-primary:hover {
-  box-shadow: 0 14px 28px rgba(47, 128, 196, 0.36);
+  box-shadow: 0 14px 28px rgba(46, 158, 107, 0.36);
 }
 .ox-auth-primary:active {
   transform: translateY(1px);
-  box-shadow: 0 8px 18px rgba(47, 128, 196, 0.28);
+  box-shadow: 0 8px 18px rgba(46, 158, 107, 0.28);
 }
 .ox-auth-primary:disabled {
   opacity: 0.55;
@@ -231,21 +233,21 @@
 .ox-auth-switch {
   margin-top: 16px;
   padding-top: 14px;
-  border-top: 1px solid var(--border, #d6e1ee);
+  border-top: 1px solid var(--border, #d2e7d9);
   text-align: center;
 }
 .ox-auth-switch-label {
   display: block;
   margin-bottom: 8px;
   font-size: 12px;
-  color: var(--text-muted, #56708a);
+  color: var(--text-muted, #587a68);
 }
 .ox-auth-switch-btn {
   width: 100%;
   min-height: 48px;
   border: 1px solid rgba(43, 39, 36, 0.22);
   background: var(--surface, #ffffff);
-  color: var(--accent, #2f80c4);
+  color: var(--accent, #2e9e6b);
   border-radius: 14px;
   padding: 12px 16px;
   font: inherit;
@@ -282,12 +284,12 @@
 .ox-auth-welcome p {
   margin: 0;
   font-size: 13px;
-  color: var(--text-muted, #56708a);
+  color: var(--text-muted, #587a68);
 }
 .ox-auth-debug {
   margin-top: 14px;
   font-size: 11px;
-  color: var(--text-muted, #56708a);
+  color: var(--text-muted, #587a68);
   word-break: break-all;
 }
 
@@ -300,8 +302,8 @@
   height: 34px;
   margin: 16px auto 0;
   border-radius: 50%;
-  border: 3px solid rgba(47, 128, 196, 0.22);
-  border-top-color: var(--accent, #2f80c4);
+  border: 3px solid rgba(46, 158, 107, 0.22);
+  border-top-color: var(--accent, #2e9e6b);
   animation: ox-auth-spin 0.8s linear infinite;
 }
 @keyframes ox-auth-spin {
@@ -312,7 +314,7 @@
 .ox-auth-loading p {
   margin: 14px 0 0;
   font-size: 13px;
-  color: var(--text-muted, #56708a);
+  color: var(--text-muted, #587a68);
 }
 @media (prefers-reduced-motion: reduce) {
   .ox-auth-spinner {
@@ -376,7 +378,7 @@ html.ox-auth-nozoom body {
   padding: 14px;
   border: 1px solid rgba(43, 39, 36, 0.12);
   border-radius: 16px;
-  background: #f1f6fb;
+  background: #f0f7f2;
 }
 .ox-auth-iconpreview {
   width: 92px;
@@ -412,7 +414,7 @@ html.ox-auth-nozoom body {
   min-height: 36px;
   border: none;
   background: transparent;
-  color: var(--text-muted, #56708a);
+  color: var(--text-muted, #587a68);
   border-radius: 9px;
   padding: 6px 16px;
   font: inherit;
@@ -422,7 +424,7 @@ html.ox-auth-nozoom body {
 }
 .ox-auth-icontab.is-on {
   background: #fff;
-  color: var(--accent, #2f80c4);
+  color: var(--accent, #2e9e6b);
   box-shadow: 0 1px 3px rgba(43, 39, 36, 0.12);
 }
 .ox-auth-iconrow {
@@ -444,8 +446,8 @@ html.ox-auth-nozoom body {
   cursor: pointer;
 }
 .ox-auth-iconchip.is-on {
-  border-color: var(--accent, #2f80c4);
-  box-shadow: 0 0 0 3px rgba(47, 128, 196, 0.18);
+  border-color: var(--accent, #2e9e6b);
+  box-shadow: 0 0 0 3px rgba(46, 158, 107, 0.18);
 }
 .ox-auth-iconswatch {
   width: 32px;
@@ -457,7 +459,7 @@ html.ox-auth-nozoom body {
   padding: 0;
 }
 .ox-auth-iconswatch.is-on {
-  box-shadow: 0 0 0 3px var(--accent, #2f80c4);
+  box-shadow: 0 0 0 3px var(--accent, #2e9e6b);
 }
 .ox-auth-iconphoto {
   display: flex;
@@ -474,7 +476,7 @@ html.ox-auth-nozoom body {
   border-radius: 12px;
   border: 1px solid rgba(43, 39, 36, 0.18);
   background: #fff;
-  color: var(--accent, #2f80c4);
+  color: var(--accent, #2e9e6b);
   font-size: 15px;
   font-weight: 800;
   cursor: pointer;
@@ -486,7 +488,7 @@ html.ox-auth-nozoom body {
   width: 100%;
   font-size: 12px;
   font-weight: 800;
-  color: var(--text-muted, #56708a);
+  color: var(--text-muted, #587a68);
 }
 .ox-auth-iconzoom input[type="range"] {
   flex: 1;
@@ -498,7 +500,7 @@ html.ox-auth-nozoom body {
   height: 176px;
   border-radius: 50%;
   overflow: hidden;
-  background: #e3ecf5;
+  background: #e3f0e7;
   touch-action: none; /* drag-to-pan without scrolling the page */
   cursor: grab;
   user-select: none;
@@ -510,6 +512,12 @@ html.ox-auth-nozoom body {
 }
 .ox-auth-cropstage img {
   pointer-events: none;
+  /* the global `img{max-width:100%}` reset (utilities.css) clamps the absolutely
+     positioned crop image to the frame width on zoom while its inline height stays
+     — distorting the aspect ratio ("伸びる"). Opt out so the inline cover-fit w/h
+     keep the image undistorted while the round frame crops it. */
+  max-width: none;
+  max-height: none;
 }
 /* subtle inner ring so the user sees the crop boundary */
 .ox-auth-cropring {
@@ -532,7 +540,7 @@ html.ox-auth-nozoom body {
 .ox-auth-iconremove {
   border: none;
   background: transparent;
-  color: var(--text-muted, #56708a);
+  color: var(--text-muted, #587a68);
   font: inherit;
   font-size: 12px;
   font-weight: 700;
