@@ -3,7 +3,7 @@
   position: fixed;
   inset: 0;
   z-index: 2147483000;
-  background: linear-gradient(170deg, #fff8f4 0%, #fdede6 52%, #f5ddd0 100%);
+  background: linear-gradient(170deg, #f1faf4 0%, #e3f3ea 52%, #cfe9d9 100%);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   font-family: "Zen Maru Gothic", "Zen Kaku Gothic New", system-ui, sans-serif;
@@ -90,7 +90,7 @@
 .ox-ta-input:focus,
 .ox-ta-textarea:focus {
   outline: none;
-  border-color: #ff7a59;
+  border-color: #2e9e6b;
   background: #fff;
 }
 .ox-ta-row {
@@ -112,7 +112,7 @@
   border: none;
   border-radius: 14px;
   padding: 13px 16px;
-  background: #ff7a59;
+  background: #2e9e6b;
   color: #fff;
   font: inherit;
   font-size: 16px;

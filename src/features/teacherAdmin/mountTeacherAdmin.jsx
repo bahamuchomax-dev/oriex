@@ -67,32 +67,55 @@ function ensureHost() {
   );
 }
 
+function tick() {
+  try {
+    const legacy = findLegacyAdmin();
+    if (legacy) {
+      if (legacy !== hiddenLegacy) {
+        legacy.style.setProperty("display", "none", "important");
+        hiddenLegacy = legacy;
+      }
+      if (!shown) {
+        host.style.display = "block";
+        shown = true;
+      }
+    } else if (shown) {
+      host.style.display = "none";
+      shown = false;
+      hiddenLegacy = null;
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
 /** Install the detector. Idempotent; browser-only. */
 export function installTeacherAdmin() {
   if (typeof document === "undefined") return;
   try {
     ensureHost();
-    setInterval(() => {
-      try {
-        const legacy = findLegacyAdmin();
-        if (legacy) {
-          if (legacy !== hiddenLegacy) {
-            legacy.style.setProperty("display", "none", "important");
-            hiddenLegacy = legacy;
-          }
-          if (!shown) {
-            host.style.display = "block";
-            shown = true;
-          }
-        } else if (shown) {
-          host.style.display = "none";
-          shown = false;
-          hiddenLegacy = null;
-        }
-      } catch {
-        /* ignore */
-      }
-    }, 400);
+    // A MutationObserver covers the legacy admin the INSTANT it renders (no visible
+    // flash of the old dark screen); a coalesced rAF avoids reacting per-mutation.
+    if (typeof MutationObserver === "function") {
+      let queued = false;
+      const schedule = () => {
+        if (queued) return;
+        queued = true;
+        (window.requestAnimationFrame || setTimeout)(() => {
+          queued = false;
+          tick();
+        }, 0);
+      };
+      new MutationObserver(schedule).observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["style", "class"],
+        characterData: true,
+      });
+    }
+    setInterval(tick, 400); // backstop
+    tick();
   } catch {
     /* ignore */
   }
