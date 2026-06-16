@@ -9,7 +9,7 @@ import { bridgeUid } from "./authBridgeController.js";
 import { ensureLegacyBridgeProfile } from "./legacyBridgeProfile.js";
 import { seedLegacyLocalSession } from "./legacyLocalSession.js";
 // TEMPORARY debug-only instrumentation (?oriexAuthDebug=1); no-op when absent.
-import { authDebugOn, dlog, probeVisibleProfileName } from "./authDebug.js";
+import { authDebugOn, dlog, probeVisibleProfileName, installLegacyWriteHook } from "./authDebug.js";
 import { currentAuthUser } from "./modernAuthState.js";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
@@ -53,6 +53,18 @@ export async function handoffToLegacy(user, importLegacy) {
   // the icon + teacher flag so a reload shows the right identity/role. No password;
   // mirrors legacy's key format.
   if (uid) seedLegacyLocalSession(uid, { shortId, name, avatar, color, isTeacher });
+
+  // Debug-only: install the legacy setDoc write hook BEFORE importing legacy, so
+  // every legacy write logs a safe path + uid-match + outcome code (no data).
+  if (authDebugOn()) {
+    installLegacyWriteHook(() => {
+      try {
+        return currentAuthUser()?.uid ?? null;
+      } catch {
+        return null;
+      }
+    });
+  }
 
   // Debug-only: log the IDENTITY the handoff is using just before legacy boots —
   // the prime suspect for the reload fallback is a uid mismatch (legacy reads a

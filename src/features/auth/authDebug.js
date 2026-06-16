@@ -102,3 +102,45 @@ export function probeVisibleProfileName() {
     /* ignore */
   }
 }
+
+/**
+ * Install a debug-only hook the legacy bundle calls on every setDoc (see the
+ * `qn` wrapper in src/legacy/oriex-app.bundle.js). Logs the SAFE write metadata —
+ * operation, doc PATH, the path's uid segment, and uid-match booleans, plus the
+ * resolved/ rejected outcome (Firestore error CODE only). NEVER logs the document
+ * data. No-op unless ?oriexAuthDebug=1. `getCurrentUid` lets the caller supply
+ * auth.currentUser.uid without coupling this module to Firebase.
+ * @param {() => (string|null)} [getCurrentUid]
+ */
+export function installLegacyWriteHook(getCurrentUid) {
+  if (!authDebugOn() || typeof window === "undefined") return;
+  window.__oxWriteHook = function (op, ref, promise) {
+    try {
+      const path = ref && ref.path ? String(ref.path) : "(unknown)";
+      const seg = path.split("/");
+      const ui = seg.indexOf("users");
+      const pathUid = ui >= 0 && seg[ui + 1] ? seg[ui + 1] : null;
+      const oxUid = (typeof window !== "undefined" && window.__oxUid) || null;
+      let authUid = null;
+      try {
+        authUid = (typeof getCurrentUid === "function" ? getCurrentUid() : null) || null;
+      } catch {
+        /* ignore */
+      }
+      dlog("legacyWrite", {
+        op,
+        path,
+        pathUidMatchesOx: pathUid && oxUid ? pathUid === oxUid : null,
+        authMatchesOx: authUid && oxUid ? authUid === oxUid : null,
+      });
+      if (promise && typeof promise.then === "function") {
+        promise.then(
+          () => dlog("legacyWrite.ok", { op, path }),
+          (e) => dlog("legacyWrite.err", { op, path, code: e && e.code ? e.code : "unknown" }),
+        );
+      }
+    } catch {
+      /* ignore */
+    }
+  };
+}
