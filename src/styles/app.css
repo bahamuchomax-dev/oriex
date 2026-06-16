@@ -106,36 +106,20 @@ html, body, #root{ --app-bottom-pad: calc(env(safe-area-inset-bottom, 0px) + 72p
    the 9 other screens already set height:auto inline, so they are unaffected. */
 .rx-home{ height: auto; min-height: auto; }
 
-/* ── photo-background readability: OUTLINE all text on the photo ────────────────
-   When a theme background PHOTO is set, oxHelpers adds body.oxbg-on. Over a bright
-   or busy photo, text on the veil can still be hard to read, so give ALL screen
-   text a white halo "outline" (multi-direction text-shadow). On the white cards
-   the white halo is invisible (white-on-white), so it only helps the text sitting
-   on the photo. We turn the outline OFF for white-text-on-colored controls (CTAs,
-   selected tabs/pills, colored mode cards) — those already have a solid colored
-   backing, where a white halo would just blur the text. */
-body.oxbg-on .rx-home, body.oxbg-on .rx-mp,
-body.oxbg-on .rx-home *, body.oxbg-on .rx-mp *{
-  text-shadow:
-    0 0 3px rgba(255,255,255,.95),
-    1px 1px 2px rgba(255,255,255,.85),
-    -1px 1px 2px rgba(255,255,255,.85),
-    1px -1px 2px rgba(255,255,255,.85),
-    -1px -1px 2px rgba(255,255,255,.85) !important;
-}
-/* white-on-color controls: no halo (solid colored backing already legible) */
-body.oxbg-on .rx-cta, body.oxbg-on .rx-cta *,
-body.oxbg-on .rx-bigedit,
-body.oxbg-on .rx-bc, body.oxbg-on .rx-bc *,
-body.oxbg-on .rx-talkbtn, body.oxbg-on .rx-talkbtn *,
-body.oxbg-on .rx-tabbar button.on, body.oxbg-on .rx-tabbar button.on *,
-body.oxbg-on .rx-cat.on,
-body.oxbg-on .rx-dirbtn.on, body.oxbg-on .rx-dirbtn.on *,
-body.oxbg-on .rx-cal-day.on,
-body.oxbg-on .rx-planbtn .rx-tm,
-body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"],
-body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"] *{
-  text-shadow:none !important;
+/* ── photo-background readability: BACKING on the home header only ──────────────
+   Earlier we outlined all text on the photo veil, but on elements that already
+   have their own background (the はじめる CTA, stage nodes, colored cards) the halo
+   just made text HARDER to read. So no global text outline. Instead, the home
+   header block above "今日の勉強" (greeting / name / streak / avatar peek) sits
+   directly on the photo, so give just that row a soft translucent backing so the
+   name + icon stay readable. Only under body.oxbg-on (photo background on). */
+body.oxbg-on .rx-topbar{
+  background:rgba(255,255,255,.66) !important;
+  border-radius:18px !important;
+  padding:8px 12px 12px !important;
+  margin:2px 0 6px !important;
+  -webkit-backdrop-filter:blur(6px);
+  backdrop-filter:blur(6px);
 }
 
 /* ── remove the study STAGE-MAP background pattern (全教科) ────────────────────

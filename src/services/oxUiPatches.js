@@ -131,6 +131,16 @@ function relabelOnce(map) {
 export function installUiPatches(map = RELABELS) {
   try {
     if (typeof document === "undefined") return;
+    // Preload the hamster image so the icon swap is INSTANT (no async-load size
+    // pop / flicker when the swapped <img> first appears).
+    try {
+      if (typeof Image === "function") {
+        const pre = new Image();
+        pre.src = HAMSTER_URL;
+      }
+    } catch {
+      /* ignore */
+    }
     const run = () => {
       relabelOnce(map);
       hideSectionsOnce(HIDE_SECTION_HEADINGS);
