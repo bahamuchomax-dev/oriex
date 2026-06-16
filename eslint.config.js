@@ -7,6 +7,7 @@ export default [
     ignores: [
       "dist/**",
       "public/**",
+      "legacy-dist/**",      // vendored minified reference build — not linted (REFERENCE_ONLY)
       "src/legacy/**",       // generated bundle — not linted
       "src/styles/**",       // css
       "src/services/oxHelpers.js",        // verbatim extracted
