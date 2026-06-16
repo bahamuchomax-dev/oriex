@@ -40,6 +40,9 @@ export async function ensureLegacyBridgeProfile(uid) {
       created: false,
       shortId: typeof d.shortId === "string" ? d.shortId : "",
       name: typeof d.name === "string" ? d.name : "",
+      avatar: typeof d.avatar === "string" ? d.avatar : "",
+      color: typeof d.color === "string" ? d.color : "",
+      isTeacher: d.isTeacher === true,
     };
   }
 
@@ -74,7 +77,10 @@ export async function ensureLegacyBridgeProfile(uid) {
   };
   if (avatar) base.avatar = avatar;
   if (color) base.color = color;
+  // NOTE: isTeacher is an AUTHORITY field — assertSafePayload forbids writing it
+  // here, and teacher accounts are provisioned with it via the admin SDK, so a
+  // freshly-bridged user is never a teacher (isTeacher:false).
   const profile = assertSafePayload(base);
   await setDoc(legacyRef, profile, { merge: true });
-  return { ok: true, created: true, shortId, name: safeName };
+  return { ok: true, created: true, shortId, name: safeName, avatar, color, isTeacher: false };
 }

@@ -35,7 +35,7 @@ describe("ensureLegacyBridgeProfile", () => {
       data: () => ({ shortId: "EX1234", name: "既存" }),
     });
     const r = await ensureLegacyBridgeProfile("UID");
-    expect(r).toEqual({ ok: true, created: false, shortId: "EX1234", name: "既存" });
+    expect(r).toEqual({ ok: true, created: false, shortId: "EX1234", name: "既存", avatar: "", color: "", isTeacher: false });
     expect(fs.setDoc).not.toHaveBeenCalled();
   });
 
@@ -48,7 +48,7 @@ describe("ensureLegacyBridgeProfile", () => {
         data: () => ({ shortId: "KWFAQA", name: "太郎", password: "should-not-copy" }),
       });
     const r = await ensureLegacyBridgeProfile("UID");
-    expect(r).toEqual({ ok: true, created: true, shortId: "KWFAQA", name: "太郎" });
+    expect(r).toEqual({ ok: true, created: true, shortId: "KWFAQA", name: "太郎", avatar: "", color: "", isTeacher: false });
 
     // read own legacy + own modern profile only
     const readPaths = fs.doc.mock.calls.map((c) => c.slice(1).join("/"));
