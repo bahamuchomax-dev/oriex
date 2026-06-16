@@ -13,6 +13,7 @@ import { authDebugOn, installFsHook, logAuthIdentity, scheduleAuthIdentityProbes
 import { currentAuthUser } from "./modernAuthState.js";
 import { installAttendanceSync } from "../../services/attendanceSync.js";
 import { installPasswordChangeSync } from "../../services/passwordChangeSync.js";
+import { installTeacherAdmin } from "../teacherAdmin/mountTeacherAdmin.jsx";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -94,6 +95,14 @@ export async function handoffToLegacy(user, importLegacy) {
     installPasswordChangeSync();
   } catch {
     /* non-fatal */
+  }
+
+  // Replace the dark, unreadable legacy 先生用管理 screen with the clean React
+  // TeacherAdminPanel (detected by title; teacher-only). Frontend only.
+  try {
+    installTeacherAdmin();
+  } catch {
+    /* non-fatal: the legacy admin still works */
   }
 
   // Debug-only: re-check the identity after boot settles, to catch a delayed
