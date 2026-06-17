@@ -1,0 +1,42 @@
+/* アイコンフレーム — feature-scoped styles. Every selector prefixed .oxv-fm. */
+.oxv-fm .oxv-fm-preview{
+  display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0 4px;
+}
+.oxv-fm .oxv-fm-av{
+  width:88px;height:88px;border-radius:50%;display:grid;place-items:center;
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:34px;color:#fff;
+  background:conic-gradient(from 200deg,#e8273c,#ff7a4d,#3f8dff,#e8273c);
+  transition:box-shadow .2s ease;
+}
+.oxv-fm .oxv-fm-pname{font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:17px;color:#eef1fb;margin-top:6px;}
+.oxv-fm .oxv-fm-prarity{font-size:11px;font-weight:800;letter-spacing:.04em;}
+
+.oxv-fm .oxv-fm-list{display:flex;flex-direction:column;gap:9px;margin-top:6px;}
+.oxv-fm .oxv-fm-card{
+  display:flex;align-items:center;gap:13px;width:100%;text-align:left;
+  background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:11px 13px;
+  color:#eef1fb;cursor:pointer;transition:border-color .15s ease,background .15s ease,transform .08s ease;
+}
+.oxv-fm .oxv-fm-card:active{transform:scale(.99);}
+.oxv-fm .oxv-fm-card.is-on{border-color:rgba(255,255,255,.3);background:var(--glass-2);}
+.oxv-fm .oxv-fm-card.is-legend{border-color:rgba(232,181,58,.4);}
+.oxv-fm .oxv-fm-card.is-legend.is-on{border-color:rgba(232,181,58,.75);box-shadow:0 0 18px rgba(232,181,58,.22);}
+.oxv-fm .oxv-fm-dot{
+  width:38px;height:38px;flex:none;border-radius:50%;background:#262b3f;
+}
+.oxv-fm .oxv-fm-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.oxv-fm .oxv-fm-label{font-family:"Zen Maru Gothic",sans-serif;font-weight:800;font-size:14px;}
+.oxv-fm .oxv-fm-rarity{font-size:10.5px;font-weight:800;letter-spacing:.04em;}
+.oxv-fm .oxv-fm-state{
+  flex:none;font-size:11px;font-weight:800;color:var(--muted);
+  border:1px solid var(--line);border-radius:999px;padding:5px 11px;
+}
+.oxv-fm .oxv-fm-state.is-on{color:#fff;background:var(--red);border-color:var(--red);}
+.oxv-fm .oxv-fm-card.is-locked{opacity:.6;}
+.oxv-fm .oxv-fm-card.is-locked .oxv-fm-dot{filter:grayscale(.4);}
+.oxv-fm .oxv-fm-state.is-locked{color:var(--gold);border-color:rgba(232,181,58,.4);}
+
+.oxv-fm .oxv-fm-note{
+  margin-top:14px;font-size:12px;line-height:1.7;color:var(--muted);
+  background:var(--glass);border:1px solid var(--line);border-radius:14px;padding:12px 14px;
+}

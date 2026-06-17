@@ -24,6 +24,30 @@ try {
   /* ignore */
 }
 
+// Opt-in "研鑽 (Kensan)" skin for the ORIGINAL (legacy) UI — a gated test theme.
+// Pure CSS (src/styles/skin-kensan.css), inert unless <body class="ox-skin">. We
+// add the class when enabled by ?oriexSkin=1 or localStorage.oriexSkin==="1"; a
+// toggle (oxUiPatches) flips it live. A normal visit (flag absent) is untouched.
+try {
+  let skinOn = false;
+  try {
+    skinOn = !!(window.localStorage && window.localStorage.getItem("oriexSkin") === "1");
+  } catch {
+    /* ignore */
+  }
+  try {
+    if (window.location && /[?&]oriexSkin=1(?:&|$)/.test(String(window.location.search || ""))) {
+      skinOn = true;
+      window.localStorage.setItem("oriexSkin", "1");
+    }
+  } catch {
+    /* ignore */
+  }
+  if (skinOn && document.body) document.body.classList.add("ox-skin");
+} catch {
+  /* ignore */
+}
+
 // Opt-in Firestore READ METER (diagnostic). No-op unless ?oxReadMeter=1 /
 // #ox-read-meter / localStorage.oxReadMeter==="1". Installed here — BEFORE the
 // legacy bundle or modern shell loads — so it observes every Firestore response

@@ -1,0 +1,176 @@
+/* ===== 学習日記 (DiaryView) — all selectors prefixed .oxv-dy ===== */
+
+/* ===== editor card ===== */
+.oxv-dy-editor{
+  margin:14px 0 18px;
+  background:var(--glass-2);border:1px solid var(--line);border-radius:18px;
+  padding:15px 14px 13px;
+  display:flex;flex-direction:column;gap:12px;
+  box-shadow:0 16px 38px rgba(0,0,0,.42);
+  position:relative;overflow:hidden;
+}
+.oxv-dy-editor::before{
+  content:"";position:absolute;inset:0 0 auto 0;height:3px;
+  background:linear-gradient(90deg,var(--red),var(--blue));opacity:.85;
+}
+
+.oxv-dy-edhead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.oxv-dy-edheadtext{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.oxv-dy-edtitle{
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:17px;color:#fff;line-height:1.2;
+}
+.oxv-dy-eddate{
+  font-size:12px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;
+}
+.oxv-dy-return{
+  flex:none;display:inline-flex;align-items:center;gap:5px;cursor:pointer;
+  border:1px solid var(--line);background:var(--glass);color:var(--muted);
+  border-radius:10px;padding:7px 11px;font-weight:800;font-size:11.5px;
+  font-family:"Zen Maru Gothic",sans-serif;
+  transition:transform .1s ease, color .15s ease, border-color .15s ease;
+}
+.oxv-dy-return svg{width:14px;height:14px;}
+.oxv-dy-return:hover{color:var(--ink);border-color:rgba(255,255,255,.22);}
+.oxv-dy-return:active{transform:scale(.94);}
+
+.oxv-dy-qlabel{
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:800;font-size:12.5px;color:var(--ink);
+  margin-top:1px;
+}
+
+/* ===== mood picker ===== */
+.oxv-dy-moods{display:flex;gap:7px;}
+.oxv-dy-mood{
+  flex:1 1 0;min-width:0;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  border:1px solid var(--line);background:var(--glass);
+  border-radius:14px;padding:11px 4px 9px;
+  transition:transform .12s ease, border-color .15s ease, background .15s ease;
+}
+.oxv-dy-mood:hover{border-color:rgba(255,255,255,.22);background:var(--glass-2);}
+.oxv-dy-mood:active{transform:scale(.93);}
+.oxv-dy-mood.is-on{transform:translateY(-2px);}
+.oxv-dy-face{width:30px;height:30px;display:block;transition:transform .12s ease;}
+.oxv-dy-face svg{width:100%;height:100%;display:block;}
+.oxv-dy-mood.is-on .oxv-dy-face{transform:scale(1.08);}
+.oxv-dy-moodlabel{
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:800;font-size:10.5px;color:var(--muted);
+  line-height:1;text-align:center;white-space:nowrap;
+}
+.oxv-dy-mood.is-on .oxv-dy-moodlabel{font-weight:900;}
+
+/* ===== textarea ===== */
+.oxv-dy-area{
+  width:100%;box-sizing:border-box;min-height:104px;resize:vertical;
+  border:1px solid var(--line);background:var(--glass);color:var(--ink);
+  border-radius:13px;padding:12px 13px;font-size:13.5px;font-weight:600;line-height:1.7;
+  font-family:inherit;outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.oxv-dy-area::placeholder{color:var(--muted);}
+.oxv-dy-area:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(63,141,255,.18);}
+
+.oxv-dy-edactions{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.oxv-dy-count{font-size:11px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;}
+.oxv-dy-countnum{color:var(--ink);font-weight:900;}
+.oxv-dy-save{
+  display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:none;
+  border-radius:12px;padding:11px 20px;color:#fff;font-weight:900;font-size:13.5px;
+  font-family:"Zen Maru Gothic",sans-serif;
+  background:linear-gradient(135deg,#ff3d52,#b3142a);
+  box-shadow:0 8px 20px rgba(179,20,42,.46);
+  transition:transform .12s ease, box-shadow .15s ease, filter .15s ease;
+}
+.oxv-dy-save svg{width:17px;height:17px;}
+.oxv-dy-save:hover{box-shadow:0 11px 26px rgba(179,20,42,.6);filter:brightness(1.04);}
+.oxv-dy-save:active{transform:scale(.95);}
+.oxv-dy-save:disabled{
+  cursor:not-allowed;background:var(--glass);color:var(--muted);box-shadow:none;
+  border:1px solid var(--line);filter:none;transform:none;
+}
+.oxv-dy-save:disabled svg{opacity:.5;}
+
+/* ===== list header ===== */
+.oxv-dy-listhead{
+  display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  margin:0 2px 11px;
+}
+.oxv-dy-listtitle{
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:14px;color:#fff;
+}
+.oxv-dy-listcount{
+  font-size:11.5px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;
+}
+
+/* ===== entry cards ===== */
+.oxv-dy-list{display:flex;flex-direction:column;gap:11px;}
+.oxv-dy-card{
+  position:relative;
+  background:var(--glass);border:1px solid var(--line);border-radius:16px;
+  transition:border-color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.oxv-dy-card:hover{border-color:rgba(255,255,255,.2);background:var(--glass-2);}
+.oxv-dy-card.is-editing{
+  border-color:rgba(63,141,255,.55);box-shadow:0 0 0 3px rgba(63,141,255,.16);
+  background:var(--glass-2);
+}
+.oxv-dy-cardmain{
+  display:flex;flex-direction:column;gap:8px;width:100%;text-align:left;cursor:pointer;
+  background:transparent;border:none;color:inherit;
+  padding:13px 46px 13px 14px;border-radius:16px;
+  transition:transform .12s ease;
+}
+.oxv-dy-cardmain:active{transform:scale(.99);}
+.oxv-dy-cardtop{display:flex;align-items:center;gap:9px;}
+.oxv-dy-dot{
+  flex:none;width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid transparent;background:rgba(255,255,255,.03);
+}
+.oxv-dy-dot svg{width:26px;height:26px;display:block;}
+.oxv-dy-carddate{
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:13.5px;color:#fff;
+  font-variant-numeric:tabular-nums;
+}
+.oxv-dy-moodtag{
+  margin-left:auto;flex:none;
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:10.5px;
+  padding:3px 10px;border-radius:8px;letter-spacing:.02em;
+}
+.oxv-dy-cardtext{
+  font-size:12.5px;font-weight:600;color:var(--ink);line-height:1.65;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+  opacity:.92;
+}
+.oxv-dy-editing{
+  align-self:flex-start;
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:10px;
+  color:var(--blue);background:rgba(63,141,255,.14);
+  padding:2px 9px;border-radius:7px;
+}
+
+.oxv-dy-del{
+  position:absolute;top:9px;right:9px;
+  width:30px;height:30px;flex:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--line);background:var(--glass);color:var(--muted);
+  border-radius:9px;
+  transition:transform .1s ease, color .15s ease, background .15s ease, border-color .15s ease;
+}
+.oxv-dy-del svg{width:16px;height:16px;}
+.oxv-dy-del:hover{
+  color:#ff6b7a;background:rgba(232,39,60,.14);border-color:rgba(232,39,60,.42);
+}
+.oxv-dy-del:active{transform:scale(.9);}
+
+/* ===== empty state ===== */
+.oxv-dy-empty{
+  display:flex;flex-direction:column;align-items:center;gap:13px;
+  padding:42px 22px;text-align:center;
+  background:var(--glass);border:1px dashed var(--line);border-radius:16px;
+}
+.oxv-dy-empty svg{
+  width:44px;height:44px;fill:none;stroke:var(--muted);stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.7;
+}
+.oxv-dy-empty p{font-size:12.5px;font-weight:700;color:var(--muted);line-height:1.8;}

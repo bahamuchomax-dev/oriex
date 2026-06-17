@@ -1,0 +1,276 @@
+/* カレンダー — feature-scoped styles. Every selector is prefixed with .oxv-cal. */
+
+/* ---- Month nav ---- */
+.oxv-cal .oxv-cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--glass-2);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .30);
+}
+.oxv-cal .oxv-cal-nav-btn {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .04);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background .16s, border-color .16s, transform .12s;
+}
+.oxv-cal .oxv-cal-nav-btn:hover {
+  background: rgba(255, 255, 255, .10);
+  border-color: rgba(255, 255, 255, .24);
+}
+.oxv-cal .oxv-cal-nav-btn:active {
+  transform: scale(.9);
+  background: rgba(232, 39, 60, .18);
+  border-color: var(--red);
+}
+.oxv-cal .oxv-cal-nav-btn svg {
+  width: 18px;
+  height: 18px;
+}
+.oxv-cal .oxv-cal-title-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+.oxv-cal .oxv-cal-title {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 19px;
+  color: #fff;
+  letter-spacing: .4px;
+}
+.oxv-cal .oxv-cal-sub {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: .2px;
+}
+
+/* ---- Weekday header ---- */
+.oxv-cal .oxv-cal-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 7px;
+}
+.oxv-cal .oxv-cal-wd {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted);
+  padding: 2px 0;
+}
+.oxv-cal .oxv-cal-wd.sun { color: var(--red); }
+.oxv-cal .oxv-cal-wd.sat { color: var(--blue); }
+
+/* ---- Day grid ---- */
+.oxv-cal .oxv-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.oxv-cal .oxv-cal-blank {
+  aspect-ratio: 1 / 1;
+}
+.oxv-cal .oxv-cal-day {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .02);
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 5px 7px;
+  transition: transform .12s, border-color .14s, background .14s, box-shadow .14s;
+  font-family: "Zen Kaku Gothic New", sans-serif;
+}
+.oxv-cal .oxv-cal-day:hover {
+  border-color: rgba(255, 255, 255, .28);
+  transform: translateY(-1px);
+}
+.oxv-cal .oxv-cal-day:active {
+  transform: scale(.95);
+}
+.oxv-cal .oxv-cal-num {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+.oxv-cal .oxv-cal-day.sun .oxv-cal-num { color: #ff8d99; }
+.oxv-cal .oxv-cal-day.sat .oxv-cal-num { color: #9cc2ff; }
+
+/* Tiny "studied" marker, bottom-left of a day that has real minutes */
+.oxv-cal .oxv-cal-dot {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .85);
+}
+.oxv-cal .oxv-cal-day.lv1 .oxv-cal-dot,
+.oxv-cal .oxv-cal-day.lv2 .oxv-cal-dot { background: rgba(255, 255, 255, .55); }
+
+/* Heat intensity (少 -> 多), single red ramp */
+.oxv-cal .oxv-cal-day.lv1 {
+  background: rgba(232, 39, 60, .12);
+  border-color: rgba(232, 39, 60, .22);
+}
+.oxv-cal .oxv-cal-day.lv2 {
+  background: rgba(232, 39, 60, .22);
+  border-color: rgba(232, 39, 60, .34);
+}
+.oxv-cal .oxv-cal-day.lv3 {
+  background: rgba(232, 39, 60, .38);
+  border-color: rgba(232, 39, 60, .50);
+}
+.oxv-cal .oxv-cal-day.lv4 {
+  background: rgba(232, 39, 60, .58);
+  border-color: rgba(232, 39, 60, .72);
+}
+.oxv-cal .oxv-cal-day.lv3 .oxv-cal-num,
+.oxv-cal .oxv-cal-day.lv4 .oxv-cal-num { color: #fff; }
+
+/* Today + selection rings */
+.oxv-cal .oxv-cal-day.today {
+  box-shadow: 0 0 0 2px var(--red);
+  border-color: transparent;
+}
+.oxv-cal .oxv-cal-day.today .oxv-cal-num { color: #fff; }
+.oxv-cal .oxv-cal-day.sel {
+  box-shadow: 0 0 0 2px var(--blue);
+  border-color: transparent;
+}
+.oxv-cal .oxv-cal-day.today.sel {
+  box-shadow: 0 0 0 2px var(--red), 0 0 0 4px rgba(63, 141, 255, .9);
+}
+
+/* ---- Legend ---- */
+.oxv-cal .oxv-cal-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.oxv-cal .oxv-cal-legend i {
+  width: 18px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+}
+.oxv-cal .oxv-cal-legend i.l0 { background: rgba(255, 255, 255, .02); }
+.oxv-cal .oxv-cal-legend i.l1 { background: rgba(232, 39, 60, .12); }
+.oxv-cal .oxv-cal-legend i.l2 { background: rgba(232, 39, 60, .22); }
+.oxv-cal .oxv-cal-legend i.l3 { background: rgba(232, 39, 60, .38); }
+.oxv-cal .oxv-cal-legend i.l4 { background: rgba(232, 39, 60, .58); }
+
+/* ---- Selected-day summary ---- */
+.oxv-cal .oxv-cal-sum {
+  margin-top: 14px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .26);
+}
+.oxv-cal .oxv-cal-sum-head {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin-bottom: 11px;
+}
+.oxv-cal .oxv-cal-sum-date {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 17px;
+  color: #fff;
+}
+.oxv-cal .oxv-cal-sum-wd {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.oxv-cal .oxv-cal-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 11px;
+}
+.oxv-cal .oxv-cal-stat svg {
+  width: 17px;
+  height: 17px;
+  color: var(--red);
+  flex: none;
+}
+.oxv-cal .oxv-cal-stat-lbl {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.oxv-cal .oxv-cal-stat b {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ink);
+  margin-left: 2px;
+}
+.oxv-cal .oxv-cal-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.oxv-cal .oxv-cal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 11px;
+}
+.oxv-cal .oxv-cal-chip i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .04);
+}
+.oxv-cal .oxv-cal-chip-min {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: 1px;
+}
+.oxv-cal .oxv-cal-empty {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 2px 0;
+}

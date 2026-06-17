@@ -89,9 +89,9 @@
 .ox-auth-wordmark {
   display: block;
   width: auto;
-  max-width: min(260px, 64vw);
+  max-width: min(340px, 82vw);
   height: auto;
-  margin: 2px 0 0;
+  margin: 2px auto 4px; /* centered + a touch larger, sits above the ログイン/新規登録 label */
 }
 .ox-auth-subtitle {
   margin: 8px 0 0;

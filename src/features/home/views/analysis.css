@@ -1,0 +1,304 @@
+/* ============================================================
+ * analysis.css — 分析 (AnalysisView)
+ * Every selector is prefixed with .oxv-an (zero global collisions).
+ * Chrome (.oxh-sub / .oxh-sub-head / .oxh-back / .oxh-sub-title /
+ * .oxv-body) is defined globally — NOT redefined here.
+ * Tokens (--red/--blue/--good/--gold/--glass/--line/...) cascade
+ * from the .oxh ancestor.
+ * ============================================================ */
+
+/* --- 1) summary stat tiles (2x2) -------------------------------------- */
+.oxv-an-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.oxv-an-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 13px 14px;
+  border-radius: 16px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink);
+  background: var(--glass);
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .28);
+  transition: transform .14s ease, border-color .14s ease, background .14s ease;
+}
+.oxv-an-tile:hover { border-color: rgba(255, 255, 255, .2); }
+.oxv-an-tile:active { transform: scale(.97); }
+.oxv-an-tile.oxv-an-on {
+  background: linear-gradient(150deg, rgba(232, 39, 60, .22), rgba(63, 141, 255, .14));
+  border-color: rgba(232, 39, 60, .55);
+  box-shadow: 0 10px 26px rgba(232, 39, 60, .2);
+}
+.oxv-an-tile-k {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: .4px;
+}
+.oxv-an-tile.oxv-an-on .oxv-an-tile-k { color: #ffb3bd; }
+.oxv-an-tile-v {
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 1.05;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-an-note {
+  margin: 10px 2px 4px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* --- section heading -------------------------------------------------- */
+.oxv-an-h {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 16px 2px 9px;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-an-h svg {
+  width: 18px;
+  height: 18px;
+  color: var(--red);
+  flex: none;
+}
+
+/* --- shared card ------------------------------------------------------ */
+.oxv-an-card {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 13px 14px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .26);
+}
+
+/* --- 2) 教科別の学習割合 ---------------------------------------------- */
+.oxv-an-srow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+}
+.oxv-an-srow + .oxv-an-srow { border-top: 1px solid rgba(255, 255, 255, .05); }
+.oxv-an-sname {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 62px;
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.oxv-an-sname i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.oxv-an-track {
+  flex: 1;
+  min-width: 0;
+  height: 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, .08);
+  overflow: hidden;
+}
+.oxv-an-track i {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, .12) inset;
+  transition: width .5s cubic-bezier(.4, 0, .2, 1);
+}
+.oxv-an-smeta {
+  width: 58px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+}
+.oxv-an-smeta b {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-an-smeta small {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+/* --- 3) 週別の推移 (vertical bars) ------------------------------------ */
+.oxv-an-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  height: 132px;
+  padding: 6px 2px 0;
+}
+.oxv-an-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 5px;
+}
+.oxv-an-coltip {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--muted);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-an-col-t .oxv-an-coltip { color: var(--blue); }
+.oxv-an-bar {
+  width: 100%;
+  max-width: 22px;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .05);
+  overflow: hidden;
+}
+.oxv-an-bar i {
+  display: block;
+  width: 100%;
+  border-radius: 7px;
+  background: linear-gradient(180deg, #ff6173, var(--red));
+  box-shadow: 0 0 12px rgba(232, 39, 60, .35);
+  transition: height .55s cubic-bezier(.4, 0, .2, 1);
+}
+.oxv-an-col-t .oxv-an-bar i {
+  background: linear-gradient(180deg, #7db4ff, var(--blue));
+  box-shadow: 0 0 14px rgba(63, 141, 255, .5);
+}
+.oxv-an-collab {
+  font-size: 9.5px;
+  color: var(--muted);
+}
+.oxv-an-col-t .oxv-an-collab {
+  color: var(--ink);
+  font-weight: 800;
+}
+.oxv-an-cap {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, .06);
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+}
+.oxv-an-cap b {
+  color: var(--ink);
+  font-weight: 900;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-an-coltip { font-variant-numeric: tabular-nums; }
+
+/* --- 4) 時間帯の傾向 (horizontal bars) -------------------------------- */
+.oxv-an-prow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+}
+.oxv-an-prow + .oxv-an-prow { border-top: 1px solid rgba(255, 255, 255, .05); }
+.oxv-an-pname {
+  width: 26px;
+  flex: none;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+  text-align: center;
+}
+.oxv-an-pmeta {
+  width: 58px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+}
+.oxv-an-pmeta b {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-an-pmeta small {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+/* --- inline mini note (sparse section) -------------------------------- */
+.oxv-an-mini {
+  margin: 4px 2px;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* --- graceful empty state (no sessions yet) --------------------------- */
+.oxv-an-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  margin-top: 40px;
+  padding: 34px 22px;
+  border-radius: 18px;
+  background: var(--glass);
+  border: 1px dashed var(--line);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .26);
+}
+.oxv-an-empty-ic {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  color: var(--blue);
+  background: linear-gradient(150deg, rgba(63, 141, 255, .2), rgba(232, 39, 60, .14));
+  border: 1px solid var(--line);
+}
+.oxv-an-empty-ic svg { width: 28px; height: 28px; }
+.oxv-an-empty-t {
+  margin: 6px 0 0;
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-an-empty-s {
+  margin: 0;
+  max-width: 260px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+/* trailing breathing room above the fixed bottom nav */
+.oxv-an-card:last-of-type { margin-bottom: 18px; }

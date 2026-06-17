@@ -1,0 +1,235 @@
+/* ============================================================
+ * records.css — 記録 (RecordsView)
+ * Every selector is prefixed with .oxv-rc (zero global collisions).
+ * Chrome (.oxh-sub / .oxh-sub-head / .oxh-back / .oxh-sub-title /
+ * .oxv-body) is defined globally — NOT redefined here.
+ * Tokens (--red/--blue/--good/--gold/--glass/--line/...) cascade
+ * from the .oxh ancestor.
+ * ============================================================ */
+
+/* --- 1) summary stat tiles (2x2) -------------------------------------- */
+.oxv-rc-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.oxv-rc-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 13px 14px;
+  border-radius: 16px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .28);
+}
+.oxv-rc-tile-hot {
+  background: linear-gradient(150deg, rgba(232, 39, 60, .2), rgba(63, 141, 255, .12));
+  border-color: rgba(232, 39, 60, .45);
+  box-shadow: 0 10px 26px rgba(232, 39, 60, .18);
+}
+.oxv-rc-tile-k {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: .4px;
+}
+.oxv-rc-tile-hot .oxv-rc-tile-k { color: #ffb3bd; }
+.oxv-rc-tile-v {
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 1.05;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- section heading -------------------------------------------------- */
+.oxv-rc-h {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 18px 2px 9px;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-rc-h svg {
+  width: 18px;
+  height: 18px;
+  color: var(--red);
+  flex: none;
+}
+
+/* --- shared card ------------------------------------------------------ */
+.oxv-rc-card {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 13px 14px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .26);
+}
+
+/* --- 2) 7-day mini bar chart ------------------------------------------ */
+.oxv-rc-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 7px;
+  height: 124px;
+  padding: 4px 2px 0;
+}
+.oxv-rc-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 5px;
+}
+.oxv-rc-coltip {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  min-height: 12px;
+}
+.oxv-rc-col-t .oxv-rc-coltip { color: var(--blue); }
+.oxv-rc-bar {
+  width: 100%;
+  max-width: 24px;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .05);
+  overflow: hidden;
+}
+.oxv-rc-bar i {
+  display: block;
+  width: 100%;
+  border-radius: 7px;
+  background: linear-gradient(180deg, #ff6173, var(--red));
+  box-shadow: 0 0 12px rgba(232, 39, 60, .32);
+  transition: height .55s cubic-bezier(.4, 0, .2, 1);
+}
+.oxv-rc-col-t .oxv-rc-bar i {
+  background: linear-gradient(180deg, #7db4ff, var(--blue));
+  box-shadow: 0 0 14px rgba(63, 141, 255, .5);
+}
+.oxv-rc-collab {
+  font-size: 10px;
+  color: var(--muted);
+}
+.oxv-rc-collab.sun { color: #ff8a98; }
+.oxv-rc-collab.sat { color: #8fbcff; }
+.oxv-rc-col-t .oxv-rc-collab {
+  color: var(--ink);
+  font-weight: 800;
+}
+.oxv-rc-cap {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, .06);
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+}
+.oxv-rc-cap b {
+  color: var(--ink);
+  font-weight: 900;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- 3) timeline ------------------------------------------------------ */
+.oxv-rc-group + .oxv-rc-group { margin-top: 14px; }
+.oxv-rc-day {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 4px 7px;
+}
+.oxv-rc-day-d {
+  font-size: 12.5px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-rc-day-t {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.oxv-rc-rows { padding: 4px 14px; }
+.oxv-rc-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+}
+.oxv-rc-row + .oxv-rc-row { border-top: 1px solid rgba(255, 255, 255, .05); }
+.oxv-rc-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+  box-shadow: 0 0 8px rgba(255, 255, 255, .14);
+}
+.oxv-rc-subj {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.oxv-rc-time {
+  flex: none;
+  font-size: 11px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.oxv-rc-min {
+  flex: none;
+  min-width: 64px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--red);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- 4) empty state --------------------------------------------------- */
+.oxv-rc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 30px 18px;
+  text-align: center;
+}
+.oxv-rc-empty svg {
+  width: 40px;
+  height: 40px;
+  color: var(--muted);
+  opacity: .7;
+}
+.oxv-rc-empty p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+/* trailing breathing room above the fixed bottom nav */
+.oxv-rc-timeline,
+.oxv-rc-empty { margin-bottom: 18px; }

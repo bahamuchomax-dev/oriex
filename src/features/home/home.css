@@ -1,114 +1,184 @@
 /* ============================================================
- * home.css — scoped under .oxh (collision-safe). Mockup-faithful layout.
- * No asset URLs (component sets bg inline / imports imgs), so Vite base just works.
+ * home.css — the new Oriex home (v2: big character, single screen).
+ * EVERYTHING is scoped under .oxh and uses oxh-* class names so it can never
+ * collide with the globally-linked utilities.css / app.css (which define generic
+ * .card / .nav / .stat / .bar etc). The React home owns #root exclusively, but
+ * we stay collision-safe regardless. No asset URLs here — Home.jsx imports the
+ * bg + character via Vite so the GitHub Pages base path just works.
+ * Fonts (Zen Maru Gothic / Zen Kaku Gothic New) are already linked in index.html.
  * ============================================================ */
-@import url("https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap");
 
-.oxh{--red:#e01f2b;--red2:#b8121d;--cream:#f6f1ea;--ink:#241d1b;--ink-soft:#6f635c;--light:#f4efe8;--line:rgba(255,255,255,.10);--blue:#2f7fe0;
-  position:relative;width:100%;max-width:430px;min-height:100vh;margin:0 auto;background:#0c0a0d;overflow:hidden;padding:0 0 86px;
-  font-family:"Zen Kaku Gothic New",system-ui,sans-serif;color:var(--light);-webkit-tap-highlight-color:transparent;}
-.oxh *{box-sizing:border-box;}
-.oxh button{cursor:pointer;}
+.oxh{
+  --bg:#0a0c14; --ink:#eef1fb; --muted:#9aa3bd;
+  --red:#e8273c; --red-d:#b3142a; --blue:#3f8dff; --gold:#ffd36e; --good:#2bd47e;
+  --glass:rgba(16,19,30,.62); --glass-2:rgba(22,26,40,.78); --line:rgba(255,255,255,.10);
+  /* #root is locked to height:100%;overflow:hidden by app.css, so .oxh must be its
+     OWN scroll container (mirrors the legacy .rx-home) — not rely on document scroll. */
+  position:relative;width:100%;max-width:390px;margin:0 auto;height:100%;
+  overflow-y:auto;overflow-x:clip;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  scrollbar-width:none;background:var(--bg);color:var(--ink);
+  padding-bottom:calc(env(safe-area-inset-bottom,0px) + 96px);
+  font-family:"Zen Kaku Gothic New",system-ui,sans-serif;-webkit-tap-highlight-color:transparent;}
+.oxh::-webkit-scrollbar{display:none;}
+.oxh *{box-sizing:border-box;margin:0;padding:0;}
+.oxh button{cursor:pointer;font-family:inherit;}
 
-.oxh-bg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:top center;}
-.oxh-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,10,13,0) 50%,rgba(12,10,13,.5) 64%,#0c0a0d 82%);}
-.oxh-wrap{position:relative;z-index:3;padding:14px 14px 0;}
+/* background + character ----------------------------------------------------- */
+/* bg image is a band across the top (hero); it fades into the solid --bg so the
+   scrolling body below reads on dark. */
+.oxh-bg{position:absolute;top:0;left:0;width:100%;height:620px;z-index:0;background-size:cover;background-position:top center;}
+.oxh-bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(10,12,20,.15) 0%,rgba(10,12,20,0) 22%,rgba(10,12,20,.5) 70%,var(--bg) 100%);}
+/* character — maximized to ~full frame width (box ratio 0.75 = image's native
+   ratio, so contain fills with no letterbox), nudged high. Whole body on screen. */
+.oxh-char{position:absolute;right:-8px;top:18px;width:408px;height:544px;z-index:1;pointer-events:none;
+  background-position:top right;background-size:contain;background-repeat:no-repeat;
+  filter:drop-shadow(-12px 16px 26px rgba(0,0,0,.55));}
+.oxh-glow{position:absolute;right:-20px;top:60px;width:300px;height:300px;z-index:0;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,39,60,.36),transparent 62%);filter:blur(9px);}
 
-.oxh-hero{position:absolute;top:42px;right:-4px;width:90%;max-width:404px;z-index:1;filter:drop-shadow(0 14px 26px rgba(0,0,0,.55));pointer-events:none;}
-.oxh-bag{position:absolute;z-index:2;width:32%;max-width:146px;right:33%;top:262px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.55));pointer-events:none;}
-.oxh-shaker{position:absolute;z-index:2;width:16.5%;max-width:76px;right:10%;top:244px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.5));pointer-events:none;}
-.oxh-hero,.oxh-bag img,.oxh-shaker img{width:100%;display:block;}
+/* layout: fixed-height HERO (character + profile + today) then a flowing BODY ---
+   HERO height ends at the character's VISIBLE feet (~494px = top 18 + 86.7% of the
+   544 box), so the body sits right under the figure with no big transparent gap.
+   The character box's transparent tail (494–562) just sits behind the body cards. */
+.oxh-hero{position:relative;z-index:3;min-height:494px;display:flex;flex-direction:column;gap:10px;
+  padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 0;}
+.oxh-body{position:relative;z-index:3;display:flex;flex-direction:column;gap:14px;padding:12px 14px 0;}
 
-.oxh-brand{position:absolute;top:18px;right:14px;z-index:4;display:flex;align-items:center;gap:6px;font-family:"Zen Maru Gothic";font-weight:900;letter-spacing:.12em;font-size:21px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.6);}
-.oxh-hs{width:23px;height:23px;color:var(--red);}
+/* top bar -------------------------------------------------------------------- */
+.oxh-top{display:flex;align-items:center;gap:9px;}
+.oxh-brand{font-family:"Zen Maru Gothic",sans-serif;font-weight:900;letter-spacing:.6px;font-size:16px;
+  margin-right:auto;display:flex;align-items:center;gap:5px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.5);}
+.oxh-brand svg{width:18px;height:18px;color:var(--red);}
+.oxh-tbtn{position:relative;width:38px;height:38px;border:none;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(120% 120% at 35% 25%,#2c3040,#101219 65%,#080a0f);
+  box-shadow:0 2px 7px rgba(0,0,0,.5),inset 0 1px 1px rgba(255,255,255,.16);border:1px solid var(--line);}
+.oxh-tbtn svg{width:18px;height:18px;fill:none;stroke:#eef1fb;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+.oxh-tdot{position:absolute;top:-3px;right:-3px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;
+  background:var(--red);color:#fff;font-size:10px;font-weight:900;display:grid;place-items:center;box-shadow:0 0 0 2px var(--bg);}
+/* switch-to-original-home pill */
+.oxh-switch{display:flex;align-items:center;gap:4px;height:38px;padding:0 11px;border-radius:19px;
+  border:1px solid var(--line);background:rgba(22,26,40,.7);color:#d6def5;font-size:11px;font-weight:800;
+  box-shadow:0 2px 7px rgba(0,0,0,.4);}
+.oxh-switch svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
 
-.oxh-topbar{display:flex;gap:13px;position:relative;z-index:4;}
-.oxh-tbtn{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:#efe7e0;font-size:10px;font-weight:700;}
-.oxh-tbtn i{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;background:rgba(20,14,16,.5);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(6px);}
-.oxh-tbtn svg{width:21px;height:21px;fill:none;stroke:#f3ece6;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
-.oxh-badge{position:absolute;top:-4px;right:2px;min-width:16px;height:16px;padding:0 4px;border-radius:9px;background:var(--red);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;border:1.5px solid #161015;}
+/* profile glass card (overlaps character) ----------------------------------- */
+.oxh-profile{width:56%;background:var(--glass-2);border:1px solid var(--line);border-radius:16px;padding:9px 10px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 12px 30px rgba(0,0,0,.4);}
+.oxh-pr-top{display:flex;align-items:center;gap:8px;}
+.oxh-av{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:15px;
+  font-weight:900;color:#fff;font-family:"Zen Maru Gothic",sans-serif;border:none;padding:0;cursor:pointer;
+  background:conic-gradient(from 200deg,var(--red),#ff7a4d,var(--blue),var(--red));box-shadow:0 0 0 2px rgba(255,255,255,.4);}
+.oxh-pr-name{display:flex;align-items:center;gap:5px;font-size:14px;font-weight:900;font-family:"Zen Maru Gothic",sans-serif;}
+.oxh-pr-name svg{width:12px;height:12px;stroke:#cdd3e6;fill:none;stroke-width:2;}
+.oxh-lvrow{display:flex;align-items:center;justify-content:space-between;margin:6px 0 0;font-size:11px;font-weight:800;color:var(--muted);}
+.oxh-lv{background:var(--red);color:#fff;padding:2px 9px;border-radius:7px;font-family:"Zen Maru Gothic",sans-serif;}
+.oxh-exp{height:6px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:8px;}
+.oxh-exp i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--blue));}
+.oxh-stats{display:flex;gap:8px;margin-top:11px;}
+.oxh-stat{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:7px 9px;}
+.oxh-stat-k{font-size:9px;color:var(--muted);font-weight:800;}
+.oxh-stat-v{font-size:16px;font-weight:900;margin-top:1px;font-family:"Zen Maru Gothic",sans-serif;display:flex;align-items:center;gap:2px;white-space:nowrap;}
+.oxh-stat-v small{font-size:10px;opacity:.8;}
+.oxh-stat-v svg{width:14px;height:15px;}
+.oxh-stat-s{font-size:8.5px;margin-top:1px;color:var(--good);}
+.oxh-stat-s.oxh-gold{color:var(--gold);}
 
-.oxh-pcard{position:relative;z-index:4;margin-top:14px;width:64%;min-width:252px;background:linear-gradient(160deg,rgba(42,16,20,.9),rgba(17,11,13,.9));border:1px solid rgba(224,31,43,.5);border-radius:22px;padding:13px 15px;box-shadow:0 12px 30px rgba(0,0,0,.5);}
-.oxh-pcard-top{display:flex;align-items:center;gap:11px;}
-.oxh-pcard-av{width:52px;height:52px;border-radius:50%;border:2px solid var(--red);object-fit:cover;}
-.oxh-pcard-name{display:flex;align-items:center;gap:7px;font-family:"Zen Maru Gothic";font-weight:900;font-size:21px;}
-.oxh-pcard-name svg{width:16px;height:16px;stroke:#cdbfb8;fill:none;stroke-width:1.8;}
-.oxh-pcard-name .oxh-hs{margin-left:auto;width:24px;height:24px;color:var(--red);stroke-width:2.2;}
-.oxh-lvrow{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
-.oxh-lv{background:var(--red);color:#fff;font-weight:800;font-size:13px;padding:3px 11px;border-radius:9px;font-family:"Zen Maru Gothic";}
-.oxh-lvrow small{font-size:11px;color:#d8ccc4;font-weight:700;}
-.oxh-exp{height:8px;border-radius:5px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:7px;}
-.oxh-exp i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#2f7fe0,#56c0ff);}
-.oxh-pstats{display:flex;gap:12px;margin-top:13px;}
-.oxh-pstat{flex:1;}
-.oxh-pstat>span{font-size:10.5px;color:#c9bdb6;font-weight:700;}
-.oxh-pstat>div{display:flex;align-items:baseline;gap:3px;margin-top:3px;font-family:"Zen Maru Gothic";white-space:nowrap;}
-.oxh-pstat b{font-size:20px;font-weight:900;line-height:1;}
-.oxh-pstat b small{font-size:11px;font-weight:800;margin-left:1px;}
-.oxh-sub{font-size:9px;color:#9b8f88;font-weight:600;margin-top:4px;display:block;}
-.oxh-pstat svg{width:15px;height:15px;stroke:#c9bdb6;fill:none;stroke-width:1.8;vertical-align:-2px;margin-right:2px;}
+/* today card — compact, narrower than half the frame; timer sits INSIDE -------- */
+.oxh-today{position:absolute;right:12px;top:362px;width:180px;z-index:5;}
+.oxh-today-card{position:relative;background:var(--glass-2);border:1px solid var(--line);border-radius:15px;
+  padding:9px 66px 10px 12px;backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);box-shadow:0 12px 28px rgba(0,0,0,.45);}
+.oxh-today-h{font-size:11px;font-weight:900;color:#ff8a96;display:flex;align-items:center;gap:4px;font-family:"Zen Maru Gothic",sans-serif;}
+.oxh-today-h svg{width:14px;height:14px;color:var(--red);}
+.oxh-today-goal{font-size:9.5px;font-weight:800;color:var(--muted);margin-top:4px;}
+.oxh-chip{background:var(--red);color:#fff;border-radius:5px;padding:1px 6px;margin-right:5px;}
+.oxh-today-big{font-size:21px;font-weight:900;line-height:1;margin-top:3px;font-family:"Zen Maru Gothic",sans-serif;}
+.oxh-today-big small{font-size:11px;color:var(--muted);font-weight:800;}
+.oxh-today-note{font-size:9.5px;font-weight:800;color:#ff9aa6;margin-top:3px;}
+.oxh-timer-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;
+  border:none;color:#fff;font-weight:900;font-size:8.5px;line-height:1.1;text-align:center;
+  background:linear-gradient(135deg,#ff3d52,#b3142a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  box-shadow:0 6px 16px rgba(179,20,42,.55),0 0 0 2px rgba(10,12,20,.55);}
+.oxh-timer-btn svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2;}
 
-/* today: full width, horizontal, big round button on right */
-.oxh-today{position:relative;z-index:4;margin-top:222px;display:flex;gap:12px;align-items:stretch;background:rgba(247,241,234,.97);color:var(--ink);border-radius:22px;padding:14px 15px;box-shadow:0 14px 30px rgba(0,0,0,.45);}
-.oxh-today-l{flex:1;min-width:0;}
-.oxh-today-h{display:flex;align-items:center;gap:6px;color:var(--red);font-family:"Zen Maru Gothic";font-weight:900;font-size:17px;}
-.oxh-today-h .oxh-hs{width:20px;height:20px;color:var(--red);}
-.oxh-today-goal{display:flex;align-items:center;gap:7px;margin-top:9px;font-size:12px;font-weight:800;}
-.oxh-tag{background:var(--red);color:#fff;border-radius:6px;padding:2px 8px;font-size:11px;}
-.oxh-today-line{flex:1;height:5px;border-radius:3px;background:linear-gradient(90deg,var(--red) 50%,#e7ddd2 50%);}
-.oxh-today-big{font-family:"Zen Maru Gothic";font-weight:900;font-size:38px;margin:8px 0 0;line-height:1;}
-.oxh-today-big small{font-size:16px;color:var(--ink-soft);font-weight:800;}
-.oxh-today-note{font-size:12px;font-weight:800;margin-top:5px;}
-.oxh-today-btn{flex:none;width:132px;border:none;border-radius:22px;color:#fff;font-family:"Zen Maru Gothic";font-weight:900;font-size:16px;line-height:1.3;background:linear-gradient(165deg,#ee2733,#b3111c);box-shadow:0 8px 18px rgba(184,18,29,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:10px;}
-.oxh-today-btn svg{width:30px;height:30px;stroke:#fff;fill:none;stroke-width:2;}
+/* two compact cards: chart + plan ------------------------------------------- */
+.oxh-row2{display:flex;gap:10px;}
+.oxh-card{flex:1;min-width:0;background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:10px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+.oxh-card-h{font-size:11px;font-weight:900;display:flex;align-items:center;gap:5px;font-family:"Zen Maru Gothic",sans-serif;}
+.oxh-card-h svg{width:14px;height:14px;}
+.oxh-more{margin-left:auto;font-size:9px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.08);
+  border:none;border-radius:99px;padding:2px 7px;}
+.oxh-chart{display:flex;align-items:flex-end;gap:4px;height:62px;margin:8px 1px 3px;}
+.oxh-bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px;}
+.oxh-bar i{width:100%;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#ff5161,#b3142a);display:block;}
+.oxh-bar.oxh-bar-t i{background:repeating-linear-gradient(45deg,#3f8dff,#3f8dff 3px,#7fb3ff 3px,#7fb3ff 6px);}
+.oxh-bar span{font-size:8px;color:var(--muted);font-weight:700;}
+.oxh-avg{font-size:10px;font-weight:800;color:var(--muted);}
+.oxh-avg b{color:#ff8a96;}
+.oxh-plan{display:flex;flex-direction:column;gap:5px;margin-top:7px;}
+.oxh-pl{display:flex;align-items:center;gap:6px;font-size:10.5px;}
+.oxh-box{width:13px;height:13px;border-radius:4px;border:1.5px solid var(--muted);flex:none;display:grid;place-items:center;}
+.oxh-box.oxh-on{background:var(--good);border-color:var(--good);}
+.oxh-box.oxh-on svg{width:9px;height:9px;stroke:#fff;stroke-width:3;fill:none;}
+.oxh-nm{flex:1;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.oxh-nm.oxh-done{color:var(--muted);text-decoration:line-through;}
+.oxh-mn{font-size:9px;color:var(--muted);font-weight:800;}
+.oxh-plan-foot{font-size:10px;font-weight:900;text-align:right;margin-top:6px;color:var(--gold);
+  display:flex;align-items:center;justify-content:flex-end;gap:4px;font-family:"Zen Maru Gothic",sans-serif;}
+.oxh-plan-foot svg{width:13px;height:13px;}
 
-.oxh-greet{position:relative;z-index:4;margin-top:14px;display:flex;align-items:center;gap:11px;background:linear-gradient(160deg,rgba(34,16,20,.88),rgba(16,11,13,.9));border:1px solid var(--line);border-radius:20px;padding:11px 15px;}
-.oxh-greet img{width:58px;height:58px;object-fit:contain;flex:none;}
-.oxh-greet-t b{font-family:"Zen Maru Gothic";font-weight:900;font-size:16px;}
-.oxh-greet-t p{margin:3px 0 0;font-size:12px;color:#d8cdc6;font-weight:600;}
-.oxh-chev{margin-left:auto;color:#b9aaa3;font-size:24px;}
+/* tools — self-built SVG icons ---------------------------------------------- */
+/* tools — 8 in one row (matches the target preview) */
+.oxh-tools{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;}
+.oxh-tool{display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;color:#cfd6ea;font-size:8px;font-weight:800;white-space:nowrap;min-width:0;}
+.oxh-tool-ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;box-shadow:0 4px 10px rgba(0,0,0,.42);}
+.oxh-tool-ic svg{width:19px;height:19px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+.oxh-t-red{background:linear-gradient(135deg,#ff4d5e,#c8102e);}
+.oxh-t-blue{background:linear-gradient(135deg,#4f8dff,#2856c8);}
+.oxh-t-purple{background:linear-gradient(135deg,#9a6bff,#6634c8);}
+.oxh-t-crim{background:linear-gradient(135deg,#ff5b7a,#b3143f);}
+.oxh-t-teal{background:linear-gradient(135deg,#2bd4c0,#138a8a);}
+.oxh-t-orange{background:linear-gradient(135deg,#ff9a3d,#d86a10);}
+.oxh-t-green{background:linear-gradient(135deg,#3bd47e,#149a52);}
+.oxh-t-gray{background:linear-gradient(135deg,#7a8295,#444a5a);}
 
-.oxh-grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:13px;position:relative;z-index:4;}
-.oxh-lcard{background:var(--cream);color:var(--ink);border-radius:20px;padding:13px 12px;box-shadow:0 10px 24px rgba(0,0,0,.35);}
-.oxh-lcard-h{display:flex;align-items:center;gap:5px;font-family:"Zen Maru Gothic";font-weight:900;font-size:13.5px;}
-.oxh-lcard-h svg{width:16px;height:16px;}
-.oxh-more{margin-left:auto;font-size:10px;font-weight:800;color:var(--ink-soft);background:#e7ddd1;border-radius:10px;padding:2px 9px;}
-.oxh-chart{display:flex;align-items:flex-end;justify-content:space-between;gap:3px;height:108px;margin-top:13px;}
-.oxh-bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px;}
-.oxh-bar-val{font-size:9px;font-weight:800;color:#8a7d75;}
-.oxh-bar i{width:62%;max-width:16px;border-radius:4px 4px 2px 2px;background:linear-gradient(180deg,#ec2733,#c0151f);display:block;}
-.oxh-bar-lbl{font-size:9.5px;font-weight:700;color:#8a7d75;}
-.oxh-bar--today i{background:#dce9fb;border:1.4px dashed #4f8be6;}
-.oxh-bar--today .oxh-bar-val{color:var(--blue);}
-.oxh-chart-avg{text-align:center;font-size:11px;font-weight:800;margin-top:9px;}
-.oxh-chart-avg svg{width:13px;height:13px;vertical-align:-2px;margin-right:2px;}
-.oxh-plan{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
-.oxh-pl{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;}
-.oxh-pl-box{width:16px;height:16px;border-radius:5px;border:1.8px solid #c3b6ab;flex:none;display:grid;place-items:center;}
-.oxh-pl-box--on{background:var(--red);border-color:var(--red);}
-.oxh-ck{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
-.oxh-pl-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.oxh-pl-min{font-weight:800;color:#6f635c;}
-.oxh-plan-foot{text-align:center;font-size:12.5px;font-weight:900;font-family:"Zen Maru Gothic";margin-top:12px;border-top:1px solid #e6dccf;padding-top:10px;}
+/* sub-view (準備中 / open-in-original) ---------------------------------------- */
+.oxh-sub{position:fixed;top:0;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:390px;z-index:8;
+  display:flex;flex-direction:column;background:var(--bg);
+  padding:calc(env(safe-area-inset-top,0px) + 14px) 16px calc(env(safe-area-inset-bottom,0px) + 92px);}
+.oxh-sub-head{display:flex;align-items:center;gap:10px;}
+.oxh-back{width:38px;height:38px;flex:none;border:none;border-radius:50%;display:grid;place-items:center;
+  background:rgba(22,26,40,.8);border:1px solid var(--line);color:#eef1fb;}
+.oxh-back svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.oxh-sub-title{font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:18px;color:#fff;}
+.oxh-sub-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;}
+.oxh-soon-ico{width:76px;height:76px;border-radius:24px;display:grid;place-items:center;
+  background:linear-gradient(150deg,rgba(232,39,60,.18),rgba(63,141,255,.14));border:1px solid var(--line);}
+.oxh-soon-ico svg{width:38px;height:38px;fill:none;color:var(--red);stroke:var(--red);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.oxh-soon-t{font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:20px;color:#fff;}
+.oxh-soon-p{font-size:12.5px;font-weight:600;color:var(--muted);line-height:1.7;max-width:260px;}
+.oxh-soon-cta{margin-top:4px;border:none;border-radius:14px;padding:13px 22px;color:#fff;font-weight:900;font-size:14px;
+  font-family:"Zen Maru Gothic",sans-serif;background:linear-gradient(135deg,#ff3d52,#b3142a);
+  box-shadow:0 8px 20px rgba(179,20,42,.5);display:inline-flex;align-items:center;gap:8px;}
+.oxh-soon-cta svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
-.oxh-tools-h{display:flex;align-items:center;gap:10px;margin:20px 2px 12px;font-family:"Zen Maru Gothic";font-weight:900;font-size:15px;color:#fff;position:relative;z-index:4;}
-.oxh-tools-h::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(224,31,43,.6),transparent);}
-.oxh-tools{display:flex;gap:5px;justify-content:space-between;position:relative;z-index:4;}
-.oxh-tool{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:6px;flex:1 1 0;min-width:0;}
-.oxh-tool-ico{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;box-shadow:0 6px 13px rgba(0,0,0,.42);}
-.oxh-tool-ico svg{width:25px;height:25px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
-.oxh-tool-lbl{font-size:9.5px;font-weight:800;color:#eadfd8;white-space:nowrap;}
-.t-red{background:linear-gradient(150deg,#ef3b46,#c11622);}
-.t-blue{background:linear-gradient(150deg,#3f7fe6,#2056c0);}
-.t-purple{background:linear-gradient(150deg,#8b5cf0,#6a37c9);}
-.t-crim{background:linear-gradient(150deg,#e0394f,#a01230);}
-.t-teal{background:linear-gradient(150deg,#2db5c9,#1784a8);}
-.t-orange{background:linear-gradient(150deg,#f8923a,#e36412);}
-.t-green{background:linear-gradient(150deg,#1fb98a,#138a73);}
-.t-gray{background:linear-gradient(150deg,#7d7470,#544e4b);}
+/* shared scroll area for the feature views (分析/ノート/暦/その他/お知らせ/ギフト).
+   The view chrome (.oxh-sub/.oxh-sub-head/.oxh-back/.oxh-sub-title) is reused; each
+   view fills .oxv-body and scrolls. Feature-specific rules live in each view's own
+   css scoped under .oxv-<key>. */
+.oxv-body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;display:flex;flex-direction:column;gap:12px;
+  margin-top:14px;padding-bottom:8px;scrollbar-width:none;}
+.oxv-body::-webkit-scrollbar{display:none;}
 
-.oxh-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:20;display:flex;justify-content:space-around;padding:9px 6px calc(9px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(18,10,12,.86),rgba(10,7,9,.98));border-top:1px solid rgba(224,31,43,.35);backdrop-filter:blur(10px);}
-.oxh-nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;color:#9b8f88;font-size:10.5px;font-weight:800;position:relative;}
-.oxh-nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
-.oxh-nav button.oxh-on{color:var(--red);}
-.oxh-dot{position:absolute;top:-2px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--red);}
+/* bottom nav — fixed, always visible (floating pill) ------------------------- */
+.oxh-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 8px);
+  width:calc(100% - 24px);max-width:366px;z-index:40;display:flex;background:var(--glass-2);border:1px solid var(--line);
+  border-radius:20px;padding:7px 6px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 26px rgba(0,0,0,.5);}
+.oxh-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:none;
+  color:var(--muted);font-size:9.5px;font-weight:800;position:relative;}
+.oxh-nav button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.oxh-nav button.oxh-navon{color:#fff;}
+.oxh-nav button.oxh-navon .oxh-pill{position:absolute;top:-3px;width:42px;height:30px;border-radius:12px;background:rgba(232,39,60,.22);z-index:-1;}
+.oxh-nd{position:absolute;top:-1px;right:14px;width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px var(--glass-2);}

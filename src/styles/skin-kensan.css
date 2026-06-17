@@ -1,0 +1,172 @@
+/* ============================================================
+ * skin-kensan.css — 「研鑽 (Kensan)」, a SKILL.md re-skin of the original (legacy)
+ * Oriex home + study UI. Inert unless <body class="ox-skin"> (a gated, live-
+ * togglable "test" theme — production, without the class, is untouched).
+ *
+ * Direction: a cool washi-paper canvas, navy sumi ink, and a single 朱 (shu —
+ * the teacher's vermilion grading pen) accent. The 朱 is the one bold element:
+ * correct-mark ○ states, the active-tab pen underline, progress rings, primary
+ * actions. Everything else stays quiet — white cards, calm spacing, the existing
+ * deliberate Zen Maru Gothic × Zen Kaku Gothic New pairing.
+ *
+ * The legacy reads 6 CSS vars with no :root defaults, so we set them here; the
+ * rest is targeted !important over the inline/hard-coded holdouts (canvas
+ * gradient, .rx-bc mode cards, .tone-* / hero gradients).
+ * ============================================================ */
+
+body.ox-skin{
+  --washi:#eef1f4;     /* cool study-paper canvas (not warm cream) */
+  --card:#ffffff;      /* clean white worksheet surfaces */
+  --ink:#1b2a41;       /* sumi — deep navy ink (text + structure) */
+  --ink-soft:#647084;  /* faded ink (labels, captions, timestamps) */
+  --line:rgba(27,42,65,.10);
+  --accent:#e23b2e;        /* 朱 — the vermilion grading pen */
+  --accent-soft:#fbe3df;   /* pale 朱 wash */
+  --shu:#e23b2e; --shu-deep:#b9261b;
+  --kensan-shadow:0 8px 24px rgba(27,42,65,.08);
+  --kensan-shadow-sm:0 4px 14px rgba(27,42,65,.06);
+}
+
+/* ---- canvas: swap the warm cream gradient for cool washi -------------------- */
+body.ox-skin{ background:var(--washi) !important; }
+body.ox-skin #root{ background:transparent !important; }
+body.ox-skin .rx-home,
+body.ox-skin .rx-mp{ color:var(--ink) !important; }
+
+/* ---- top bar / titles ------------------------------------------------------ */
+body.ox-skin .rx-greet{ color:var(--ink-soft) !important; }
+body.ox-skin .rx-title{ color:var(--ink) !important; letter-spacing:.02em; }
+body.ox-skin .rx-streak{
+  background:var(--card) !important; border:1px solid var(--line) !important;
+  color:var(--ink) !important; box-shadow:var(--kensan-shadow-sm) !important;
+}
+
+/* ---- hero (today's study) — the lead; 朱 ring + calm white card ------------- */
+body.ox-skin .rx-hero{
+  background:var(--card) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:var(--kensan-shadow) !important;
+}
+/* the decorative orb becomes a soft 朱 wash, top-right */
+body.ox-skin .rx-hero:after{
+  background:radial-gradient(circle, var(--accent-soft), transparent 70%) !important;
+  opacity:1 !important;
+}
+body.ox-skin .rx-goal-n{ color:var(--ink) !important; font-variant-numeric:tabular-nums; }
+body.ox-skin .rx-goal-l,
+body.ox-skin .rx-goal-s{ color:var(--ink-soft) !important; }
+/* progress ring: paint the value stroke 朱, the track faint ink */
+body.ox-skin .rx-ring path,
+body.ox-skin .rx-ring circle{ stroke:var(--accent); }
+body.ox-skin .rx-ring path:first-child,
+body.ox-skin .rx-ring circle:first-child{ stroke:rgba(27,42,65,.10); }
+
+/* ---- primary action — 朱 grading pen --------------------------------------- */
+body.ox-skin .rx-cta,
+body.ox-skin .ox-button-primary,
+body.ox-skin .finish-btn{
+  background:var(--accent) !important; color:#fff !important;
+  border:none !important; box-shadow:0 8px 20px rgba(226,59,46,.30) !important;
+}
+
+/* ---- quick menu + surface cards (var-driven; settle the holdouts) ---------- */
+body.ox-skin .rx-q,
+body.ox-skin .rx-peek,
+body.ox-skin .rx-acct,
+body.ox-skin .rx-bio,
+body.ox-skin .rx-rec,
+body.ox-skin .rx-task,
+body.ox-skin .rx-menu,
+body.ox-skin .rx-pcard,
+body.ox-skin .inline-form,
+body.ox-skin .recent-log-panel{
+  background:var(--card) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:var(--kensan-shadow-sm) !important;
+}
+body.ox-skin .rx-sec h3{
+  color:var(--ink) !important;
+  display:flex; align-items:center; gap:7px;
+}
+/* section eyebrow: a short 朱 pen tick */
+body.ox-skin .rx-sec h3::before{
+  content:""; width:4px; height:16px; border-radius:2px;
+  background:var(--accent); flex:none;
+}
+body.ox-skin .rx-sec a{ color:var(--accent) !important; }
+body.ox-skin .rx-tx{ color:var(--ink) !important; }
+body.ox-skin .rx-tm{ color:var(--ink-soft) !important; }
+
+/* ---- bottom nav: 朱 pen underline on the active tab (the signature) -------- */
+body.ox-skin .rx-tabbar{
+  background:rgba(255,255,255,.86) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:0 10px 30px rgba(27,42,65,.10) !important;
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+}
+body.ox-skin .rx-tabbar button{ color:var(--ink-soft) !important; position:relative; }
+body.ox-skin .rx-tabbar button.on{ color:var(--accent) !important; }
+body.ox-skin .rx-tabbar button.on::after{
+  content:""; position:absolute; bottom:-3px; left:50%; transform:translateX(-50%);
+  width:18px; height:3px; border-radius:2px; background:var(--accent);
+}
+
+/* ---- study UI: stage map, mode cards, record hub --------------------------- */
+/* stage nodes use --accent for cleared/current/avail → 朱 automatically.
+   The 朱 cleared node reads as the correct-mark ○. Boss stays dark (intentional). */
+body.ox-skin .rx-path::before{ background:rgba(27,42,65,.12) !important; }
+body.ox-skin .rx-nlab{ color:var(--ink) !important; }
+body.ox-skin .rx-nsub{ color:var(--ink-soft) !important; }
+
+/* loud inline-gradient cards → calm white worksheets with ink text */
+body.ox-skin .rx-bc,
+body.ox-skin .record-hub-card,
+body.ox-skin .record-hub-card[class*="tone-"]{
+  background:var(--card) !important; color:var(--ink) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:var(--kensan-shadow-sm) !important;
+}
+body.ox-skin .rx-bc{ color:var(--ink) !important; }
+body.ox-skin .record-hub-label{ color:var(--ink) !important; }
+body.ox-skin .record-hub-sub{ color:var(--ink-soft) !important; }
+body.ox-skin .record-hub-icon{
+  background:var(--accent-soft) !important; color:var(--accent) !important;
+}
+
+/* hero title blocks (record/book-log) → a calm sumi-navy banner, not red gradient */
+body.ox-skin .records-title-block,
+body.ox-skin .book-log-hero{
+  background:linear-gradient(135deg,#1b2a41,#26405f) !important;
+  color:#fff !important; border:none !important;
+  box-shadow:0 10px 26px rgba(27,42,65,.22) !important;
+}
+
+/* tabs (records) — 朱 active underline, to match the bottom nav */
+body.ox-skin .tab-bar .tab.active,
+body.ox-skin .tab-bar .tab.on{ color:var(--accent) !important; border-color:var(--accent) !important; }
+
+/* timeline cards + forms */
+body.ox-skin .timeline-card{
+  background:var(--card) !important; border:1px solid var(--line) !important;
+  box-shadow:var(--kensan-shadow-sm) !important;
+}
+body.ox-skin .timeline-minutes,
+body.ox-skin .recent-log-card .min{ color:var(--accent) !important; }
+body.ox-skin .field > span{ color:var(--ink) !important; }
+body.ox-skin .field input,
+body.ox-skin .rx-tf{
+  background:#fff !important; color:var(--ink) !important;
+  border:1px solid var(--line) !important;
+}
+
+/* numeric / time displays: tabular figures (data legibility) */
+body.ox-skin .timer-time,
+body.ox-skin .timer-min,
+body.ox-skin .rx-stat .v,
+body.ox-skin .timeline-minutes{ font-variant-numeric:tabular-nums; }
+
+/* ---- quality floor --------------------------------------------------------- */
+body.ox-skin :focus-visible{ outline:2px solid var(--accent) !important; outline-offset:2px; }
+@media (prefers-reduced-motion:reduce){
+  body.ox-skin .rx-current{ animation:none !important; }
+}
