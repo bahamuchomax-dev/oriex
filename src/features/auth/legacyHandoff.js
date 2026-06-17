@@ -19,6 +19,8 @@ import { installIconEditor } from "../profile/mountIconEditor.jsx";
 import { installCoverSync } from "../../services/coverSync.js";
 import { installFriendCover } from "../../services/friendCover.js";
 import { installSwipeNav } from "../../services/swipeNav.js";
+import { installReadCounter } from "../../services/readCounter.js";
+import { installHamsterSync } from "../../services/hamsterSync.js";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -146,6 +148,22 @@ export async function handoffToLegacy(user, importLegacy) {
   // Swipe left/right between the bottom-nav tabs (ホーム / 学習 / ひろば …) on phones.
   try {
     installSwipeNav();
+  } catch {
+    /* non-fatal */
+  }
+
+  // Developer-only: live Firestore read/write counter (gated by the `developer`
+  // custom claim; non-developers see nothing).
+  try {
+    installReadCounter();
+  } catch {
+    /* non-fatal */
+  }
+
+  // Persist hamster furniture (purchases + placement) to the user's own subtree;
+  // load it when the room is opened.
+  try {
+    installHamsterSync();
   } catch {
     /* non-fatal */
   }
