@@ -12,6 +12,7 @@
  * decisions live in nextLabel() so they are unit-tested without a DOM.
  * ============================================================ */
 import { FRAMES, getFrame, setFrame, frameRing, legendUnlocked } from "../features/home/iconFrames.js";
+import { isTeacher } from "../features/home/realAccount.js";
 
 // Exact whole-label renames, keyed by the EXACT trimmed text the bundle renders.
 // Whole-text equality (not substring) so "マイワード" etc. are never touched.
@@ -503,6 +504,12 @@ function injectFrameSettingsOnce() {
       on = !!(window.localStorage && window.localStorage.getItem("oriexHomeToggle") === "1");
     } catch {
       on = false;
+    }
+    // Teachers always get the entry (they can switch to the new home anytime).
+    try {
+      if (isTeacher()) on = true;
+    } catch {
+      /* ignore */
     }
     const launch = document.getElementById(FRAME_LAUNCH_ID);
     if (!on || document.querySelector(".oxh")) {

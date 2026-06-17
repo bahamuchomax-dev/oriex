@@ -29,10 +29,18 @@ export function getAccount() {
       avatar: typeof p.avatar === "string" && p.avatar ? p.avatar : null,
       color: typeof p.color === "string" && p.color ? p.color : null,
       shortId: typeof p.shortId === "string" ? p.shortId : null,
+      isTeacher: p.isTeacher === true,
     };
   } catch {
     return null;
   }
+}
+
+/** True iff the cached account is a teacher. UX gate only (lets teachers switch to
+ *  the new home anytime); real teacher authority stays on custom claims + Rules. */
+export function isTeacher() {
+  const a = getAccount();
+  return !!(a && a.isTeacher);
 }
 
 /** An avatar image URL only when it's a real image (URL/dataURL); else null. */
