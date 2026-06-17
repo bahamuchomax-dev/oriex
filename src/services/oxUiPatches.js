@@ -534,6 +534,34 @@ function backCustomAppOnce() {
   }
 }
 
+// The word-quiz "play" view (先生からの問題 を解く画面) renders its cards on a near-
+// transparent background, so on a photo theme the word display is hard to read.
+// Give the play view's container a frosted backing under body.oxbg-on only. The
+// play view is the full-height "flex flex-col w-full" screen with paddingBottom:76px
+// — distinctive enough to match without touching other screens.
+function backPlayViewOnce() {
+  try {
+    if (typeof document === "undefined" || !document.body) return;
+    if (!document.body.classList || !document.body.classList.contains("oxbg-on")) return;
+    const els = document.querySelectorAll("div.animate-in.fade-in.flex.flex-col.w-full");
+    for (let i = 0; i < els.length; i++) {
+      const el = els[i];
+      if ((el.style.paddingBottom || "").indexOf("76px") < 0) continue;
+      if (String(el.style.background).indexOf("255, 255, 255") < 0) {
+        el.style.background = "rgba(255,255,255,0.86)";
+        el.style.backdropFilter = "blur(8px)";
+        el.style.webkitBackdropFilter = "blur(8px)";
+        el.style.borderRadius = "18px";
+        el.style.paddingLeft = "10px";
+        el.style.paddingRight = "10px";
+      }
+      return;
+    }
+  } catch {
+    /* cosmetic only */
+  }
+}
+
 /** Install the relabel patches. Idempotent enough to call once at startup. */
 export function installUiPatches(map = RELABELS) {
   try {
@@ -559,6 +587,7 @@ export function installUiPatches(map = RELABELS) {
       neutralizeNoticeEdgeOnce();
       stripTeacherNameSuffixOnce();
       backCustomAppOnce();
+      backPlayViewOnce();
     };
 
     if (document.readyState !== "loading") setTimeout(run, 0);

@@ -21,6 +21,7 @@ import { installFriendCover } from "../../services/friendCover.js";
 import { installSwipeNav } from "../../services/swipeNav.js";
 import { installReadCounter } from "../../services/readCounter.js";
 import { installHamsterSync } from "../../services/hamsterSync.js";
+import { installCustomSeenSync } from "../../services/customSeenSync.js";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -164,6 +165,14 @@ export async function handoffToLegacy(user, importLegacy) {
   // load it when the room is opened.
   try {
     installHamsterSync();
+  } catch {
+    /* non-fatal */
+  }
+
+  // Make solved 先生からの問題 (customVocabulary) move to 過去: load the student's own
+  // customSeen set so the legacy list split can read it (see the pu bundle patch).
+  try {
+    installCustomSeenSync();
   } catch {
     /* non-fatal */
   }
