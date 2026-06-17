@@ -14,9 +14,10 @@
 const ENV_INVITE_CODE =
   (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_INVITE_CODE) || "";
 
-/** Documented, non-secret, TEST-ONLY dev fallback (used only when VITE_INVITE_CODE
- * is unset, e.g. local dev / tests). Never the production code. */
-export const DEV_INVITE_CODE = "ORIX-TEST";
+/** Documented, non-secret invite code. Used when VITE_INVITE_CODE is unset — which
+ * includes the GitHub Pages production build (the deploy workflow sets no env var),
+ * so this IS the live signup code. */
+export const DEV_INVITE_CODE = "GENGEN";
 
 /** The ACTIVE invite code: the build-time VITE_INVITE_CODE (production, never
  * committed) when set, otherwise the dev fallback. */

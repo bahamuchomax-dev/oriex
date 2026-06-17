@@ -41,7 +41,7 @@ beforeEach(() => vi.clearAllMocks());
 
 describe("signUpWithInviteCode", () => {
   it("requires a valid invite code, then creates an Auth user with a GENERATED Friend ID", async () => {
-    const res = await signUpWithInviteCode({ inviteCode: " orix-test ", password: PASSWORD, name: "太郎" });
+    const res = await signUpWithInviteCode({ inviteCode: " gengen ", password: PASSWORD, name: "太郎" });
     expect(res.uid).toBe("UID_NEW");
     // the Friend ID is generated (not supplied) and is well-formed
     expect(validateFriendIdFormat(res.shortId)).toBe(true);
@@ -71,7 +71,7 @@ describe("signUpWithInviteCode", () => {
     expect(paths).toContain("public/data/customApp/UID_NEW");
   });
   it("accepts case/space/hyphen/full-width variants of the invite code", async () => {
-    for (const code of ["orix-test", "ORIX TEST", "ＯＲＩＸ－ＴＥＳＴ"]) {
+    for (const code of ["gengen", "GEN GEN", "ＧＥＮＧＥＮ"]) {
       vi.clearAllMocks();
       await signUpWithInviteCode({ inviteCode: code, password: PASSWORD });
       expect(fbAuth.createUserWithEmailAndPassword).toHaveBeenCalledTimes(1);

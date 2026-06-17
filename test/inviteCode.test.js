@@ -23,17 +23,17 @@ describe("normalizeInviteCode", () => {
 
 describe("validateInviteCode", () => {
   it("accepts the documented dev code in any reasonable casing/spacing", () => {
-    for (const ok of ["ORIX-TEST", "orix-test", "  ORIX TEST  ", "ＯＲＩＸ－ＴＥＳＴ", "orixtest"]) {
+    for (const ok of ["GENGEN", "gengen", "  GEN GEN  ", "ＧＥＮＧＥＮ", "gen-gen"]) {
       expect(validateInviteCode(ok)).toBe(true);
     }
   });
   it("rejects wrong / empty / non-string codes", () => {
-    for (const bad of ["WRONG", "ORIX-TES", "ORIXTESTX", "", "   ", null, undefined, 0]) {
+    for (const bad of ["WRONG", "GENGE", "GENGENX", "", "   ", null, undefined, 0]) {
       expect(validateInviteCode(bad)).toBe(false);
     }
   });
-  it("the dev code is non-secret and documented (ORIX-TEST)", () => {
-    expect(DEV_INVITE_CODE).toBe("ORIX-TEST");
+  it("the dev code is non-secret and documented (GENGEN)", () => {
+    expect(DEV_INVITE_CODE).toBe("GENGEN");
   });
 });
 

@@ -136,6 +136,22 @@ body.oxbg-on .rx-topbar{
   backdrop-filter:blur(6px);
 }
 
+/* A friend's profile (the .rx-mp that has a 戻る button — myPage has none) shows its
+   name / ID / stats directly on the photo theme background, so it becomes hard to
+   read. Give that screen a frosted backing card so everything stays legible. */
+body.oxbg-on .rx-mp:has(.rx-back){
+  background:rgba(255,255,255,.80) !important;
+  -webkit-backdrop-filter:blur(9px);
+  backdrop-filter:blur(9px);
+}
+/* Fallback for engines without :has() — a soft white halo on the bare text. */
+body.oxbg-on .rx-pname,
+body.oxbg-on .rx-pid,
+body.oxbg-on .rx-stat .v,
+body.oxbg-on .rx-stat .l{
+  text-shadow:0 1px 2px #fff, 0 0 6px rgba(255,255,255,.9);
+}
+
 /* ── remove the study STAGE-MAP background pattern (全教科) ────────────────────
    The stage-map screen paints a decorative SVG pattern layer:
      <div class="stage-map-bg" style="position:absolute;inset:0;...

@@ -25,7 +25,7 @@ window.__oxBg=(function(){
   function sKeyOld(u){return "oriex_bg_settings_"+(u||"local");}
   // cur.photo は Blob（新方式）または data URL 文字列（旧データ互換）。
   // cur.objUrl は Blob 表示用の Object URL（不要になったら revoke する）。
-  var cur={uid:null,photo:null,objUrl:null,settings:{scale:1,x:50,y:50,opacity:1}};
+  var cur={uid:null,photo:null,objUrl:null,settings:{scale:1,x:50,y:50,opacity:1,blur:0}};
   function idbGet(u){return loadPhotoBlob({uid:u});}
   function idbPut(u,val){return savePhotoBlob(val,{uid:u});}
   function idbDel(u){return deletePhotoBlob({uid:u});}
@@ -37,7 +37,7 @@ window.__oxBg=(function(){
     if(!cur.objUrl){try{cur.objUrl=URL.createObjectURL(cur.photo);}catch(e){cur.objUrl=null;}}
     return cur.objUrl;
   }
-  function loadSettings(u){try{var s=JSON.parse(localStorage.getItem(sKey(u))||localStorage.getItem(sKeyOld(u))||"null");if(s&&typeof s==="object")return{scale:+s.scale||1,x:s.x==null?50:+s.x,y:s.y==null?50:+s.y,opacity:s.opacity==null?1:+s.opacity};}catch(e){}return{scale:1,x:50,y:50,opacity:1};}
+  function loadSettings(u){try{var s=JSON.parse(localStorage.getItem(sKey(u))||localStorage.getItem(sKeyOld(u))||"null");if(s&&typeof s==="object")return{scale:+s.scale||1,x:s.x==null?50:+s.x,y:s.y==null?50:+s.y,opacity:s.opacity==null?1:+s.opacity,blur:s.blur==null?0:+s.blur};}catch(e){}return{scale:1,x:50,y:50,opacity:1,blur:0};}
   function saveSettings(u,s){try{localStorage.setItem(sKey(u),JSON.stringify(s));}catch(e){}}
   var pv;
   var PHOTO_LAYER_ID="oxbg-photo-layer";
@@ -144,8 +144,8 @@ window.__oxBg=(function(){
   function ovAlpha(op){return homePhotoOverlayAlpha(op);}
   function applyPreview(){
     if(!pv)return;var s=cur.settings;var u=photoCssUrl();
-    if(u){var sz=(s.scale&&s.scale>1.02)?((s.scale*100)+"%"):"cover";pv.style.backgroundImage="url('"+u+"')";pv.style.backgroundSize=sz;pv.style.backgroundPosition=s.x+"% "+s.y+"%";pv.style.boxShadow="inset 0 0 0 9999px rgba(255,255,255,"+ovAlpha(s.opacity)+")";pv.textContent="";}
-    else{pv.style.backgroundImage="none";pv.style.boxShadow="none";pv.textContent="\u5199\u771F\u306A\u3057";}
+    if(u){var sz=(s.scale&&s.scale>1.02)?((s.scale*100)+"%"):"cover";pv.style.backgroundImage="url('"+u+"')";pv.style.backgroundSize=sz;pv.style.backgroundPosition=s.x+"% "+s.y+"%";pv.style.boxShadow="inset 0 0 0 9999px rgba(255,255,255,"+ovAlpha(s.opacity)+")";var pb=Math.max(0,+s.blur||0);pv.style.filter=pb>0?("blur("+pb+"px)"):"";pv.style.webkitFilter=pv.style.filter;pv.textContent="";}
+    else{pv.style.backgroundImage="none";pv.style.boxShadow="none";pv.style.filter="";pv.style.webkitFilter="";pv.textContent="\u5199\u771F\u306A\u3057";}
   }
   function applyRoot(){
     injectCSS();var s=cur.settings;var root=document.documentElement;var u=photoCssUrl();
@@ -159,7 +159,10 @@ window.__oxBg=(function(){
       root.setAttribute("data-home-photo","on");
       if(document.body&&document.body.classList)document.body.classList.add("oxbg-on");
       if(appRoot&&appRoot.style){appRoot.style.position="relative";appRoot.style.zIndex="1";}
-      ensurePhotoLayer();
+      var layer=ensurePhotoLayer();
+      // Optional blur of the photo layer. Extend the layer past the viewport by
+      // ~2x the radius so the blur's translucent edge never reveals the page edge.
+      if(layer){var pb=Math.max(0,+s.blur||0);if(pb>0){layer.style.filter="blur("+pb+"px)";layer.style.webkitFilter="blur("+pb+"px)";var m=-(pb*2+2)+"px";layer.style.inset=m;}else{layer.style.filter="";layer.style.webkitFilter="";layer.style.inset="0";}}
     }else{
       // 写真なし: 属性と変数を消すだけ。通常テーマ（legacy/app.css）に戻る。
       root.removeAttribute("data-home-photo");
@@ -211,7 +214,7 @@ window.__oxBg=(function(){
   function setPhoto(blob){return setPhotoDetailed(blob).then(function(d){return !!(d&&d.ok&&d.cssOk);});}
   function clearPhoto(){return setPhoto(null);}
   function setSettings(part){cur.settings=Object.assign({},cur.settings,part||{});saveSettings(uid(),cur.settings);apply();}
-  function resetDefault(){cur.settings={scale:1,x:50,y:50,opacity:1};saveSettings(uid(),cur.settings);return clearPhoto();}
+  function resetDefault(){cur.settings={scale:1,x:50,y:50,opacity:1,blur:0};saveSettings(uid(),cur.settings);return clearPhoto();}
   function openSettings(){
     if(document.getElementById("oxbg-modal"))return;
     var s=cur.settings;
@@ -244,15 +247,16 @@ window.__oxBg=(function(){
     var brow=document.createElement("div");brow.style.cssText="display:flex;gap:8px;margin:10px 0 4px";
     brow.appendChild(btn("\u5199\u771F\u3092\u9078\u629E","#0891b2","#fff",function(){file.click();}));
     brow.appendChild(btn("\u524A\u9664","#fde8e8","#c0392b",function(){setPhotoDetailed(null).then(function(d){setStatus("写真を削除しました。 "+statusSummary(d),d&&d.cssOk?"ok":"err");});}));
-    brow.appendChild(btn("\u30C7\u30D5\u30A9\u30EB\u30C8\u306B\u623B\u3059","#eef2f4","#445",function(){cur.settings={scale:1,x:50,y:50,opacity:1};saveSettings(uid(),cur.settings);syncInputs();setPhotoDetailed(null).then(function(d){setStatus("デフォルトに戻しました。 "+statusSummary(d),d&&d.cssOk?"ok":"err");});}));
+    brow.appendChild(btn("\u30C7\u30D5\u30A9\u30EB\u30C8\u306B\u623B\u3059","#eef2f4","#445",function(){cur.settings={scale:1,x:50,y:50,opacity:1,blur:0};saveSettings(uid(),cur.settings);syncInputs();setPhotoDetailed(null).then(function(d){setStatus("デフォルトに戻しました。 "+statusSummary(d),d&&d.cssOk?"ok":"err");});}));
     var sc=slider(0.5,3,0.02,s.scale||1,function(v){setSettings({scale:v});});
     var sx=slider(0,100,1,s.x==null?50:s.x,function(v){setSettings({x:v});});
     var sy=slider(0,100,1,s.y==null?50:s.y,function(v){setSettings({y:v});});
     var so=slider(0.3,1,0.02,s.opacity==null?1:s.opacity,function(v){setSettings({opacity:v});});
-    function syncInputs(){var c=cur.settings;sc.value=c.scale;sx.value=c.x;sy.value=c.y;so.value=c.opacity;}
+    var sb=slider(0,20,1,s.blur==null?0:s.blur,function(v){setSettings({blur:v});});
+    function syncInputs(){var c=cur.settings;sc.value=c.scale;sx.value=c.x;sy.value=c.y;so.value=c.opacity;sb.value=c.blur==null?0:c.blur;}
     var done=btn("\u5B8C\u4E86","#222","#fff",function(){pv=null;document.body.removeChild(wrap);});done.style.marginTop="10px";done.style.width="100%";done.style.flex="none";
     card.appendChild(title);card.appendChild(hint);card.appendChild(pv);card.appendChild(file);card.appendChild(brow);card.appendChild(statusEl);
-    card.appendChild(row("\u62E1\u5927\u7387",sc));card.appendChild(row("\u6C34\u5E73\u4F4D\u7F6E",sx));card.appendChild(row("\u5782\u76F4\u4F4D\u7F6E",sy));card.appendChild(row("\u4E0D\u900F\u660E\u5EA6",so));
+    card.appendChild(row("\u62E1\u5927\u7387",sc));card.appendChild(row("\u6C34\u5E73\u4F4D\u7F6E",sx));card.appendChild(row("\u5782\u76F4\u4F4D\u7F6E",sy));card.appendChild(row("\u4E0D\u900F\u660E\u5EA6",so));card.appendChild(row("\u307C\u304B\u3057",sb));
     card.appendChild(done);
     wrap.appendChild(card);
     wrap.onclick=function(ev){if(ev.target===wrap){pv=null;document.body.removeChild(wrap);}};
