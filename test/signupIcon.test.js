@@ -10,15 +10,19 @@ const SHELL = readFileSync("src/features/auth/ModernAuthShell.jsx", "utf8");
 const API = readFileSync("src/features/auth/modernAuthApi.js", "utf8");
 const BRIDGE = readFileSync("src/features/auth/legacyBridgeProfile.js", "utf8");
 const PICKER = readFileSync("src/features/auth/SignupIconPicker.jsx", "utf8");
+const HOOK = readFileSync("src/features/auth/useIconCrop.js", "utf8");
 const ART = readFileSync("src/features/auth/avatarArt.jsx", "utf8");
 
 describe("signup icon picker — UI (same as profile edit)", () => {
-  it("renders on the signup screen with a live preview and adjustment", () => {
+  it("renders on the signup screen with a live preview and FINGER adjustment", () => {
     expect(SHELL).toContain("SignupIconPicker");
     expect(SHELL).toMatch(/mode === "signup"[\s\S]*?SignupIconPicker/);
     expect(PICKER).toContain("プレビュー"); // preview
-    expect(PICKER).toMatch(/type="range"/); // zoom adjust (範囲指定)
-    expect(PICKER).toContain("onPointerMove"); // drag to reposition
+    // adjustment is by FINGER, not a slider — no range input anywhere in the picker
+    expect(PICKER).not.toMatch(/type="range"/);
+    expect(PICKER).toContain("stageHandlers"); // drag/pinch handlers spread onto the stage
+    expect(HOOK).toContain("onPointerMove"); // drag to reposition
+    expect(HOOK).toContain("pinchRef"); // two-finger pinch to zoom (no slider)
   });
   it("offers the SAME character illustrations as profile-edit, plus photo", () => {
     expect(PICKER).toContain("AvatarArt");
@@ -30,7 +34,8 @@ describe("signup icon picker — UI (same as profile edit)", () => {
   it("photo can be moved horizontally AND vertically (crop stage + pan) with live preview", () => {
     expect(PICKER).toContain("ox-auth-cropstage");
     expect(PICKER).toMatch(/translate\(\$\{pan\.x\}px, \$\{pan\.y\}px\)/);
-    expect(PICKER).toMatch(/renderCroppedIcon\(img, \{ stageSize: STAGE, zoom, panX: pan\.x, panY: pan\.y \}\)/);
+    // the crop/bake lives in the shared hook (reused by profile-edit too)
+    expect(HOOK).toMatch(/renderCroppedIcon\(img, \{ stageSize: STAGE, zoom, panX: pan\.x, panY: pan\.y \}\)/);
     const IMG = readFileSync("src/features/auth/iconImage.js", "utf8");
     expect(IMG).toContain("export function renderCroppedIcon");
     expect(IMG).toMatch(/drawImage\(img, sx, sy/); // pan maps to the source crop rect

@@ -1,0 +1,103 @@
+/* IconCropEditor — profile-edit finger crop modal. Bottom-sheet on mobile,
+   centered card on wider screens. Mirrors the legacy adjust sheet's footprint. */
+.ox-ice-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.42);
+}
+.ox-ice-modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: 92vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  padding: 18px 18px calc(env(safe-area-inset-bottom, 0px) + 22px);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.2);
+  font-family: "Zen Maru Gothic", "Zen Kaku Gothic New", sans-serif;
+  color: #222;
+}
+.ox-ice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.ox-ice-h3 {
+  align-self: flex-start;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 900;
+}
+.ox-ice-sub {
+  align-self: flex-start;
+  margin: -6px 0 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #999;
+}
+.ox-ice-stage {
+  margin: 4px auto;
+}
+.ox-ice-pick,
+.ox-ice-replace {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 11px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(8, 145, 178, 0.25);
+  background: rgba(8, 145, 178, 0.1);
+  color: #0891b2;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.ox-ice-replace {
+  border-color: rgba(0, 0, 0, 0.12);
+  background: #eef2f4;
+  color: #445;
+  min-height: 38px;
+  font-size: 13px;
+}
+.ox-ice-err {
+  margin: 0;
+  color: #c0392b;
+  font-size: 13px;
+  font-weight: 700;
+}
+.ox-ice-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin-top: 6px;
+}
+.ox-ice-cancel,
+.ox-ice-done {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 10px;
+  border-radius: 14px;
+  border: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.ox-ice-cancel {
+  background: #eef2f4;
+  color: #445;
+}
+.ox-ice-done {
+  background: #222;
+  color: #fff;
+}
+.ox-ice-done:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

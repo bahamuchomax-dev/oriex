@@ -15,6 +15,7 @@ import { installAttendanceSync } from "../../services/attendanceSync.js";
 import { installPasswordChangeSync } from "../../services/passwordChangeSync.js";
 import { installTeacherAdmin } from "../teacherAdmin/mountTeacherAdmin.jsx";
 import { installAvatarBake } from "../../services/avatarBake.js";
+import { installIconEditor } from "../profile/mountIconEditor.jsx";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -106,8 +107,18 @@ export async function handoffToLegacy(user, importLegacy) {
     /* non-fatal: the legacy admin still works */
   }
 
-  // Bake the icon zoom/position adjustment into the saved image on save, so it
-  // actually shows (the legacy applied it only at display time on one element).
+  // Give profile-edit the SAME finger crop + BAKE flow as signup: tapping 写真 /
+  // アイコンを調整 opens a React editor that bakes the crop into the avatar, so the
+  // header / name-row icons (rendered from the SAVED avatar) reflect it everywhere.
+  try {
+    installIconEditor();
+  } catch {
+    /* non-fatal: the legacy controls still work */
+  }
+
+  // Fallback: if the editor's inject path is ever bypassed, still bake the legacy
+  // display-time adjustment into the saved image on 保存する. No-ops once the crop
+  // is already baked (adjustment reset to default), so it never double-applies.
   try {
     installAvatarBake();
   } catch {
