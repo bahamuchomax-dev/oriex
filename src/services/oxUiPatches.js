@@ -11,8 +11,7 @@
  * {id:"myPage",label:"マイ"} — see src/legacy/oriex-app.bundle.js). Pure relabel
  * decisions live in nextLabel() so they are unit-tested without a DOM.
  * ============================================================ */
-import { FRAMES, getFrame, setFrame, frameRing, legendUnlocked } from "../features/home/iconFrames.js";
-import { isTeacher } from "../features/home/realAccount.js";
+import { getFrame, frameRing, legendUnlocked } from "../features/home/iconFrames.js";
 
 // Exact whole-label renames, keyed by the EXACT trimmed text the bundle renders.
 // Whole-text equality (not substring) so "マイワード" etc. are never touched.
@@ -377,161 +376,64 @@ function hideSectionsOnce(headings) {
   }
 }
 
-// アイコンフレーム settings — the legacy-side entry that (a) lets you equip an avatar
-// frame and (b) switches to the new character home, but ONLY when the レジェンド frame
-// is equipped. GATED to preview users (localStorage.oriexHomeToggle==="1") and never
-// shown on the React home (#root holds .oxh). This is also the only place to equip
-// レジェンド before the new home exists, so it breaks the unlock chicken-and-egg.
-const FRAME_LAUNCH_ID = "ox-frame-launch";
-const FRAME_PANEL_ID = "ox-frame-panel";
+// New-home switch placed IN the legacy SETTINGS/account screen, just above the
+// ログアウト button (a stable anchor unique to that screen). Shown only when allowed:
+// teachers anytime (legendUnlocked() already ORs isTeacher), students once they have
+// earned レジェンド, or preview opt-in (oriexHomeToggle). Never on the React home
+// (#root holds .oxh). Idempotent; the run loop re-applies after re-renders.
+const HOME_SWITCH_ID = "ox-newhome-switch";
 
-function openFramePanel() {
-  try {
-    const old = document.getElementById(FRAME_PANEL_ID);
-    if (old) { old.remove(); return; } // toggle off
-    const panel = document.createElement("div");
-    panel.id = FRAME_PANEL_ID;
-    panel.style.cssText =
-      "position:fixed;inset:0;z-index:2147483601;display:grid;place-items:center;" +
-      "background:rgba(6,8,14,.6);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);";
-    const card = document.createElement("div");
-    card.style.cssText =
-      "width:min(340px,86vw);background:#14182a;border:1px solid rgba(255,255,255,.12);" +
-      "border-radius:20px;padding:18px;color:#eef1fb;box-shadow:0 24px 60px rgba(0,0,0,.6);" +
-      "font-family:'Zen Kaku Gothic New',system-ui,sans-serif;";
-    const h = document.createElement("div");
-    h.textContent = "アイコンフレーム";
-    h.style.cssText = "font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:17px;";
-    const legendOk = legendUnlocked();
-    const sub = document.createElement("div");
-    sub.textContent = legendOk ? "レジェンドを装備すると新しいホームに切り替えられます" : "好きなフレームを装備できます";
-    sub.style.cssText = "font-size:11px;color:#9aa3bd;margin:4px 0 14px;";
-    card.appendChild(h);
-    card.appendChild(sub);
-
-    const row = document.createElement("div");
-    row.style.cssText = "display:flex;gap:6px;margin-bottom:16px;";
-    const swatches = [];
-    // hide レジェンド (and the new-home switch) ENTIRELY until earned — nothing about
-    // it is shown beforehand.
-    FRAMES.filter((f) => !f.legend || legendOk).forEach((f) => {
-      const sw = document.createElement("button");
-      sw.type = "button";
-      sw.dataset.frame = f.key;
-      sw.style.cssText =
-        "flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:none;" +
-        "border:none;cursor:pointer;color:#cfd6ea;font-size:9.5px;font-weight:700;padding:7px 2px;border-radius:12px;";
-      const dot = document.createElement("span");
-      dot.style.cssText =
-        "width:32px;height:32px;border-radius:50%;background:#262b3f;box-shadow:" + frameRing(f.key) + ";";
-      const lab = document.createElement("span");
-      lab.textContent = f.label;
-      sw.appendChild(dot);
-      sw.appendChild(lab);
-      sw.addEventListener("click", () => {
-        if (setFrame(f.key)) {
-          applyAvatarFrameOnce();
-          select(f.key);
-        }
-      });
-      swatches.push(sw);
-      row.appendChild(sw);
-    });
-    card.appendChild(row);
-
-    let go = null;
-    let hint = null;
-    if (legendOk) {
-      go = document.createElement("button");
-      go.type = "button";
-      go.style.cssText =
-        "width:100%;padding:13px;border:none;border-radius:14px;font-weight:900;font-size:14px;" +
-        "font-family:'Zen Maru Gothic',sans-serif;cursor:pointer;";
-      hint = document.createElement("div");
-      hint.style.cssText = "font-size:11px;color:#9aa3bd;text-align:center;margin-top:8px;";
-      go.addEventListener("click", () => {
-        if (getFrame() !== "legend") return;
-        try { window.localStorage.setItem("oriexHome", "1"); } catch { /* ignore */ }
-        try { window.location.reload(); } catch { /* ignore */ }
-      });
-      card.appendChild(go);
-      card.appendChild(hint);
-    }
-
-    function select(key) {
-      swatches.forEach((sw) => {
-        const on = sw.dataset.frame === key;
-        sw.style.background = on ? "rgba(255,255,255,.08)" : "none";
-        sw.style.outline = on ? "1px solid rgba(255,255,255,.22)" : "none";
-      });
-      if (!go) return;
-      const legend = key === "legend";
-      go.textContent = legend ? "新ホームに切り替える" : "新ホーム（レジェンドを装備）";
-      go.disabled = !legend;
-      go.style.background = legend ? "linear-gradient(135deg,#ff3d52,#b3142a)" : "rgba(255,255,255,.07)";
-      go.style.color = legend ? "#fff" : "#73798a";
-      go.style.cursor = legend ? "pointer" : "default";
-      hint.textContent = legend ? "レジェンド装備中" : "レジェンドのフレームを選ぶと切り替えられます";
-    }
-
-    const close = document.createElement("button");
-    close.type = "button";
-    close.textContent = "閉じる";
-    close.style.cssText =
-      "width:100%;margin-top:10px;padding:9px;border:1px solid rgba(255,255,255,.14);border-radius:12px;" +
-      "background:none;color:#cfd6ea;font-weight:700;cursor:pointer;";
-    close.addEventListener("click", () => panel.remove());
-
-    card.appendChild(go);
-    card.appendChild(hint);
-    card.appendChild(close);
-    panel.appendChild(card);
-    panel.addEventListener("click", (e) => {
-      if (e.target === panel) panel.remove();
-    });
-    document.body.appendChild(panel);
-    select(getFrame());
-  } catch {
-    /* a cosmetic panel must never break the app */
-  }
-}
-
-function injectFrameSettingsOnce() {
+function injectHomeSwitchInSettingsOnce() {
   try {
     if (typeof document === "undefined" || !document.body) return;
-    let on = false;
+    const existing = document.getElementById(HOME_SWITCH_ID);
+    let allowed = false;
     try {
-      on = !!(window.localStorage && window.localStorage.getItem("oriexHomeToggle") === "1");
+      allowed = legendUnlocked() || window.localStorage.getItem("oriexHomeToggle") === "1";
     } catch {
-      on = false;
+      allowed = false;
     }
-    // Teachers always get the entry (they can switch to the new home anytime).
-    try {
-      if (isTeacher()) on = true;
-    } catch {
-      /* ignore */
-    }
-    const launch = document.getElementById(FRAME_LAUNCH_ID);
-    if (!on || document.querySelector(".oxh")) {
-      if (launch && launch.parentNode) launch.parentNode.removeChild(launch);
-      const pnl = document.getElementById(FRAME_PANEL_ID);
-      if (pnl && pnl.parentNode) pnl.parentNode.removeChild(pnl);
+    if (document.querySelector(".oxh") || !allowed) {
+      if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
       return;
     }
-    applyAvatarFrameOnce(); // keep the legacy header avatar wearing the equipped frame
-    if (launch) return;
-    const b = document.createElement("button");
-    b.id = FRAME_LAUNCH_ID;
-    b.type = "button";
-    b.textContent = "アイコン";
-    b.setAttribute("aria-label", "アイコンフレーム設定");
-    b.style.cssText =
-      "position:fixed;z-index:2147483600;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 86px);" +
-      "padding:8px 13px;border-radius:18px;border:1px solid rgba(255,255,255,.22);background:rgba(18,20,28,.85);" +
-      "color:#fff;font-size:12px;font-weight:800;font-family:'Zen Maru Gothic',system-ui,sans-serif;" +
-      "box-shadow:0 6px 16px rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);";
-    b.addEventListener("click", openFramePanel);
-    document.body.appendChild(b);
+    if (existing) return; // already shown on the current screen
+    // Find the ログアウト control — its presence marks the settings/account screen.
+    let leaf = null;
+    const nodes = document.querySelectorAll("button,a,span,div");
+    for (let i = 0; i < nodes.length; i++) {
+      const el = nodes[i];
+      if (el.childElementCount === 0 && (el.textContent || "").trim() === "ログアウト") {
+        leaf = el;
+        break;
+      }
+    }
+    if (!leaf) return; // not on the settings screen
+    const btn = (leaf.closest && leaf.closest("button,a")) || leaf;
+    const host = btn.parentElement;
+    if (!host) return;
+    const sw = document.createElement("button");
+    sw.id = HOME_SWITCH_ID;
+    sw.type = "button";
+    sw.textContent = "新ホームに切り替える";
+    sw.style.cssText =
+      "display:block;width:100%;margin:0 0 10px;padding:13px;border:none;border-radius:14px;" +
+      "background:linear-gradient(135deg,#ff3d52,#b3142a);color:#fff;font-weight:900;font-size:14px;" +
+      "font-family:'Zen Maru Gothic',system-ui,sans-serif;letter-spacing:.02em;cursor:pointer;" +
+      "box-shadow:0 8px 18px rgba(179,20,42,.4);";
+    sw.addEventListener("click", () => {
+      try {
+        window.localStorage.setItem("oriexHome", "1");
+      } catch {
+        /* ignore */
+      }
+      try {
+        window.location.reload();
+      } catch {
+        /* ignore */
+      }
+    });
+    host.insertBefore(sw, btn);
   } catch {
     /* a cosmetic injection must never break the app */
   }
@@ -767,7 +669,8 @@ export function installUiPatches(map = RELABELS) {
       stripTeacherNameSuffixOnce();
       backCustomAppOnce();
       backPlayViewOnce();
-      injectFrameSettingsOnce();
+      injectHomeSwitchInSettingsOnce();
+      applyAvatarFrameOnce();
     };
 
     if (document.readyState !== "loading") setTimeout(run, 0);
