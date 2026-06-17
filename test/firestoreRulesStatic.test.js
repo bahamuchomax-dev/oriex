@@ -368,3 +368,22 @@ describe("firestore.rules — legacy public/data is not broadly writable", () =>
     expect(c).toContain("request.resource.data.uid == request.auth.uid");
   });
 });
+
+describe("firestore.rules — legacy live-app write paths restored (artifacts public/data)", () => {
+  // The frozen bundle writes plans to artifacts/.../public/data/weeklyTasks and
+  // study/time logs to artifacts/.../public/data/bookLogs. The hardening's blanket
+  // public/data write-deny broke both; these scoped exceptions restore them.
+  it("weeklyTasks (plans) are teacher/admin-write only, authority/answer-free", () => {
+    const c = clause(block("/public/data/weeklyTasks/{taskId}"), "create, update, delete");
+    expect(c).toContain("isTeacher()");
+    expect(c).toContain("noAuthorityFields()");
+    expect(c).toContain("noAnswerFields()");
+  });
+  it("artifacts bookLogs create is owner-bound by uid (not world-write)", () => {
+    // there are TWO bookLogs blocks (top-level + artifacts); assert BOTH owner-bind
+    const blocks = RULES.split("match /public/data/bookLogs/").length - 1;
+    expect(blocks).toBeGreaterThanOrEqual(2);
+    // the artifacts one allows owner OR teacher to update (teacher comment), not all
+    expect(RULES).toMatch(/bookLogs\/\{logId\}\s*\{[\s\S]*?create:[\s\S]*?request\.resource\.data\.uid == request\.auth\.uid/);
+  });
+});

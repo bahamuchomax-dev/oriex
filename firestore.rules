@@ -412,6 +412,29 @@ service cloud.firestore {
         allow read: if true;
         allow write: if isSelf(docId) && noAuthorityFields() && noAnswerFields();
       }
+      // Teacher WEEKLY PLANS (live legacy path: public/data/weeklyTasks). The bundle
+      // CREATEs/DELETEs plan docs here {subject,total,unit,assignedTo,createdBy,
+      // createdAt,deadline,rangeStart,rangeEnd} — no authority/answer fields. The
+      // hardening's blanket public/data write-deny had broken plan sending; restore
+      // it as TEACHER/ADMIN-write only (server-set claim). Signed-in READ via the
+      // public/data wildcard above. (Firestore ORs allow rules across matching blocks.)
+      match /public/data/weeklyTasks/{taskId} {
+        allow create, update, delete: if isTeacher() && noAuthorityFields() && noAnswerFields();
+      }
+      // Study / book-time LOGS (live legacy path: public/data/bookLogs). Each doc
+      // carries uid = its owner; the owner creates their own log, and the owner or a
+      // teacher may update (teacher comment / like) / delete. Read stays signed-in
+      // (wildcard). NOTE: the doc includes a denormalized `isTeacher` DISPLAY flag —
+      // it is NOT an auth source (roles come only from custom claims), so we do not
+      // apply noAuthorityFields() here. Restores study/time recording that the
+      // public/data write-deny had broken.
+      match /public/data/bookLogs/{logId} {
+        allow create: if signedIn()
+                      && request.resource.data.uid == request.auth.uid
+                      && noAnswerFields();
+        allow update, delete: if signedIn()
+                              && (resource.data.uid == request.auth.uid || isTeacher());
+      }
 
       // ---- direct messages (legacy live path). The legacy app stores DMs at
       // artifacts/{appId}/chats/{pairId}, where pairId is the two uids sorted and
