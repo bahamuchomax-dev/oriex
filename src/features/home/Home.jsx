@@ -27,9 +27,9 @@ import FriendsView from "./views/FriendsView.jsx";
 import FramesView from "./views/FramesView.jsx";
 
 // Live study data (timer records here; the dashboard + views read from here).
-import { useStudy, level, totalMinutes, streakDays, todayMinutes, weekSeries, fmtMinutes } from "./studyStore.js";
+import { useStudy, totalMinutes, streakDays, todayMinutes, weekSeries, fmtMinutes } from "./studyStore.js";
 import { getFrame, frameRing } from "./iconFrames.js";
-import { getAccount, accountAvatarImg } from "./realAccount.js";
+import { getAccount, accountAvatarImg, getRealStudy } from "./realAccount.js";
 
 /* ============================================================
  * Home — Oriex new home (v2: big character).
@@ -216,16 +216,19 @@ export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = 
   const acct = getAccount(); // real logged-in identity (null in the no-login preview)
   const avatarImg = accountAvatarImg(acct);
   const p = { name: (acct && acct.name) || "ヒカリ", totalSub: "コツコツ積み上げ中", streakSub: "この調子！", ...(profile || {}) };
-  // derived from live study sessions
-  const lv = level(st);
-  const totalMin = totalMinutes(st);
+  // History (累計/連続/レベル/7日) reflects the REAL account when signed in (legacy
+  // study cache); otherwise the new-home tracker. きょうの学習 stays the new-home tracker.
+  const realStudy = getRealStudy(acct);
+  const totalMin = realStudy ? realStudy.total : totalMinutes(st);
   const totH = Math.floor(totalMin / 60);
   const totM = totalMin % 60;
-  const streak = streakDays(st);
+  const streak = realStudy ? realStudy.streak : streakDays(st);
+  const lvLevel = Math.floor(totalMin / 600) + 1; // a level per 10h
+  const lvPct = Math.round(((totalMin - (lvLevel - 1) * 600) / 600) * 100);
   const todayMin = todayMinutes(st);
   const goalTarget = st.goalMin;
   const remain = Math.max(0, goalTarget - todayMin);
-  const ws = weekSeries(st);
+  const ws = realStudy ? realStudy.week : weekSeries(st);
   const wsMax = Math.max(...ws.map((d) => d.minutes), 1);
   const wsAvg = Math.round(ws.reduce((a, d) => a + d.minutes, 0) / 7);
 
@@ -282,10 +285,10 @@ export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = 
                   <div className="oxh-pr-name">{p.name}
                     <svg viewBox="0 0 24 24"><path d="M4 20l4-1L19 8l-3-3L5 16z" /></svg>
                   </div>
-                  <div className="oxh-lvrow"><span className="oxh-lv">Lv. {lv.level}</span><small>EXP {lv.xpPct}%</small></div>
+                  <div className="oxh-lvrow"><span className="oxh-lv">Lv. {lvLevel}</span><small>EXP {lvPct}%</small></div>
                 </div>
               </div>
-              <div className="oxh-exp"><i style={{ width: `${lv.xpPct}%` }} /></div>
+              <div className="oxh-exp"><i style={{ width: `${lvPct}%` }} /></div>
               <div className="oxh-stats">
                 <div className="oxh-stat">
                   <div className="oxh-stat-k">累計学習時間</div>
@@ -318,8 +321,8 @@ export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = 
               <div className="oxh-card">
                 <div className="oxh-card-h">{BarChart}7日間の記録<button className="oxh-more" onClick={() => go("records")}>詳細</button></div>
                 <div className="oxh-chart">
-                  {ws.map((d) => (
-                    <div className={`oxh-bar${d.today ? " oxh-bar-t" : ""}`} key={d.dateKey}>
+                  {ws.map((d, i) => (
+                    <div className={`oxh-bar${d.today ? " oxh-bar-t" : ""}`} key={i}>
                       <i style={{ height: `${Math.round((d.minutes / wsMax) * 100)}%` }} />
                       <span>{d.today ? "今" : DOW[d.dow]}</span>
                     </div>
