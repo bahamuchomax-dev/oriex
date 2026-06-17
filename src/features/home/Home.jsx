@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 // Real assets (Vite hashes + base-path-rewrites these, so GitHub Pages base works).
 import bgUrl from "../../assets/home/1BA16E71-040A-4ADD-8EE6-383D57E63E42.png";
-import charUrl from "../../assets/home/IMG_5074.png";
+import charUrl from "../../assets/home/IMG_5092.png";
 
 // Feature views — each is a self-contained screen.
 import AnalysisView from "./views/AnalysisView.jsx";
@@ -285,7 +285,7 @@ export default function Home({ profile, onOpen = () => {} } = {}) {
   const navActive = NAV.some((n) => n.key === view) ? view : "home";
 
   return (
-    <div className="oxh">
+    <div className={view === "home" ? "oxh" : "oxh oxh-subview"}>
       <div className="oxh-bg" style={{ backgroundImage: `url(${bgUrl})` }} />
       <div className="oxh-glow" />
       <div className="oxh-char" style={{ backgroundImage: `url(${charUrl})` }} />
