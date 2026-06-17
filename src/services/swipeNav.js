@@ -98,6 +98,28 @@ function onEnd(e) {
   const next = dx < 0 ? idx + 1 : idx - 1;
   if (next < 0 || next >= btns.length) return;
   btns[next].click();
+  slideIn(dx < 0 ? "l" : "r");
+}
+
+// Seamless feel: after the tab switches, slide the freshly-shown screen in from the
+// swipe direction. Best-effort — if the new screen hasn't mounted yet we just skip
+// the animation (no glitch). The legacy bundle is untouched; the keyframes live in
+// app.css (.ox-swipe-l / .ox-swipe-r).
+function slideIn(dir) {
+  const cls = dir === "l" ? "ox-swipe-l" : "ox-swipe-r";
+  let tries = 0;
+  const tick = () => {
+    const el = document.querySelector(".rx-home, .rx-mp");
+    if (el) {
+      el.classList.remove("ox-swipe-l", "ox-swipe-r");
+      void el.offsetWidth; // restart the animation
+      el.classList.add(cls);
+      setTimeout(() => el.classList.remove(cls), 360);
+      return;
+    }
+    if (tries++ < 4) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
 }
 
 /** Install swipe-to-switch-tab. Idempotent; browser-only. */

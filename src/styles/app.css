@@ -152,6 +152,15 @@ body.oxbg-on .rx-stat .l{
   text-shadow:0 1px 2px #fff, 0 0 6px rgba(255,255,255,.9);
 }
 
+/* Swipe-to-switch (swipeNav): the screen shown after a left/right swipe slides in
+   from the swipe direction, so moving between ホーム/学習/記録… feels seamless.
+   swipe LEFT → next tab → content enters from the right (.ox-swipe-l); swipe RIGHT
+   → previous tab → enters from the left (.ox-swipe-r). */
+@keyframes ox-swipe-in-l{from{transform:translateX(26px);opacity:.35}to{transform:none;opacity:1}}
+@keyframes ox-swipe-in-r{from{transform:translateX(-26px);opacity:.35}to{transform:none;opacity:1}}
+.ox-swipe-l{animation:ox-swipe-in-l .26s cubic-bezier(.22,.61,.36,1) both;will-change:transform}
+.ox-swipe-r{animation:ox-swipe-in-r .26s cubic-bezier(.22,.61,.36,1) both;will-change:transform}
+
 /* ── remove the study STAGE-MAP background pattern (全教科) ────────────────────
    The stage-map screen paints a decorative SVG pattern layer:
      <div class="stage-map-bg" style="position:absolute;inset:0;...
