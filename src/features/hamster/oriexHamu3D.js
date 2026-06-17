@@ -91,10 +91,12 @@ window.OriexHamu3D = function (canvas, env) {
 
   var camera = new THREE.PerspectiveCamera(42, 1, 10, 4000);
 
-  /* ---- lights (bright, soft natural light; tuned to avoid blowout) ---- */
-  scene.add(new THREE.AmbientLight(0xffffff, P ? 0.585 : 0.37));
-  var hemi = new THREE.HemisphereLight(0xfff7ea, 0xd8c2a0, P ? 0.35 : 0.22); scene.add(hemi);
-  var sun = new THREE.DirectionalLight(0xfff3e2, P ? 0.62 : 0.52);
+  /* ---- lights (3-point: warm key + cool fill + soft warm ambient/hemisphere) ---- */
+  /* §1.2: trim the flat ambient, lean on a stronger WARM KEY (sun) for form; a soft
+     warm hemisphere keeps shadows from going muddy, the cool fill (below) separates. */
+  scene.add(new THREE.AmbientLight(0xffffff, P ? 0.44 : 0.28));
+  var hemi = new THREE.HemisphereLight(0xfff7ea, 0xd8c2a0, P ? 0.40 : 0.28); scene.add(hemi);
+  var sun = new THREE.DirectionalLight(0xfff3e2, P ? 0.74 : 0.62);
   sun.position.set(380, 620, 260);
   sun.castShadow = true;
   /* 影解像度: PC(細かいポインタ)は2048で輪郭をくっきり、モバイル(coarse)は1024で軽量に保つ＝ジャギー軽減と負荷両立 */
@@ -106,7 +108,7 @@ window.OriexHamu3D = function (canvas, env) {
   sun.shadow.bias = -0.0008;
   sun.shadow.radius = 3;
   scene.add(sun);
-  var fill = new THREE.DirectionalLight(0xeaf4ff, 0.22); fill.position.set(-320, 260, -180); scene.add(fill);
+  var fill = new THREE.DirectionalLight(0xeaf4ff, 0.20); fill.position.set(-320, 260, -180); scene.add(fill); /* §1.2 cool fill, kept subtle */
 
   /* ---- helpers ---- */
   var GEO = [], MAT = [];
