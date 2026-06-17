@@ -77,6 +77,13 @@ window.OriexHamu3D = function (canvas, env) {
   renderer.setPixelRatio(DPR);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  /* §1.1 color management + filmic tone mapping — the biggest "rendered look" win
+     (kills the flat, CG-ish output). Feature-detected so it works on three r149
+     (outputEncoding/sRGBEncoding) and r152+ (outputColorSpace/SRGBColorSpace). */
+  if ("outputColorSpace" in renderer && THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
+  else if (THREE.sRGBEncoding != null) renderer.outputEncoding = THREE.sRGBEncoding;
+  if (THREE.ACESFilmicToneMapping != null) renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.12; /* tune to taste; ACES rolls off highlights */
 
   var scene = new THREE.Scene();
   scene.background = new THREE.Color(P ? 0xf2e6d2 : 0x221d17);
@@ -152,6 +159,9 @@ window.OriexHamu3D = function (canvas, env) {
       wg2.stroke();
     }
     woodTex = new THREE.CanvasTexture(wc);
+    /* §1.1: color map must be sRGB so it decodes correctly under tone mapping */
+    if ("colorSpace" in woodTex && THREE.SRGBColorSpace) woodTex.colorSpace = THREE.SRGBColorSpace;
+    else if (THREE.sRGBEncoding != null) woodTex.encoding = THREE.sRGBEncoding;
     woodTex.wrapS = woodTex.wrapT = THREE.RepeatWrapping; woodTex.repeat.set(2.6, 1.8);
   } catch (e) { woodTex = null; }
   var topMat = woodTex ? new THREE.MeshLambertMaterial({ map: woodTex, color: 0xffffff }) : mk(P ? 0xA87D4D : 0x5d4a33);
