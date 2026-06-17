@@ -4,6 +4,8 @@
  * (src/services/oxUiPatches.js). Equipping the レジェンド frame is what unlocks the
  * new character home. Pure data + localStorage; no React, so either side can import.
  * ============================================================ */
+import { isTeacher } from "./realAccount.js";
+
 const KEY = "oxhIconFrame";
 
 export const FRAMES = [
@@ -49,7 +51,8 @@ export function realStudyMinutes() {
   }
 }
 export function legendUnlocked() {
-  return realStudyMinutes() >= legendGoal();
+  // Teachers can switch to the new home anytime (bypass the student study goal).
+  return isTeacher() || realStudyMinutes() >= legendGoal();
 }
 
 export function getFrame() {
