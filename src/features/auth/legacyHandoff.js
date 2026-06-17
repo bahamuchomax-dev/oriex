@@ -16,6 +16,8 @@ import { installPasswordChangeSync } from "../../services/passwordChangeSync.js"
 import { installTeacherAdmin } from "../teacherAdmin/mountTeacherAdmin.jsx";
 import { installAvatarBake } from "../../services/avatarBake.js";
 import { installIconEditor } from "../profile/mountIconEditor.jsx";
+import { installCoverSync } from "../../services/coverSync.js";
+import { installFriendCover } from "../../services/friendCover.js";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -121,6 +123,21 @@ export async function handoffToLegacy(user, importLegacy) {
   // is already baked (adjustment reset to default), so it never double-applies.
   try {
     installAvatarBake();
+  } catch {
+    /* non-fatal */
+  }
+
+  // Publish each user's profile background (cover image + crop) to their PUBLIC
+  // card, and render OTHER users' backgrounds on their profile — the legacy app
+  // only ever showed your OWN cover. publish runs on boot (existing covers
+  // backfill automatically) + on save; render reads the friend's card by shortId.
+  try {
+    installCoverSync();
+  } catch {
+    /* non-fatal */
+  }
+  try {
+    installFriendCover();
   } catch {
     /* non-fatal */
   }

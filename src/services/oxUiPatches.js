@@ -330,6 +330,27 @@ function swapHamsterIconsOnce() {
   }
 }
 
+// The frozen bundle appends " 先生" to a teacher's profile name — it renders
+// .rx-pname children as [name, isTeacher ? " 先生" : ""], so the suffix is its own
+// trailing text node (the name itself is the first node, untouched). Empty just
+// that suffix node, by its exact value, so the username shows without "先生". The
+// separate teacher BADGE (.rx-tbadge) still marks teachers; only the auto-appended
+// name suffix is removed. Reapplied by the run loop after re-renders.
+function stripTeacherNameSuffixOnce() {
+  try {
+    if (typeof document === "undefined" || !document.querySelectorAll) return;
+    const els = document.querySelectorAll(".rx-pname");
+    for (let i = 0; i < els.length; i++) {
+      const last = els[i].lastChild;
+      if (last && last.nodeType === 3 && last.nodeValue === " 先生") {
+        last.nodeValue = "";
+      }
+    }
+  } catch {
+    /* cosmetic only */
+  }
+}
+
 function hideSectionsOnce(headings) {
   try {
     if (typeof document === "undefined" || !document.querySelectorAll) return;
@@ -496,6 +517,7 @@ export function installUiPatches(map = RELABELS) {
       haloVeilHeadingsOnce();
       injectIconPreviewOnce();
       neutralizeNoticeEdgeOnce();
+      stripTeacherNameSuffixOnce();
     };
 
     if (document.readyState !== "loading") setTimeout(run, 0);
