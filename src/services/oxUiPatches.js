@@ -364,6 +364,115 @@ function relabelOnce(map) {
   }
 }
 
+// The profile-edit "プロフィール背景を変更" card carries an ALWAYS-VISIBLE inline
+// preview (a [data-oxpbg-cover] tile that __oxPbg keeps in sync), so you see the
+// crop without opening any modal. The "アイコンを変更" card has NO such inline
+// preview — the only live [data-oxav] tile lives up in the header, away from the
+// sliders/「調整」button — so the user can't watch the icon while editing it.
+// Inject the same kind of always-on preview INTO the icon card: a circular
+// [data-oxav] tile that __oxAv.applyEls() keeps synced (zoom/position) live,
+// exactly like the background card. Photo avatars only (an illustration has no
+// crop to preview); cosmetic + reversible, the frozen bundle is untouched.
+function injectIconPreviewOnce() {
+  try {
+    if (typeof document === "undefined" || !document.querySelectorAll) return;
+    // The icon card's header label is a leaf node with this exact text.
+    let label = null;
+    const leaves = document.querySelectorAll("p,span,div");
+    for (let i = 0; i < leaves.length; i++) {
+      const el = leaves[i];
+      if (el.childElementCount === 0 && (el.textContent || "").trim() === "アイコンを変更") {
+        label = el;
+        break;
+      }
+    }
+    if (!label) return; // not on the profile-edit screen
+    const headerRow = label.parentElement; // flex row: label + 写真 upload
+    const card = headerRow && headerRow.parentElement; // the icon-edit card
+    if (!card) return;
+
+    // The current photo avatar, if any: the bundle renders a single [data-oxav]
+    // <img src={photo}> (the header tile). We mirror its src into our preview.
+    const srcImg = document.querySelector('img[data-oxav]:not([data-ox-iconpv])');
+    const existingWrap = card.querySelector('[data-ox-iconpv-wrap]');
+
+    if (!srcImg || !srcImg.getAttribute("src")) {
+      // Illustration (no photo) — nothing to crop; drop any stale preview.
+      if (existingWrap && existingWrap.parentNode) existingWrap.parentNode.removeChild(existingWrap);
+      return;
+    }
+    const src = srcImg.getAttribute("src");
+
+    if (existingWrap) {
+      const cur = existingWrap.querySelector('img[data-ox-iconpv]');
+      if (cur && cur.getAttribute("src") !== src) cur.setAttribute("src", src);
+      return; // already injected; __oxAv keeps zoom/position synced
+    }
+
+    const wrap = document.createElement("div");
+    wrap.setAttribute("data-ox-iconpv-wrap", "1");
+    wrap.style.cssText = "display:flex;justify-content:center;margin:10px 0 2px";
+    const tile = document.createElement("div");
+    tile.style.cssText =
+      "width:96px;height:96px;border-radius:50%;overflow:hidden;border:1px solid rgba(0,0,0,.08);background:#0891b2";
+    const img = document.createElement("img");
+    img.setAttribute("data-oxav", "1"); // so __oxAv.applyEls() syncs it live
+    img.setAttribute("data-ox-iconpv", "1"); // our marker (excluded as a src source)
+    img.alt = "アイコンプレビュー";
+    img.style.cssText = "width:100%;height:100%;object-fit:cover;display:block";
+    img.setAttribute("src", src);
+    // Seed the crop immediately so there is no one-frame "uncropped" flash before
+    // __oxAv's next tick.
+    if (window.__oxAvPos) {
+      img.style.objectPosition = window.__oxAvPos();
+      img.style.transformOrigin = window.__oxAvPos();
+    }
+    if (window.__oxAvScale) img.style.transform = window.__oxAvScale();
+    tile.appendChild(img);
+    wrap.appendChild(tile);
+    card.insertBefore(wrap, headerRow.nextSibling);
+  } catch {
+    /* a cosmetic preview must never break the app */
+  }
+}
+
+// Each お知らせ (announcement) card renders a colored LEFT RIM — a thin vertical
+// indigo→violet gradient strip (absolute top-0 left-0 w-1 h-full) — plus, on
+// unread cards, an indigo border + glow. The user wants that edge color gone.
+// Strip just the COLOR: hide the rim strip and neutralize the indigo border/glow,
+// leaving the card's shape intact. We match the strip by its exact class combo +
+// a linear-gradient background so no other accent strip is touched, and only
+// recolor a border/shadow that is actually the indigo one. Cosmetic + reversible;
+// the frozen bundle is untouched.
+const INDIGO = "99, 102, 241"; // rgb of #6366f1, as the browser serializes it
+function neutralizeNoticeEdgeOnce() {
+  try {
+    if (typeof document === "undefined" || !document.querySelectorAll) return;
+    const strips = document.querySelectorAll("div.absolute.top-0.left-0.w-1.h-full");
+    for (let i = 0; i < strips.length; i++) {
+      const strip = strips[i];
+      const bg = strip.style.backgroundImage || strip.style.background || "";
+      if (bg.indexOf("linear-gradient") < 0) continue; // not the colored rim
+      if (strip.style.display !== "none") {
+        strip.style.setProperty("display", "none", "important");
+      }
+      const card = strip.parentElement;
+      if (card && card.style) {
+        const b = card.style.border || card.style.borderColor || "";
+        if (b.replace(/\s/g, "").indexOf(INDIGO.replace(/\s/g, "")) >= 0) {
+          card.style.setProperty("border-color", "rgba(0,0,0,0.08)", "important");
+        }
+        const sh = card.style.boxShadow || "";
+        if (sh.replace(/\s/g, "").indexOf(INDIGO.replace(/\s/g, "")) >= 0) {
+          card.style.setProperty("box-shadow", "none", "important");
+        }
+      }
+    }
+  } catch {
+    /* a cosmetic tweak must never break the app */
+  }
+}
+
 /** Install the relabel patches. Idempotent enough to call once at startup. */
 export function installUiPatches(map = RELABELS) {
   try {
@@ -385,6 +494,8 @@ export function installUiPatches(map = RELABELS) {
       outlineMenuIconsOnce();
       backProfileHeaderOnce();
       haloVeilHeadingsOnce();
+      injectIconPreviewOnce();
+      neutralizeNoticeEdgeOnce();
     };
 
     if (document.readyState !== "loading") setTimeout(run, 0);
