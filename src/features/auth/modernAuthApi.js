@@ -87,8 +87,12 @@ async function writeOwnProfile(uid, { shortId, name, avatar, color }) {
  * The invite code is validated but NEVER written to Firestore and NEVER logged.
  * @returns {Promise<{ uid: string, shortId: string }>}
  */
-export async function signUpWithInviteCode({ inviteCode, password, name, avatar, color } = {}) {
-  if (!validateInviteCode(inviteCode)) throw new Error("invalid-invite-code");
+export async function signUpWithInviteCode({ inviteCode, password, name, avatar, color, debug = false } = {}) {
+  // `debug` is the test-student shortcut (name === "デバッグ123"): it skips the
+  // invite-code gate so a throwaway test account can be made without a code. It
+  // still creates a real Firebase user keyed by a generated Friend ID — nothing
+  // special is written to Firestore, so it is an ordinary (test) student.
+  if (!debug && !validateInviteCode(inviteCode)) throw new Error("invalid-invite-code");
 
   const shortId = generateFriendId();
   const email = makeInternalAuthEmailFromFriendId(shortId);

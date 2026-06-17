@@ -87,9 +87,12 @@ export default function ModernAuthShell({ onAuthed } = {}) {
         return;
       }
       if (mode === "signup") {
+        // Test-student shortcut: typing the name "デバッグ123" makes a throwaway
+        // test student WITHOUT an invite code (a real account, named デバッグ生徒).
+        const isDebug = name.trim() === "デバッグ123";
         // Specific, safe feedback before hitting Firebase. The invite code is a
         // TEST-ONLY gate; it is never written to Firestore and never logged.
-        if (!validateInviteCode(inviteCode)) {
+        if (!isDebug && !validateInviteCode(inviteCode)) {
           setError("招待コードが正しくありません");
           return;
         }
@@ -101,9 +104,10 @@ export default function ModernAuthShell({ onAuthed } = {}) {
         const { shortId } = await signUpWithInviteCode({
           inviteCode,
           password,
-          name,
+          name: isDebug ? "デバッグ生徒" : name,
           avatar: icon.avatar,
           color: icon.color,
+          debug: isDebug,
         });
         setGeneratedFriendId(shortId); // a Friend ID is GENERATED, not typed
       } else {
