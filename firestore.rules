@@ -419,7 +419,8 @@ service cloud.firestore {
       // it as TEACHER/ADMIN-write only (server-set claim). Signed-in READ via the
       // public/data wildcard above. (Firestore ORs allow rules across matching blocks.)
       match /public/data/weeklyTasks/{taskId} {
-        allow create, update, delete: if isTeacher() && noAuthorityFields() && noAnswerFields();
+        allow create, update: if isTeacher() && noAuthorityFields() && noAnswerFields();
+        allow delete: if isTeacher();
       }
       // Study / book-time LOGS (live legacy path: public/data/bookLogs). Each doc
       // carries uid = its owner; the owner creates their own log, and the owner or a
@@ -443,10 +444,12 @@ service cloud.firestore {
       // wildcard. NOTE: this does NOT re-enable the student `seenBy` write (students
       // are not teachers) — per-student progress stays in users/{uid}/customSeen.
       match /public/data/customVocabulary/{vId} {
-        allow create, update, delete: if isTeacher() && noAuthorityFields() && noAnswerFields();
+        allow create, update: if isTeacher() && noAuthorityFields() && noAnswerFields();
+        allow delete: if isTeacher();
       }
       match /public/data/sharedApps/{appId} {
-        allow create, update, delete: if isTeacher() && noAuthorityFields() && noAnswerFields();
+        allow create, update: if isTeacher() && noAuthorityFields() && noAnswerFields();
+        allow delete: if isTeacher();
       }
 
       // ---- direct messages (legacy live path). The legacy app stores DMs at

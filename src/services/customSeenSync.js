@@ -44,7 +44,7 @@ export function installCustomSeenSync() {
     setTimeout(() => {
       const u = uid();
       if (u) loadSeen(u);
-    }, 2500);
+    }, 1000);
 
     // Keep the set fresh with NO extra reads: the bundle writes customSeen on each
     // solved session, so chain the existing FS hook and add the id on that write.

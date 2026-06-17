@@ -215,8 +215,12 @@ export default function ModernAuthShell({ onAuthed } = {}) {
     <div className="ox-auth">
       <form className="ox-auth-card" onSubmit={onSubmit}>
         <div className="ox-auth-brand">
-          <OriexMark />
-          <h1 className="ox-auth-title">Oriex</h1>
+          <img
+            className="ox-auth-wordmark"
+            src={`${import.meta.env.BASE_URL}oriex-wordmark.png`}
+            alt="Oriex"
+            draggable="false"
+          />
           <p className="ox-auth-subtitle">{mode === "signup" ? "新しく始める" : "ログイン"}</p>
         </div>
 

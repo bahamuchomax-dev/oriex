@@ -374,10 +374,15 @@ describe("firestore.rules — legacy live-app write paths restored (artifacts pu
   // study/time logs to artifacts/.../public/data/bookLogs. The hardening's blanket
   // public/data write-deny broke both; these scoped exceptions restore them.
   it("weeklyTasks (plans) are teacher/admin-write only, authority/answer-free", () => {
-    const c = clause(block("/public/data/weeklyTasks/{taskId}"), "create, update, delete");
+    const b = block("/public/data/weeklyTasks/{taskId}");
+    const c = clause(b, "create, update");
     expect(c).toContain("isTeacher()");
     expect(c).toContain("noAuthorityFields()");
     expect(c).toContain("noAnswerFields()");
+    // delete is teacher-gated but NOT field-checked (request.resource is null on delete)
+    const d = clause(b, "delete");
+    expect(d).toContain("isTeacher()");
+    expect(d).not.toContain("noAuthorityFields()");
   });
   it("artifacts bookLogs create is owner-bound by uid (not world-write)", () => {
     // there are TWO bookLogs blocks (top-level + artifacts); assert BOTH owner-bind
@@ -388,10 +393,16 @@ describe("firestore.rules — legacy live-app write paths restored (artifacts pu
   });
   it("teacher problem distribution (customVocabulary / sharedApps) is teacher-write only", () => {
     for (const p of ["/public/data/customVocabulary/{vId}", "/public/data/sharedApps/{appId}"]) {
-      const c = clause(block(p), "create, update, delete");
-      expect(c).toContain("isTeacher()");
-      expect(c).toContain("noAuthorityFields()");
-      expect(c).toContain("noAnswerFields()");
+      const b = block(p);
+      const cu = clause(b, "create, update");
+      expect(cu).toContain("isTeacher()");
+      expect(cu).toContain("noAuthorityFields()");
+      expect(cu).toContain("noAnswerFields()");
+      // delete must be teacher-gated but NOT field-checked (request.resource is null
+      // on delete, so noAuthorityFields/noAnswerFields would wrongly deny it).
+      const d = clause(b, "delete");
+      expect(d).toContain("isTeacher()");
+      expect(d).not.toContain("noAuthorityFields()");
     }
   });
 });

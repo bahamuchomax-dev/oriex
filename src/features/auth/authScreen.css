@@ -86,6 +86,13 @@
   color: var(--accent, #2e9e6b); /* fallback if background-clip unsupported */
   -webkit-text-fill-color: transparent;
 }
+.ox-auth-wordmark {
+  display: block;
+  width: auto;
+  max-width: min(260px, 64vw);
+  height: auto;
+  margin: 2px 0 0;
+}
 .ox-auth-subtitle {
   margin: 8px 0 0;
   font-size: 13px;
