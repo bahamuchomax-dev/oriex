@@ -435,6 +435,19 @@ service cloud.firestore {
         allow update, delete: if signedIn()
                               && (resource.data.uid == request.auth.uid || isTeacher());
       }
+      // Teacher problem distribution (live legacy paths). The bundle CREATEs/DELETEs
+      // word problems at public/data/customVocabulary and distributed apps/links at
+      // public/data/sharedApps; the blanket public/data write-deny had broken both
+      // (先生: 問題配布・削除ができない). TEACHER/ADMIN write only (server-set claim);
+      // authority/answer-field free. Signed-in READ stays via the public/data
+      // wildcard. NOTE: this does NOT re-enable the student `seenBy` write (students
+      // are not teachers) — per-student progress stays in users/{uid}/customSeen.
+      match /public/data/customVocabulary/{vId} {
+        allow create, update, delete: if isTeacher() && noAuthorityFields() && noAnswerFields();
+      }
+      match /public/data/sharedApps/{appId} {
+        allow create, update, delete: if isTeacher() && noAuthorityFields() && noAnswerFields();
+      }
 
       // ---- direct messages (legacy live path). The legacy app stores DMs at
       // artifacts/{appId}/chats/{pairId}, where pairId is the two uids sorted and

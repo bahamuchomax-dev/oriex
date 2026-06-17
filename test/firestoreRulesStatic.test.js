@@ -386,4 +386,12 @@ describe("firestore.rules — legacy live-app write paths restored (artifacts pu
     // the artifacts one allows owner OR teacher to update (teacher comment), not all
     expect(RULES).toMatch(/bookLogs\/\{logId\}\s*\{[\s\S]*?create:[\s\S]*?request\.resource\.data\.uid == request\.auth\.uid/);
   });
+  it("teacher problem distribution (customVocabulary / sharedApps) is teacher-write only", () => {
+    for (const p of ["/public/data/customVocabulary/{vId}", "/public/data/sharedApps/{appId}"]) {
+      const c = clause(block(p), "create, update, delete");
+      expect(c).toContain("isTeacher()");
+      expect(c).toContain("noAuthorityFields()");
+      expect(c).toContain("noAnswerFields()");
+    }
+  });
 });
