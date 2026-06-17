@@ -83,7 +83,7 @@ window.OriexHamu3D = function (canvas, env) {
   if ("outputColorSpace" in renderer && THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
   else if (THREE.sRGBEncoding != null) renderer.outputEncoding = THREE.sRGBEncoding;
   if (THREE.ACESFilmicToneMapping != null) renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.0; /* lowered: keep pale pastels out of ACES' desaturating highlight range */
+  renderer.toneMappingExposure = 1.12; /* bright; saturation is handled per-material (satCol) */
 
   var scene = new THREE.Scene();
   scene.background = new THREE.Color(P ? 0xf2e6d2 : 0x221d17);
@@ -117,8 +117,16 @@ window.OriexHamu3D = function (canvas, env) {
   /* §2 material family: physically-based, matte CLAY/TOY look (non-metal, mid-high
      roughness). A unified roughness range is what reads as "rendered". Per-call `o`
      can still override (roughness/metalness/transparent/opacity/map/emissive). */
+  /* §2 fix: the non-wood objects read washed-out — boost their color SATURATION
+     (HSL S ×1.7) so pastels/toys are vivid, not faint. The wood (topMat) is separate. */
+  function satCol(c, mul) {
+    var col = (c && c.isColor) ? c.clone() : new THREE.Color(c);
+    var hsl = { h: 0, s: 0, l: 0 }; col.getHSL(hsl);
+    col.setHSL(hsl.h, Math.min(1, hsl.s * (mul || 1.7) + 0.05), hsl.l);
+    return col;
+  }
   function mk(c, o) {
-    var m = new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.8, metalness: 0.0 }, o || {}));
+    var m = new THREE.MeshStandardMaterial(Object.assign({ color: satCol(c), roughness: 0.8, metalness: 0.0 }, o || {}));
     MAT.push(m); return m;
   }
   function box(w, h, d, c, o) { return new THREE.Mesh(gk(new THREE.BoxGeometry(w, h, d)), mk(c, o)); }
@@ -236,7 +244,7 @@ window.OriexHamu3D = function (canvas, env) {
         Vs.set(s9, flat ? s9 * 0.26 : s9 * 0.4, s9 * (0.6 + r3 * 0.5));
         M.compose(Vp, Pq, Vs);
         im.setMatrixAt(i, M);
-        im.setColorAt(i, col.setHex(tones[Math.floor(r5 * 6) % 6]));
+        im.setColorAt(i, satCol(tones[Math.floor(r5 * 6) % 6], 1.3)); /* gentle saturation on bedding */
       }
       im.instanceMatrix.needsUpdate = true;
       if (im.instanceColor) im.instanceColor.needsUpdate = true;
