@@ -57,7 +57,7 @@ html:has(.oxh),body:has(.oxh),#root:has(.oxh){background:#0a0c14 !important;}
    cards + tools) rises up against the figure's lower legs (glass cards overlap the
    character, same as the profile/today cards) — keeps the lower content high, no
    big transparent gap. The character box's tail just sits behind the body cards. */
-.oxh-hero{position:relative;z-index:3;min-height:452px;display:flex;flex-direction:column;gap:10px;
+.oxh-hero{position:relative;z-index:3;min-height:476px;display:flex;flex-direction:column;gap:10px;
   padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 0;}
 .oxh-body{position:relative;z-index:3;display:flex;flex-direction:column;gap:14px;padding:14px 14px 0;}
 
