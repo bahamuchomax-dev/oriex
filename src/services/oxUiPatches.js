@@ -289,6 +289,11 @@ export const VEIL_HALO_TEXTS = [
   "クイックメニュー",
   "最近の記録",
   "アカウント",
+  "パレット",
+  // 先生からの問題 area headings — kept legible on a photo theme background
+  "先生からの問題",
+  "配布アプリ",
+  "配信",
 ];
 // Stronger, thicker white outline (8-direction 1px ring + glow) so headings stay
 // bold and legible on busy/bright photos.

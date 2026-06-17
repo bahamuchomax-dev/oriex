@@ -90,26 +90,25 @@ export function installCutoverLogoutShield({ onLogoutIntent } = {}) {
       }
       if (!isLogoutControl(t)) return;
 
-      // Cancel BEFORE legacy sees it so its logout-render path never runs.
+      // A capture-phase CLICK runs before the legacy app's own onClick, so cancel it
+      // here and the legacy logout-render path never runs.
       e.preventDefault();
       e.stopPropagation();
       if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
 
-      // Anti-mis-tap: pointerdown/touchstart are still CANCELLED (legacy never logs
-      // out early), but only a deliberate CLICK opens the confirm dialog — so a
-      // graze / scroll / near-miss by the corner icon no longer pops it.
-      if (e.type === "click" && typeof onLogoutIntent === "function") onLogoutIntent();
+      if (typeof onLogoutIntent === "function") onLogoutIntent();
     } catch {
       /* ignore — shield is best-effort visual/routing only */
     }
   };
 
-  // capture: true  -> we see the press before the legacy app's own handler.
-  // passive: false -> required so preventDefault() actually works; touchstart is
-  //                   passive-by-default in Chrome, which otherwise ignores it
-  //                   (the "[Intervention] Unable to preventDefault" warning).
+  // CLICK ONLY (capture). A click is a deliberate down+up, so a graze / scroll /
+  // near-miss by the corner icon does not trigger logout (anti-mis-tap). We must NOT
+  // cancel touchstart/pointerdown: calling preventDefault on touchstart SUPPRESSES the
+  // following click on mobile, which made the logout button stop responding. Capture
+  // click still beats the legacy onClick, so the old login never renders.
   const OPTS = { capture: true, passive: false };
-  const EVENTS = ["pointerdown", "touchstart", "click"];
+  const EVENTS = ["click"];
   EVENTS.forEach((n) => document.addEventListener(n, handler, OPTS));
   return () => {
     EVENTS.forEach((n) => document.removeEventListener(n, handler, OPTS));
