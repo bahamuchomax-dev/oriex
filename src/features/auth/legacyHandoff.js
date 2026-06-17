@@ -21,6 +21,7 @@ import { installFriendCover } from "../../services/friendCover.js";
 import { installSwipeNav } from "../../services/swipeNav.js";
 import { installReadCounter } from "../../services/readCounter.js";
 import { installHamsterSync } from "../../services/hamsterSync.js";
+import { installStudentApps } from "../teacherApps/mountStudentApps.jsx";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -166,6 +167,14 @@ export async function handoffToLegacy(user, importLegacy) {
     installHamsterSync();
   } catch {
     /* non-fatal */
+  }
+
+  // Replace the legacy "先生からの問題 / 配布アプリ" student list with a React screen
+  // that records opened items so they move to 過去 (bug 2-1).
+  try {
+    installStudentApps();
+  } catch {
+    /* non-fatal: the legacy list still works */
   }
 
 
