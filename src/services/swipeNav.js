@@ -1,21 +1,26 @@
 /* ============================================================
  * swipeNav — left/right swipe to move between the bottom-nav tabs.
  * ------------------------------------------------------------
- * On a phone the user wants to swipe horizontally to move between ホーム / 学習 /
- * ひろば … instead of only tapping the bottom bar. We detect a horizontal swipe and
- * "click" the previous/next button of the bottom nav. The nav is found at RUNTIME
- * (a fixed bar near the bottom with a few buttons), so it works without depending
- * on the frozen bundle's class names. We ignore swipes that begin on a horizontally
- * scrollable row (category/student chips), an input, or while a modal is open, so
- * normal interactions are untouched. Frozen bundle untouched.
+ * The phone user wants to swipe horizontally to move between ホーム / 学習 / 記録 …
+ * instead of only tapping the bottom bar. On a horizontal swipe we "click" the
+ * previous/next button of the bottom nav.
+ *
+ * The legacy bundle's bottom nav has NO stable class and marks the active tab only
+ * by inline color (no .on / aria), which is why a class-based approach did nothing.
+ * So we (1) find the nav as the bottom-most wide short row of 3–8 buttons (any CSS
+ * position), and (2) find the active tab by class/aria/data OR a COLOR heuristic
+ * (the one accent-colored button among muted ones) — and we also TRACK taps so the
+ * active index stays correct across the bundle's re-renders. Frozen bundle untouched.
  * ============================================================ */
 
-const H_MIN = 60; // min horizontal travel (px) to count as a swipe
-const H_DOM = 1.7; // horizontal must dominate vertical by this factor
+const H_MIN = 55; // min horizontal travel (px)
+const H_DOM = 1.6; // horizontal must dominate vertical by this factor
+const NAV_SEL = "button,a[role=button],[role=tab]";
 
 let sx = 0;
 let sy = 0;
 let tracking = false;
+let activeIdx = -1; // tracked active tab (survives re-renders by position)
 
 function modalOpen() {
   return !!document.querySelector(
@@ -23,11 +28,10 @@ function modalOpen() {
   );
 }
 
-/** True if the touch began inside a horizontally scrollable element (chips row). */
 function inHorizontalScroller(el) {
   let n = el;
   while (n && n.nodeType === 1 && n !== document.body) {
-    if (n.scrollWidth > n.clientWidth + 6) {
+    if (n.scrollWidth > n.clientWidth + 8) {
       const ov = getComputedStyle(n).overflowX;
       if (ov === "auto" || ov === "scroll") return true;
     }
@@ -36,28 +40,86 @@ function inHorizontalScroller(el) {
   return false;
 }
 
-/** Find the bottom navigation bar: a fixed element near the viewport bottom that
- *  holds a small row of buttons. Class-agnostic so it survives bundle changes. */
+/** The bottom nav: the bottom-most wide, short row holding 3–8 buttons, regardless
+ *  of CSS position (fixed/sticky/static). Class-agnostic so it survives the bundle. */
 function findNav() {
-  const byClass = document.querySelector(".rx-tabbar");
-  if (byClass && byClass.querySelectorAll("button").length >= 2) return byClass;
-  const els = document.querySelectorAll("nav,div");
   const vh = window.innerHeight || document.documentElement.clientHeight;
-  for (let i = 0; i < els.length; i++) {
-    const el = els[i];
-    let cs;
+  const vw = window.innerWidth || document.documentElement.clientWidth;
+  const all = document.querySelectorAll("nav,footer,div,ul");
+  let best = null;
+  let bestBottom = -1;
+  for (let i = 0; i < all.length; i++) {
+    const el = all[i];
+    const btns = el.querySelectorAll(NAV_SEL);
+    if (btns.length < 3 || btns.length > 8) continue;
+    let r;
     try {
-      cs = getComputedStyle(el);
+      r = el.getBoundingClientRect();
     } catch {
       continue;
     }
-    if (cs.position !== "fixed") continue;
-    const r = el.getBoundingClientRect();
-    if (r.width < vh * 0.4 || r.bottom < vh - 130 || r.top > vh) continue;
-    const btns = el.querySelectorAll("button");
-    if (btns.length >= 3 && btns.length <= 6) return el;
+    if (r.width < vw * 0.45 || r.height > 150) continue;
+    if (r.bottom < vh - 170 || r.top > vh + 20) continue;
+    if (r.bottom > bestBottom) {
+      bestBottom = r.bottom;
+      best = el;
+    }
   }
-  return null;
+  return best;
+}
+
+function navButtons(nav) {
+  return nav ? Array.prototype.slice.call(nav.querySelectorAll(NAV_SEL)) : [];
+}
+
+function classStr(el) {
+  const c = el.className;
+  return typeof c === "string" ? c : c && c.baseVal != null ? c.baseVal : "";
+}
+
+/** Active tab by explicit markers (class / aria / data / active child). */
+function detectActiveByMarker(btns) {
+  for (let i = 0; i < btns.length; i++) {
+    const b = btns[i];
+    if (/\b(on|active|selected|current)\b/i.test(classStr(b))) return i;
+    const as = b.getAttribute("aria-selected");
+    const ac = b.getAttribute("aria-current");
+    if (as === "true" || ac === "true" || ac === "page" || ac === "step") return i;
+    if (b.getAttribute("data-active") != null || b.getAttribute("data-selected") != null) return i;
+    if (b.querySelector && b.querySelector('.on,.active,[aria-current="page"]')) return i;
+  }
+  return -1;
+}
+
+/** Active tab by COLOR: the legacy nav colors the active tab with the accent while
+ *  the others are muted, so the active one is the odd colour out. */
+function detectActiveByColor(btns) {
+  const colors = btns.map((b) => {
+    const svg = b.querySelector("svg");
+    try {
+      if (svg) {
+        const cs = getComputedStyle(svg);
+        return cs.stroke && cs.stroke !== "none" ? cs.stroke : cs.color;
+      }
+      return getComputedStyle(b).color;
+    } catch {
+      return "";
+    }
+  });
+  const counts = {};
+  for (const c of colors) counts[c] = (counts[c] || 0) + 1;
+  // the accent tab's colour appears exactly once among otherwise-uniform muted tabs
+  for (let i = 0; i < colors.length; i++) {
+    if (colors[i] && counts[colors[i]] === 1) return i;
+  }
+  return -1;
+}
+
+function activeIndex(btns) {
+  if (activeIdx >= 0 && activeIdx < btns.length) return activeIdx;
+  let i = detectActiveByMarker(btns);
+  if (i < 0) i = detectActiveByColor(btns);
+  return i;
 }
 
 function onStart(e) {
@@ -69,9 +131,7 @@ function onStart(e) {
   if (
     target &&
     target.closest &&
-    (target.closest("input,textarea,select,[contenteditable=true]") ||
-      target.closest(".rx-tabbar") ||
-      inHorizontalScroller(target))
+    (target.closest("input,textarea,select,[contenteditable=true]") || inHorizontalScroller(target))
   ) {
     return;
   }
@@ -88,23 +148,35 @@ function onEnd(e) {
   const dy = t.clientY - sy;
   if (Math.abs(dx) < H_MIN || Math.abs(dx) < Math.abs(dy) * H_DOM) return;
   const nav = findNav();
-  if (!nav) return;
-  const btns = Array.prototype.slice.call(nav.querySelectorAll("button"));
+  const btns = navButtons(nav);
   if (btns.length < 2) return;
-  let idx = btns.findIndex((b) => /(^|\s)on(\s|$)/.test(b.className || ""));
-  if (idx < 0) idx = btns.findIndex((b) => b.getAttribute("aria-selected") === "true");
-  if (idx < 0) return; // can't tell which tab is active — do nothing
-  // Swipe left (dx<0) → next tab to the right; swipe right → previous.
+  const idx = activeIndex(btns);
+  if (idx < 0) return; // genuinely can't tell which tab is active — don't jump blindly
+  // swipe LEFT (dx<0) → next tab to the right; swipe RIGHT → previous
   const next = dx < 0 ? idx + 1 : idx - 1;
   if (next < 0 || next >= btns.length) return;
+  activeIdx = next;
   btns[next].click();
   slideIn(dx < 0 ? "l" : "r");
 }
 
-// Seamless feel: after the tab switches, slide the freshly-shown screen in from the
-// swipe direction. Best-effort — if the new screen hasn't mounted yet we just skip
-// the animation (no glitch). The legacy bundle is untouched; the keyframes live in
-// app.css (.ox-swipe-l / .ox-swipe-r).
+/** Keep the tracked active index in sync with manual taps on the nav. */
+function onNavTap(e) {
+  try {
+    const t = e.target;
+    if (!t || !t.closest) return;
+    const nav = findNav();
+    if (!nav || !nav.contains(t)) return;
+    const btn = t.closest(NAV_SEL);
+    if (!btn) return;
+    const i = navButtons(nav).indexOf(btn);
+    if (i >= 0) activeIdx = i;
+  } catch {
+    /* ignore */
+  }
+}
+
+/** Seamless feel: slide the freshly-shown screen in from the swipe direction. */
 function slideIn(dir) {
   const cls = dir === "l" ? "ox-swipe-l" : "ox-swipe-r";
   let tries = 0;
@@ -129,6 +201,7 @@ export function installSwipeNav() {
     document.__oxSwipeNav = true;
     document.addEventListener("touchstart", onStart, { passive: true });
     document.addEventListener("touchend", onEnd, { passive: true });
+    document.addEventListener("click", onNavTap, true);
   } catch {
     /* ignore */
   }

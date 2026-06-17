@@ -27,7 +27,9 @@ const LOGOUT_ICON_PATH_PREFIX = "M15 12H3";
 /** True iff `start` (or a close ancestor) is a narrow legacy logout control. */
 export function isLogoutControl(start) {
   let el = start;
-  for (let i = 0; el && i < 6; i++) {
+  // Tight walk (4): match the logout control itself / icon-in-button, NOT a big
+  // top-bar container — otherwise a tap anywhere near the corner would count.
+  for (let i = 0; el && i < 4; i++) {
     if (el.nodeType === 1) {
       // never treat the modern auth UI's own controls as a legacy logout
       if (el.classList && el.classList.contains("ox-auth")) return false;
@@ -93,7 +95,10 @@ export function installCutoverLogoutShield({ onLogoutIntent } = {}) {
       e.stopPropagation();
       if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
 
-      if (typeof onLogoutIntent === "function") onLogoutIntent();
+      // Anti-mis-tap: pointerdown/touchstart are still CANCELLED (legacy never logs
+      // out early), but only a deliberate CLICK opens the confirm dialog — so a
+      // graze / scroll / near-miss by the corner icon no longer pops it.
+      if (e.type === "click" && typeof onLogoutIntent === "function") onLogoutIntent();
     } catch {
       /* ignore — shield is best-effort visual/routing only */
     }
