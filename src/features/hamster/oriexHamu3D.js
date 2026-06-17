@@ -71,7 +71,7 @@ window.OriexHamu3D = function (canvas, env) {
   var mood0 = env.mood == null ? 60 : env.mood, sc0 = env.sc || 0.9;
   var getEdit = env.getEdit || function () { return null; };
 
-  if (a && Math.abs(a.rot - 0.55) < 1e-6 && Math.abs(a.pit - 0.46) < 1e-6 && a.zoom === 1 && !a.panX && !a.panY) { a.rot = 0.82; a.pit = 0.53; a.th = 0.82; a.hx2 = 55; a.hz2 = 62; }
+  if (a && Math.abs(a.rot - 0.55) < 1e-6 && Math.abs(a.pit - 0.46) < 1e-6 && a.zoom === 1 && !a.panX && !a.panY) { a.rot = 0.82; a.pit = 0.34; a.th = 0.82; a.hx2 = 55; a.hz2 = 62; }
   /* AA: DPR上限。antiAliasingLevel>=2で従来通り(2)、軽量化したい場合は1.5に。モバイル負荷を抑えつつ輪郭を滑らかに保つ */
   var DPR = Math.min(PR.antiAliasingLevel >= 2 ? 2 : 1.5, window.devicePixelRatio || 1);
   renderer.setPixelRatio(DPR);
