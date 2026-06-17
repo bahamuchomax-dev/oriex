@@ -175,12 +175,6 @@ const VIEWS = {
   frames: FramesView,
 };
 
-const DEMO_PLAN = [
-  { name: "数学：関数とグラフ", min: "120分", done: true },
-  { name: "英語：長文読解", min: "90分", done: true },
-  { name: "化学：理論化学", min: "60分", done: false },
-  { name: "現代文：小説読解", min: "60分", done: false },
-];
 const DOW = ["日", "月", "火", "水", "木", "金", "土"];
 
 // The user's real weekly plan (written by PlansView → localStorage "oxhPlans",
@@ -199,7 +193,7 @@ function readWeekPlans() {
   }
 }
 
-export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = {}) {
+export default function Home({ profile, onOpen = () => {} } = {}) {
   const [view, setView] = useState("home");
   const st = useStudy(); // live study data — the dashboard reflects recorded sessions
 
@@ -234,10 +228,10 @@ export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = 
 
   const weekPlans = readWeekPlans();
   const planList = weekPlans
-    ? weekPlans.slice(0, 5).map((t) => ({ name: t.text, min: `${t.min || 0}分`, done: !!t.done }))
-    : plan;
-  const planDone = weekPlans ? weekPlans.filter((t) => t.done).length : planList.filter((x) => x.done).length;
-  const planTotal = weekPlans ? weekPlans.length : planList.length;
+    ? weekPlans.slice(0, 6).map((t) => ({ name: t.text, min: `${t.min || 0}分`, done: !!t.done }))
+    : [];
+  const planDone = planList.filter((x) => x.done).length;
+  const planTotal = planList.length;
   const initial = (p.name || "G").trim().charAt(0) || "G";
 
   const go = (key) => {
@@ -277,14 +271,11 @@ export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = 
 
             <div className="oxh-profile">
               <div className="oxh-pr-top">
-                <button className="oxh-av" onClick={() => go("frames")} aria-label="アイコンフレーム"
-                  style={{ boxShadow: frameRing(getFrame()) === "none" ? undefined : frameRing(getFrame()) }}>
+                <div className="oxh-av" style={{ boxShadow: frameRing(getFrame()) === "none" ? undefined : frameRing(getFrame()) }}>
                   {avatarImg ? <img className="oxh-av-img" src={avatarImg} alt="" /> : initial}
-                </button>
+                </div>
                 <div style={{ flex: 1 }}>
-                  <div className="oxh-pr-name">{p.name}
-                    <svg viewBox="0 0 24 24"><path d="M4 20l4-1L19 8l-3-3L5 16z" /></svg>
-                  </div>
+                  <div className="oxh-pr-name">{p.name}</div>
                   <div className="oxh-lvrow"><span className="oxh-lv">Lv. {lvLevel}</span><small>EXP {lvPct}%</small></div>
                 </div>
               </div>
@@ -334,15 +325,19 @@ export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = 
               <div className="oxh-card">
                 <div className="oxh-card-h">{Checklist}今週の予定<button className="oxh-more" onClick={() => go("plans")}>詳細</button></div>
                 <div className="oxh-plan">
-                  {planList.map((it) => (
-                    <div className="oxh-pl" key={it.name}>
-                      <span className={`oxh-box${it.done ? " oxh-on" : ""}`}>
-                        {it.done && <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" /></svg>}
-                      </span>
-                      <span className={`oxh-nm${it.done ? " oxh-done" : ""}`}>{it.name}</span>
-                      <span className="oxh-mn">{it.min}</span>
-                    </div>
-                  ))}
+                  {planList.length ? (
+                    planList.map((it) => (
+                      <div className="oxh-pl" key={it.name}>
+                        <span className={`oxh-box${it.done ? " oxh-on" : ""}`}>
+                          {it.done && <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" /></svg>}
+                        </span>
+                        <span className={`oxh-nm${it.done ? " oxh-done" : ""}`}>{it.name}</span>
+                        <span className="oxh-mn">{it.min}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="oxh-pl-empty">先生からの予定はまだありません</div>
+                  )}
                 </div>
                 <div className="oxh-plan-foot">{Trophy}{planDone} / {planTotal}</div>
               </div>
