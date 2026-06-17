@@ -499,6 +499,41 @@ function neutralizeNoticeEdgeOnce() {
   }
 }
 
+// On a photo theme background the legacy "先生からの問題 / 配布アプリ / 配信" (customApp)
+// screen renders its text/cards straight on the photo, which is hard to read. Give
+// that screen's content container a soft frosted backing so it stays legible —
+// ONLY under body.oxbg-on (photo bg on) and only on that screen (matched by its
+// heading). Cosmetic + reversible; the frozen bundle is untouched.
+const CUSTOMAPP_HEADINGS = ["先生からの問題", "配布アプリ", "配信"];
+function backCustomAppOnce() {
+  try {
+    if (typeof document === "undefined" || !document.body) return;
+    if (!document.body.classList || !document.body.classList.contains("oxbg-on")) return;
+    const heads = document.querySelectorAll("h1,h2,h3");
+    for (let i = 0; i < heads.length; i++) {
+      if (CUSTOMAPP_HEADINGS.indexOf((heads[i].textContent || "").trim()) < 0) continue;
+      let p = heads[i];
+      for (let h = 0; h < 6 && p; h += 1) {
+        const cls = (p.className && typeof p.className === "string" && p.className) || "";
+        if (cls.indexOf("space-y-6") >= 0) {
+          if (String(p.style.background).indexOf("255, 255, 255") < 0) {
+            p.style.background = "rgba(255,255,255,0.84)";
+            p.style.backdropFilter = "blur(8px)";
+            p.style.webkitBackdropFilter = "blur(8px)";
+            p.style.borderRadius = "18px";
+            p.style.padding = "12px";
+          }
+          return;
+        }
+        p = p.parentElement;
+      }
+      return;
+    }
+  } catch {
+    /* cosmetic only */
+  }
+}
+
 /** Install the relabel patches. Idempotent enough to call once at startup. */
 export function installUiPatches(map = RELABELS) {
   try {
@@ -523,6 +558,7 @@ export function installUiPatches(map = RELABELS) {
       injectIconPreviewOnce();
       neutralizeNoticeEdgeOnce();
       stripTeacherNameSuffixOnce();
+      backCustomAppOnce();
     };
 
     if (document.readyState !== "loading") setTimeout(run, 0);
