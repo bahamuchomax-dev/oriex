@@ -30,6 +30,7 @@ import FramesView from "./views/FramesView.jsx";
 import { useStudy, totalMinutes, streakDays, todayMinutes, weekSeries, fmtMinutes } from "./studyStore.js";
 import { getFrame, frameRing } from "./iconFrames.js";
 import { getAccount, accountAvatarImg, getRealStudy } from "./realAccount.js";
+import { useTeacherPlan } from "./teacherPlan.js";
 
 /* ============================================================
  * Home — Oriex new home (v2: big character).
@@ -226,10 +227,14 @@ export default function Home({ profile, onOpen = () => {} } = {}) {
   const wsMax = Math.max(...ws.map((d) => d.minutes), 1);
   const wsAvg = Math.round(ws.reduce((a, d) => a + d.minutes, 0) / 7);
 
+  const teacherPlan = useTeacherPlan(); // 先生からの週計画 (live Firestore), or null
   const weekPlans = readWeekPlans();
-  const planList = weekPlans
-    ? weekPlans.slice(0, 6).map((t) => ({ name: t.text, min: `${t.min || 0}分`, done: !!t.done }))
+  const planSrc = teacherPlan
+    ? teacherPlan
+    : weekPlans
+    ? weekPlans.map((t) => ({ name: t.text, min: `${t.min || 0}分`, done: !!t.done }))
     : [];
+  const planList = planSrc.slice(0, 6);
   const planDone = planList.filter((x) => x.done).length;
   const planTotal = planList.length;
   const initial = (p.name || "G").trim().charAt(0) || "G";
