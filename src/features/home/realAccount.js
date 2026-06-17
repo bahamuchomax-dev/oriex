@@ -40,3 +40,46 @@ export function accountAvatarImg(acct) {
   const a = acct && acct.avatar;
   return typeof a === "string" && /^(https?:|data:image)/.test(a) ? a : null;
 }
+
+// Legacy day key, matching oxHelpers' __oxStudy exactly (JST-shifted YYYY/M/D).
+function legacyDayKey(ts) {
+  const t = new Date(ts);
+  const i = new Date(t.getTime() + (t.getTimezoneOffset() + 540) * 60000);
+  return i.getFullYear() + "/" + (i.getMonth() + 1) + "/" + i.getDate();
+}
+
+/**
+ * The user's REAL study history from the legacy per-day cache
+ * (`oriex_local_study_minutes_{uid}` = { "YYYY/M/D": minutes }, written by
+ * __oxStudy). Returns all-time total, the last-7-days series, and the current
+ * streak — or null when there is no cached history (fall back to the new-home store).
+ */
+export function getRealStudy(acct) {
+  try {
+    const uid = (acct && acct.uid) || "local";
+    const raw = window.localStorage.getItem("oriex_local_study_minutes_" + uid);
+    const map = raw ? JSON.parse(raw) : null;
+    if (!map || typeof map !== "object") return null;
+    let total = 0;
+    for (const k in map) {
+      if (Object.prototype.hasOwnProperty.call(map, k)) total += Number(map[k]) || 0;
+    }
+    if (total <= 0) return null;
+    const DAY = 86400000;
+    const now = Date.now();
+    const week = [];
+    for (let i = 6; i >= 0; i -= 1) {
+      const ts = now - i * DAY;
+      week.push({ dow: new Date(ts).getDay(), minutes: Number(map[legacyDayKey(ts)]) || 0, today: i === 0 });
+    }
+    let streak = 0;
+    let i = (Number(map[legacyDayKey(now)]) || 0) > 0 ? 0 : 1;
+    for (; ; i += 1) {
+      if ((Number(map[legacyDayKey(now - i * DAY)]) || 0) > 0) streak += 1;
+      else break;
+    }
+    return { total, week, streak };
+  } catch {
+    return null;
+  }
+}
