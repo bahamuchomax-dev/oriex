@@ -86,8 +86,9 @@ window.OriexHamu3D = function (canvas, env) {
   renderer.toneMappingExposure = 1.12; /* bright; saturation is handled per-material (satCol) */
 
   var scene = new THREE.Scene();
-  scene.background = new THREE.Color(P ? 0xf2e6d2 : 0x221d17);
-  scene.fog = new THREE.Fog(P ? 0xf2e6d2 : 0x221d17, 1400, 2600);
+  /* deeper warm-tan background (was a near-white cream) so the scene isn't washed out */
+  scene.background = new THREE.Color(P ? 0xd8c09a : 0x221d17);
+  scene.fog = new THREE.Fog(P ? 0xd8c09a : 0x221d17, 1400, 2600);
 
   var camera = new THREE.PerspectiveCamera(42, 1, 10, 4000);
 
@@ -119,10 +120,14 @@ window.OriexHamu3D = function (canvas, env) {
      can still override (roughness/metalness/transparent/opacity/map/emissive). */
   /* §2 fix: the non-wood objects read washed-out — boost their color SATURATION
      (HSL S ×1.7) so pastels/toys are vivid, not faint. The wood (topMat) is separate. */
+  /* Strongly enrich non-wood colors: big SATURATION boost AND DEEPEN light colors
+     (pull lightness toward 0.5) so the room reads rich/deep instead of whitish. */
   function satCol(c, mul) {
     var col = (c && c.isColor) ? c.clone() : new THREE.Color(c);
     var hsl = { h: 0, s: 0, l: 0 }; col.getHSL(hsl);
-    col.setHSL(hsl.h, Math.min(1, hsl.s * (mul || 1.7) + 0.05), hsl.l);
+    var s = Math.min(1, hsl.s * (mul || 2.2) + 0.08);
+    var l = hsl.l > 0.5 ? 0.5 + (hsl.l - 0.5) * 0.5 : hsl.l;
+    col.setHSL(hsl.h, s, l);
     return col;
   }
   function mk(c, o) {
@@ -244,7 +249,7 @@ window.OriexHamu3D = function (canvas, env) {
         Vs.set(s9, flat ? s9 * 0.26 : s9 * 0.4, s9 * (0.6 + r3 * 0.5));
         M.compose(Vp, Pq, Vs);
         im.setMatrixAt(i, M);
-        im.setColorAt(i, satCol(tones[Math.floor(r5 * 6) % 6], 1.3)); /* gentle saturation on bedding */
+        im.setColorAt(i, satCol(tones[Math.floor(r5 * 6) % 6], 1.8)); /* richer, deeper bedding (less white) */
       }
       im.instanceMatrix.needsUpdate = true;
       if (im.instanceColor) im.instanceColor.needsUpdate = true;
