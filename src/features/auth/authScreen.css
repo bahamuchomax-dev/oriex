@@ -56,6 +56,9 @@
 /* ---------- brand / header ---------- */
 .ox-auth-brand {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* reliably center the wordmark + subtitle */
   margin-bottom: 22px;
 }
 /* The Oriex app/PWA icon (see OriexMark.jsx) — matches the installed app. */
@@ -89,9 +92,9 @@
 .ox-auth-wordmark {
   display: block;
   width: auto;
-  max-width: min(340px, 82vw);
+  max-width: min(260px, 64vw); /* original size */
   height: auto;
-  margin: 2px auto 4px; /* centered + a touch larger, sits above the ログイン/新規登録 label */
+  margin: 2px 0 4px; /* centered by the flex parent */
 }
 .ox-auth-subtitle {
   margin: 8px 0 0;
