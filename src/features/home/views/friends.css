@@ -1,0 +1,375 @@
+/* ============================================================
+ * friends.css — ひろば (FriendsView)
+ * Every selector is prefixed with .oxv-fr (zero global collisions);
+ * the only @keyframes are namespaced oxvFr*. Chrome (.oxh-sub /
+ * .oxh-sub-head / .oxh-back / .oxh-sub-title / .oxv-body) is defined
+ * globally — NOT redefined here. Tokens (--red/--blue/--gold/--good/
+ * --glass/--glass-2/--line/...) cascade from the .oxh ancestor.
+ * ============================================================ */
+
+/* --- tab switch ------------------------------------------------------- */
+.oxv-fr-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 16px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+}
+.oxv-fr-tab {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  font-family: "Zen Maru Gothic", sans-serif;
+  cursor: pointer;
+  transition: background .22s, color .22s, box-shadow .22s;
+}
+.oxv-fr-tab svg { width: 16px; height: 16px; flex: none; }
+.oxv-fr-tab:hover { color: var(--ink); }
+.oxv-fr-tab.oxv-fr-on {
+  color: #fff;
+  background: linear-gradient(150deg, rgba(232, 39, 60, .92), rgba(63, 141, 255, .82));
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .3);
+}
+
+/* --- panel fade on tab switch ---------------------------------------- */
+.oxv-fr-panel { animation: oxvFrFade .26s ease; }
+@keyframes oxvFrFade {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* --- ランキング: your standing hero ---------------------------------- */
+.oxv-fr-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 16px;
+  margin-bottom: 16px;
+  border-radius: 18px;
+  background: linear-gradient(150deg, rgba(63, 141, 255, .24), rgba(232, 39, 60, .12));
+  border: 1px solid rgba(63, 141, 255, .42);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .3);
+}
+.oxv-fr-hero-badge {
+  width: 58px;
+  height: 58px;
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 1px;
+  border-radius: 50%;
+  color: #fff;
+  background: radial-gradient(circle at 32% 28%, #7db4ff, var(--blue) 70%);
+  box-shadow: 0 8px 20px rgba(63, 141, 255, .45), inset 0 1px 0 rgba(255, 255, 255, .35);
+}
+.oxv-fr-hero-badge b {
+  font-size: 27px;
+  font-weight: 900;
+  line-height: 1;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-fr-hero-badge small { font-size: 12px; font-weight: 800; }
+.oxv-fr-hero-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.oxv-fr-hero-k { font-size: 11px; font-weight: 700; color: var(--muted); }
+.oxv-fr-hero-v {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.05;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-fr-hero-s { font-size: 11px; font-weight: 700; color: #bcd0ff; }
+
+/* --- section heading -------------------------------------------------- */
+.oxv-fr-h {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 2px 10px;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-fr-h svg { width: 17px; height: 17px; color: var(--red); flex: none; }
+.oxv-fr-h small {
+  margin-left: auto;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* --- shared list + rows ---------------------------------------------- */
+.oxv-fr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.oxv-fr-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .22);
+}
+.oxv-fr-row-me {
+  background: linear-gradient(150deg, rgba(63, 141, 255, .24), rgba(63, 141, 255, .08));
+  border-color: rgba(63, 141, 255, .5);
+  box-shadow: 0 8px 20px rgba(63, 141, 255, .2);
+}
+
+/* rank cell + medal */
+.oxv-fr-rank {
+  width: 28px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.oxv-fr-num {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.oxv-fr-medal { width: 26px; height: 26px; display: block; }
+.oxv-fr-medal svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .35));
+}
+
+/* avatar (shared by both tabs) */
+.oxv-fr-av {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  font-family: "Zen Maru Gothic", sans-serif;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 4px 10px rgba(0, 0, 0, .3);
+}
+
+/* leaderboard name + minutes */
+.oxv-fr-name {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.oxv-fr-you {
+  flex: none;
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 800;
+  color: #bcd0ff;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(63, 141, 255, .18);
+  border: 1px solid rgba(63, 141, 255, .42);
+}
+.oxv-fr-min {
+  flex: none;
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-fr-row-me .oxv-fr-min { color: #bcd0ff; }
+
+/* --- フレンド: header + add button ----------------------------------- */
+.oxv-fr-fhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.oxv-fr-fcount { font-size: 13px; font-weight: 800; color: var(--muted); }
+.oxv-fr-fcount b {
+  color: var(--ink);
+  font-size: 15px;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-fr-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 800;
+  font-family: "Zen Maru Gothic", sans-serif;
+  cursor: pointer;
+  background: linear-gradient(150deg, #ff6173, var(--red));
+  box-shadow: 0 8px 18px rgba(232, 39, 60, .32);
+  transition: transform .15s, box-shadow .22s, filter .22s;
+}
+.oxv-fr-add svg { width: 16px; height: 16px; flex: none; }
+.oxv-fr-add:hover { filter: brightness(1.08); box-shadow: 0 10px 22px rgba(232, 39, 60, .42); }
+.oxv-fr-add:active { transform: translateY(1px) scale(.98); }
+
+/* invite-code card */
+.oxv-fr-invite {
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 16px;
+  background: var(--glass-2);
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .32);
+  animation: oxvFrPop .25s ease;
+}
+@keyframes oxvFrPop {
+  from { opacity: 0; transform: translateY(-6px) scale(.985); }
+  to { opacity: 1; transform: none; }
+}
+.oxv-fr-invite-t {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-fr-invite-s {
+  margin: 0 0 12px;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.oxv-fr-code {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 10px 14px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, .28);
+  border: 1px dashed var(--line);
+}
+.oxv-fr-code-v {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.oxv-fr-copy {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--glass);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .2s, transform .15s, color .2s;
+}
+.oxv-fr-copy svg { width: 14px; height: 14px; flex: none; }
+.oxv-fr-copy:hover { background: rgba(255, 255, 255, .08); }
+.oxv-fr-copy:active { transform: scale(.96); }
+.oxv-fr-copy:disabled { cursor: default; color: var(--good); }
+.oxv-fr-invite-n {
+  margin: 10px 0 0;
+  font-size: 10.5px;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* online dot on the avatar */
+.oxv-fr-dot {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #7c8aa0;
+  border: 2px solid #0d1019;
+}
+.oxv-fr-dot-on {
+  background: var(--good);
+  box-shadow: 0 0 7px rgba(43, 212, 126, .7);
+}
+
+/* friend name + status */
+.oxv-fr-fmeta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.oxv-fr-fmeta b {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.oxv-fr-fmeta small { font-size: 11px; color: var(--muted); }
+
+/* streak (連続日数) */
+.oxv-fr-streak {
+  flex: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  color: var(--gold);
+}
+.oxv-fr-streak svg { width: 14px; height: 14px; flex: none; align-self: center; }
+.oxv-fr-streak b {
+  font-size: 15px;
+  font-weight: 900;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-fr-streak small { font-size: 10px; font-weight: 800; color: var(--muted); }

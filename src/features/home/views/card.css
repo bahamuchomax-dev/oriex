@@ -1,0 +1,591 @@
+/* ============================================================
+   CardView — 暗記カード (flashcard decks)
+   Every selector is scoped under .oxv-cd. Tokens (--bg/--ink/
+   --muted/--red/--blue/--gold/--good/--glass/--glass-2/--line)
+   cascade from the .oxh ancestor. Keyframes are namespaced oxvCd*.
+   ============================================================ */
+
+.oxv-cd .oxv-cd-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+/* ---- picker intro ----------------------------------------- */
+.oxv-cd .oxv-cd-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.oxv-cd .oxv-cd-intro-h {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--ink);
+}
+.oxv-cd .oxv-cd-intro-sub {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- deck picker ------------------------------------------ */
+.oxv-cd .oxv-cd-decks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.oxv-cd .oxv-cd-deck {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  text-align: left;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.34);
+  cursor: pointer;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+.oxv-cd .oxv-cd-deck:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.42);
+}
+.oxv-cd .oxv-cd-deck:active {
+  transform: translateY(0) scale(0.99);
+}
+.oxv-cd .oxv-cd-deck:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.oxv-cd .oxv-cd-deck-ico {
+  flex: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.oxv-cd .oxv-cd-deck-ico svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.oxv-cd .oxv-cd-deck-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.oxv-cd .oxv-cd-deck-title {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  color: var(--ink);
+}
+.oxv-cd .oxv-cd-deck-sub {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.oxv-cd .oxv-cd-deck-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 3px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.oxv-cd .oxv-cd-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* progress ring on a deck row */
+.oxv-cd .oxv-cd-ringwrap {
+  position: relative;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+}
+.oxv-cd .oxv-cd-ring-track {
+  stroke: rgba(255, 255, 255, 0.12);
+}
+.oxv-cd .oxv-cd-ring-val {
+  transition: stroke-dashoffset 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.oxv-cd .oxv-cd-ringpct {
+  position: absolute;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 13px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-cd .oxv-cd-ringpct i {
+  font-style: normal;
+  font-size: 8px;
+  margin-left: 1px;
+}
+
+/* ---- study run -------------------------------------------- */
+.oxv-cd .oxv-cd-run {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 14px;
+}
+.oxv-cd .oxv-cd-runhead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.oxv-cd .oxv-cd-tolist {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  border-radius: 11px;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.oxv-cd .oxv-cd-tolist:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: var(--glass-2);
+}
+.oxv-cd .oxv-cd-tolist:active {
+  transform: scale(0.97);
+}
+.oxv-cd .oxv-cd-tolist:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.oxv-cd .oxv-cd-tolist svg {
+  width: 16px;
+  height: 16px;
+}
+.oxv-cd .oxv-cd-runtitle {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+/* progress bar */
+.oxv-cd .oxv-cd-prog {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.oxv-cd .oxv-cd-prog-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.oxv-cd .oxv-cd-prog-count {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 17px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.oxv-cd .oxv-cd-prog-count i {
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.oxv-cd .oxv-cd-prog-known {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--acc, var(--good));
+  font-variant-numeric: tabular-nums;
+}
+.oxv-cd .oxv-cd-prog-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.oxv-cd .oxv-cd-prog-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--acc, var(--blue));
+  box-shadow: 0 0 12px var(--acc, var(--blue));
+  transition: width 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* ---- the flip card ---------------------------------------- */
+.oxv-cd .oxv-cd-stage {
+  perspective: 1300px;
+  animation: oxvCdIn 0.34s ease both;
+}
+.oxv-cd .oxv-cd-flip {
+  position: relative;
+  width: 100%;
+  height: 258px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.oxv-cd .oxv-cd-flip.is-flipped {
+  transform: rotateY(180deg);
+}
+.oxv-cd .oxv-cd-flip:focus-visible {
+  outline: none;
+}
+.oxv-cd .oxv-cd-flip:focus-visible .oxv-cd-face {
+  outline: 2px solid var(--acc, var(--blue));
+  outline-offset: 3px;
+}
+
+.oxv-cd .oxv-cd-face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 26px 22px 40px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  text-align: center;
+}
+.oxv-cd .oxv-cd-front {
+  background:
+    radial-gradient(130% 100% at 50% 0%, rgba(255, 255, 255, 0.05), transparent 60%),
+    linear-gradient(160deg, var(--glass-2), var(--glass));
+}
+.oxv-cd .oxv-cd-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(160deg, var(--glass-2), var(--glass));
+  background:
+    radial-gradient(130% 120% at 50% 0%, color-mix(in srgb, var(--acc, #3f8dff) 22%, transparent), transparent 62%),
+    linear-gradient(160deg, var(--glass-2), var(--glass));
+  border-color: color-mix(in srgb, var(--acc, #3f8dff) 42%, var(--line));
+}
+
+.oxv-cd .oxv-cd-tag {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--line);
+}
+.oxv-cd .oxv-cd-back .oxv-cd-tag {
+  color: var(--acc, var(--blue));
+  background: rgba(255, 255, 255, 0.07);
+  background: color-mix(in srgb, var(--acc, #3f8dff) 18%, transparent);
+  border-color: color-mix(in srgb, var(--acc, #3f8dff) 40%, transparent);
+}
+
+.oxv-cd .oxv-cd-q {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 21px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.oxv-cd .oxv-cd-a {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1.45;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.oxv-cd .oxv-cd-hint {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.oxv-cd .oxv-cd-hint svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ---- わかった / あとで ------------------------------------ */
+.oxv-cd .oxv-cd-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 11px;
+}
+.oxv-cd .oxv-cd-judge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 14px 16px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  transition: transform 0.12s ease, box-shadow 0.14s ease, filter 0.14s ease, opacity 0.14s ease;
+}
+.oxv-cd .oxv-cd-judge svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.oxv-cd .oxv-cd-judge:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.oxv-cd .oxv-cd-judge.is-later {
+  color: var(--ink);
+  background: var(--glass-2);
+  border: 1px solid var(--line);
+}
+.oxv-cd .oxv-cd-judge.is-later:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  filter: brightness(1.08);
+}
+.oxv-cd .oxv-cd-judge.is-later:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.oxv-cd .oxv-cd-judge.is-known {
+  color: #06371f;
+  border: none;
+  background: linear-gradient(135deg, #58e6a0, #19b86a);
+  box-shadow: 0 9px 20px rgba(25, 184, 106, 0.42);
+}
+.oxv-cd .oxv-cd-judge.is-known:hover {
+  filter: brightness(1.05);
+}
+.oxv-cd .oxv-cd-judge.is-known:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 4px 12px rgba(25, 184, 106, 0.4);
+}
+.oxv-cd .oxv-cd-judge.is-known:disabled {
+  cursor: not-allowed;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  box-shadow: none;
+  filter: none;
+  transform: none;
+}
+
+.oxv-cd .oxv-cd-nudge {
+  margin: -4px 0 0;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* ---- completion summary ----------------------------------- */
+.oxv-cd .oxv-cd-done {
+  padding-top: 28px;
+  animation: oxvCdPop 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.oxv-cd .oxv-cd-done-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 22px 24px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  background:
+    radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--acc, #3f8dff) 16%, transparent), transparent 60%),
+    var(--glass);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.46);
+}
+.oxv-cd .oxv-cd-done-ringwrap {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  display: grid;
+  place-items: center;
+}
+.oxv-cd .oxv-cd-done-score {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.oxv-cd .oxv-cd-done-num {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 38px;
+  line-height: 1;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-cd .oxv-cd-done-num i {
+  font-style: normal;
+  font-size: 16px;
+  color: var(--muted);
+  margin-left: 1px;
+}
+.oxv-cd .oxv-cd-done-pct {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--acc, var(--blue));
+  font-variant-numeric: tabular-nums;
+}
+.oxv-cd .oxv-cd-done-title {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 19px;
+  color: var(--ink);
+  margin-top: 2px;
+}
+.oxv-cd .oxv-cd-done-sub {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--muted);
+  text-align: center;
+  max-width: 280px;
+}
+.oxv-cd .oxv-cd-done-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+  width: 100%;
+  margin-top: 8px;
+}
+.oxv-cd .oxv-cd-done-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 13px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 14px;
+  transition: transform 0.12s ease, filter 0.14s ease, border-color 0.14s ease;
+}
+.oxv-cd .oxv-cd-done-btn svg {
+  width: 17px;
+  height: 17px;
+}
+.oxv-cd .oxv-cd-done-btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.oxv-cd .oxv-cd-done-btn.is-ghost {
+  color: var(--ink);
+  background: var(--glass-2);
+  border: 1px solid var(--line);
+}
+.oxv-cd .oxv-cd-done-btn.is-ghost:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+.oxv-cd .oxv-cd-done-btn.is-ghost:active {
+  transform: scale(0.98);
+}
+.oxv-cd .oxv-cd-done-btn.is-primary {
+  color: #fff;
+  border: none;
+  background: linear-gradient(135deg, var(--blue), var(--red));
+  box-shadow: 0 9px 20px rgba(0, 0, 0, 0.4);
+}
+.oxv-cd .oxv-cd-done-btn.is-primary:hover {
+  filter: brightness(1.06);
+}
+.oxv-cd .oxv-cd-done-btn.is-primary:active {
+  transform: scale(0.98);
+}
+
+/* ---- keyframes (namespaced oxvCd*) ------------------------ */
+@keyframes oxvCdIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes oxvCdPop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oxv-cd .oxv-cd-flip {
+    transition: none;
+  }
+  .oxv-cd .oxv-cd-stage,
+  .oxv-cd .oxv-cd-done {
+    animation: none;
+  }
+  .oxv-cd .oxv-cd-ring-val,
+  .oxv-cd .oxv-cd-prog-fill {
+    transition: none;
+  }
+}

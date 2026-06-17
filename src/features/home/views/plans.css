@@ -1,0 +1,186 @@
+/* ===== 週計画 (PlansView) — all selectors prefixed .oxv-pl ===== */
+
+/* ---------- progress header ---------- */
+.oxv-pl-head{
+  display:flex;align-items:center;gap:16px;
+  background:var(--glass-2);border:1px solid var(--line);border-radius:18px;
+  padding:15px 16px;margin:14px 0 16px;
+  box-shadow:0 14px 34px rgba(0,0,0,.42);
+}
+.oxv-pl-ring{position:relative;flex:none;width:74px;height:74px;}
+.oxv-pl-ring svg{width:74px;height:74px;display:block;transform:rotate(-90deg);}
+.oxv-pl-ring-bg{
+  fill:none;stroke:rgba(255,255,255,.10);stroke-width:6;
+}
+.oxv-pl-ring-fg{
+  fill:none;stroke:url(#oxvPlGrad);stroke-width:6;stroke-linecap:round;
+  transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1);
+}
+.oxv-pl-ringnum{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  gap:1px;color:var(--ink);font-variant-numeric:tabular-nums;
+}
+.oxv-pl-ringnum b{font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:21px;line-height:1;}
+.oxv-pl-ringnum i{font-style:normal;font-size:10px;font-weight:800;color:var(--muted);align-self:flex-start;margin-top:3px;}
+
+.oxv-pl-headtext{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;}
+.oxv-pl-h{
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:17px;color:#fff;line-height:1.2;
+}
+.oxv-pl-sub{font-size:12px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;}
+.oxv-pl-sub b{color:var(--ink);font-size:13.5px;}
+.oxv-pl-stats{display:flex;gap:8px;margin-top:3px;}
+.oxv-pl-stat{
+  display:flex;flex-direction:column;gap:1px;flex:1;
+  background:var(--glass);border:1px solid var(--line);border-radius:11px;padding:7px 10px;
+}
+.oxv-pl-stat i{font-style:normal;font-size:10px;font-weight:800;color:var(--muted);}
+.oxv-pl-stat b{
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:13.5px;color:var(--ink);
+  font-variant-numeric:tabular-nums;
+}
+.oxv-pl-stat.is-done b{color:var(--good);}
+
+/* ---------- week list ---------- */
+.oxv-pl-week{display:flex;flex-direction:column;gap:12px;padding-bottom:8px;}
+.oxv-pl-day{
+  background:var(--glass);border:1px solid var(--line);border-radius:16px;
+  padding:12px 13px;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.oxv-pl-day.is-today{
+  border-color:rgba(255,211,110,.5);
+  box-shadow:0 0 0 1px rgba(255,211,110,.22), 0 12px 28px rgba(0,0,0,.34);
+}
+
+/* day header */
+.oxv-pl-dayhead{display:flex;align-items:center;gap:10px;}
+.oxv-pl-badge{
+  flex:none;width:30px;height:30px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:14px;color:var(--ink);
+  background:rgba(255,255,255,.07);border:1px solid var(--line);
+}
+.oxv-pl-day.is-blue .oxv-pl-badge{color:var(--blue);background:rgba(63,141,255,.14);border-color:rgba(63,141,255,.34);}
+.oxv-pl-day.is-red .oxv-pl-badge{color:var(--red);background:rgba(232,39,60,.14);border-color:rgba(232,39,60,.34);}
+.oxv-pl-day.is-today .oxv-pl-badge{color:#1a1304;background:var(--gold);border-color:var(--gold);}
+.oxv-pl-dayname{
+  flex:1;min-width:0;display:flex;align-items:center;gap:7px;
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:14px;color:#fff;
+}
+.oxv-pl-today{
+  flex:none;font-size:9.5px;font-weight:900;color:#1a1304;background:var(--gold);
+  border-radius:6px;padding:2px 6px;letter-spacing:.03em;
+}
+.oxv-pl-daymeta{
+  flex:none;font-size:11px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;
+}
+
+/* tasks */
+.oxv-pl-tasks{list-style:none;margin:11px 0 0;padding:0;display:flex;flex-direction:column;gap:7px;}
+.oxv-pl-task{
+  display:flex;align-items:center;gap:10px;
+  background:var(--glass-2);border:1px solid var(--line);border-radius:12px;
+  padding:9px 10px;
+  transition:opacity .15s ease, border-color .15s ease;
+}
+.oxv-pl-check{
+  flex:none;width:24px;height:24px;border-radius:8px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;padding:0;
+  background:rgba(255,255,255,.05);border:1.6px solid rgba(255,255,255,.22);
+  color:transparent;
+  transition:background .15s ease, border-color .15s ease, color .15s ease, transform .1s ease;
+}
+.oxv-pl-check svg{width:16px;height:16px;}
+.oxv-pl-check:hover{border-color:var(--good);}
+.oxv-pl-check:active{transform:scale(.88);}
+.oxv-pl-task.is-done .oxv-pl-check{
+  background:var(--good);border-color:var(--good);color:#06210f;
+  animation:oxvPlPop .22s ease;
+}
+.oxv-pl-text{
+  flex:1;min-width:0;font-size:13px;font-weight:700;color:var(--ink);line-height:1.45;
+  word-break:break-word;
+}
+.oxv-pl-task.is-done .oxv-pl-text{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(154,163,189,.6);}
+.oxv-pl-min{
+  flex:none;display:inline-flex;align-items:baseline;gap:1px;
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:13px;color:var(--ink);
+  font-variant-numeric:tabular-nums;
+  background:rgba(63,141,255,.12);border:1px solid rgba(63,141,255,.28);
+  border-radius:8px;padding:3px 8px;
+}
+.oxv-pl-min i{font-style:normal;font-size:9.5px;font-weight:800;color:var(--muted);margin-left:1px;}
+.oxv-pl-task.is-done .oxv-pl-min{background:rgba(255,255,255,.05);border-color:var(--line);color:var(--muted);}
+.oxv-pl-del{
+  flex:none;width:24px;height:24px;border-radius:8px;cursor:pointer;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  background:transparent;border:none;color:var(--muted);
+  transition:color .15s ease, background .15s ease, transform .1s ease;
+}
+.oxv-pl-del svg{width:15px;height:15px;}
+.oxv-pl-del:hover{color:#ff6b7a;background:rgba(232,39,60,.14);}
+.oxv-pl-del:active{transform:scale(.86);}
+
+/* add: trigger button */
+.oxv-pl-addbtn{
+  display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+  margin-top:10px;border:1px dashed rgba(255,255,255,.2);border-radius:11px;
+  background:transparent;color:var(--muted);
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:800;font-size:12px;
+  padding:8px 12px;width:100%;justify-content:center;
+  transition:color .15s ease, border-color .15s ease, background .15s ease;
+}
+.oxv-pl-addbtn svg{width:15px;height:15px;}
+.oxv-pl-addbtn:hover{color:var(--ink);border-color:rgba(63,141,255,.5);background:rgba(63,141,255,.07);}
+.oxv-pl-addbtn:active{transform:scale(.99);}
+
+/* add: inline form */
+.oxv-pl-add{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  margin-top:10px;padding:10px;border-radius:12px;
+  background:var(--glass-2);border:1px solid var(--line);
+  animation:oxvPlSlide .18s ease;
+}
+.oxv-pl-add-text{
+  flex:1 1 130px;min-width:0;box-sizing:border-box;
+  border:1px solid var(--line);background:var(--glass);color:var(--ink);
+  border-radius:10px;padding:9px 11px;font-size:13px;font-weight:600;font-family:inherit;outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.oxv-pl-add-text::placeholder{color:var(--muted);}
+.oxv-pl-add-text:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(63,141,255,.18);}
+.oxv-pl-add-min{
+  flex:none;display:inline-flex;align-items:center;gap:4px;
+  border:1px solid var(--line);background:var(--glass);border-radius:10px;padding:0 11px 0 0;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.oxv-pl-add-min:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(63,141,255,.18);}
+.oxv-pl-add-num{
+  width:46px;border:none;background:transparent;color:var(--ink);outline:none;
+  border-radius:10px;padding:9px 4px 9px 11px;font-size:13px;font-weight:800;font-family:inherit;
+  text-align:right;font-variant-numeric:tabular-nums;
+}
+.oxv-pl-add-num::placeholder{color:var(--muted);}
+.oxv-pl-add-min span{font-size:11px;font-weight:800;color:var(--muted);}
+.oxv-pl-add-go{
+  flex:none;cursor:pointer;border:none;border-radius:10px;padding:9px 16px;color:#fff;
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:12.5px;
+  background:linear-gradient(135deg,#3f8dff,#2f6fe0);
+  box-shadow:0 6px 16px rgba(63,141,255,.4);
+  transition:filter .15s ease, transform .1s ease, opacity .15s ease;
+}
+.oxv-pl-add-go:hover{filter:brightness(1.08);}
+.oxv-pl-add-go:active{transform:scale(.94);}
+.oxv-pl-add-go:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;filter:none;}
+.oxv-pl-add-cancel{
+  flex:none;width:34px;height:34px;border-radius:10px;cursor:pointer;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  background:transparent;border:1px solid var(--line);color:var(--muted);
+  transition:color .15s ease, border-color .15s ease;
+}
+.oxv-pl-add-cancel svg{width:16px;height:16px;}
+.oxv-pl-add-cancel:hover{color:var(--ink);border-color:rgba(255,255,255,.22);}
+
+@keyframes oxvPlPop{0%{transform:scale(.6);}60%{transform:scale(1.12);}100%{transform:scale(1);}}
+@keyframes oxvPlSlide{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}

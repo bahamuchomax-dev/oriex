@@ -1,0 +1,464 @@
+/* ============================================================
+ * exam.css — 模試 (ExamView)
+ * Every selector is prefixed .oxv-ex (zero global collisions).
+ * Chrome (.oxh-sub / .oxh-sub-head / .oxh-back / .oxh-sub-title /
+ * .oxv-body) is global — NOT redefined here. Design tokens
+ * (--ink/--muted/--red/--blue/--gold/--good/--glass/--line/...)
+ * cascade from the .oxh ancestor.
+ * ============================================================ */
+
+.oxv-ex-wrap {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 22px;
+}
+
+/* --- section heading -------------------------------------------------- */
+.oxv-ex-h {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 18px 2px 9px;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-ex-h svg {
+  width: 18px;
+  height: 18px;
+  color: var(--red);
+  flex: none;
+}
+
+/* --- shared glass card ------------------------------------------------ */
+.oxv-ex-card {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 13px 14px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .26);
+}
+
+/* ====================================================================== */
+/* 1) 次回の模試 banner                                                    */
+/* ====================================================================== */
+.oxv-ex-next {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  padding: 16px 16px 15px;
+  background:
+    linear-gradient(152deg, rgba(232, 39, 60, .24), rgba(63, 141, 255, .16)),
+    var(--glass-2);
+  border: 1px solid rgba(232, 39, 60, .42);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .4);
+}
+.oxv-ex-next-glow {
+  position: absolute;
+  top: -60px;
+  right: -50px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(63, 141, 255, .5), transparent 70%);
+  filter: blur(8px);
+  pointer-events: none;
+}
+.oxv-ex-next-tag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .6px;
+  color: #ffd9df;
+  background: rgba(232, 39, 60, .26);
+  border: 1px solid rgba(232, 39, 60, .5);
+}
+.oxv-ex-next-name {
+  position: relative;
+  margin: 9px 0 6px;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.3;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-ex-next-meta {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.oxv-ex-next-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.oxv-ex-next-date svg {
+  width: 16px;
+  height: 16px;
+  color: var(--blue);
+  flex: none;
+}
+.oxv-ex-next-fmt {
+  position: relative;
+  margin: 5px 0 0;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.oxv-ex-next-foot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+.oxv-ex-cd {
+  font-size: 12px;
+  color: var(--muted);
+}
+.oxv-ex-cd b {
+  margin: 0 3px;
+  font-size: 19px;
+  font-weight: 900;
+  color: var(--gold);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-ex-cd.is-on b { color: var(--good); }
+
+.oxv-ex-apply {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 900;
+  font-family: "Zen Maru Gothic", sans-serif;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(180deg, #ff6173, var(--red));
+  border: 1px solid rgba(255, 255, 255, .14);
+  box-shadow: 0 8px 20px rgba(232, 39, 60, .4);
+  transition: transform .14s ease, box-shadow .14s ease, background .14s ease, filter .14s ease;
+}
+.oxv-ex-apply svg { width: 17px; height: 17px; flex: none; }
+.oxv-ex-apply:hover { filter: brightness(1.06); }
+.oxv-ex-apply:active { transform: scale(.96); }
+.oxv-ex-apply.is-applied {
+  color: var(--good);
+  background: rgba(43, 212, 126, .14);
+  border-color: rgba(43, 212, 126, .5);
+  box-shadow: 0 6px 16px rgba(43, 212, 126, .22);
+}
+
+/* ====================================================================== */
+/* 2) 成績推移 chart                                                       */
+/* ====================================================================== */
+.oxv-ex-chart {
+  width: 100%;
+  animation: oxvExFade .5s ease both;
+}
+.oxv-ex-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.oxv-ex-grid {
+  stroke: rgba(255, 255, 255, .16);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+.oxv-ex-glab {
+  fill: var(--muted);
+  font-size: 8.5px;
+  font-weight: 700;
+}
+.oxv-ex-ln {
+  fill: none;
+  stroke: url(#oxvExLineGrad);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 2px 6px rgba(232, 39, 60, .4));
+}
+.oxv-ex-area { stroke: none; }
+.oxv-ex-dot {
+  fill: var(--bg);
+  stroke: #ff6173;
+  stroke-width: 2.4;
+}
+.oxv-ex-dot-last {
+  fill: var(--gold);
+  stroke: #fff4d6;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 6px rgba(255, 211, 110, .8));
+}
+.oxv-ex-ring {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.6;
+  opacity: .55;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: oxvExPulse 2.2s ease-in-out infinite;
+}
+.oxv-ex-vlab {
+  fill: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-ex-vlab-last {
+  fill: var(--gold);
+  font-size: 11px;
+}
+.oxv-ex-xlab {
+  fill: var(--muted);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-ex-chart-cap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, .06);
+  font-size: 12px;
+  color: var(--muted);
+}
+.oxv-ex-chart-cap b {
+  color: var(--ink);
+  font-weight: 900;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-ex-delta {
+  font-size: 12px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.oxv-ex-delta.is-up { color: var(--good); background: rgba(43, 212, 126, .14); }
+.oxv-ex-delta.is-down { color: var(--red); background: rgba(232, 39, 60, .14); }
+
+/* ====================================================================== */
+/* 3) 模試結果 list (expandable cards)                                     */
+/* ====================================================================== */
+.oxv-ex-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.oxv-ex-item {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .26);
+  overflow: hidden;
+  transition: border-color .16s ease;
+}
+.oxv-ex-item.is-open { border-color: rgba(63, 141, 255, .45); }
+.oxv-ex-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 13px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  transition: background .14s ease;
+}
+.oxv-ex-item-btn:hover { background: rgba(255, 255, 255, .03); }
+.oxv-ex-item-btn:active { background: rgba(255, 255, 255, .06); }
+.oxv-ex-item-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.oxv-ex-item-name {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.oxv-ex-item-date {
+  font-size: 10.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.oxv-ex-item-fig {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.oxv-ex-hen {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.05;
+}
+.oxv-ex-hen small {
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: .3px;
+}
+.oxv-ex-hen b {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-ex-judge {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 900;
+  font-family: "Zen Maru Gothic", sans-serif;
+  border: 1px solid transparent;
+}
+.oxv-ex-judge-a { color: var(--good); background: rgba(43, 212, 126, .16); border-color: rgba(43, 212, 126, .5); }
+.oxv-ex-judge-b { color: var(--blue); background: rgba(63, 141, 255, .16); border-color: rgba(63, 141, 255, .5); }
+.oxv-ex-judge-c { color: var(--gold); background: rgba(255, 211, 110, .16); border-color: rgba(255, 211, 110, .5); }
+.oxv-ex-judge-d { color: #ffb020; background: rgba(255, 176, 32, .16); border-color: rgba(255, 176, 32, .5); }
+.oxv-ex-judge-e { color: var(--red); background: rgba(232, 39, 60, .18); border-color: rgba(232, 39, 60, .55); }
+.oxv-ex-chev {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--muted);
+  transition: transform .22s ease, color .16s ease;
+}
+.oxv-ex-item.is-open .oxv-ex-chev {
+  transform: rotate(180deg);
+  color: var(--blue);
+}
+
+/* expandable breakdown */
+.oxv-ex-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .28s cubic-bezier(.4, 0, .2, 1);
+}
+.oxv-ex-item.is-open .oxv-ex-detail { max-height: 360px; }
+.oxv-ex-detail-in {
+  padding: 4px 14px 14px;
+  border-top: 1px solid rgba(255, 255, 255, .06);
+}
+
+/* shared subject rows (used by detail + 科目別平均) */
+.oxv-ex-srow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+}
+.oxv-ex-srow + .oxv-ex-srow { border-top: 1px solid rgba(255, 255, 255, .05); }
+.oxv-ex-sname {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 56px;
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.oxv-ex-sname i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.oxv-ex-track {
+  flex: 1;
+  min-width: 0;
+  height: 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, .08);
+  overflow: hidden;
+}
+.oxv-ex-track i {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, .12) inset;
+  transition: width .5s cubic-bezier(.4, 0, .2, 1);
+}
+.oxv-ex-sval {
+  width: 34px;
+  flex: none;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-ex-rank {
+  margin-top: 11px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, .06);
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+}
+.oxv-ex-rank b {
+  color: var(--blue);
+  font-weight: 900;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ====================================================================== */
+/* 4) 科目別平均                                                           */
+/* ====================================================================== */
+.oxv-ex-avg .oxv-ex-srow:first-child { padding-top: 2px; }
+.oxv-ex-foot {
+  margin: 11px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, .06);
+  font-size: 10.5px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* --- keyframes (namespaced) ------------------------------------------- */
+@keyframes oxvExFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes oxvExPulse {
+  0%, 100% { transform: scale(1); opacity: .55; }
+  50% { transform: scale(1.35); opacity: 0; }
+}

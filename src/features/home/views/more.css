@@ -1,0 +1,177 @@
+/* ============================================================
+ * more.css — その他 (MoreView) overflow menu.
+ * EVERY selector is prefixed with the feature class .oxv-mr so it can
+ * never collide with the rest of the app. Chrome classes (.oxh-sub*,
+ * .oxv-body, .oxh-back) are defined globally and are NOT redefined here.
+ * Design tokens (--red, --blue, --gold, --good, --glass, --line ...) cascade
+ * in from the .oxh ancestor.
+ * ============================================================ */
+
+.oxv-mr .oxv-body{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  padding-top:14px;
+}
+
+/* ---- group ------------------------------------------------------- */
+.oxv-mr .oxv-mr-group{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+.oxv-mr .oxv-mr-gh{
+  font-family:"Zen Maru Gothic",sans-serif;
+  font-weight:900;
+  font-size:12px;
+  letter-spacing:.6px;
+  color:var(--muted);
+  padding-left:4px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.oxv-mr .oxv-mr-gh::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:linear-gradient(90deg,var(--line),transparent);
+}
+
+/* ---- group card (rows + dividers) -------------------------------- */
+.oxv-mr .oxv-mr-card{
+  background:var(--glass);
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  box-shadow:0 10px 26px rgba(0,0,0,.34);
+}
+
+/* ---- row --------------------------------------------------------- */
+.oxv-mr .oxv-mr-row{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 13px;
+  border:none;
+  background:transparent;
+  color:var(--ink);
+  text-align:left;
+  position:relative;
+  transition:background .15s ease;
+}
+.oxv-mr .oxv-mr-row + .oxv-mr-row::before{
+  content:"";
+  position:absolute;
+  left:55px;
+  right:0;
+  top:0;
+  height:1px;
+  background:var(--line);
+}
+.oxv-mr .oxv-mr-row:hover{
+  background:rgba(255,255,255,.05);
+}
+.oxv-mr .oxv-mr-row:active{
+  background:rgba(255,255,255,.09);
+  transform:scale(.992);
+}
+
+/* ---- icon tile --------------------------------------------------- */
+.oxv-mr .oxv-mr-ic{
+  flex:none;
+  width:38px;
+  height:38px;
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  box-shadow:0 4px 11px rgba(0,0,0,.4),inset 0 1px 1px rgba(255,255,255,.18);
+}
+.oxv-mr .oxv-mr-ic svg{
+  width:21px;
+  height:21px;
+  fill:none;
+  stroke:#fff;
+  stroke-width:1.9;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.oxv-mr .oxv-mr-ic--red{background:linear-gradient(135deg,#ff4d5e,#c8102e);}
+.oxv-mr .oxv-mr-ic--blue{background:linear-gradient(135deg,#4f8dff,#2856c8);}
+.oxv-mr .oxv-mr-ic--gold{background:linear-gradient(135deg,#ffce5c,#e0982a);}
+.oxv-mr .oxv-mr-ic--green{background:linear-gradient(135deg,#3bd47e,#149a52);}
+.oxv-mr .oxv-mr-ic--purple{background:linear-gradient(135deg,#9a6bff,#6634c8);}
+.oxv-mr .oxv-mr-ic--crim{background:linear-gradient(135deg,#ff5b7a,#b3143f);}
+.oxv-mr .oxv-mr-ic--gray{background:linear-gradient(135deg,#7a8295,#444a5a);}
+.oxv-mr .oxv-mr-ic--gold svg{stroke:#3a2a06;}
+
+/* ---- label block ------------------------------------------------- */
+.oxv-mr .oxv-mr-txt{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.oxv-mr .oxv-mr-label{
+  font-family:"Zen Maru Gothic",sans-serif;
+  font-weight:800;
+  font-size:14.5px;
+  line-height:1.15;
+  color:var(--ink);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.oxv-mr .oxv-mr-desc{
+  font-size:10.5px;
+  font-weight:600;
+  color:var(--muted);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* ---- count badge ------------------------------------------------- */
+.oxv-mr .oxv-mr-badge{
+  flex:none;
+  min-width:18px;
+  height:18px;
+  padding:0 5px;
+  border-radius:9px;
+  background:var(--red);
+  color:#fff;
+  font-size:10.5px;
+  font-weight:900;
+  font-family:"Zen Maru Gothic",sans-serif;
+  display:grid;
+  place-items:center;
+  box-shadow:0 2px 6px rgba(179,20,42,.5);
+}
+
+/* ---- chevron ----------------------------------------------------- */
+.oxv-mr .oxv-mr-chev{
+  flex:none;
+  width:18px;
+  height:18px;
+  color:var(--muted);
+  opacity:.8;
+  transition:transform .15s ease,color .15s ease;
+}
+.oxv-mr .oxv-mr-row:hover .oxv-mr-chev{
+  color:var(--ink);
+  transform:translateX(2px);
+}
+
+/* ---- footer note ------------------------------------------------- */
+.oxv-mr .oxv-mr-foot{
+  text-align:center;
+  font-size:10.5px;
+  font-weight:700;
+  color:var(--muted);
+  opacity:.7;
+  padding:2px 0 8px;
+}

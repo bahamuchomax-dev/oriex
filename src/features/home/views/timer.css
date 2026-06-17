@@ -1,0 +1,600 @@
+/* ============================================================
+   TimerView — タイマー (study timer that records to the store)
+   Every selector is scoped under .oxv-tm. Tokens (--bg/--ink/--red…)
+   cascade from the .oxh ancestor.
+   ============================================================ */
+
+.oxv-tm .oxv-tm-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 14px;
+}
+
+/* ---- live mini-stat row ----------------------------------- */
+.oxv-tm .oxv-tm-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+.oxv-tm .oxv-tm-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 11px 11px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.oxv-tm .oxv-tm-stat-ico {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--blue);
+  background: rgba(63, 141, 255, 0.14);
+}
+.oxv-tm .oxv-tm-stat-ico.oxv-tm-ico-flame {
+  color: #ff7a4d;
+  background: rgba(255, 122, 77, 0.15);
+}
+.oxv-tm .oxv-tm-stat-ico.oxv-tm-ico-coin {
+  color: var(--gold);
+  background: rgba(255, 211, 110, 0.15);
+}
+.oxv-tm .oxv-tm-stat-ico svg {
+  width: 17px;
+  height: 17px;
+}
+.oxv-tm .oxv-tm-stat-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+}
+.oxv-tm .oxv-tm-stat-k {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.oxv-tm .oxv-tm-stat-v {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.oxv-tm .oxv-tm-stat-v small {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--muted);
+  margin-left: 1px;
+}
+
+/* ---- success card ----------------------------------------- */
+.oxv-tm .oxv-tm-toast {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 12px 12px 13px;
+  border-radius: 15px;
+  border: 1px solid rgba(43, 212, 126, 0.4);
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(43, 212, 126, 0.18), transparent 60%),
+    var(--glass-2);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  animation: oxvTmPop 0.28s ease both;
+}
+.oxv-tm .oxv-tm-toast-ico {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #06281a;
+  background: linear-gradient(150deg, #59e6a0, #21b56b);
+  box-shadow: 0 6px 14px rgba(43, 212, 126, 0.4);
+}
+.oxv-tm .oxv-tm-toast-ico svg {
+  width: 19px;
+  height: 19px;
+}
+.oxv-tm .oxv-tm-toast-txt {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.oxv-tm .oxv-tm-toast-txt b {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  color: var(--good);
+  font-variant-numeric: tabular-nums;
+}
+.oxv-tm .oxv-tm-toast-coin {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 900;
+  font-size: 12px;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+.oxv-tm .oxv-tm-toast-coin i {
+  width: 14px;
+  height: 14px;
+  display: inline-grid;
+  place-items: center;
+}
+.oxv-tm .oxv-tm-toast-coin svg {
+  width: 14px;
+  height: 14px;
+  color: var(--gold);
+}
+.oxv-tm .oxv-tm-toast-x {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--muted);
+  background: transparent;
+}
+.oxv-tm .oxv-tm-toast-x:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.06);
+}
+.oxv-tm .oxv-tm-toast-x svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---- section label ---------------------------------------- */
+.oxv-tm .oxv-tm-label {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  margin: 2px 0 -4px;
+}
+
+/* ---- subject chips ---------------------------------------- */
+.oxv-tm .oxv-tm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.oxv-tm .oxv-tm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  color: var(--muted);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 800;
+  font-size: 12.5px;
+  transition: transform 0.12s ease, border-color 0.16s ease, color 0.16s ease, background 0.16s ease;
+}
+.oxv-tm .oxv-tm-chip:hover {
+  color: var(--ink);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.oxv-tm .oxv-tm-chip:active {
+  transform: scale(0.96);
+}
+.oxv-tm .oxv-tm-chip.is-on {
+  font-weight: 900;
+}
+.oxv-tm .oxv-tm-chip-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+}
+
+/* ---- stage : big elapsed display -------------------------- */
+.oxv-tm .oxv-tm-stage {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 26px 18px 24px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(130% 120% at 50% -10%, rgba(63, 141, 255, 0.1), transparent 60%),
+    linear-gradient(180deg, var(--glass-2), var(--glass));
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.oxv-tm .oxv-tm-stage.is-run {
+  border-color: rgba(232, 39, 60, 0.42);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(232, 39, 60, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+.oxv-tm .oxv-tm-stage.is-run::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 90% at 50% -20%, rgba(232, 39, 60, 0.14), transparent 55%);
+}
+.oxv-tm .oxv-tm-stage-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.oxv-tm .oxv-tm-pulse {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(154, 163, 189, 0.5);
+  flex: none;
+  transition: background 0.2s ease;
+}
+.oxv-tm .oxv-tm-stage.is-run .oxv-tm-pulse {
+  background: var(--red);
+  animation: oxvTmPulse 1.1s ease-in-out infinite;
+}
+.oxv-tm .oxv-tm-stage-sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 13px;
+}
+.oxv-tm .oxv-tm-stage-sub i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.oxv-tm .oxv-tm-time {
+  position: relative;
+  z-index: 1;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 54px;
+  line-height: 1.04;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+}
+.oxv-tm .oxv-tm-stage.is-run .oxv-tm-time {
+  color: #fff;
+}
+.oxv-tm .oxv-tm-stage-hint {
+  position: relative;
+  z-index: 1;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* ---- controls --------------------------------------------- */
+.oxv-tm .oxv-tm-controls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+.oxv-tm .oxv-tm-main {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  color: #fff;
+  background: linear-gradient(135deg, #4f97ff, #2f6fe0);
+  box-shadow: 0 10px 22px rgba(47, 111, 224, 0.42);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+.oxv-tm .oxv-tm-main.is-pause {
+  background: linear-gradient(135deg, #ff5468, #d51b30);
+  box-shadow: 0 10px 22px rgba(213, 27, 48, 0.42);
+}
+.oxv-tm .oxv-tm-main:hover {
+  filter: brightness(1.06);
+}
+.oxv-tm .oxv-tm-main:active {
+  transform: translateY(1px) scale(0.985);
+}
+.oxv-tm .oxv-tm-main-ico {
+  display: inline-grid;
+  place-items: center;
+}
+.oxv-tm .oxv-tm-main-ico svg {
+  width: 20px;
+  height: 20px;
+}
+.oxv-tm .oxv-tm-reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 15px;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 800;
+  font-size: 13.5px;
+  transition: transform 0.12s ease, border-color 0.16s ease, opacity 0.16s ease;
+}
+.oxv-tm .oxv-tm-reset svg {
+  width: 17px;
+  height: 17px;
+}
+.oxv-tm .oxv-tm-reset:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+.oxv-tm .oxv-tm-reset:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.oxv-tm .oxv-tm-reset:disabled {
+  opacity: 0.42;
+  cursor: default;
+}
+
+/* ---- finish ----------------------------------------------- */
+.oxv-tm .oxv-tm-finish {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 15px 18px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  color: #062a1b;
+  background: linear-gradient(135deg, #5ee8a3, #20b569);
+  box-shadow: 0 11px 24px rgba(43, 212, 126, 0.4);
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+.oxv-tm .oxv-tm-finish-ico {
+  display: inline-grid;
+  place-items: center;
+}
+.oxv-tm .oxv-tm-finish-ico svg {
+  width: 18px;
+  height: 18px;
+}
+.oxv-tm .oxv-tm-finish:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+.oxv-tm .oxv-tm-finish:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
+}
+.oxv-tm .oxv-tm-finish:disabled {
+  cursor: default;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+.oxv-tm .oxv-tm-finish:disabled .oxv-tm-finish-ico svg {
+  opacity: 0.5;
+}
+.oxv-tm .oxv-tm-finish-note {
+  margin: -6px 0 0;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* ---- manual entry ----------------------------------------- */
+.oxv-tm .oxv-tm-manual {
+  margin-top: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 15px;
+  border-radius: 17px;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.oxv-tm .oxv-tm-manual-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.oxv-tm .oxv-tm-manual-title {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 14px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.oxv-tm .oxv-tm-manual-title::before {
+  content: "";
+  width: 4px;
+  height: 15px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--blue), #2f6fe0);
+}
+.oxv-tm .oxv-tm-manual-sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 12px;
+}
+.oxv-tm .oxv-tm-manual-sub i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.oxv-tm .oxv-tm-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.oxv-tm .oxv-tm-preset {
+  padding: 7px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+}
+.oxv-tm .oxv-tm-preset:hover {
+  color: var(--ink);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.oxv-tm .oxv-tm-preset.is-on {
+  color: var(--blue);
+  border-color: rgba(63, 141, 255, 0.5);
+  background: rgba(63, 141, 255, 0.14);
+}
+.oxv-tm .oxv-tm-manual-row {
+  display: flex;
+  gap: 10px;
+}
+.oxv-tm .oxv-tm-field {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+.oxv-tm .oxv-tm-field:focus-within {
+  border-color: rgba(63, 141, 255, 0.55);
+}
+.oxv-tm .oxv-tm-input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 13px 0;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.oxv-tm .oxv-tm-input::placeholder {
+  color: var(--muted);
+  opacity: 0.6;
+}
+/* strip native number spinners */
+.oxv-tm .oxv-tm-input::-webkit-outer-spin-button,
+.oxv-tm .oxv-tm-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.oxv-tm .oxv-tm-input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.oxv-tm .oxv-tm-unit {
+  flex: none;
+  font-weight: 800;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.oxv-tm .oxv-tm-add {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, #4f97ff, #2f6fe0);
+  box-shadow: 0 8px 18px rgba(47, 111, 224, 0.4);
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-weight: 900;
+  font-size: 14px;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+.oxv-tm .oxv-tm-add svg {
+  width: 17px;
+  height: 17px;
+}
+.oxv-tm .oxv-tm-add:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+.oxv-tm .oxv-tm-add:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+.oxv-tm .oxv-tm-add:disabled {
+  cursor: default;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: none;
+}
+
+/* ---- animations ------------------------------------------- */
+@keyframes oxvTmPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.72); }
+}
+@keyframes oxvTmPop {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oxv-tm .oxv-tm-stage.is-run .oxv-tm-pulse { animation: none; }
+  .oxv-tm .oxv-tm-toast { animation: none; }
+}

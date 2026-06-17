@@ -1,0 +1,230 @@
+/* お知らせ / NoticesView — every selector scoped under .oxv-no */
+
+.oxv-no .oxv-no-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:2px 0 12px;
+}
+
+.oxv-no .oxv-no-heading{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+}
+
+.oxv-no .oxv-no-h-title{
+  font-family:"Zen Maru Gothic",sans-serif;
+  font-weight:900;
+  font-size:17px;
+  color:#fff;
+  letter-spacing:.02em;
+}
+
+.oxv-no .oxv-no-count{
+  min-width:22px;
+  height:22px;
+  padding:0 7px;
+  border-radius:11px;
+  background:var(--red);
+  color:#fff;
+  font-size:12px;
+  font-weight:900;
+  line-height:22px;
+  text-align:center;
+  box-shadow:0 0 0 1px rgba(255,255,255,.14), 0 4px 12px rgba(232,39,60,.45);
+}
+
+.oxv-no .oxv-no-allset{
+  font-size:11.5px;
+  font-weight:700;
+  color:var(--good);
+}
+
+.oxv-no .oxv-no-allread{
+  flex:none;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 12px;
+  border-radius:11px;
+  border:1px solid var(--line);
+  background:var(--glass-2);
+  color:var(--ink);
+  font-family:"Zen Kaku Gothic New",sans-serif;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  transition:transform .12s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+}
+
+.oxv-no .oxv-no-allread svg{
+  width:14px;
+  height:14px;
+  color:var(--good);
+}
+
+.oxv-no .oxv-no-allread:hover{
+  background:rgba(43,212,126,.12);
+  border-color:rgba(43,212,126,.45);
+}
+
+.oxv-no .oxv-no-allread:active{
+  transform:translateY(1px) scale(.98);
+}
+
+.oxv-no .oxv-no-allread:disabled{
+  opacity:.42;
+  cursor:default;
+}
+
+.oxv-no .oxv-no-allread:disabled svg{
+  color:var(--muted);
+}
+
+.oxv-no .oxv-no-list{
+  list-style:none;
+  margin:0;
+  padding:0 0 16px;
+  display:flex;
+  flex-direction:column;
+  gap:11px;
+}
+
+.oxv-no .oxv-no-card{
+  position:relative;
+  display:block;
+  width:100%;
+  text-align:left;
+  padding:13px 14px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:var(--glass);
+  color:var(--ink);
+  font-family:"Zen Kaku Gothic New",sans-serif;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,0,0,.28);
+  transition:transform .12s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.oxv-no .oxv-no-card:hover{
+  background:var(--glass-2);
+  border-color:rgba(255,255,255,.18);
+}
+
+.oxv-no .oxv-no-card:active{
+  transform:translateY(1px) scale(.995);
+}
+
+.oxv-no .oxv-no-unread{
+  border-color:rgba(232,39,60,.55);
+  box-shadow:0 6px 20px rgba(0,0,0,.32), 0 0 0 1px rgba(232,39,60,.25), 0 0 16px rgba(232,39,60,.18);
+}
+
+.oxv-no .oxv-no-unread:hover{
+  border-color:rgba(232,39,60,.75);
+}
+
+.oxv-no .oxv-no-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:7px;
+}
+
+.oxv-no .oxv-no-tag{
+  flex:none;
+  padding:2px 9px;
+  border-radius:7px;
+  font-family:"Zen Maru Gothic",sans-serif;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.03em;
+  border:1px solid transparent;
+}
+
+.oxv-no .oxv-no-tag-info{
+  color:#bcd6ff;
+  background:rgba(63,141,255,.16);
+  border-color:rgba(63,141,255,.42);
+}
+
+.oxv-no .oxv-no-tag-update{
+  color:#9af0c4;
+  background:rgba(43,212,126,.15);
+  border-color:rgba(43,212,126,.42);
+}
+
+.oxv-no .oxv-no-tag-event{
+  color:var(--gold);
+  background:rgba(232,39,60,.16);
+  border-color:rgba(232,39,60,.5);
+}
+
+.oxv-no .oxv-no-dot{
+  flex:none;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--red);
+  box-shadow:0 0 0 3px rgba(232,39,60,.22);
+}
+
+.oxv-no .oxv-no-date{
+  margin-left:auto;
+  flex:none;
+  font-size:10.5px;
+  font-weight:600;
+  color:var(--muted);
+}
+
+.oxv-no .oxv-no-title{
+  font-family:"Zen Maru Gothic",sans-serif;
+  font-weight:800;
+  font-size:14.5px;
+  line-height:1.35;
+  color:#fff;
+  margin-bottom:4px;
+}
+
+.oxv-no .oxv-no-text{
+  margin:0;
+  font-size:12.5px;
+  line-height:1.6;
+  color:var(--muted);
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  overflow:hidden;
+}
+
+.oxv-no .oxv-no-text-open{
+  display:block;
+  -webkit-line-clamp:unset;
+  line-clamp:unset;
+  overflow:visible;
+  color:#cbd2e6;
+}
+
+.oxv-no .oxv-no-more{
+  display:flex;
+  align-items:center;
+  gap:3px;
+  margin-top:8px;
+  font-size:11px;
+  font-weight:800;
+  color:var(--blue);
+}
+
+.oxv-no .oxv-no-chev{
+  width:14px;
+  height:14px;
+  transition:transform .18s ease;
+}
+
+.oxv-no .oxv-no-open .oxv-no-chev{
+  transform:rotate(180deg);
+}

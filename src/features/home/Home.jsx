@@ -1,56 +1,139 @@
 import "./home.css";
+import { useEffect, useState } from "react";
 
-// Transparent assets (Vite handles hashing + base path, so GitHub Pages base works)
-import bgUrl from "./assets/bg.webp";
-import heroUrl from "./assets/hero.webp";
-import avatarUrl from "./assets/avatar.webp";
-import chibiUrl from "./assets/chibi.webp";
-import bagUrl from "./assets/bag.webp";
-import shakerUrl from "./assets/shaker.webp";
+// Real assets (Vite hashes + base-path-rewrites these, so GitHub Pages base works).
+import bgUrl from "../../assets/home/1BA16E71-040A-4ADD-8EE6-383D57E63E42.png";
+import charUrl from "../../assets/home/IMG_5012.png";
+
+// Feature views — each is a self-contained screen.
+import AnalysisView from "./views/AnalysisView.jsx";
+import NoteView from "./views/NoteView.jsx";
+import CalendarView from "./views/CalendarView.jsx";
+import MoreView from "./views/MoreView.jsx";
+import NoticesView from "./views/NoticesView.jsx";
+import GiftView from "./views/GiftView.jsx";
+import TimerView from "./views/TimerView.jsx";
+import RecordsView from "./views/RecordsView.jsx";
+import ProfileView from "./views/ProfileView.jsx";
+import SettingsView from "./views/SettingsView.jsx";
+import VocabView from "./views/VocabView.jsx";
+import CardView from "./views/CardView.jsx";
+import QuizView from "./views/QuizView.jsx";
+import ExamView from "./views/ExamView.jsx";
+import ListenView from "./views/ListenView.jsx";
+import DiaryView from "./views/DiaryView.jsx";
+import PlansView from "./views/PlansView.jsx";
+import FriendsView from "./views/FriendsView.jsx";
+import FramesView from "./views/FramesView.jsx";
+
+// Live study data (timer records here; the dashboard + views read from here).
+import { useStudy, level, totalMinutes, streakDays, todayMinutes, weekSeries, fmtMinutes } from "./studyStore.js";
+import { getFrame, frameRing } from "./iconFrames.js";
 
 /* ============================================================
- * Home — Oriex dashboard (mockup-faithful rebuild)
+ * Home — Oriex new home (v2: big character).
  * ------------------------------------------------------------
- * Pure presentational layout that matches the design 1:1.
- * All numbers come from props with mockup-matching fallbacks, so it
- * renders identically out of the box and you can wire real data later:
- *   - profile: { name, level, expPct, totalLabel, totalSub, streak, streakSub }
- *   - week:    [{ label, minutes, today? }]   (7 items)  + avgLabel
- *   - plan:    [{ name, min, done }]          + planDone / planTotal
- *   - goal:    { current, target }
- * Navigation: onOpen(key) is called for nav tabs + tool tiles. Map the
- * keys to your existing routes in App.jsx (see TOOLS / NAV below).
- * Never reads storage directly; never touches legacy.
+ * Natural vertical FLOW (the page scrolls — not crammed into one screen):
+ *   - a fixed-height HERO (character + profile + きょうの学習) so the absolute
+ *     overlays keep their relationship on ANY viewport height
+ *   - a BODY that flows below (chart/plan row, tools) and scrolls
+ *   - a FIXED bottom nav (always visible)
+ * The legacy app is a SEPARATE, mutually-exclusive mount (no nav API, no deep-link),
+ * so every function is a self-contained in-home React view (src/features/home/views,
+ * routed by VIEWS) backed by the shared studyStore — no switching to the original.
+ * Only the heavy legacy-only features (育成 / FACTORY / 配信) keep an "元のアプリを開く"
+ * fallback. No emojis — every glyph is an inline SVG matched to the character's look.
  * ============================================================ */
 
-const HS = (
-  <svg className="oxh-hs" viewBox="0 0 24 24" aria-hidden="true">
+// localStorage flags the dispatcher (src/main.js) + oxUiPatches read.
+const HOME_FLAG = "oriexHome"; // "1" => boot into this React home
+const TOGGLE_FLAG = "oriexHomeToggle"; // "1" => legacy side shows a "新ホーム" button
+
+/** Switch to the ORIGINAL (legacy) home: clear the home flag, keep the toggle so
+ *  the legacy side offers a way back, strip the URL opt-in, and reload. */
+function switchToOriginalHome() {
+  try { window.localStorage.setItem(TOGGLE_FLAG, "1"); } catch { /* ignore */ }
+  try { window.localStorage.removeItem(HOME_FLAG); } catch { /* ignore */ }
+  try {
+    const u = new URL(window.location.href);
+    u.searchParams.delete(HOME_FLAG);
+    if (u.hash.replace(/^#/, "") === "oriex-home") u.hash = "";
+    window.location.replace(u.toString());
+  } catch {
+    try { window.location.reload(); } catch { /* ignore */ }
+  }
+}
+
+// --- inline SVG glyphs (no emoji) ------------------------------------------
+const Horseshoe = (p) => (
+  <svg viewBox="0 0 24 24" aria-hidden="true" {...p}>
     <path d="M7 4c-2 1.5-3 4-3 7 0 4 3 8 8 8s8-4 8-8c0-3-1-5.5-3-7"
       fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
   </svg>
 );
+const Flame = (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 2c0 3-1.5 6-3 8 0 4 2 7 3 11s3-7 3-11c-1.5-2-3-5-3-8z" fill="#e8273c" stroke="none" />
+    <circle cx="12" cy="18" r="1.2" fill="#ff8a96" stroke="none" />
+  </svg>
+);
+const BarChart = (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <rect x="4" y="13" width="3.4" height="9" rx="1" fill="#3f8dff" stroke="none" />
+    <rect x="10.3" y="7" width="3.4" height="15" rx="1" fill="#3f8dff" stroke="none" />
+    <rect x="16.6" y="10" width="3.4" height="12" rx="1" fill="#e8273c" stroke="none" />
+  </svg>
+);
+const Checklist = (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="#3f8dff" strokeWidth="1.8" />
+    <path d="M7.5 10l2 2 3.5-4" fill="none" stroke="#3f8dff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M7.5 16l2 2 3.5-4" fill="none" stroke="#9aa3bd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+const Trophy = (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M7 4h10v4a5 5 0 01-10 0z" fill="none" stroke="#ffd36e" strokeWidth="1.8" strokeLinejoin="round" />
+    <path d="M7 5H4v2a3 3 0 003 3M17 5h3v2a3 3 0 01-3 3M9 18h6M12 13v5" fill="none" stroke="#ffd36e" strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
+);
+const Swap = (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 8h13l-3-3M20 16H7l3 3" />
+  </svg>
+);
+const Clock = (
+  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2" /></svg>
+);
+const Back = (
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+);
+const Sparkle = (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+  </svg>
+);
 
 const TOOL_ICONS = {
-  note: <path d="M7 4h8l4 4v12H7z" fill="none" /> ,
+  note: <><path d="M7 4h8l4 4v12H7z" fill="none" /><path d="M9 10h6M9 14h6" /></>,
   vocab: <><rect x="5" y="4" width="14" height="16" rx="2" fill="none" /><path d="M12 4v16" /></>,
-  card: <><rect x="3" y="7" width="14" height="11" rx="2" fill="none" /><rect x="7" y="5" width="14" height="11" rx="2" fill="none" /></>,
+  card: <><rect x="3" y="7" width="13" height="11" rx="2" fill="none" /><rect x="8" y="5" width="13" height="11" rx="2" fill="none" /></>,
   quiz: <><rect x="6" y="3" width="12" height="18" rx="2" fill="none" /><path d="M9 8h6M9 12h6M9 16h3" /></>,
   exam: <path d="M4 19V9M9 19V5M14 19v-7M19 19V8" strokeLinecap="round" />,
   listen: <><path d="M5 13a7 7 0 0114 0" fill="none" /><rect x="3" y="13" width="4" height="7" rx="1.5" fill="none" /><rect x="17" y="13" width="4" height="7" rx="1.5" fill="none" /></>,
-  cal: <><rect x="4" y="5" width="16" height="15" rx="2" fill="none" /><path d="M4 9h16M8 3v4M16 3v4" /></>,
-  more: <><circle cx="6" cy="12" r="1.6" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none" /><circle cx="18" cy="12" r="1.6" fill="currentColor" stroke="none" /></>,
+  calendar: <><rect x="4" y="5" width="16" height="15" rx="2" fill="none" /><path d="M4 9h16M8 3v4M16 3v4" /></>,
+  more: <><circle cx="6" cy="12" r="1.5" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" /><circle cx="18" cy="12" r="1.5" fill="currentColor" stroke="none" /></>,
 };
 
-// key = route you navigate to (rename to match your App.jsx tabs)
 const TOOLS = [
-  { key: "note", label: "ノート", icon: "note", tone: "t-red" },
-  { key: "vocab", label: "単語帳", icon: "vocab", tone: "t-blue" },
-  { key: "card", label: "暗記カード", icon: "card", tone: "t-purple" },
-  { key: "quiz", label: "問題集", icon: "quiz", tone: "t-crim" },
-  { key: "exam", label: "模試", icon: "exam", tone: "t-teal" },
-  { key: "listen", label: "リスニング", icon: "listen", tone: "t-orange" },
-  { key: "calendar", label: "カレンダー", icon: "cal", tone: "t-green" },
-  { key: "more", label: "その他", icon: "more", tone: "t-gray" },
+  { key: "note", label: "ノート", tone: "oxh-t-red" },
+  { key: "vocab", label: "単語帳", tone: "oxh-t-blue" },
+  { key: "card", label: "暗記", tone: "oxh-t-purple" },
+  { key: "quiz", label: "問題集", tone: "oxh-t-crim" },
+  { key: "exam", label: "模試", tone: "oxh-t-teal" },
+  { key: "listen", label: "リスニング", tone: "oxh-t-orange" },
+  { key: "calendar", label: "暦", tone: "oxh-t-green" },
+  { key: "more", label: "その他", tone: "oxh-t-gray" },
 ];
 
 const NAV = [
@@ -61,188 +144,245 @@ const NAV = [
   { key: "profile", label: "マイページ", icon: <path d="M7 5c-1.5 1.4-2.5 3.6-2.5 6 0 4 3 7.5 7.5 7.5s7.5-3.5 7.5-7.5c0-2.4-1-4.6-2.5-6" />, dot: true },
 ];
 
-const DEMO_WEEK = [
-  { label: "月", minutes: 95 }, { label: "火", minutes: 120 }, { label: "水", minutes: 60 },
-  { label: "木", minutes: 150 }, { label: "金", minutes: 110 }, { label: "土", minutes: 80 },
-  { label: "今日", minutes: 90, today: true },
-];
+// Destination kind. Most keys now render a real in-home React view (see VIEWS),
+// which takes precedence in the router. "legacy" here is only the FALLBACK panel
+// ("元のアプリを開く") for the heavy legacy-only features we haven't rebuilt yet.
+const DEST = {
+  home: "home",
+  timer: "view", records: "view", profile: "view", settings: "view",
+  vocab: "view", card: "view", quiz: "view", exam: "view", listen: "view",
+  diary: "view", plans: "view", friends: "view", frames: "view",
+  analysis: "view", note: "view", calendar: "view", more: "view", notices: "view", gift: "view",
+  // heavy legacy-only features — keep the "open the original app" switch for these
+  hamster: "legacy", factory: "legacy", teacher: "legacy",
+};
+const LABELS = {
+  home: "ホーム", timer: "タイマー", records: "記録", analysis: "分析", profile: "マイページ",
+  note: "ノート", vocab: "単語帳", card: "暗記カード", quiz: "問題集", exam: "模試",
+  listen: "リスニング", calendar: "カレンダー", more: "その他", notices: "お知らせ",
+  gift: "ギフト", settings: "設定", diary: "学習日記", plans: "週計画", friends: "ひろば",
+  hamster: "育成", factory: "FACTORY", teacher: "配信", frames: "アイコンフレーム",
+};
+
+// Keys that render a real built React screen (instead of the 準備中 / legacy panel).
+const VIEWS = {
+  timer: TimerView, records: RecordsView, analysis: AnalysisView,
+  profile: ProfileView, settings: SettingsView,
+  vocab: VocabView, card: CardView, quiz: QuizView, exam: ExamView, listen: ListenView,
+  diary: DiaryView, plans: PlansView, friends: FriendsView,
+  note: NoteView, calendar: CalendarView, more: MoreView, notices: NoticesView, gift: GiftView,
+  frames: FramesView,
+};
+
 const DEMO_PLAN = [
   { name: "数学：関数とグラフ", min: "120分", done: true },
   { name: "英語：長文読解", min: "90分", done: true },
   { name: "化学：理論化学", min: "60分", done: false },
   { name: "現代文：小説読解", min: "60分", done: false },
-  { name: "単語学習（英単語）", min: "30分", done: true },
 ];
+const DOW = ["日", "月", "火", "水", "木", "金", "土"];
 
-export default function Home({
-  profile,
-  week = DEMO_WEEK,
-  weekAvg = "101分",
-  plan = DEMO_PLAN,
-  goal = { current: 90, target: 180 },
-  onOpen = () => {},
-  current = "home",
-} = {}) {
-  const p = {
-    name: "ヒカリ", level: 24, expPct: 63,
-    totalMain: "128", totalH: "時間", totalMin: "45", totalUnit: "分",
-    totalSub: "（先月比 +18時間）",
-    streak: 21, streakSub: "（自己ベスト更新中！）",
-    ...(profile || {}),
+export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = {}) {
+  const [view, setView] = useState("home");
+  const st = useStudy(); // live study data — the dashboard reflects recorded sessions
+
+  // Persist the choice so reopening stays on this home, and enable the legacy-side
+  // "新ホーム" toggle so the round-trip works. (The dispatcher already treats
+  // localStorage.oriexHome==="1" as opt-in, so this is consistent.)
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(HOME_FLAG, "1");
+      window.localStorage.setItem(TOGGLE_FLAG, "1");
+    } catch { /* ignore */ }
+  }, []);
+
+  const p = { name: "ヒカリ", totalSub: "コツコツ積み上げ中", streakSub: "この調子！", ...(profile || {}) };
+  // derived from live study sessions
+  const lv = level(st);
+  const totalMin = totalMinutes(st);
+  const totH = Math.floor(totalMin / 60);
+  const totM = totalMin % 60;
+  const streak = streakDays(st);
+  const todayMin = todayMinutes(st);
+  const goalTarget = st.goalMin;
+  const remain = Math.max(0, goalTarget - todayMin);
+  const ws = weekSeries(st);
+  const wsMax = Math.max(...ws.map((d) => d.minutes), 1);
+  const wsAvg = Math.round(ws.reduce((a, d) => a + d.minutes, 0) / 7);
+
+  const planList = plan;
+  const planDone = planList.filter((x) => x.done).length;
+  const initial = (p.name || "G").trim().charAt(0) || "G";
+
+  const go = (key) => {
+    try { onOpen(key); } catch { /* ignore */ }
+    if (key === "home") { setView("home"); return; }
+    if (!DEST[key]) { setView("home"); return; }
+    setView(key);
   };
-  const planDone = plan.filter((x) => x.done).length;
-  const maxMin = Math.max(...week.map((d) => d.minutes), 1);
-  const remain = Math.max(0, goal.target - goal.current);
+
+  const navActive = NAV.some((n) => n.key === view) ? view : "home";
 
   return (
     <div className="oxh">
       <div className="oxh-bg" style={{ backgroundImage: `url(${bgUrl})` }} />
-      <img className="oxh-hero" src={heroUrl} alt="" />
-      <div className="oxh-bag"><img src={bagUrl} alt="" /></div>
-      <div className="oxh-shaker"><img src={shakerUrl} alt="" /></div>
-      <div className="oxh-brand">ORIEX {HS}</div>
+      <div className="oxh-glow" />
+      <div className="oxh-char" style={{ backgroundImage: `url(${charUrl})` }} />
 
-      <div className="oxh-wrap">
-        {/* top bar */}
-        <div className="oxh-topbar">
-          <button className="oxh-tbtn" onClick={() => onOpen("notices")}>
-            <i><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6" /><path d="M10 20a2 2 0 004 0" /></svg></i>
-            <span className="oxh-badge">3</span>お知らせ
-          </button>
-          <button className="oxh-tbtn" onClick={() => onOpen("gift")}>
-            <i><svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="1.5" /><path d="M4 13h16M12 9v11M12 9c-2-4-6-3-6-1s4 1 6 1 8 1 6-1-4-3-6 1" /></svg></i>
-            <span className="oxh-badge">1</span>ギフト
-          </button>
-          <button className="oxh-tbtn" onClick={() => onOpen("settings")}>
-            <i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" /><path d="M19 12a7 7 0 00-.1-1l2-1.6-2-3.4-2.3 1a7 7 0 00-1.7-1L14.5 3h-5l-.4 2.4a7 7 0 00-1.7 1l-2.3-1-2 3.4L3 11a7 7 0 000 2l-2 1.6 2 3.4 2.3-1a7 7 0 001.7 1l.4 2.4h5l.4-2.4a7 7 0 001.7-1l2.3 1 2-3.4-2-1.6c.1-.3.1-.7.1-1z" /></svg></i>
-            設定
-          </button>
-        </div>
+      {view === "home" ? (
+        <>
+          {/* HERO — fixed-height block so the character + overlays hold on any screen */}
+          <div className="oxh-hero">
+            <div className="oxh-top">
+              <div className="oxh-brand"><Horseshoe />ORIEX</div>
+              <button className="oxh-switch" onClick={switchToOriginalHome}>{Swap}元のホーム</button>
+              <button className="oxh-tbtn" onClick={() => go("notices")} aria-label="お知らせ">
+                <svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6" /><path d="M10 20a2 2 0 004 0" /></svg>
+                <span className="oxh-tdot">3</span>
+              </button>
+              <button className="oxh-tbtn" onClick={() => go("gift")} aria-label="ギフト">
+                <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="1.5" /><path d="M4 13h16M12 9v11" /></svg>
+                <span className="oxh-tdot">1</span>
+              </button>
+              <button className="oxh-tbtn" onClick={() => go("settings")} aria-label="設定">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" /><path d="M19.4 13a7 7 0 000-2l2-1.5-2-3.4-2.3 1a7 7 0 00-1.7-1L14.5 3h-5l-.4 2.6a7 7 0 00-1.7 1l-2.3-1-2 3.4 2 1.5a7 7 0 000 2l-2 1.5 2 3.4 2.3-1a7 7 0 001.7 1l.4 2.6h5l.4-2.6a7 7 0 001.7-1l2.3 1 2-3.4-2-1.5z" /></svg>
+              </button>
+            </div>
 
-        {/* profile card */}
-        <div className="oxh-pcard">
-          <div className="oxh-pcard-top">
-            <img className="oxh-pcard-av" src={avatarUrl} alt="" />
-            <div style={{ flex: 1 }}>
-              <div className="oxh-pcard-name">
-                {p.name}
-                <svg viewBox="0 0 24 24"><path d="M4 20l4-1L19 8l-3-3L5 16z" /></svg>
-                {HS}
+            <div className="oxh-profile">
+              <div className="oxh-pr-top">
+                <button className="oxh-av" onClick={() => go("frames")} aria-label="アイコンフレーム"
+                  style={{ boxShadow: frameRing(getFrame()) === "none" ? undefined : frameRing(getFrame()) }}>{initial}</button>
+                <div style={{ flex: 1 }}>
+                  <div className="oxh-pr-name">{p.name}
+                    <svg viewBox="0 0 24 24"><path d="M4 20l4-1L19 8l-3-3L5 16z" /></svg>
+                  </div>
+                  <div className="oxh-lvrow"><span className="oxh-lv">Lv. {lv.level}</span><small>EXP {lv.xpPct}%</small></div>
+                </div>
+              </div>
+              <div className="oxh-exp"><i style={{ width: `${lv.xpPct}%` }} /></div>
+              <div className="oxh-stats">
+                <div className="oxh-stat">
+                  <div className="oxh-stat-k">累計学習時間</div>
+                  <div className="oxh-stat-v">{totH}<small>時間</small>{totM}<small>分</small></div>
+                  <div className="oxh-stat-s">{p.totalSub}</div>
+                </div>
+                <div className="oxh-stat">
+                  <div className="oxh-stat-k">連続学習日数</div>
+                  <div className="oxh-stat-v">{Flame}{streak}<small>日</small></div>
+                  <div className="oxh-stat-s oxh-gold">{p.streakSub}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* きょうの学習 — floats at the character's feet */}
+            <div className="oxh-today">
+              <div className="oxh-today-card">
+                <div className="oxh-today-h"><Horseshoe />きょうの学習</div>
+                <div className="oxh-today-goal"><span className="oxh-chip">目標</span>{goalTarget}分</div>
+                <div className="oxh-today-big">{todayMin} <small>/ {goalTarget}分</small></div>
+                <div className="oxh-today-note">{remain > 0 ? `あと${remain}分で達成！` : "目標達成！おつかれさま"}</div>
+                <button className="oxh-timer-btn" onClick={() => go("timer")}>{Clock}タイマー</button>
               </div>
             </div>
           </div>
-          <div className="oxh-lvrow">
-            <span className="oxh-lv">Lv. {p.level}</span>
-            <small>EXP {p.expPct}%</small>
-          </div>
-          <div className="oxh-exp"><i style={{ width: `${p.expPct}%` }} /></div>
-          <div className="oxh-pstats">
-            <div className="oxh-pstat">
-              <span>累計学習時間</span>
-              <div>
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M12 2h0M9 2h6" /></svg>
-                <b>{p.totalMain}<small>{p.totalH}</small>{p.totalMin}<small>{p.totalUnit}</small></b>
+
+          {/* BODY — flows below the hero and scrolls */}
+          <div className="oxh-body">
+            <div className="oxh-row2">
+              <div className="oxh-card">
+                <div className="oxh-card-h">{BarChart}7日間の記録<button className="oxh-more" onClick={() => go("records")}>詳細</button></div>
+                <div className="oxh-chart">
+                  {ws.map((d) => (
+                    <div className={`oxh-bar${d.today ? " oxh-bar-t" : ""}`} key={d.dateKey}>
+                      <i style={{ height: `${Math.round((d.minutes / wsMax) * 100)}%` }} />
+                      <span>{d.today ? "今" : DOW[d.dow]}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="oxh-avg">平均 <b>{fmtMinutes(wsAvg)}</b></div>
               </div>
-              <span className="oxh-sub">{p.totalSub}</span>
-            </div>
-            <div className="oxh-pstat">
-              <span>連続学習日数</span>
-              <div><b>🔥{p.streak}<small>日</small></b></div>
-              <span className="oxh-sub">{p.streakSub}</span>
-            </div>
-          </div>
-        </div>
 
-        {/* today card */}
-        <div className="oxh-today">
-          <div className="oxh-today-l">
-            <div className="oxh-today-h">{HS}きょうの学習 ✨</div>
-            <div className="oxh-today-goal"><span className="oxh-tag">目標</span>{goal.target}分<i className="oxh-today-line" /></div>
-            <div className="oxh-today-big">{goal.current} <small>/ {goal.target} 分</small></div>
-            <div className="oxh-today-note">目標達成まであと {remain}分！</div>
-          </div>
-          <button className="oxh-today-btn" onClick={() => onOpen("timer")}>
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2" /></svg>
-            タイマーを<br />はじめる »
-          </button>
-        </div>
-
-        {/* greeting */}
-        <div className="oxh-greet" onClick={() => onOpen("diary")}>
-          <img src={chibiUrl} alt="" />
-          <div className="oxh-greet-t">
-            <b>おはよう、{p.name}！☀️</b>
-            <p>今日もコツコツ積み上げて、理想の自分に近づこう！✨</p>
-          </div>
-          <span className="oxh-chev">»</span>
-        </div>
-
-        {/* two cards */}
-        <div className="oxh-grid2">
-          <div className="oxh-lcard">
-            <div className="oxh-lcard-h">
-              <svg viewBox="0 0 24 24"><path d="M4 19V9M9 19V5M14 19v-7M19 19V8" stroke="#e01f2b" strokeWidth="2.2" strokeLinecap="round" /></svg>
-              7日間の学習記録<span className="oxh-more" onClick={() => onOpen("records")}>詳細</span>
-            </div>
-            <div className="oxh-chart">
-              {week.map((d) => (
-                <div className={`oxh-bar${d.today ? " oxh-bar--today" : ""}`} key={d.label}>
-                  <span className="oxh-bar-val">{d.minutes}</span>
-                  <i style={{ height: `${Math.round((d.minutes / maxMin) * 100)}%` }} />
-                  <span className="oxh-bar-lbl">{d.label}</span>
+              <div className="oxh-card">
+                <div className="oxh-card-h">{Checklist}今週の予定<button className="oxh-more" onClick={() => go("plans")}>詳細</button></div>
+                <div className="oxh-plan">
+                  {planList.map((it) => (
+                    <div className="oxh-pl" key={it.name}>
+                      <span className={`oxh-box${it.done ? " oxh-on" : ""}`}>
+                        {it.done && <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" /></svg>}
+                      </span>
+                      <span className={`oxh-nm${it.done ? " oxh-done" : ""}`}>{it.name}</span>
+                      <span className="oxh-mn">{it.min}</span>
+                    </div>
+                  ))}
                 </div>
+                <div className="oxh-plan-foot">{Trophy}{planDone} / {planList.length}</div>
+              </div>
+            </div>
+
+            <div className="oxh-tools">
+              {TOOLS.map((t) => (
+                <button className="oxh-tool" key={t.key} onClick={() => go(t.key)}>
+                  <span className={`oxh-tool-ic ${t.tone}`}><svg viewBox="0 0 24 24">{TOOL_ICONS[t.key]}</svg></span>
+                  {t.label}
+                </button>
               ))}
             </div>
-            <div className="oxh-chart-avg">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" fill="none" stroke="#241d1b" strokeWidth="2" /><path d="M12 9v4l3 2" fill="none" stroke="#241d1b" strokeWidth="2" /></svg>
-              7日間の平均 <b>{weekAvg}</b>
-            </div>
           </div>
+        </>
+      ) : VIEWS[view] ? (
+        <FeatureView view={view} onBack={() => setView("home")} onOpen={go} />
+      ) : (
+        <SubView dest={view} onBack={() => setView("home")} />
+      )}
 
-          <div className="oxh-lcard">
-            <div className="oxh-lcard-h">
-              <svg viewBox="0 0 24 24"><path d="M4 19V9M9 19V5M14 19v-7M19 19V8" stroke="#e01f2b" strokeWidth="2.2" strokeLinecap="round" /></svg>
-              今週の予定<span className="oxh-more" onClick={() => onOpen("plans")}>詳細</span>
-            </div>
-            <div className="oxh-plan">
-              {plan.map((it) => (
-                <div className={`oxh-pl${it.done ? " oxh-pl--done" : ""}`} key={it.name}>
-                  <span className={`oxh-pl-box${it.done ? " oxh-pl-box--on" : ""}`}>
-                    {it.done && <svg viewBox="0 0 24 24" className="oxh-ck"><path d="M5 13l4 4L19 7" /></svg>}
-                  </span>
-                  <span className="oxh-pl-name">{it.name}</span>
-                  <span className="oxh-pl-min">{it.min}</span>
-                </div>
-              ))}
-            </div>
-            <div className="oxh-plan-foot">👑 達成状況 {planDone} / {plan.length}</div>
-          </div>
-        </div>
-
-        {/* tools */}
-        <div className="oxh-tools-h">✨ 学習ツール</div>
-        <div className="oxh-tools">
-          {TOOLS.map((t) => (
-            <button className="oxh-tool" key={t.label} onClick={() => onOpen(t.key)}>
-              <span className={`oxh-tool-ico ${t.tone}`}>
-                <svg viewBox="0 0 24 24">{TOOL_ICONS[t.icon]}</svg>
-              </span>
-              <span className="oxh-tool-lbl">{t.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* bottom nav */}
+      {/* bottom nav — fixed, always visible */}
       <nav className="oxh-nav" aria-label="メインナビ">
         {NAV.map((n) => (
-          <button key={n.key} className={n.key === current ? "oxh-on" : ""} onClick={() => onOpen(n.key)}>
-            {n.dot && <span className="oxh-dot" />}
+          <button key={n.key} className={n.key === navActive ? "oxh-navon" : ""} onClick={() => go(n.key)}>
+            {n.key === navActive && <span className="oxh-pill" />}
+            {n.dot && <span className="oxh-nd" />}
             <svg viewBox="0 0 24 24">{n.icon}</svg>
             {n.label}
           </button>
         ))}
       </nav>
+    </div>
+  );
+}
+
+/** Renders a built feature view by key. The fixed bottom nav stays visible above it. */
+function FeatureView({ view, onBack, onOpen }) {
+  const V = VIEWS[view];
+  return V ? <V onBack={onBack} onOpen={onOpen} /> : null;
+}
+
+/** A destination screen: either "準備中" (not built) or "元のアプリで開く" (lives in
+ *  the legacy app). The fixed bottom nav stays visible above it. */
+function SubView({ dest, onBack }) {
+  const kind = DEST[dest] || "soon";
+  const label = LABELS[dest] || dest;
+  return (
+    <div className="oxh-sub">
+      <div className="oxh-sub-head">
+        <button className="oxh-back" onClick={onBack} aria-label="戻る">{Back}</button>
+        <span className="oxh-sub-title">{label}</span>
+      </div>
+      <div className="oxh-sub-body">
+        <div className="oxh-soon-ico">{kind === "legacy" ? Clock : Sparkle}</div>
+        {kind === "legacy" ? (
+          <>
+            <div className="oxh-soon-t">{label}</div>
+            <p className="oxh-soon-p">この機能は現在のアプリで使えます。<br />元のホームに切り替えて開きます。</p>
+            <button className="oxh-soon-cta" onClick={switchToOriginalHome}>{Swap}元のアプリを開く</button>
+          </>
+        ) : (
+          <>
+            <div className="oxh-soon-t">準備中</div>
+            <p className="oxh-soon-p">「{label}」は現在準備しています。<br />もうしばらくお待ちください。</p>
+          </>
+        )}
+      </div>
     </div>
   );
 }
