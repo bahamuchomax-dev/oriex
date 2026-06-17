@@ -29,6 +29,7 @@ import FramesView from "./views/FramesView.jsx";
 // Live study data (timer records here; the dashboard + views read from here).
 import { useStudy, level, totalMinutes, streakDays, todayMinutes, weekSeries, fmtMinutes } from "./studyStore.js";
 import { getFrame, frameRing } from "./iconFrames.js";
+import { getAccount, accountAvatarImg } from "./realAccount.js";
 
 /* ============================================================
  * Home — Oriex new home (v2: big character).
@@ -182,6 +183,22 @@ const DEMO_PLAN = [
 ];
 const DOW = ["日", "月", "火", "水", "木", "金", "土"];
 
+// The user's real weekly plan (written by PlansView → localStorage "oxhPlans",
+// keyed Mon..Sun). Flattened for the home's 今週の予定 card; null when none yet.
+function readWeekPlans() {
+  try {
+    const o = JSON.parse(window.localStorage.getItem("oxhPlans") || "null");
+    if (!o || typeof o !== "object") return null;
+    const all = [];
+    ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].forEach((d) =>
+      (Array.isArray(o[d]) ? o[d] : []).forEach((t) => t && all.push(t)),
+    );
+    return all.length ? all : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = {}) {
   const [view, setView] = useState("home");
   const st = useStudy(); // live study data — the dashboard reflects recorded sessions
@@ -196,7 +213,9 @@ export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = 
     } catch { /* ignore */ }
   }, []);
 
-  const p = { name: "ヒカリ", totalSub: "コツコツ積み上げ中", streakSub: "この調子！", ...(profile || {}) };
+  const acct = getAccount(); // real logged-in identity (null in the no-login preview)
+  const avatarImg = accountAvatarImg(acct);
+  const p = { name: (acct && acct.name) || "ヒカリ", totalSub: "コツコツ積み上げ中", streakSub: "この調子！", ...(profile || {}) };
   // derived from live study sessions
   const lv = level(st);
   const totalMin = totalMinutes(st);
@@ -210,8 +229,12 @@ export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = 
   const wsMax = Math.max(...ws.map((d) => d.minutes), 1);
   const wsAvg = Math.round(ws.reduce((a, d) => a + d.minutes, 0) / 7);
 
-  const planList = plan;
-  const planDone = planList.filter((x) => x.done).length;
+  const weekPlans = readWeekPlans();
+  const planList = weekPlans
+    ? weekPlans.slice(0, 5).map((t) => ({ name: t.text, min: `${t.min || 0}分`, done: !!t.done }))
+    : plan;
+  const planDone = weekPlans ? weekPlans.filter((t) => t.done).length : planList.filter((x) => x.done).length;
+  const planTotal = weekPlans ? weekPlans.length : planList.length;
   const initial = (p.name || "G").trim().charAt(0) || "G";
 
   const go = (key) => {
@@ -252,7 +275,9 @@ export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = 
             <div className="oxh-profile">
               <div className="oxh-pr-top">
                 <button className="oxh-av" onClick={() => go("frames")} aria-label="アイコンフレーム"
-                  style={{ boxShadow: frameRing(getFrame()) === "none" ? undefined : frameRing(getFrame()) }}>{initial}</button>
+                  style={{ boxShadow: frameRing(getFrame()) === "none" ? undefined : frameRing(getFrame()) }}>
+                  {avatarImg ? <img className="oxh-av-img" src={avatarImg} alt="" /> : initial}
+                </button>
                 <div style={{ flex: 1 }}>
                   <div className="oxh-pr-name">{p.name}
                     <svg viewBox="0 0 24 24"><path d="M4 20l4-1L19 8l-3-3L5 16z" /></svg>
@@ -316,7 +341,7 @@ export default function Home({ profile, plan = DEMO_PLAN, onOpen = () => {} } = 
                     </div>
                   ))}
                 </div>
-                <div className="oxh-plan-foot">{Trophy}{planDone} / {planList.length}</div>
+                <div className="oxh-plan-foot">{Trophy}{planDone} / {planTotal}</div>
               </div>
             </div>
 
