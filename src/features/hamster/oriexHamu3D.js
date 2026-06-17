@@ -83,7 +83,7 @@ window.OriexHamu3D = function (canvas, env) {
   if ("outputColorSpace" in renderer && THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
   else if (THREE.sRGBEncoding != null) renderer.outputEncoding = THREE.sRGBEncoding;
   if (THREE.ACESFilmicToneMapping != null) renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.12; /* tune to taste; ACES rolls off highlights */
+  renderer.toneMappingExposure = 1.0; /* lowered: keep pale pastels out of ACES' desaturating highlight range */
 
   var scene = new THREE.Scene();
   scene.background = new THREE.Color(P ? 0xf2e6d2 : 0x221d17);
@@ -94,8 +94,9 @@ window.OriexHamu3D = function (canvas, env) {
   /* ---- lights (3-point: warm key + cool fill + soft warm ambient/hemisphere) ---- */
   /* §1.2: trim the flat ambient, lean on a stronger WARM KEY (sun) for form; a soft
      warm hemisphere keeps shadows from going muddy, the cool fill (below) separates. */
-  scene.add(new THREE.AmbientLight(0xffffff, P ? 0.44 : 0.28));
-  var hemi = new THREE.HemisphereLight(0xfff7ea, 0xd8c2a0, P ? 0.40 : 0.28); scene.add(hemi);
+  /* deepen the flat fill so pale pastels read richer (less washed); KEY stays strong for form */
+  scene.add(new THREE.AmbientLight(0xffffff, P ? 0.30 : 0.20));
+  var hemi = new THREE.HemisphereLight(0xfff7ea, 0xd8c2a0, P ? 0.30 : 0.20); scene.add(hemi);
   var sun = new THREE.DirectionalLight(0xfff3e2, P ? 0.74 : 0.62);
   sun.position.set(380, 620, 260);
   sun.castShadow = true;
