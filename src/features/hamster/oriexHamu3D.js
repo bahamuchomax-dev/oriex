@@ -45,7 +45,7 @@ window.OriexHamu3D = function (canvas, env) {
     cameraCollisionRadius: 14,   /* 衝突判定の見込み半径（将来の調整用） */
     cameraCollisionPadding: 28,  /* 障害物手前で止める余白 */
     antiAliasingLevel: 2,        /* アンチエイリアス強度の目安（DPR上限に反映。2でほぼ従来通り） */
-    glassOpacity: 0.16,           /* ガラスの透明度。内部が透けすぎないよう調整 */
+    glassOpacity: 0.2,            /* §2: わずかに上げてアクリル面が薄く読めるように（クリア維持） */
     uiOcclusionEnabled: true     /* ゲージ等UIの遮蔽フラグ。本シーンのゲージはHTML HUDのため常時最前面（参照用フラグ） */
   };
   var BP = {
@@ -113,8 +113,11 @@ window.OriexHamu3D = function (canvas, env) {
   /* ---- helpers ---- */
   var GEO = [], MAT = [];
   function gk(g) { GEO.push(g); return g; }
+  /* §2 material family: physically-based, matte CLAY/TOY look (non-metal, mid-high
+     roughness). A unified roughness range is what reads as "rendered". Per-call `o`
+     can still override (roughness/metalness/transparent/opacity/map/emissive). */
   function mk(c, o) {
-    var m = new THREE.MeshLambertMaterial(Object.assign({ color: c }, o || {}));
+    var m = new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.8, metalness: 0.0 }, o || {}));
     MAT.push(m); return m;
   }
   function box(w, h, d, c, o) { return new THREE.Mesh(gk(new THREE.BoxGeometry(w, h, d)), mk(c, o)); }
@@ -218,7 +221,7 @@ window.OriexHamu3D = function (canvas, env) {
     function seed(n) { return ((n * 9301 + 49297) % 233280) / 233280; }
     var Eu = new THREE.Euler();
     function fill(geo, count, off, sMin, sMax, flat, tilt) {
-      var im = new THREE.InstancedMesh(gk(geo), new THREE.MeshLambertMaterial({ color: 0xffffff }), count);
+      var im = new THREE.InstancedMesh(gk(geo), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.95, metalness: 0.0 }), count);
       MAT.push(im.material);
       im.receiveShadow = true;
       var M = new THREE.Matrix4(), Pq = new THREE.Quaternion(), Vp = new THREE.Vector3(), Vs = new THREE.Vector3();
@@ -271,7 +274,7 @@ window.OriexHamu3D = function (canvas, env) {
   var gW = glass(FLD, WALL_H); gW.rotation.y = Math.PI / 2; gW.position.set(-FLW / 2, WALL_Y, 0); cage.add(gW);
   var gE = glass(FLD, WALL_H); gE.rotation.y = Math.PI / 2; gE.position.set(FLW / 2, WALL_Y, 0); cage.add(gE);
   /* subtle top highlight strips on glass */
-  var hlMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.16, depthWrite: false }); MAT.push(hlMat);
+  var hlMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.34, depthWrite: false }); MAT.push(hlMat); /* §2: stronger edge highlight = reads as glass */
   function gstrip(w) { var m = new THREE.Mesh(gk(new THREE.PlaneGeometry(w, 5)), hlMat); m.renderOrder = 6; return m; }
   var h1 = gstrip(FLW - 26); h1.position.set(0, WALL_H - 17, -FLD / 2 + 0.6); cage.add(h1);
   var h2 = gstrip(FLD - 26); h2.rotation.y = Math.PI / 2; h2.position.set(FLW / 2 - 0.6, WALL_H - 17, 0); cage.add(h2);
