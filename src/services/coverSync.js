@@ -31,17 +31,34 @@ function currentCoverSettings() {
   }
 }
 
-/** Copy {coverImage, coverSettings} from the owner's private profile to their card. */
+/** The owner's Friend ID from the legacy fast-start cache (genron_profile_<uid>). */
+function ownShortId(uid) {
+  try {
+    const raw = localStorage.getItem("genron_profile_" + uid);
+    if (raw) {
+      const p = JSON.parse(raw);
+      if (p && typeof p.shortId === "string" && p.shortId) return p.shortId;
+    }
+  } catch {
+    /* ignore */
+  }
+  return "";
+}
+
+/** Copy {coverImage, coverSettings} from the owner's private profile to their card.
+ *  Also stamp shortId so the card is findable by friendCover's `where shortId==`
+ *  query — a teacher who had no leaderboard card otherwise gets one without it. */
 async function publishCover(uid) {
   try {
     if (!uid) return;
     const snap = await getDoc(doc(db, "artifacts", APP_ID, "users", uid, "profile", "main"));
     const coverImage = snap && snap.exists() ? snap.data().coverImage || null : null;
-    await setDoc(
-      doc(db, "artifacts", APP_ID, "public", "data", "customApp", uid),
-      { coverImage: coverImage || null, coverSettings: currentCoverSettings(), uid },
-      { merge: true },
-    );
+    const patch = { coverImage: coverImage || null, coverSettings: currentCoverSettings(), uid };
+    const shortId = ownShortId(uid);
+    if (shortId) patch.shortId = shortId; // only when known — never clobber with ""
+    await setDoc(doc(db, "artifacts", APP_ID, "public", "data", "customApp", uid), patch, {
+      merge: true,
+    });
   } catch {
     /* non-fatal: the owner still sees their own cover locally */
   }
