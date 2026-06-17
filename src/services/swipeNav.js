@@ -131,9 +131,9 @@ function onStart(e) {
   if (
     target &&
     target.closest &&
-    (target.closest("input,textarea,select,[contenteditable=true]") || inHorizontalScroller(target))
+    (target.closest("input,textarea,select,[contenteditable=true],canvas") || inHorizontalScroller(target))
   ) {
-    return;
+    return; // canvas = a 3D scene (hamster room) that owns its own drag/rotate gestures
   }
   sx = t.clientX;
   sy = t.clientY;
