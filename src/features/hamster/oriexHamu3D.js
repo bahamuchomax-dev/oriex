@@ -117,6 +117,25 @@ window.OriexHamu3D = function (canvas, env) {
   var bgTex = P ? roomBgTex() : null;
   scene.background = bgTex || new THREE.Color(P ? 0xc2a472 : 0x221d17);
   scene.fog = new THREE.Fog(P ? 0xd6bd8a : 0x221d17, 1400, 2600);
+  /* §4: the user's ROOM PHOTO as a 360° equirect backdrop — rotating the camera turns
+     the room around the cage. Loads async; the wallpaper stands in until it arrives.
+     A flat photo isn't a true panorama, so it wraps/repeats — good enough ("umai") here. */
+  var roomEnvTex = null;
+  try {
+    var _roomUrl = (typeof window !== "undefined") && window.__OX_ROOM_BG;
+    if (P && _roomUrl && THREE.TextureLoader) {
+      new THREE.TextureLoader().load(_roomUrl, function (tx) {
+        try {
+          tx.mapping = THREE.EquirectangularReflectionMapping;
+          if ("colorSpace" in tx && THREE.SRGBColorSpace) tx.colorSpace = THREE.SRGBColorSpace;
+          else if (THREE.sRGBEncoding != null) tx.encoding = THREE.sRGBEncoding;
+          roomEnvTex = tx;
+          scene.background = tx;
+          scene.fog = null; /* no fog over a photographic backdrop */
+        } catch (e) { /* keep the wallpaper fallback */ }
+      });
+    }
+  } catch (e) { /* keep the wallpaper fallback */ }
 
   var camera = new THREE.PerspectiveCamera(42, 1, 10, 4000);
 
@@ -1047,6 +1066,7 @@ window.OriexHamu3D = function (canvas, env) {
       GEO.forEach(function (g) { g.dispose(); });
       if (woodTex) woodTex.dispose();
       if (bgTex) bgTex.dispose();
+      if (roomEnvTex) roomEnvTex.dispose();
       MAT.forEach(function (m) { m.dispose(); });
       renderer.dispose();
     }
