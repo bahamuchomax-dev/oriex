@@ -402,15 +402,17 @@ service cloud.firestore {
         // ID/avatar (PII) — the durable fix is a callable Cloud Function lookup so this
         // can drop to signedIn(); tracked separately.
         allow read: if true;
-        // WRITE is owner-only AND must never carry a credential, authority, or answer
-        // field. The legacy bundle used to spread the whole profile (incl. plaintext
-        // `password`) into this WORLD-READABLE doc — these guards reject that outright so
-        // a credential can never be published here again (defense-in-depth behind the
-        // bundle no longer writing them + the one-off data cleanup that strips existing
-        // password fields).
+        // WRITE is owner-only and must NEVER carry a plaintext credential. The legacy
+        // bundle used to spread the whole profile (incl. `password`) into this WORLD-
+        // READABLE doc; this ban rejects that outright (the bundle no longer writes it and
+        // the one-off cleanup stripped existing password fields, so legit merge-writes
+        // pass). NOTE: we deliberately do NOT add noAuthorityFields()/noAnswerFields()
+        // here — `request.resource.data` on a merge() write is the POST-merge document, so
+        // an existing denormalized `isTeacher` field (written by older builds) would make
+        // those guards reject every leaderboard/profile card update. The public card's
+        // isTeacher is a cosmetic display flag only; real authority is gated by server-set
+        // custom claims (isTeacher()/isAdmin()), never by this field.
         allow write: if isSelf(cardUid)
-                     && noAuthorityFields()
-                     && noAnswerFields()
                      && !('password' in request.resource.data)
                      && !('passwordHash' in request.resource.data);
       }

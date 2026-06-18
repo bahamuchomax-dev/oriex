@@ -42018,7 +42018,7 @@ function CI() {
         await qn(et(R.db, "artifacts", R.appId, "users", y, "profile", "main"), u, {
           merge: !0
         }), await qn(et(R.db, "artifacts", R.appId, "public", "data", "customApp", y), {
-          ...u,
+          ...(() => { const { password: _pw, passwordHash: _ph, isTeacher: _it, ...pub } = u; return pub; })(),
           score: 0
         }, {
           merge: !0
@@ -42386,7 +42386,7 @@ function CI() {
       if (o(ze), ve(jt), wt("profile", ze), wt("history", jt), e && R.enabled && (await qn(et(R.db, "artifacts", R.appId, "users", e.uid, "profile", "main"), ze, {
           merge: !0
         }), ze.isTeacher || await qn(et(R.db, "artifacts", R.appId, "public", "data", "customApp", e.uid), {
-          ...ze,
+          ...(() => { const { password: _pw, passwordHash: _ph, isTeacher: _it, ...pub } = ze; return pub; })(),
           score: B,
           clearCount: Object.values(ze.clearedStages || {}).reduce((Vt, nn) => Vt + (Array.isArray(nn) ? nn.length : typeof nn == "number" ? nn : 0), 0),
           stagesCleared: Object.values(ze.clearedStages || {}).reduce((Vt, nn) => Vt + (Array.isArray(nn) ? nn.length : typeof nn == "number" ? nn : 0), 0)

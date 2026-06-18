@@ -231,12 +231,14 @@ describe("firestore.rules — legacy artifacts live-app tree is least-privilege"
       /match \/public\/data\/\{document=\*\*\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if false;/,
     );
   });
-  it("customApp is public-read (primary Friend ID directory) but self-write only AND credential/authority/answer-guarded", () => {
-    // Self-write must additionally reject any authority/answer field AND a plaintext
-    // credential — the legacy bundle used to spread the whole profile (incl.
-    // `password`) into this WORLD-READABLE card, so the rule now bans it outright.
+  it("customApp is public-read (primary Friend ID directory), self-write only, credential-banned (no merge-breaking authority guard)", () => {
+    // Self-write must reject a plaintext credential (password/passwordHash). We do NOT
+    // assert noAuthorityFields/noAnswerFields here: request.resource.data on a merge()
+    // write includes existing fields (e.g. a denormalized isTeacher from older builds),
+    // so those guards would reject every legit card update. Credential ban is the
+    // security-critical control; isTeacher here is cosmetic (claims gate real authority).
     expect(RULES_CODE).toMatch(
-      /match \/public\/data\/customApp\/\{cardUid\}\s*\{\s*allow read: if true;\s*allow write: if isSelf\(cardUid\)\s*&&\s*noAuthorityFields\(\)\s*&&\s*noAnswerFields\(\)\s*&&\s*!\('password' in request\.resource\.data\)\s*&&\s*!\('passwordHash' in request\.resource\.data\);/,
+      /match \/public\/data\/customApp\/\{cardUid\}\s*\{\s*allow read: if true;\s*allow write: if isSelf\(cardUid\)\s*&&\s*!\('password' in request\.resource\.data\)\s*&&\s*!\('passwordHash' in request\.resource\.data\);/,
     );
   });
   it("teacherIndex is public-read (Friend ID login) but owner-write, answer/authority free", () => {
