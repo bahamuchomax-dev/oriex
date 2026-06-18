@@ -48738,54 +48738,6 @@ function CI() {
                       })
                     })
                   })]
-                }), (0, r.jsxs)("button", {
-                  className: "rx-acct",
-                  onClick: () => {
-                    try {
-                      window.localStorage.setItem("oriexHome", "1")
-                    } catch {}
-                    window.location.reload()
-                  },
-                  children: [(0, r.jsx)("span", {
-                    className: "ic",
-                    style: {
-                      background: "#0E948922",
-                      color: "#0E9489"
-                    },
-                    children: (0, r.jsxs)("svg", {
-                      width: "20",
-                      height: "20",
-                      viewBox: "0 0 24 24",
-                      fill: "none",
-                      stroke: "currentColor",
-                      strokeWidth: "1.9",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      children: [(0, r.jsx)("path", {
-                        d: "M3 11l9-8 9 8"
-                      }), (0, r.jsx)("path", {
-                        d: "M5 10v10h14V10"
-                      })]
-                    })
-                  }), (0, r.jsx)("span", {
-                    className: "tx",
-                    children: "新ホームに切り替える"
-                  }), (0, r.jsx)("span", {
-                    className: "ch",
-                    children: (0, r.jsx)("svg", {
-                      width: "18",
-                      height: "18",
-                      viewBox: "0 0 24 24",
-                      fill: "none",
-                      stroke: "currentColor",
-                      strokeWidth: "2.2",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      children: (0, r.jsx)("path", {
-                        d: "M9 6l6 6-6 6"
-                      })
-                    })
-                  })]
                 }), i?.isTeacher && (0, r.jsxs)("button", {
                   className: "rx-acct",
                   onClick: () => {
@@ -51778,7 +51730,9 @@ function CI() {
                     children: Vc().map((je, tn) => (0, r.jsxs)("div", {
                       className: "rx-trow",
                       onClick: () => Br(je),
-                      children: [(0, r.jsx)("div", {
+                      children: [(0, r.jsxs)("div", {
+                        className: "ox-av-wrap",
+                        children: [(0, r.jsx)("div", {
                         className: "rx-av",
                         style: {
                           boxShadow: (() => {
@@ -51788,6 +51742,9 @@ function CI() {
                           })() || void 0
                         },
                         children: E(je.avatar)
+                      }), (Go[je.id] || 0) > 0 && (0, r.jsx)("span", {
+                        className: "ox-unread-dot"
+                      })]
                       }), (0, r.jsxs)("div", {
                         style: {
                           minWidth: 0,
@@ -52615,6 +52572,39 @@ function CI() {
                   color: "#fff"
                 },
                 children: "テーマ背景写真を設定"
+              })]
+            }), (0, r.jsxs)("div", {
+              className: "rounded-[20px] p-5 mb-4",
+              style: {
+                background: S ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.05)",
+                border: `1px solid ${A.cardBorder}`,
+                color: A.text
+              },
+              children: [(0, r.jsx)("p", {
+                className: "text-[10px] font-black uppercase tracking-widest mb-3",
+                style: {
+                  color: A.textMuted
+                },
+                children: "ホーム表示"
+              }), (0, r.jsx)("p", {
+                className: "text-[12px] mb-3",
+                style: {
+                  color: A.textMuted
+                },
+                children: "新しいデザインのホーム画面に切り替えます（いつでも元に戻せます）。"
+              }), (0, r.jsx)("button", {
+                onClick: () => {
+                  try {
+                    window.localStorage.setItem("oriexHome", "1")
+                  } catch {}
+                  window.location.reload()
+                },
+                className: "w-full py-2.5 rounded-[12px] text-[12px] font-bold active:opacity-70",
+                style: {
+                  background: "linear-gradient(135deg,#0E9489,#14b8a6)",
+                  color: "#fff"
+                },
+                children: "新ホームに切り替える"
               })]
             }), (0, r.jsxs)("div", {
               className: "rounded-[20px] p-5 mb-4",

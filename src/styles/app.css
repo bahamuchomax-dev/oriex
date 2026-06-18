@@ -111,6 +111,43 @@ body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"]{
 .ox-cover-teacher{ color:#2f6df0; }
 .ox-cover-dev{ color:#0e7490; }
 
+/* ── photo-bg: soften harsh SOLID-WHITE cards into frosted glass ───────────────
+   On a LIGHT theme + photo background, many cards render an OPAQUE white inline
+   background (the bundle's `S ? "#ffffff" : …`) → harsh white boxes on the photo
+   (the 復習 cards and similar "白い四角" elsewhere). Turn any element whose INLINE
+   style sets a solid-white background into a translucent frosted panel so the photo
+   shows through softly. Scoped to `background:` (not color/border/shadow) and to the
+   photo theme only; form fields get their white from a CSS class (not inline), so
+   they are not matched. */
+body.oxbg-on [style*="background: rgb(255, 255, 255)"]:not(input):not(textarea):not(select),
+body.oxbg-on [style*="background:rgb(255, 255, 255)"]:not(input):not(textarea):not(select),
+body.oxbg-on [style*="background: #ffffff"]:not(input):not(textarea):not(select),
+body.oxbg-on [style*="background:#ffffff"]:not(input):not(textarea):not(select){
+  background: rgba(255,255,255,.56) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.55) !important;
+}
+
+/* ── unread message red dot (赤ぽっち) on つながり avatars ──────────────────────
+   The connections list already has the unread map (Go[friendId] = count). Anchor a
+   small red dot to the avatar's top-right corner (the avatar itself is overflow:
+   hidden, so the dot lives on a relative wrapper around it). */
+.ox-av-wrap{ position:relative; flex:none; }
+.ox-unread-dot{
+  position:absolute;
+  top:-3px;
+  right:-3px;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#ef4444;
+  border:2px solid #fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.25);
+  pointer-events:none;
+  z-index:2;
+}
+
 /* ── stage / study-mode screen: tighter vertical rhythm ──────────────────────
    The subject stage / mode-selection screen left too much unused vertical space
    and showed too few mode cards in the initial mobile viewport. These rules
