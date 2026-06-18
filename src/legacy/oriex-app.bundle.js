@@ -51536,6 +51536,16 @@ function CI() {
                   });
                 return (0, r.jsxs)(r.Fragment, {
                   children: [(0, r.jsxs)("div", {
+                    className: "ox-plaza-head",
+                    style: {
+                      background: "rgba(255,255,255,0.97)",
+                      border: `1px solid ${b}`,
+                      borderRadius: 22,
+                      boxShadow: "0 1px 6px rgba(34,27,21,0.06)",
+                      marginBottom: 24,
+                      overflow: "hidden"
+                    },
+                    children: [(0, r.jsxs)("div", {
                     className: "rx-topbar",
                     children: [(0, r.jsxs)("div", {
                       children: [(0, r.jsx)("div", {
@@ -51554,11 +51564,8 @@ function CI() {
                     style: {
                       display: "flex",
                       alignItems: "stretch",
-                      background: B,
-                      border: `1px solid ${b}`,
-                      borderRadius: 18,
-                      boxShadow: "0 1px 5px rgba(34,27,21,0.04)",
-                      marginBottom: 24
+                      background: "transparent",
+                      borderTop: `1px solid ${b}`
                     },
                     children: [ue(pe((0, r.jsxs)(r.Fragment, {
                       children: [(0, r.jsx)("path", {
@@ -51587,6 +51594,7 @@ function CI() {
                         d: "m22 7-10 6L2 7"
                       })]
                     })), "#E8923A", "未読", he, "件")]
+                  })]
                   }), (0, r.jsx)("div", {
                     style: {
                       margin: "0 2px 12px"

@@ -256,6 +256,20 @@ body.oxbg-on .ox-grade-box{
   border:1px solid rgba(15,23,42,.1) !important;
 }
 
+/* ── ひろば: header + フレンド/先生/未読 stats merged into ONE white card ─────────
+   The bundle wraps the ひろば topbar + stats row in .ox-plaza-head (a white rounded
+   card). Strip the inner .rx-topbar's own background/padding (incl. its photo-theme
+   frosted backing) so it reads as the card's header, not a card-in-card. */
+.ox-plaza-head .rx-topbar,
+body.oxbg-on .ox-plaza-head .rx-topbar{
+  background:transparent !important;
+  margin:0 !important;
+  padding:14px 16px 12px !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+  border-radius:0 !important;
+}
+
 /* ── stage / study-mode screen: tighter vertical rhythm ──────────────────────
    The subject stage / mode-selection screen left too much unused vertical space
    and showed too few mode cards in the initial mobile viewport. These rules
