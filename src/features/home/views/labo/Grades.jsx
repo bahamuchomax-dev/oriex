@@ -378,7 +378,7 @@ export default function Grades() {
             <div className="oxv-gr-card-head">
               <span className="oxv-gr-date">{md(r.date)}</span>
               <span className="oxv-gr-name">{r.name}</span>
-              {r.user && <i className="oxv-gr-tag">自分</i>}
+              {r.user ? <i className="oxv-gr-tag">自分</i> : <i className="oxv-gr-tag oxv-gr-tag-demo">例</i>}
             </div>
 
             <div className="oxv-gr-card-main">

@@ -188,6 +188,16 @@
   font-family: "Zen Maru Gothic", sans-serif;
 }
 .oxv-qa-tag-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; }
+.oxv-qa-demo {
+  flex: none;
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 999px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, .05);
+  border: 1px dashed var(--line);
+}
 .oxv-qa-date {
   font-size: 10.5px;
   font-weight: 700;

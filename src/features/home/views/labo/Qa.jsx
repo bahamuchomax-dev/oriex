@@ -195,6 +195,7 @@ export default function Qa() {
         {threads.map((t) => {
           const color = SUBJECT_COLOR[t.subject] || "#9aa3bd";
           const answered = t.status === "answered";
+          const isSeed = String(t.id || "").startsWith("seed-");
           return (
             <div className="oxv-qa-card" key={t.id}>
               <div className="oxv-qa-top">
@@ -205,6 +206,7 @@ export default function Qa() {
                   <i className="oxv-qa-tag-dot" style={{ background: color }} />
                   {t.subject}
                 </span>
+                {isSeed && <span className="oxv-qa-demo">例</span>}
                 <span className="oxv-qa-date">{fmtDate(t.date)}</span>
                 <span className={`oxv-qa-badge${answered ? " oxv-qa-badge-ok" : ""}`}>
                   {answered ? IcCheck : IcClock}

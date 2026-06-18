@@ -353,6 +353,11 @@
   background: rgba(255, 211, 110, .14);
   border: 1px solid rgba(255, 211, 110, .4);
 }
+.oxv-gr-tag-demo {
+  color: var(--muted);
+  background: rgba(255, 255, 255, .05);
+  border: 1px dashed var(--line);
+}
 
 .oxv-gr-card-main {
   display: flex;

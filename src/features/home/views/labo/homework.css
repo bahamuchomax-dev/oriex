@@ -122,6 +122,19 @@
 }
 .oxv-hw-clear-txt small { font-size: 11px; line-height: 1.5; color: var(--muted); }
 
+/* --- demo note (sample homework) ------------------------------------- */
+.oxv-hw-demo {
+  margin: 0 2px 14px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .04);
+  border: 1px dashed var(--line);
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
 /* --- assignment list -------------------------------------------------- */
 .oxv-hw-list {
   display: flex;

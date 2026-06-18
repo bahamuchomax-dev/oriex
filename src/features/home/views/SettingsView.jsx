@@ -1,6 +1,8 @@
 import "./settings.css";
 import { useState, useEffect } from "react";
 import { useStudy, setGoal, fmtMinutes } from "../studyStore.js";
+import { switchToOriginalHome } from "../homeSwitch.js";
+import { APP_VERSION_LABEL } from "../../../appVersion.js";
 
 /* ============================================================
  * SettingsView — 設定
@@ -16,7 +18,6 @@ import { useStudy, setGoal, fmtMinutes } from "../studyStore.js";
  * Every selector in settings.css is prefixed with .oxv-st.
  * ============================================================ */
 
-const APP_VERSION = "7.99.4";
 const GOAL_MIN = 15;
 const GOAL_MAX = 600;
 const GOAL_STEP = 15;
@@ -83,6 +84,13 @@ const IcMinus = (
 const IcPlus = (
   <svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" />
+  </svg>
+);
+const IcHomeSwap = (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 11l8-7 8 7" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M6 10v9h12v-9" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+    <path d="M9.5 14.5h5l-1.4-1.4M14.5 16.5h-5l1.4 1.4" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -230,7 +238,7 @@ export default function SettingsView({ onBack }) {
               <span className="oxv-st-rlabel">アプリ版</span>
               <span className="oxv-st-rdesc">Oriex 学習トラッカー</span>
             </span>
-            <span className="oxv-st-ver">v{APP_VERSION}</span>
+            <span className="oxv-st-ver">{APP_VERSION_LABEL}</span>
           </div>
 
           <button
@@ -252,12 +260,27 @@ export default function SettingsView({ onBack }) {
               <p>
                 Oriex（オリエクス）は、学習時間を記録して毎日の積み重ねを見える化する学習アプリです。タイマーで計測した学習を、ダッシュボード・分析・カレンダーがひとつにつないで表示します。
               </p>
-              <p className="oxv-st-about-meta">© 2026 Oriex ・ v{APP_VERSION}</p>
+              <p className="oxv-st-about-meta">© 2026 Oriex ・ {APP_VERSION_LABEL}</p>
             </div>
           )}
         </div>
 
-        {/* 4) データ ------------------------------------------------------- */}
+        {/* 4) ホーム — switch back to the original home (ONLY entry point) -- */}
+        <div className="oxv-st-h">{IcHomeSwap}<span>ホーム</span></div>
+        <div className="oxv-st-card oxv-st-list">
+          <div className="oxv-st-row oxv-st-row-static">
+            <span className="oxv-st-ic">{IcHomeSwap}</span>
+            <span className="oxv-st-rtext">
+              <span className="oxv-st-rlabel">元のホームに切り替える</span>
+              <span className="oxv-st-rdesc">以前のホーム画面に戻ります（いつでもここから新ホームに戻せます）</span>
+            </span>
+          </div>
+          <button type="button" className="oxv-st-switch" onClick={switchToOriginalHome}>
+            {IcHomeSwap}<span>元のホームに切り替える</span>
+          </button>
+        </div>
+
+        {/* 5) データ ------------------------------------------------------- */}
         <div className="oxv-st-h">{IcTrash}<span>データ</span></div>
         <div className="oxv-st-card oxv-st-danger">
           <div className="oxv-st-row oxv-st-row-static">

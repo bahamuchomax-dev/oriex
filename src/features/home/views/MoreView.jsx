@@ -1,9 +1,13 @@
 import "./more.css";
+import { unreadNoticesCount } from "./NoticesView.jsx";
+import { availableGiftsCount } from "./GiftView.jsx";
 
 /* ------------------------------------------------------------------ *
  * その他 — overflow menu to other home destinations.
  * Grouped list of tappable rows; each row is a real <button> that calls
  * onOpen(<key>). All icons are inline <svg> (no emoji, no assets).
+ * Notification badges (お知らせ/ギフト) are LIVE — same counts the home
+ * dashboard shows — not hardcoded, so they clear when the user catches up.
  * ------------------------------------------------------------------ */
 
 /* --- glyphs (crisp line icons, ~2 stroke) ------------------------- */
@@ -94,7 +98,7 @@ const GROUPS = [
   {
     heading: "ソーシャル",
     rows: [
-      { key: "friends", label: "ひろば", desc: "みんなとつながる", tone: "green", icon: Friends },
+      { key: "friends", label: "ひろば", desc: "ランキング・フレンド・LABO", tone: "green", icon: Friends },
       { key: "hamster", label: "育成", desc: "ハムスターを育てる", tone: "purple", icon: Hamster },
       { key: "factory", label: "FACTORY", desc: "問題をつくる工房", tone: "crim", icon: Factory },
     ],
@@ -104,8 +108,8 @@ const GROUPS = [
     rows: [
       { key: "profile", label: "マイページ", desc: "プロフィールと実績", tone: "blue", icon: Profile },
       { key: "settings", label: "設定", desc: "アプリの設定", tone: "gray", icon: Settings },
-      { key: "notices", label: "お知らせ", desc: "新着のお知らせ", tone: "gold", icon: Notices, badge: 2 },
-      { key: "gift", label: "ギフト", desc: "受け取れる特典", tone: "red", icon: Gift, badge: 1 },
+      { key: "notices", label: "お知らせ", desc: "新着のお知らせ", tone: "gold", icon: Notices },
+      { key: "gift", label: "ギフト", desc: "受け取れる特典", tone: "red", icon: Gift },
     ],
   },
 ];
@@ -114,6 +118,10 @@ export default function MoreView({ onBack, onOpen }) {
   const open = (key) => {
     if (typeof onOpen === "function") onOpen(key);
   };
+
+  // live badge counts — read once per open of この画面 (cheap, not a hot path)
+  const badges = { notices: unreadNoticesCount(), gift: availableGiftsCount() };
+  const badgeFor = (key) => badges[key] || 0;
 
   return (
     <div className="oxh-sub oxv-mr">
@@ -143,7 +151,7 @@ export default function MoreView({ onBack, onOpen }) {
                     <span className="oxv-mr-label">{r.label}</span>
                     <span className="oxv-mr-desc">{r.desc}</span>
                   </span>
-                  {r.badge ? <span className="oxv-mr-badge">{r.badge}</span> : null}
+                  {badgeFor(r.key) > 0 ? <span className="oxv-mr-badge">{badgeFor(r.key)}</span> : null}
                   {Chevron}
                 </button>
               ))}

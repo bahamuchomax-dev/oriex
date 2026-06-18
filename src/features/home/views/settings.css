@@ -312,6 +312,30 @@
 .oxv-st-reset:hover { background: rgba(232, 39, 60, .2); border-color: rgba(232, 39, 60, .55); }
 .oxv-st-reset:active { transform: scale(.97); }
 
+/* ホーム — switch back to the original home (the only entry point) */
+.oxv-st-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 13px;
+  cursor: pointer;
+  border-radius: 12px;
+  color: var(--ink);
+  background: linear-gradient(150deg, rgba(63, 141, 255, .22), rgba(63, 141, 255, .08));
+  border: 1px solid rgba(63, 141, 255, .45);
+  font-size: 13.5px;
+  font-weight: 900;
+  font-family: "Zen Maru Gothic", sans-serif;
+  transition: transform .12s ease, background .15s ease, border-color .15s ease;
+}
+.oxv-st-switch svg { width: 18px; height: 18px; }
+.oxv-st-switch:hover { background: linear-gradient(150deg, rgba(63, 141, 255, .32), rgba(63, 141, 255, .14)); border-color: rgba(63, 141, 255, .6); }
+.oxv-st-switch:active { transform: scale(.97); }
+.oxv-st-switch:focus-visible { outline: 2.5px solid var(--blue); outline-offset: 2px; }
+
 .oxv-st-confirm {
   margin-top: 12px;
   padding: 13px;

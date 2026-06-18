@@ -235,6 +235,8 @@ export default function FriendsView({ onBack }) {
               {IcTrophy}<span>今週のランキング</span><small>毎週月曜リセット</small>
             </div>
 
+            <p className="oxv-fr-demo">※ あなた以外はデモ表示です。フレンドを追加すると実際の順位になります。</p>
+
             <div className="oxv-fr-list">
               {board.map((u) => (
                 <div className={`oxv-fr-row${u.me ? " oxv-fr-row-me" : ""}`} key={u.name}>
@@ -265,6 +267,8 @@ export default function FriendsView({ onBack }) {
                 {IcAdd}<span>友だちを追加</span>
               </button>
             </div>
+
+            <p className="oxv-fr-demo">※ 一覧はデモのフレンドです。招待コードでつながると実際のフレンドが表示されます。</p>
 
             {inviteOpen && (
               <div className="oxv-fr-invite">

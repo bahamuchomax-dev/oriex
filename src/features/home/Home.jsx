@@ -32,6 +32,7 @@ import { useStudy, totalMinutes, streakDays, todayMinutes, weekSeries, fmtMinute
 import { getFrame, frameRing } from "./iconFrames.js";
 import { getAccount, accountAvatarImg, getRealStudy } from "./realAccount.js";
 import { useTeacherPlan } from "./teacherPlan.js";
+import { HOME_FLAG, TOGGLE_FLAG, switchToOriginalHome } from "./homeSwitch.js";
 
 /* ============================================================
  * Home — Oriex new home (v2: big character).
@@ -48,24 +49,8 @@ import { useTeacherPlan } from "./teacherPlan.js";
  * fallback. No emojis — every glyph is an inline SVG matched to the character's look.
  * ============================================================ */
 
-// localStorage flags the dispatcher (src/main.js) + oxUiPatches read.
-const HOME_FLAG = "oriexHome"; // "1" => boot into this React home
-const TOGGLE_FLAG = "oriexHomeToggle"; // "1" => legacy side shows a "新ホーム" button
-
-/** Switch to the ORIGINAL (legacy) home: clear the home flag, keep the toggle so
- *  the legacy side offers a way back, strip the URL opt-in, and reload. */
-function switchToOriginalHome() {
-  try { window.localStorage.setItem(TOGGLE_FLAG, "1"); } catch { /* ignore */ }
-  try { window.localStorage.removeItem(HOME_FLAG); } catch { /* ignore */ }
-  try {
-    const u = new URL(window.location.href);
-    u.searchParams.delete(HOME_FLAG);
-    if (u.hash.replace(/^#/, "") === "oriex-home") u.hash = "";
-    window.location.replace(u.toString());
-  } catch {
-    try { window.location.reload(); } catch { /* ignore */ }
-  }
-}
+// The new/original home switch now lives in ONE place (設定 / SettingsView).
+// HOME_FLAG / TOGGLE_FLAG / switchToOriginalHome are imported from homeSwitch.js.
 
 // --- inline SVG glyphs (no emoji) ------------------------------------------
 const Horseshoe = (p) => (
@@ -260,7 +245,25 @@ export default function Home({ profile, onOpen = () => {} } = {}) {
   const wsAvg = Math.round(ws.reduce((a, d) => a + d.minutes, 0) / 7);
 
   const teacherPlan = useTeacherPlan(); // 先生からの週計画 (live Firestore), or null
-  const weekPlans = readWeekPlans();
+
+  // localStorage-backed side data (週計画 + お知らせ/ギフト counts). Read ONCE here and
+  // re-read only on a view CHANGE (e.g. returning from 週計画/お知らせ/ギフト) — NOT on
+  // every render. Home re-renders ~1×/sec while the timer runs; the old per-render
+  // JSON.parse on three keys was a needless iOS hot-path. Refresh-on-return is kept.
+  const [side, setSide] = useState(() => ({
+    weekPlans: readWeekPlans(),
+    noticeCount: unreadNoticesCount(),
+    giftCount: availableGiftsCount(),
+  }));
+  useEffect(() => {
+    setSide({
+      weekPlans: readWeekPlans(),
+      noticeCount: unreadNoticesCount(),
+      giftCount: availableGiftsCount(),
+    });
+  }, [view]);
+  const { weekPlans, noticeCount, giftCount } = side;
+
   const planSrc = teacherPlan
     ? teacherPlan
     : weekPlans
@@ -271,10 +274,6 @@ export default function Home({ profile, onOpen = () => {} } = {}) {
   const planTotal = planList.length;
   const initial = (p.name || "G").trim().charAt(0) || "G";
   const greet = greetingFor(p.name);
-  // Live notification counts (re-read on each render — refreshed when you return
-  // from お知らせ/ギフト). Badges hide at 0; マイページ's nav dot tracks unclaimed gifts.
-  const noticeCount = unreadNoticesCount();
-  const giftCount = availableGiftsCount();
 
   const go = (key) => {
     try { onOpen(key); } catch { /* ignore */ }
@@ -315,7 +314,6 @@ export default function Home({ profile, onOpen = () => {} } = {}) {
           <div className="oxh-hero">
             <div className="oxh-top">
               <div className="oxh-brand"><Horseshoe />ORIEX</div>
-              <button className="oxh-switch" onClick={switchToOriginalHome}>{Swap}元のホーム</button>
               <button className="oxh-tbtn" onClick={() => go("notices")} aria-label={`お知らせ${noticeCount > 0 ? ` 未読${noticeCount}件` : ""}`}>
                 <svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6" /><path d="M10 20a2 2 0 004 0" /></svg>
                 {noticeCount > 0 && <span className="oxh-tdot">{noticeCount}</span>}

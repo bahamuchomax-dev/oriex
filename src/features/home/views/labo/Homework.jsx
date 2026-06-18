@@ -160,6 +160,8 @@ export default function Homework() {
         <span className="oxv-hw-sum-s">{summarySub}</span>
       </div>
 
+      <p className="oxv-hw-demo">※ サンプルの宿題です。先生が出した宿題がここに表示されます。</p>
+
       {/* all-done banner ------------------------------------------------- */}
       {allDone && (
         <div className="oxv-hw-clear">

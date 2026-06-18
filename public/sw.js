@@ -5,7 +5,12 @@
    - same-origin static assets (manifest, scripts, images, fonts): stale-while-revalidate
    - everything else (Firestore/Firebase/Google APIs): not intercepted -> normal network
 */
-var VERSION = 'v7.99.37-color-vivid';
+/* VERSION is stamped from package.json at build time (see vite.config.js
+   stamp-sw-version plugin). Bumping the app version now ALWAYS changes the
+   shell cache name, so activate() purges the old cached index.html + chunks
+   and the new build actually reaches installed PWAs. Dev (no build) keeps the
+   literal placeholder, which is fine — the SW only registers in PROD. */
+var VERSION = '__APP_VERSION__';
 var SHELL = 'oriex-shell-' + VERSION;
 var FONTS = 'oriex-fonts-v1';
 var SHELL_URLS = ['./', './index.html', './manifest.webmanifest', './three.min.js', './icon-180.png', './icon-192.png', './icon-512.png'];
