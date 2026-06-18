@@ -155,10 +155,10 @@ function mountHome2Placeholder() {
       "font-family:'Zen Maru Gothic','Zen Kaku Gothic New',sans-serif;color:#2b2724;" +
       "background:linear-gradient(170deg,#fff8f4 0%,#fdede6 52%,#f5ddd0 100%)";
     const title = document.createElement("div");
-    title.textContent = "作成予定のホームです。";
-    title.style.cssText = "font-size:20px;font-weight:900;letter-spacing:.02em";
+    title.textContent = "でんじゃらすじーさん";
+    title.style.cssText = "font-size:22px;font-weight:900;letter-spacing:.02em";
     const sub = document.createElement("div");
-    sub.textContent = "ホーム2は準備中です。";
+    sub.textContent = "作成予定のホームです。";
     sub.style.cssText = "font-size:13px;font-weight:600;color:#7a6f64";
     const back = document.createElement("button");
     back.textContent = "元のホームに戻る";

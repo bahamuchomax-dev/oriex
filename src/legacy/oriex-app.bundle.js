@@ -52594,7 +52594,7 @@ function CI() {
                 style: {
                   color: A.textMuted
                 },
-                children: "新しいデザインのホーム画面に切り替えます（いつでも元に戻せます）。"
+                children: "ホームを「トランセンド」または「でんじゃらすじーさん」に切り替えられます（いつでも元に戻せます）。"
               }), (0, r.jsx)("button", {
                 onClick: () => {
                   try {
@@ -52607,7 +52607,7 @@ function CI() {
                   background: "linear-gradient(135deg,#0E9489,#14b8a6)",
                   color: "#fff"
                 },
-                children: "新ホームに切り替える"
+                children: "トランセンドに切り替える"
               }), (0, r.jsx)("input", {
                 id: "ox-home2-code",
                 placeholder: "ホームコードを入力（例：JIISAN）",
@@ -52636,7 +52636,7 @@ function CI() {
                   background: "linear-gradient(135deg,#6d28d9,#7c3aed)",
                   color: "#fff"
                 },
-                children: "コードでホームを切り替え"
+                children: "でんじゃらすじーさんへ（コード）"
               }), i?.isTeacher && (0, r.jsx)("button", {
                 onClick: () => {
                   try {
@@ -52650,7 +52650,7 @@ function CI() {
                   background: "linear-gradient(135deg,#0891b2,#06b6d4)",
                   color: "#fff"
                 },
-                children: "ホーム2へ（先生・コード不要）"
+                children: "でんじゃらすじーさんへ（先生・コード不要）"
               })]
             }), (0, r.jsxs)("div", {
               className: "rounded-[20px] p-5 mb-4",
