@@ -24,16 +24,6 @@ try {
   /* ignore */
 }
 
-// Room background image for the hamster 3D scene (used as a 360° equirect backdrop).
-// Imported here so Vite hashes it + rewrites the GitHub Pages base path; exposed on
-// window because oriexHamu3D.js runs as a plain (non-module) global.
-import roomBgUrl from "./assets/hamster/room-bg.jpg";
-try {
-  if (typeof window !== "undefined") window.__OX_ROOM_BG = roomBgUrl;
-} catch {
-  /* ignore */
-}
-
 // Opt-in "研鑽 (Kensan)" skin for the ORIGINAL (legacy) UI — a gated test theme.
 // Pure CSS (src/styles/skin-kensan.css), inert unless <body class="ox-skin">. We
 // add the class when enabled by ?oriexSkin=1 or localStorage.oriexSkin==="1"; a

@@ -45,7 +45,7 @@ window.OriexHamu3D = function (canvas, env) {
     cameraCollisionRadius: 14,   /* 衝突判定の見込み半径（将来の調整用） */
     cameraCollisionPadding: 28,  /* 障害物手前で止める余白 */
     antiAliasingLevel: 2,        /* アンチエイリアス強度の目安（DPR上限に反映。2でほぼ従来通り） */
-    glassOpacity: 0.2,            /* §2: わずかに上げてアクリル面が薄く読めるように（クリア維持） */
+    glassOpacity: 0.16,           /* ガラスの透明度。内部が透けすぎないよう調整 */
     uiOcclusionEnabled: true     /* ゲージ等UIの遮蔽フラグ。本シーンのゲージはHTML HUDのため常時最前面（参照用フラグ） */
   };
   var BP = {
@@ -77,75 +77,17 @@ window.OriexHamu3D = function (canvas, env) {
   renderer.setPixelRatio(DPR);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  /* §1.1 color management + filmic tone mapping — the biggest "rendered look" win
-     (kills the flat, CG-ish output). Feature-detected so it works on three r149
-     (outputEncoding/sRGBEncoding) and r152+ (outputColorSpace/SRGBColorSpace). */
-  if ("outputColorSpace" in renderer && THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
-  else if (THREE.sRGBEncoding != null) renderer.outputEncoding = THREE.sRGBEncoding;
-  if (THREE.ACESFilmicToneMapping != null) renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.98; /* balanced: not washed (1.12), not muddy (0.86) */
 
   var scene = new THREE.Scene();
-  /* §4 house-like patterned background: a soft polka-dot "wallpaper" instead of a flat color */
-  function roomBgTex() {
-    try {
-      if (typeof document === "undefined") return null;
-      var cv = document.createElement("canvas"); cv.width = 256; cv.height = 256;
-      var g = cv.getContext("2d"); if (!g) return null;
-      var grd = g.createLinearGradient(0, 0, 0, 256);
-      grd.addColorStop(0, "#f3e8cb"); grd.addColorStop(0.8, "#ecdcb4"); /* cream nursery wall */
-      g.fillStyle = grd; g.fillRect(0, 0, 256, 256);
-      /* soft PASTEL polka dots = cozy room wallpaper */
-      var dotCols = ["rgba(243,178,189,0.5)", "rgba(176,220,196,0.5)", "rgba(180,206,236,0.5)", "rgba(244,214,140,0.6)"];
-      var k = 0;
-      for (var yy = 0; yy < 206; yy += 44) {
-        var ox = (Math.round(yy / 44) % 2) ? 22 : 0;
-        for (var xx = -22; xx < 256; xx += 44) {
-          g.fillStyle = dotCols[k++ % dotCols.length];
-          g.beginPath(); g.arc(xx + ox, yy + 22, 7.5, 0, Math.PI * 2); g.fill();
-        }
-      }
-      /* baseboard + floor strip at the bottom = room feel */
-      g.fillStyle = "rgba(120,92,52,0.30)"; g.fillRect(0, 205, 256, 3);
-      g.fillStyle = "#d2b27c"; g.fillRect(0, 208, 256, 48);
-      var t = new THREE.CanvasTexture(cv);
-      if ("colorSpace" in t && THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace;
-      else if (THREE.sRGBEncoding != null) t.encoding = THREE.sRGBEncoding;
-      return t;
-    } catch (e) { return null; }
-  }
-  var bgTex = P ? roomBgTex() : null;
-  scene.background = bgTex || new THREE.Color(P ? 0xc2a472 : 0x221d17);
-  scene.fog = new THREE.Fog(P ? 0xd6bd8a : 0x221d17, 1400, 2600);
-  /* §4: the user's ROOM PHOTO as a 360° equirect backdrop — rotating the camera turns
-     the room around the cage. Loads async; the wallpaper stands in until it arrives.
-     A flat photo isn't a true panorama, so it wraps/repeats — good enough ("umai") here. */
-  var roomEnvTex = null;
-  try {
-    var _roomUrl = (typeof window !== "undefined") && window.__OX_ROOM_BG;
-    if (P && _roomUrl && THREE.TextureLoader) {
-      new THREE.TextureLoader().load(_roomUrl, function (tx) {
-        try {
-          tx.mapping = THREE.EquirectangularReflectionMapping;
-          if ("colorSpace" in tx && THREE.SRGBColorSpace) tx.colorSpace = THREE.SRGBColorSpace;
-          else if (THREE.sRGBEncoding != null) tx.encoding = THREE.sRGBEncoding;
-          roomEnvTex = tx;
-          scene.background = tx;
-          scene.fog = null; /* no fog over a photographic backdrop */
-        } catch (e) { /* keep the wallpaper fallback */ }
-      });
-    }
-  } catch (e) { /* keep the wallpaper fallback */ }
+  scene.background = new THREE.Color(P ? 0xf2e6d2 : 0x221d17);
+  scene.fog = new THREE.Fog(P ? 0xf2e6d2 : 0x221d17, 1400, 2600);
 
   var camera = new THREE.PerspectiveCamera(42, 1, 10, 4000);
 
-  /* ---- lights (3-point: warm key + cool fill + soft warm ambient/hemisphere) ---- */
-  /* §1.2: trim the flat ambient, lean on a stronger WARM KEY (sun) for form; a soft
-     warm hemisphere keeps shadows from going muddy, the cool fill (below) separates. */
-  /* deepen the flat fill so pale pastels read richer (less washed); KEY stays strong for form */
-  scene.add(new THREE.AmbientLight(0xffffff, P ? 0.26 : 0.18));
-  var hemi = new THREE.HemisphereLight(0xfff7ea, 0xd8c2a0, P ? 0.26 : 0.18); scene.add(hemi);
-  var sun = new THREE.DirectionalLight(0xfff3e2, P ? 0.62 : 0.54);
+  /* ---- lights (bright, soft natural light; tuned to avoid blowout) ---- */
+  scene.add(new THREE.AmbientLight(0xffffff, P ? 0.585 : 0.37));
+  var hemi = new THREE.HemisphereLight(0xfff7ea, 0xd8c2a0, P ? 0.35 : 0.22); scene.add(hemi);
+  var sun = new THREE.DirectionalLight(0xfff3e2, P ? 0.62 : 0.52);
   sun.position.set(380, 620, 260);
   sun.castShadow = true;
   /* 影解像度: PC(細かいポインタ)は2048で輪郭をくっきり、モバイル(coarse)は1024で軽量に保つ＝ジャギー軽減と負荷両立 */
@@ -157,35 +99,13 @@ window.OriexHamu3D = function (canvas, env) {
   sun.shadow.bias = -0.0008;
   sun.shadow.radius = 3;
   scene.add(sun);
-  var fill = new THREE.DirectionalLight(0xeaf4ff, 0.20); fill.position.set(-320, 260, -180); scene.add(fill); /* §1.2 cool fill, kept subtle */
+  var fill = new THREE.DirectionalLight(0xeaf4ff, 0.22); fill.position.set(-320, 260, -180); scene.add(fill);
 
   /* ---- helpers ---- */
   var GEO = [], MAT = [];
   function gk(g) { GEO.push(g); return g; }
-  /* §2 material family: physically-based, matte CLAY/TOY look (non-metal, mid-high
-     roughness). A unified roughness range is what reads as "rendered". Per-call `o`
-     can still override (roughness/metalness/transparent/opacity/map/emissive). */
-  /* §2 fix: the non-wood objects read washed-out — boost their color SATURATION
-     (HSL S ×1.7) so pastels/toys are vivid, not faint. The wood (topMat) is separate. */
-  /* Strongly enrich non-wood colors: big SATURATION boost AND DEEPEN light colors
-     (pull lightness toward 0.5) so the room reads rich/deep instead of whitish. */
-  function satCol(c, mul) {
-    var col = (c && c.isColor) ? c.clone() : new THREE.Color(c);
-    var hsl = { h: 0, s: 0, l: 0 }; col.getHSL(hsl);
-    if (hsl.s > 0.05) {
-      /* HUED colors: crank saturation hard and cap lightness so pastels become VIVID
-         mid-tones (はっきり), not faint. */
-      var s = Math.min(1, hsl.s * (mul || 2.8) + 0.15);
-      var l = Math.min(hsl.l, 0.58);
-      col.setHSL(hsl.h, s, l);
-    } else {
-      /* near-white/gray (cage frame/glass): no fake hue, just deepen a touch */
-      col.setHSL(hsl.h, hsl.s, hsl.l > 0.74 ? 0.74 : hsl.l);
-    }
-    return col;
-  }
   function mk(c, o) {
-    var m = new THREE.MeshStandardMaterial(Object.assign({ color: satCol(c), roughness: 0.8, metalness: 0.0 }, o || {}));
+    var m = new THREE.MeshLambertMaterial(Object.assign({ color: c }, o || {}));
     MAT.push(m); return m;
   }
   function box(w, h, d, c, o) { return new THREE.Mesh(gk(new THREE.BoxGeometry(w, h, d)), mk(c, o)); }
@@ -232,9 +152,6 @@ window.OriexHamu3D = function (canvas, env) {
       wg2.stroke();
     }
     woodTex = new THREE.CanvasTexture(wc);
-    /* §1.1: color map must be sRGB so it decodes correctly under tone mapping */
-    if ("colorSpace" in woodTex && THREE.SRGBColorSpace) woodTex.colorSpace = THREE.SRGBColorSpace;
-    else if (THREE.sRGBEncoding != null) woodTex.encoding = THREE.sRGBEncoding;
     woodTex.wrapS = woodTex.wrapT = THREE.RepeatWrapping; woodTex.repeat.set(2.6, 1.8);
   } catch (e) { woodTex = null; }
   var topMat = woodTex ? new THREE.MeshLambertMaterial({ map: woodTex, color: 0xffffff }) : mk(P ? 0xA87D4D : 0x5d4a33);
@@ -284,14 +201,12 @@ window.OriexHamu3D = function (canvas, env) {
      Denser + 6 light-beige tones + random size/rotation/tilt; kept LOW (y<=1.7,
      flat scale) so the hamster body and props never get buried. */
   (function () {
-    /* clean light warm-beige range = calm backdrop so the colorful props/hamster POP
-       (a uniform deep tan made everything brown & hard to read). Used RAW (no satCol). */
-    var tones = P ? [0xEAD6A6, 0xE0C892, 0xD6BA7E, 0xCBAB6B, 0xBE9B58, 0xB08B48]
+    var tones = P ? [0xF9ECC8, 0xF1DCAC, 0xE5C98E, 0xD9B677, 0xC9A062, 0xB88F54]
                   : [0x8b7c62, 0x83745b, 0x77684f, 0x6d5f49, 0x655842, 0x5d5040];
     function seed(n) { return ((n * 9301 + 49297) % 233280) / 233280; }
     var Eu = new THREE.Euler();
     function fill(geo, count, off, sMin, sMax, flat, tilt) {
-      var im = new THREE.InstancedMesh(gk(geo), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.95, metalness: 0.0 }), count);
+      var im = new THREE.InstancedMesh(gk(geo), new THREE.MeshLambertMaterial({ color: 0xffffff }), count);
       MAT.push(im.material);
       im.receiveShadow = true;
       var M = new THREE.Matrix4(), Pq = new THREE.Quaternion(), Vp = new THREE.Vector3(), Vs = new THREE.Vector3();
@@ -305,7 +220,7 @@ window.OriexHamu3D = function (canvas, env) {
         Vs.set(s9, flat ? s9 * 0.26 : s9 * 0.4, s9 * (0.6 + r3 * 0.5));
         M.compose(Vp, Pq, Vs);
         im.setMatrixAt(i, M);
-        im.setColorAt(i, col.setHex(tones[Math.floor(r5 * 6) % 6])); /* raw light beige = calm backdrop */
+        im.setColorAt(i, col.setHex(tones[Math.floor(r5 * 6) % 6]));
       }
       im.instanceMatrix.needsUpdate = true;
       if (im.instanceColor) im.instanceColor.needsUpdate = true;
@@ -344,7 +259,7 @@ window.OriexHamu3D = function (canvas, env) {
   var gW = glass(FLD, WALL_H); gW.rotation.y = Math.PI / 2; gW.position.set(-FLW / 2, WALL_Y, 0); cage.add(gW);
   var gE = glass(FLD, WALL_H); gE.rotation.y = Math.PI / 2; gE.position.set(FLW / 2, WALL_Y, 0); cage.add(gE);
   /* subtle top highlight strips on glass */
-  var hlMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.34, depthWrite: false }); MAT.push(hlMat); /* §2: stronger edge highlight = reads as glass */
+  var hlMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.16, depthWrite: false }); MAT.push(hlMat);
   function gstrip(w) { var m = new THREE.Mesh(gk(new THREE.PlaneGeometry(w, 5)), hlMat); m.renderOrder = 6; return m; }
   var h1 = gstrip(FLW - 26); h1.position.set(0, WALL_H - 17, -FLD / 2 + 0.6); cage.add(h1);
   var h2 = gstrip(FLD - 26); h2.rotation.y = Math.PI / 2; h2.position.set(FLW / 2 - 0.6, WALL_H - 17, 0); cage.add(h2);
@@ -1065,8 +980,6 @@ window.OriexHamu3D = function (canvas, env) {
       window.removeEventListener("resize", rs);
       GEO.forEach(function (g) { g.dispose(); });
       if (woodTex) woodTex.dispose();
-      if (bgTex) bgTex.dispose();
-      if (roomEnvTex) roomEnvTex.dispose();
       MAT.forEach(function (m) { m.dispose(); });
       renderer.dispose();
     }
