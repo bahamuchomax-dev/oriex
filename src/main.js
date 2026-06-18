@@ -130,10 +130,9 @@ function startModernCutover() {
     });
 }
 
-// Home variant 2 — unlocked by a serial code (JIISAN) entered in 設定, which sets
-// localStorage.oriexHome="2". For now it is a "coming soon" placeholder; building
-// the real second home happens later. Plain DOM (no chunk) so it can never fail to
-// load, and it fills #root so the index.html boot watchdog sees a mounted app.
+// Home variant 2 — でんじゃらすじーさん (localStorage.oriexHome="2", unlocked by the
+// JIISAN code in 設定). Provisional: it mounts the SAME React home as トランセンド but
+// with the じーさん main character (variant: "jiisan"), via the shared mountHome chunk.
 function isHome2Enabled() {
   try {
     return !!(typeof window !== "undefined" && window.localStorage && window.localStorage.getItem("oriexHome") === "2");
@@ -141,50 +140,20 @@ function isHome2Enabled() {
     return false;
   }
 }
-function mountHome2Placeholder() {
-  try {
-    const root = typeof document !== "undefined" ? document.getElementById("root") : null;
-    if (!root) {
-      startLegacyApp();
-      return;
-    }
-    root.innerHTML = "";
-    const wrap = document.createElement("div");
-    wrap.style.cssText =
-      "min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px;text-align:center;" +
-      "font-family:'Zen Maru Gothic','Zen Kaku Gothic New',sans-serif;color:#2b2724;" +
-      "background:linear-gradient(170deg,#fff8f4 0%,#fdede6 52%,#f5ddd0 100%)";
-    const title = document.createElement("div");
-    title.textContent = "でんじゃらすじーさん";
-    title.style.cssText = "font-size:22px;font-weight:900;letter-spacing:.02em";
-    const sub = document.createElement("div");
-    sub.textContent = "作成予定のホームです。";
-    sub.style.cssText = "font-size:13px;font-weight:600;color:#7a6f64";
-    const back = document.createElement("button");
-    back.textContent = "元のホームに戻る";
-    back.style.cssText =
-      "margin-top:6px;padding:12px 22px;border:none;border-radius:14px;cursor:pointer;" +
-      "background:#0E9489;color:#fff;font-weight:800;font-size:14px;font-family:inherit";
-    back.addEventListener("click", function () {
-      try { window.localStorage.removeItem("oriexHome"); } catch { /* ignore */ }
-      try { window.localStorage.setItem("oriexHomeToggle", "1"); } catch { /* ignore */ }
-      try { window.location.reload(); } catch { /* ignore */ }
-    });
-    wrap.appendChild(title);
-    wrap.appendChild(sub);
-    wrap.appendChild(back);
-    root.appendChild(wrap);
-  } catch (err) {
-    console.warn("[oriex] home2 placeholder failed", err);
-    startLegacyApp();
-  }
-}
 
 const oriexLocation = typeof window !== "undefined" ? window.location : null;
 
 if (oriexLocation && isHome2Enabled()) {
-  // Home variant 2 (serial code JIISAN) — "coming soon" placeholder for now.
-  mountHome2Placeholder();
+  // でんじゃらすじーさん: same home as トランセンド with the じーさん character.
+  import("./features/home/mountHome.jsx")
+    .then((mod) => {
+      if (typeof mod.mountHomePreview === "function") mod.mountHomePreview({ variant: "jiisan" });
+      else startLegacyApp();
+    })
+    .catch((err) => {
+      console.warn("[oriex] home2 (jiisan) failed to load", err);
+      startLegacyApp();
+    });
 } else if (oriexLocation && isHomePreviewEnabled(oriexLocation)) {
   // Opt-in NEW React home (?oriexHome=1 / #oriex-home / localStorage). Separate
   // lazy chunk; never on a normal visit. Falls back to legacy on any failure so

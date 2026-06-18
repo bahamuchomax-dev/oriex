@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import Home from "./Home.jsx";
+import jiisanCharUrl from "./assets/jiisan.png";
 
 /* ============================================================
  * mountHomePreview — lazy entry for the opt-in new home
@@ -32,6 +33,7 @@ export function mountHomePreview(opts = {}) {
     <StrictMode>
       <Home
         current="home"
+        characterUrl={opts.variant === "jiisan" ? jiisanCharUrl : undefined}
         onOpen={(key) => {
           // Standalone preview: no router yet. Log taps so you can see wiring.
           // When this becomes the real home, replace with your navigate(key).

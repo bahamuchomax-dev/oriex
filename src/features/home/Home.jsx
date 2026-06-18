@@ -211,7 +211,7 @@ function readWeekPlans() {
   }
 }
 
-export default function Home({ profile, onOpen = () => {} } = {}) {
+export default function Home({ profile, onOpen = () => {}, characterUrl } = {}) {
   const [view, setView] = useState("home");
   const st = useStudy(); // live study data — the dashboard reflects recorded sessions
 
@@ -306,7 +306,7 @@ export default function Home({ profile, onOpen = () => {} } = {}) {
     <div className={view === "home" ? "oxh" : "oxh oxh-subview"}>
       <div className="oxh-bg" style={{ backgroundImage: `url(${bgUrl})` }} />
       <div className="oxh-glow" />
-      <div className="oxh-char" style={{ backgroundImage: `url(${charUrl})` }} />
+      <div className="oxh-char" style={{ backgroundImage: `url(${characterUrl || charUrl})` }} />
 
       {view === "home" && (
         <>
