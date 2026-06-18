@@ -83,7 +83,7 @@ window.OriexHamu3D = function (canvas, env) {
   if ("outputColorSpace" in renderer && THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
   else if (THREE.sRGBEncoding != null) renderer.outputEncoding = THREE.sRGBEncoding;
   if (THREE.ACESFilmicToneMapping != null) renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.86; /* lowered hard: bright light was blowing surfaces to pale, killing the deep colors */
+  renderer.toneMappingExposure = 0.98; /* balanced: not washed (1.12), not muddy (0.86) */
 
   var scene = new THREE.Scene();
   /* §4 house-like patterned background: a soft polka-dot "wallpaper" instead of a flat color */
@@ -93,15 +93,21 @@ window.OriexHamu3D = function (canvas, env) {
       var cv = document.createElement("canvas"); cv.width = 256; cv.height = 256;
       var g = cv.getContext("2d"); if (!g) return null;
       var grd = g.createLinearGradient(0, 0, 0, 256);
-      grd.addColorStop(0, "#ecd9b4"); grd.addColorStop(1, "#dcc191"); /* warm wall, lighter up top */
+      grd.addColorStop(0, "#f3e8cb"); grd.addColorStop(0.8, "#ecdcb4"); /* cream nursery wall */
       g.fillStyle = grd; g.fillRect(0, 0, 256, 256);
-      g.fillStyle = "rgba(198,166,108,0.5)"; /* soft tan dots */
-      for (var yy = 0; yy < 256; yy += 46) {
-        var ox = (Math.round(yy / 46) % 2) ? 23 : 0;
-        for (var xx = -23; xx < 256; xx += 46) {
-          g.beginPath(); g.arc(xx + ox, yy + 23, 6.5, 0, Math.PI * 2); g.fill();
+      /* soft PASTEL polka dots = cozy room wallpaper */
+      var dotCols = ["rgba(243,178,189,0.5)", "rgba(176,220,196,0.5)", "rgba(180,206,236,0.5)", "rgba(244,214,140,0.6)"];
+      var k = 0;
+      for (var yy = 0; yy < 206; yy += 44) {
+        var ox = (Math.round(yy / 44) % 2) ? 22 : 0;
+        for (var xx = -22; xx < 256; xx += 44) {
+          g.fillStyle = dotCols[k++ % dotCols.length];
+          g.beginPath(); g.arc(xx + ox, yy + 22, 7.5, 0, Math.PI * 2); g.fill();
         }
       }
+      /* baseboard + floor strip at the bottom = room feel */
+      g.fillStyle = "rgba(120,92,52,0.30)"; g.fillRect(0, 205, 256, 3);
+      g.fillStyle = "#d2b27c"; g.fillRect(0, 208, 256, 48);
       var t = new THREE.CanvasTexture(cv);
       if ("colorSpace" in t && THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace;
       else if (THREE.sRGBEncoding != null) t.encoding = THREE.sRGBEncoding;
@@ -259,8 +265,9 @@ window.OriexHamu3D = function (canvas, env) {
      Denser + 6 light-beige tones + random size/rotation/tilt; kept LOW (y<=1.7,
      flat scale) so the hamster body and props never get buried. */
   (function () {
-    /* deeper tan range (was near-cream) so the bedding reads as real wood shavings, not pale */
-    var tones = P ? [0xD3B074, 0xC6A05E, 0xB78F4A, 0xA67E39, 0x946C2B, 0x825B20]
+    /* clean light warm-beige range = calm backdrop so the colorful props/hamster POP
+       (a uniform deep tan made everything brown & hard to read). Used RAW (no satCol). */
+    var tones = P ? [0xEAD6A6, 0xE0C892, 0xD6BA7E, 0xCBAB6B, 0xBE9B58, 0xB08B48]
                   : [0x8b7c62, 0x83745b, 0x77684f, 0x6d5f49, 0x655842, 0x5d5040];
     function seed(n) { return ((n * 9301 + 49297) % 233280) / 233280; }
     var Eu = new THREE.Euler();
@@ -279,7 +286,7 @@ window.OriexHamu3D = function (canvas, env) {
         Vs.set(s9, flat ? s9 * 0.26 : s9 * 0.4, s9 * (0.6 + r3 * 0.5));
         M.compose(Vp, Pq, Vs);
         im.setMatrixAt(i, M);
-        im.setColorAt(i, satCol(tones[Math.floor(r5 * 6) % 6], 1.8)); /* richer, deeper bedding (less white) */
+        im.setColorAt(i, col.setHex(tones[Math.floor(r5 * 6) % 6])); /* raw light beige = calm backdrop */
       }
       im.instanceMatrix.needsUpdate = true;
       if (im.instanceColor) im.instanceColor.needsUpdate = true;
