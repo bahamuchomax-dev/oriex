@@ -220,7 +220,11 @@ export default function Home({ profile, onOpen = () => {}, characterUrl } = {}) 
   // localStorage.oriexHome==="1" as opt-in, so this is consistent.)
   useEffect(() => {
     try {
-      window.localStorage.setItem(HOME_FLAG, "1");
+      // Persist the opt-in WITHOUT clobbering a specific home variant: the switch
+      // buttons set oriexHome to "1" (トランセンド) or "2" (じーさん). Only default to
+      // "1" when no home is selected yet (e.g. a URL/hash opt-in) so reload stays put.
+      const cur = window.localStorage.getItem(HOME_FLAG);
+      if (cur !== "1" && cur !== "2") window.localStorage.setItem(HOME_FLAG, "1");
       window.localStorage.setItem(TOGGLE_FLAG, "1");
     } catch { /* ignore */ }
   }, []);
