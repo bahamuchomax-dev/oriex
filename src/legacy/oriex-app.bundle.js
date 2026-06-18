@@ -52610,7 +52610,7 @@ function CI() {
                 children: "トランセンドに切り替える"
               }), (0, r.jsx)("input", {
                 id: "ox-home2-code",
-                placeholder: "ホームコードを入力（例：JIISAN）",
+                placeholder: "ホームコードを入力",
                 autoCapitalize: "characters",
                 spellCheck: !1,
                 className: "w-full p-3 rounded-[12px] font-bold text-sm outline-none",
@@ -52625,19 +52625,23 @@ function CI() {
                   var u = ((document.getElementById("ox-home2-code") || {}).value || "").trim().toUpperCase();
                   if (u === "JIISAN") {
                     try {
-                      window.localStorage.setItem("oriexHome", "2")
+                      window.localStorage.setItem("oriexHome2Unlocked", "1")
                     } catch {}
-                    window.location.reload()
+                    var b = document.getElementById("ox-home2-switch");
+                    if (b) b.style.display = "block";
+                    window.alert("ホームを解除しました。下のボタンから切り替えできます。")
                   } else window.alert("コードが正しくありません");
                 },
                 className: "w-full py-2.5 rounded-[12px] text-[12px] font-bold active:opacity-70",
                 style: {
                   marginTop: 8,
-                  background: "linear-gradient(135deg,#6d28d9,#7c3aed)",
-                  color: "#fff"
+                  background: S ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.08)",
+                  color: A.text,
+                  border: `1px solid ${A.cardBorder}`
                 },
-                children: "でんじゃらすじーさんへ（コード）"
-              }), i?.isTeacher && (0, r.jsx)("button", {
+                children: "コードを確認"
+              }), (0, r.jsx)("button", {
+                id: "ox-home2-switch",
                 onClick: () => {
                   try {
                     window.localStorage.setItem("oriexHome", "2")
@@ -52646,11 +52650,18 @@ function CI() {
                 },
                 className: "w-full py-2.5 rounded-[12px] text-[12px] font-bold active:opacity-70",
                 style: {
+                  display: (i?.isTeacher || (() => {
+                    try {
+                      return window.localStorage.getItem("oriexHome2Unlocked") === "1"
+                    } catch {
+                      return !1
+                    }
+                  })()) ? "block" : "none",
                   marginTop: 8,
-                  background: "linear-gradient(135deg,#0891b2,#06b6d4)",
+                  background: "linear-gradient(135deg,#6d28d9,#7c3aed)",
                   color: "#fff"
                 },
-                children: "でんじゃらすじーさんへ（先生・コード不要）"
+                children: "でんじゃらすじーさんに切り替える"
               })]
             }), (0, r.jsxs)("div", {
               className: "rounded-[20px] p-5 mb-4",
