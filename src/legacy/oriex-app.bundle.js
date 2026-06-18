@@ -54471,7 +54471,7 @@ function CI() {
                   },
                   children: (0, r.jsx)(la, {})
                 }), (0, r.jsx)("h2", {
-                  className: "text-3xl font-black",
+                  className: "text-3xl font-black ox-wb-title",
                   style: {
                     color: A.text
                   },
@@ -54489,6 +54489,7 @@ function CI() {
                 children: [lr !== "folder" && (0, r.jsxs)("div", {
                   className: "flex items-center gap-2 mb-3 shrink-0",
                   children: [(0, r.jsx)("span", {
+                    className: "ox-wb-label",
                     style: {
                       fontSize: 11,
                       fontWeight: 800,
@@ -54497,6 +54498,7 @@ function CI() {
                     },
                     children: "追加先"
                   }), (0, r.jsxs)("select", {
+                    className: "ox-wb-select",
                     value: Yi,
                     onChange: B => {
                       let G = B.target.value;

@@ -119,15 +119,21 @@ body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"]{
    shows through softly. Scoped to `background:` (not color/border/shadow) and to the
    photo theme only; form fields get their white from a CSS class (not inline), so
    they are not matched. */
-body.oxbg-on [style*="background: rgb(255, 255, 255)"]:not(input):not(textarea):not(select),
-body.oxbg-on [style*="background:rgb(255, 255, 255)"]:not(input):not(textarea):not(select),
-body.oxbg-on [style*="background: #ffffff"]:not(input):not(textarea):not(select),
-body.oxbg-on [style*="background:#ffffff"]:not(input):not(textarea):not(select){
+body.oxbg-on [style*="background: rgb(255, 255, 255)"]:not(input):not(textarea):not(select):not(.rx-home):not(.rx-mp),
+body.oxbg-on [style*="background:rgb(255, 255, 255)"]:not(input):not(textarea):not(select):not(.rx-home):not(.rx-mp),
+body.oxbg-on [style*="background: #ffffff"]:not(input):not(textarea):not(select):not(.rx-home):not(.rx-mp),
+body.oxbg-on [style*="background:#ffffff"]:not(input):not(textarea):not(select):not(.rx-home):not(.rx-mp){
   background: rgba(255,255,255,.56) !important;
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,.55) !important;
 }
+/* Study stage-select (stageMap/modeSelect) and other .rx-home/.rx-mp SCREEN
+   containers must stay TRANSPARENT on a photo theme (the photo shows through;
+   readability comes from text halos, not a panel) — so they are excluded from the
+   frost above and forced transparent here. Inner cards (not .rx-home) still frost. */
+body.oxbg-on .rx-home,
+body.oxbg-on .rx-mp{ background: transparent !important; }
 
 /* ── unread message red dot (赤ぽっち) on つながり avatars ──────────────────────
    The connections list already has the unread map (Go[friendId] = count). Anchor a
@@ -177,6 +183,50 @@ body.oxbg-on [style*="background:#ffffff"]:not(input):not(textarea):not(select){
 [data-theme="simple"] .ox-teacher-create input::placeholder,
 [data-theme="simple"] .ox-teacher-create textarea::placeholder{
   color:rgba(43,39,36,.5) !important;
+}
+
+/* ── photo-bg: calendar text legibility ───────────────────────────────────────
+   The grid/cells are already frosted by oxHelpers, but the muted header + day text
+   can be low-contrast over a busy photo. Halo the weekday header and (unselected)
+   day text so dates stay readable; the selected day keeps its solid accent. */
+body.oxbg-on .rx-cal-head,
+body.oxbg-on .rx-cal-day:not(.on){
+  text-shadow:
+    1px 1px 0 #fff, -1px 1px 0 #fff, 1px -1px 0 #fff, -1px -1px 0 #fff,
+    0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff,
+    0 0 4px rgba(255,255,255,.95), 0 0 9px rgba(255,255,255,.8) !important;
+}
+
+/* ── つながり rows stay SOLID WHITE on a photo theme (フレンド/先生/未読) ────────
+   oxHelpers frosts .rx-talk/.rx-trow to ~88% translucent; the user wants them clearly
+   white. `html body.oxbg-on …` raises specificity above oxHelpers' runtime rule. */
+html body.oxbg-on .rx-talk,
+html body.oxbg-on .rx-trow,
+html body.oxbg-on .rx-talkbtn{
+  background:#ffffff !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+}
+html body.oxbg-on .rx-talk,
+html body.oxbg-on .rx-trow{ border-color:rgba(15,23,42,.12) !important; }
+
+/* ── 単語帳 title +「追加先」label + dropdown on a (dark) photo ─────────────────
+   Title/label are theme-aware DARK text with no backing → invisible on a dark photo;
+   the「復習リスト」<select> is near-transparent. Halo the text and give the select a
+   readable frosted backing. Hooks added in the bundle render. */
+body.oxbg-on .ox-wb-title,
+body.oxbg-on .ox-wb-label{
+  text-shadow:
+    1px 1px 0 #fff, -1px 1px 0 #fff, 1px -1px 0 #fff, -1px -1px 0 #fff,
+    0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff,
+    0 0 4px rgba(255,255,255,.95), 0 0 9px rgba(255,255,255,.8) !important;
+}
+body.oxbg-on .ox-wb-select{
+  background:rgba(255,255,255,.82) !important;
+  color:#2b2724 !important;
+  border:1px solid rgba(255,255,255,.55) !important;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
 }
 
 /* ── stage / study-mode screen: tighter vertical rhythm ──────────────────────
