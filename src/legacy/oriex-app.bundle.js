@@ -49109,10 +49109,10 @@ function CI() {
                     })]
                   })
                 }) : (0, r.jsx)("div", {
+                  className: "rx-talk",
                   style: {
                     display: "flex",
-                    flexDirection: "column",
-                    gap: 10
+                    flexDirection: "column"
                   },
                   children: E.map(U => (0, r.jsxs)("div", {
                     className: "rx-trow",
@@ -49120,11 +49120,7 @@ function CI() {
                       cursor: "default",
                       alignItems: "flex-start",
                       gap: 12,
-                      background: "var(--card)",
-                      borderRadius: 16,
-                      border: "1px solid var(--line)",
-                      padding: "13px 14px",
-                      boxShadow: "0 6px 16px rgba(43,39,36,0.05)"
+                      padding: "13px 14px"
                     },
                     children: [(0, r.jsx)("div", {
                       className: "rx-av",
