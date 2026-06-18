@@ -115,8 +115,15 @@ export default function TeacherAdminPanel({ onClose } = {}) {
         setDevMsg(`${who} のデベロッパーを解除しました。`);
       }
       setDevFid("");
-    } catch {
-      setDevMsg("変更できませんでした。admin権限と通信状況をご確認ください。");
+    } catch (e) {
+      const code = e && e.code ? e.code : "";
+      if (code === "permission-denied") {
+        setDevMsg(
+          "権限エラー：Firestoreルールが未反映か、admin権限がありません。`node scripts/deployRules.mjs` でルールを反映し、admin で再ログインしてからお試しください。",
+        );
+      } else {
+        setDevMsg("変更できませんでした。通信状況をご確認ください。" + (code ? `（${code}）` : ""));
+      }
     } finally {
       setDevBusy(false);
     }

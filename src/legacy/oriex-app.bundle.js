@@ -45191,7 +45191,7 @@ function CI() {
               children: "戻る"
             })]
           }), (0, r.jsx)("p", {
-            className: "text-[11px] font-black tracking-[0.2em] uppercase mb-6",
+            className: "text-[11px] font-black tracking-[0.2em] uppercase mb-6 ox-edit-title",
             style: {
               color: S ? "#92400e" : "#fbbf24"
             },
@@ -45222,7 +45222,7 @@ function CI() {
                 }) : Qa.char
               })()
             }), (0, r.jsxs)("div", {
-              className: "pb-1 min-w-0",
+              className: "pb-1 min-w-0 ox-edit-idblock",
               children: [(0, r.jsx)("p", {
                 className: "text-2xl font-black leading-tight break-words",
                 style: {
@@ -47595,7 +47595,7 @@ function CI() {
                   className: "rx-tf",
                   type: "number",
                   placeholder: "目標量（例：50）",
-                  value: dn.total,
+                  value: dn.total || "",
                   onChange: u => Or(y => ({
                     ...y,
                     total: u.target.value
@@ -48362,6 +48362,20 @@ function CI() {
                             marginTop: 3
                           },
                           children: i?.shortId ? `ID ${i.shortId}` : "ID ーーーー"
+                        }), (i?.isTeacher || (typeof window !== "undefined" && window.__oxIsDeveloper === true)) && (0, r.jsxs)("div", {
+                          style: {
+                            display: "flex",
+                            gap: 6,
+                            flexWrap: "wrap",
+                            marginTop: 7
+                          },
+                          children: [i?.isTeacher && (0, r.jsx)("span", {
+                            className: "ox-cover-badge ox-cover-teacher",
+                            children: "先生"
+                          }), typeof window !== "undefined" && window.__oxIsDeveloper === true && (0, r.jsx)("span", {
+                            className: "ox-cover-badge ox-cover-dev",
+                            children: "デベロッパー"
+                          })]
                         })]
                       })]
                     }), (0, r.jsxs)("span", {
@@ -48708,6 +48722,54 @@ function CI() {
                   }), (0, r.jsx)("span", {
                     className: "tx",
                     children: "設定"
+                  }), (0, r.jsx)("span", {
+                    className: "ch",
+                    children: (0, r.jsx)("svg", {
+                      width: "18",
+                      height: "18",
+                      viewBox: "0 0 24 24",
+                      fill: "none",
+                      stroke: "currentColor",
+                      strokeWidth: "2.2",
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      children: (0, r.jsx)("path", {
+                        d: "M9 6l6 6-6 6"
+                      })
+                    })
+                  })]
+                }), (0, r.jsxs)("button", {
+                  className: "rx-acct",
+                  onClick: () => {
+                    try {
+                      window.localStorage.setItem("oriexHome", "1")
+                    } catch {}
+                    window.location.reload()
+                  },
+                  children: [(0, r.jsx)("span", {
+                    className: "ic",
+                    style: {
+                      background: "#0E948922",
+                      color: "#0E9489"
+                    },
+                    children: (0, r.jsxs)("svg", {
+                      width: "20",
+                      height: "20",
+                      viewBox: "0 0 24 24",
+                      fill: "none",
+                      stroke: "currentColor",
+                      strokeWidth: "1.9",
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      children: [(0, r.jsx)("path", {
+                        d: "M3 11l9-8 9 8"
+                      }), (0, r.jsx)("path", {
+                        d: "M5 10v10h14V10"
+                      })]
+                    })
+                  }), (0, r.jsx)("span", {
+                    className: "tx",
+                    children: "新ホームに切り替える"
                   }), (0, r.jsx)("span", {
                     className: "ch",
                     children: (0, r.jsx)("svg", {

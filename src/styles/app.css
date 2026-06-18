@@ -90,6 +90,27 @@ body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"]{
   white-space:nowrap;
 }
 
+/* ── myPage cover badges: 先生 / デベロッパー pills on the colored profile cover ──
+   The legacy myPage shows the user's own name/ID as white text on a colored cover
+   (no .rx-pname there), so the dev badge injected on .rx-pname did not appear. The
+   bundle now renders these pills under the name; white pill + colored text so they
+   read on the accent cover, like the streak pill beside them. */
+.ox-cover-badge{
+  display:inline-flex;
+  align-items:center;
+  padding:3px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.92);
+  font-family:"Zen Maru Gothic",sans-serif;
+  font-size:11px;
+  font-weight:800;
+  line-height:1.4;
+  box-shadow:0 1px 4px rgba(0,0,0,.14);
+  white-space:nowrap;
+}
+.ox-cover-teacher{ color:#2f6df0; }
+.ox-cover-dev{ color:#0e7490; }
+
 /* ── stage / study-mode screen: tighter vertical rhythm ──────────────────────
    The subject stage / mode-selection screen left too much unused vertical space
    and showed too few mode cards in the initial mobile viewport. These rules
@@ -191,7 +212,9 @@ body.oxbg-on .rx-sec h3,
 body.oxbg-on .rx-sec a,
 body.oxbg-on .rx-sec button,   /* 「すべて見る」link next to 最近の記録 */
 body.oxbg-on .ox-subj-title,   /* big 学習 subject title (英単語/化学/…) */
-body.oxbg-on .ox-subj-chip{    /* bare subject-filter chips (no backing) */
+body.oxbg-on .ox-subj-chip,    /* bare subject-filter chips (no backing) */
+body.oxbg-on .ox-edit-title,   /* プロフィール編集/新規登録 heading (amber, bare on photo) */
+body.oxbg-on .ox-edit-idblock p{ /* profile-edit own name + ID (bare on photo) */
   text-shadow:
     1px 1px 0 #fff, -1px 1px 0 #fff, 1px -1px 0 #fff, -1px -1px 0 #fff,
     0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff,
