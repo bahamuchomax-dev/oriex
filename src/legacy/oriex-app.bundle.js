@@ -40605,7 +40605,7 @@ function CI() {
       }
       u.uid && R.enabled && (async () => {
         try {
-          let y = await Cl(et(R.db, "artifacts", R.appId, "users", u.uid, "profile", "main")),
+          let y = await Cl(et(R.db, "artifacts", R.appId, "public", "data", "customApp", u.uid)),
             E = y.exists() ? y.data() : {},
             b = 0;
           try {
@@ -51416,8 +51416,8 @@ function CI() {
                   K = S ? "#777777" : A.textMuted,
                   q = S ? "#999999" : A.textMuted,
                   B = S ? "#ffffff" : A.card,
-                  G = (Ze || []).filter(je => !je.isTeacher).length,
-                  ne = (Ze || []).filter(je => je.isTeacher).length,
+                  G = Vc().filter(je => !je.isTeacher).length,
+                  ne = Vc().filter(je => je.isTeacher).length,
                   he = (() => {
                     try {
                       return (Array.isArray(ye) ? ye : []).filter(je => !((Array.isArray(We) ? We : []).includes(je.id) || je.id === Ho)).length
