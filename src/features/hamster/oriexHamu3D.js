@@ -87,8 +87,8 @@ window.OriexHamu3D = function (canvas, env) {
 
   var scene = new THREE.Scene();
   /* deeper warm-tan background (was a near-white cream) so the scene isn't washed out */
-  scene.background = new THREE.Color(P ? 0xd8c09a : 0x221d17);
-  scene.fog = new THREE.Fog(P ? 0xd8c09a : 0x221d17, 1400, 2600);
+  scene.background = new THREE.Color(P ? 0xc2a472 : 0x221d17);
+  scene.fog = new THREE.Fog(P ? 0xc2a472 : 0x221d17, 1400, 2600);
 
   var camera = new THREE.PerspectiveCamera(42, 1, 10, 4000);
 
@@ -125,9 +125,16 @@ window.OriexHamu3D = function (canvas, env) {
   function satCol(c, mul) {
     var col = (c && c.isColor) ? c.clone() : new THREE.Color(c);
     var hsl = { h: 0, s: 0, l: 0 }; col.getHSL(hsl);
-    var s = Math.min(1, hsl.s * (mul || 2.2) + 0.08);
-    var l = hsl.l > 0.5 ? 0.5 + (hsl.l - 0.5) * 0.5 : hsl.l;
-    col.setHSL(hsl.h, s, l);
+    if (hsl.s > 0.05) {
+      /* HUED colors: crank saturation hard and cap lightness so pastels become VIVID
+         mid-tones (はっきり), not faint. */
+      var s = Math.min(1, hsl.s * (mul || 2.8) + 0.15);
+      var l = Math.min(hsl.l, 0.58);
+      col.setHSL(hsl.h, s, l);
+    } else {
+      /* near-white/gray (cage frame/glass): no fake hue, just deepen a touch */
+      col.setHSL(hsl.h, hsl.s, hsl.l > 0.74 ? 0.74 : hsl.l);
+    }
     return col;
   }
   function mk(c, o) {
