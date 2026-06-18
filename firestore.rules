@@ -397,8 +397,22 @@ service cloud.firestore {
       // teacherIndex. Exposes only public card fields (uid, name, avatar, color,
       // xp, streak, shortId); no authority, no answers. WRITE stays owner-only.
       match /public/data/customApp/{cardUid} {
+        // READ is unauthenticated because Friend ID login resolves shortId -> uid here
+        // BEFORE auth (see comment above). SECURITY: this still world-lists name/Friend
+        // ID/avatar (PII) — the durable fix is a callable Cloud Function lookup so this
+        // can drop to signedIn(); tracked separately.
         allow read: if true;
-        allow write: if isSelf(cardUid);
+        // WRITE is owner-only AND must never carry a credential, authority, or answer
+        // field. The legacy bundle used to spread the whole profile (incl. plaintext
+        // `password`) into this WORLD-READABLE doc — these guards reject that outright so
+        // a credential can never be published here again (defense-in-depth behind the
+        // bundle no longer writing them + the one-off data cleanup that strips existing
+        // password fields).
+        allow write: if isSelf(cardUid)
+                     && noAuthorityFields()
+                     && noAnswerFields()
+                     && !('password' in request.resource.data)
+                     && !('passwordHash' in request.resource.data);
       }
       // Friend ID login directory. Despite the legacy name, EVERY user has their
       // OWN entry here (doc id = the user's uid; fields {shortId, uid, name,

@@ -503,6 +503,19 @@ html body.oxbg-on .ox-chat-bubble-own{
 html body.oxbg-on .ox-chat-bubble-own p:last-child{
   color:rgba(20,10,60,.45) !important;
 }
+/* ── トーク(DM)を見やすく: 本文の行間をゆったりに、極小(10px)だった時刻を読みやすく、
+   吹き出しの余白と間隔を少し広げて窮屈さを解消。白い吹き出し化は上のルールで対応済み。 */
+html body.oxbg-on .ox-chat-bubble{
+  padding:14px 16px !important;
+  max-width:82% !important;
+}
+html body.oxbg-on .ox-chat-bubble p:first-child{   /* 本文: サイズは縮めず行間だけ広げる */
+  line-height:1.7 !important;
+}
+html body.oxbg-on .ox-chat-bubble p:last-child{    /* 時刻 */
+  font-size:11px !important;
+  margin-top:6px !important;
+}
 
 /* ── つながり「メッセージ」button: clearly-visible rounded frame on the photo theme ──
    .rx-talkbtn is now excluded from the frost rule above, so the existing

@@ -231,9 +231,12 @@ describe("firestore.rules — legacy artifacts live-app tree is least-privilege"
       /match \/public\/data\/\{document=\*\*\}\s*\{\s*allow read: if signedIn\(\);\s*allow write: if false;/,
     );
   });
-  it("customApp is public-read (primary Friend ID directory) but self-write only", () => {
+  it("customApp is public-read (primary Friend ID directory) but self-write only AND credential/authority/answer-guarded", () => {
+    // Self-write must additionally reject any authority/answer field AND a plaintext
+    // credential — the legacy bundle used to spread the whole profile (incl.
+    // `password`) into this WORLD-READABLE card, so the rule now bans it outright.
     expect(RULES_CODE).toMatch(
-      /match \/public\/data\/customApp\/\{cardUid\}\s*\{\s*allow read: if true;\s*allow write: if isSelf\(cardUid\);/,
+      /match \/public\/data\/customApp\/\{cardUid\}\s*\{\s*allow read: if true;\s*allow write: if isSelf\(cardUid\)\s*&&\s*noAuthorityFields\(\)\s*&&\s*noAnswerFields\(\)\s*&&\s*!\('password' in request\.resource\.data\)\s*&&\s*!\('passwordHash' in request\.resource\.data\);/,
     );
   });
   it("teacherIndex is public-read (Friend ID login) but owner-write, answer/authority free", () => {

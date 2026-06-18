@@ -75,12 +75,21 @@ describe("auth recovery — public (unauthenticated) read surface is locked", ()
 });
 
 describe("auth recovery — rules never depend on a password field", () => {
-  it("firestore.rules code contains no `password` reference (auth owns passwords)", () => {
-    // The secure design must not read/compare a password in Rules at all —
+  it("firestore.rules never READS/compares a password value (it may only FORBID one on write)", () => {
+    // The secure design must not read/compare a stored password in Rules at all —
     // password handling belongs to Firebase Auth, never Firestore. (Ported from
     // the superseded PR #19 guardrails.) Comments are stripped so explanatory
     // prose cannot mask a real regression.
-    expect(RULES_CODE).not.toMatch(/password/i);
+    // EXCEPTION: referencing `password` ONLY to BAN it from a write —
+    // `!('password' in request.resource.data)` — is allowed and desirable; that
+    // ban is exactly what keeps a plaintext credential out of the world-readable
+    // customApp card. Strip those membership-ban checks, then assert no OTHER
+    // password reference (a real read/compare dependency) remains.
+    const withoutCredentialBans = RULES_CODE.replace(
+      /!\(\s*'password(?:Hash)?'\s+in\s+request\.resource\.data\s*\)/g,
+      "",
+    );
+    expect(withoutCredentialBans).not.toMatch(/password/i);
   });
 });
 

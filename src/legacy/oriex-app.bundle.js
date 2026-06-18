@@ -42200,7 +42200,7 @@ function CI() {
           avatar: b.avatar || "",
           color: b.color || ""
         })) : await qn(et(R.db, "artifacts", R.appId, "public", "data", "customApp", C), {
-          ...b,
+          ...(() => { const { password: _pw, passwordHash: _ph, isTeacher: _it, ...pub } = b; return pub; })(),
           score: b.totalExp,
           clearCount: Object.values(b.clearedStages || {}).reduce((B, G) => B + (Array.isArray(G) ? G.length : typeof G == "number" ? G : 0), 0),
           stagesCleared: Object.values(b.clearedStages || {}).reduce((B, G) => B + (Array.isArray(G) ? G.length : typeof G == "number" ? G : 0), 0)
@@ -51743,8 +51743,6 @@ function CI() {
                           })() || void 0
                         },
                         children: E(je.avatar)
-                      }), (Go[je.id] || 0) > 0 && (0, r.jsx)("span", {
-                        className: "ox-unread-dot"
                       })]
                       }), (0, r.jsxs)("div", {
                         style: {
@@ -51776,7 +51774,8 @@ function CI() {
                           borderRadius: 999,
                           boxShadow: "none",
                           padding: "8px 13px",
-                          fontWeight: 700
+                          fontWeight: 700,
+                          position: "relative"
                         },
                         onClick: ze => {
                           ze.stopPropagation(), y(je)
@@ -51784,7 +51783,9 @@ function CI() {
                         children: [(0, r.jsx)(Th, {
                           size: 14,
                           color: "currentColor"
-                        }), " メッセージ"]
+                        }), " メッセージ", (Go[je.id] || 0) > 0 && (0, r.jsx)("span", {
+                          className: "ox-unread-dot"
+                        })]
                       })]
                     }, je.uid || je.shortId || tn))
                   }) : (0, r.jsx)("div", {
