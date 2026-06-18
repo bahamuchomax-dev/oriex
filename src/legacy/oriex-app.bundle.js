@@ -41555,8 +41555,11 @@ function CI() {
         }
       `) : y && y.remove()
   }, [xr]), (0, P.useEffect)(() => {
-    if (!e || !R.enabled || Ze.length === 0) return;
-    let u = Ze.map(y => {
+    if (!e || !R.enabled) return;
+    let oxConns = Vc();
+    if (!oxConns || oxConns.length === 0) return;
+    let u = oxConns.map(y => {
+      if (!y.id) return () => {};
       let E = [e.uid, y.id].sort().join("_");
       return Ec(oa(bt(R.db, "artifacts", R.appId, "chats", E, "messages"), jc("timestamp", "desc"), li(1)), b => {
         if (b.empty) return;
@@ -41573,7 +41576,7 @@ function CI() {
       })
     });
     return () => u.forEach(y => y())
-  }, [Ze, e]), (0, P.useEffect)(() => {
+  }, [Ze, Y, Q, e, i?.isTeacher]), (0, P.useEffect)(() => {
     if (l === "dm" && e && En && R.enabled) {
       let u = [e.uid, En.id].sort().join("_");
       wt(`lastReadDm_${En.id}`, Date.now().toString()), Va(E => ({
@@ -52588,12 +52591,6 @@ function CI() {
                   color: A.textMuted
                 },
                 children: "ホーム表示"
-              }), (0, r.jsx)("p", {
-                className: "text-[12px] mb-3",
-                style: {
-                  color: A.textMuted
-                },
-                children: "ホームを「トランセンド」または「でんじゃらすじーさん」に切り替えられます（いつでも元に戻せます）。"
               }), (0, r.jsx)("input", {
                 id: "ox-home-code",
                 placeholder: "ホームコードを入力",
