@@ -148,6 +148,37 @@ body.oxbg-on [style*="background:#ffffff"]:not(input):not(textarea):not(select){
   z-index:2;
 }
 
+/* ── つながり row name + badges layout ─────────────────────────────────────────
+   The name + 先生 + デベロッパー badges share one flex line; when tight, the raw
+   name text was wrapping char-by-char (「みわ/ちゃ/ん」) and the 先生 pill wrapped
+   (「先/生」). Keep the name on a single line (ellipsis if long) and let the badges
+   stay intact and wrap together below the name when there isn't room. */
+.rx-trow-nm{ flex-wrap:wrap; row-gap:4px; }
+.ox-trow-name{ flex:0 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.rx-trow-nm .rx-tbadge,
+.rx-trow-nm .ox-devbadge{ flex:none; white-space:nowrap; margin-left:0; }
+
+/* ── TEACHER「問題を作成して配布」inputs on a LIGHT/simple theme ────────────────
+   The form's text is already darkened by the bundle's [data-theme="light"] override,
+   but the input/textarea fields keep a near-transparent white inline background
+   (rgba(255,255,255,.08)) with a faded placeholder, so on a light card the fields are
+   invisible (washed-out look). Give them a visible light-gray field + readable
+   placeholder. Scoped to the teacher creation screen (.ox-teacher-create hook) and
+   the light/simple themes only — dark themes keep their original styling. */
+[data-theme="light"] .ox-teacher-create input,
+[data-theme="light"] .ox-teacher-create textarea,
+[data-theme="simple"] .ox-teacher-create input,
+[data-theme="simple"] .ox-teacher-create textarea{
+  background:rgba(0,0,0,.05) !important;
+  border:1px solid rgba(0,0,0,.16) !important;
+}
+[data-theme="light"] .ox-teacher-create input::placeholder,
+[data-theme="light"] .ox-teacher-create textarea::placeholder,
+[data-theme="simple"] .ox-teacher-create input::placeholder,
+[data-theme="simple"] .ox-teacher-create textarea::placeholder{
+  color:rgba(43,39,36,.5) !important;
+}
+
 /* ── stage / study-mode screen: tighter vertical rhythm ──────────────────────
    The subject stage / mode-selection screen left too much unused vertical space
    and showed too few mode cards in the initial mobile viewport. These rules

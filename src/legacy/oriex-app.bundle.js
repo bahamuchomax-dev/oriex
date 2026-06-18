@@ -44551,7 +44551,7 @@ function CI() {
             }].map(b => {
               let C = (b.match || [b.id]).includes(l),
                 K = l === "announcementsList" ? 0 : ye.filter(G => !((Array.isArray(We) ? We : []).includes(G.id) || G.id === Ho)).length,
-                q = 0,
+                q = b.id === "plaza" ? Object.values(Go || {}).reduce((tn, ze) => tn + (Number(ze) || 0), 0) : 0,
                 B = f0[b.id];
               return b.id === "start" ? (0, r.jsxs)("button", {
                 onClick: () => {
@@ -51752,7 +51752,10 @@ function CI() {
                         },
                         children: [(0, r.jsxs)("div", {
                           className: "rx-trow-nm",
-                          children: [je.name || "フレンド", je.isTeacher && (0, r.jsx)("span", {
+                          children: [(0, r.jsx)("span", {
+                            className: "ox-trow-name",
+                            children: je.name || "フレンド"
+                          }), je.isTeacher && (0, r.jsx)("span", {
                             className: "rx-tbadge",
                             children: "先生"
                           }), typeof window !== "undefined" && window.__oxDevUids && window.__oxDevUids.has(String(je.uid || je.id || "")) && (0, r.jsx)("span", {
@@ -55099,7 +55102,7 @@ function CI() {
                 children: !i?.isTeacher && Xn === "questions" ? "先生からの問題" : !i?.isTeacher && Xn === "apps" ? "配布アプリ" : "配信"
               })]
             }), i?.isTeacher ? (0, r.jsxs)("div", {
-              className: "space-y-6",
+              className: "space-y-6 ox-teacher-create",
               children: [(0, r.jsxs)("div", {
                 className: "rounded-[20px] p-6 space-y-4 rx-soft",
                 style: {
