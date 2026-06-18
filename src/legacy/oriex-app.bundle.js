@@ -48198,12 +48198,7 @@ function CI() {
                     })]
                   })]
                 }), E.length ? (0, r.jsx)("div", {
-                  style: {
-                    background: S ? "#fff" : A.card,
-                    border: "1px solid var(--line)",
-                    borderRadius: 16,
-                    overflow: "hidden"
-                  },
+                  className: "rx-talk",
                   children: E.slice(0, 3).map((b, C) => (0, r.jsxs)("div", {
                     className: "rx-trow",
                     style: {
