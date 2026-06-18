@@ -29070,7 +29070,7 @@ var Hv = {
     name: "Oriex",
     emoji: "",
     IconComp: h1,
-    bg: "radial-gradient(120% 70% at 50% -10%, #ffffff 0%, rgba(255,255,255,0) 55%), linear-gradient(168deg, #fbfbfc 0%, #f3f3f5 60%, #eaeaee 100%)",
+    bg: "url('./oriex-theme-bg.png') center center / cover no-repeat, #f5f5f7",
     bgColor: "#f5f5f7",
     navBg: "rgba(255,255,255,0.92)",
     accent: "#1c1c1e",
