@@ -26,11 +26,36 @@ function stampServiceWorkerVersion() {
   };
 }
 
+// Inject a low-priority <link rel="prefetch"> for the big legacy app bundle so the
+// browser downloads it IN THE BACKGROUND while the user is on the login screen
+// (the bundle is otherwise only fetched AFTER login → a long wait). Prefetch is low
+// priority, so it never competes with the login's own resources; on repeat visits it
+// just hits the cache. Permanent first-load speedup with no runtime/code change.
+function prefetchLegacyBundle() {
+  return {
+    name: "oriex-prefetch-legacy-bundle",
+    apply: "build",
+    transformIndexHtml(html, ctx) {
+      try {
+        if (!ctx || !ctx.bundle) return html;
+        const file = Object.keys(ctx.bundle).find((f) => /oriex-app\.bundle-.*\.js$/.test(f));
+        if (!file) return html;
+        return {
+          html,
+          tags: [{ tag: "link", attrs: { rel: "prefetch", as: "script", href: "./" + file }, injectTo: "head" }],
+        };
+      } catch {
+        return html;
+      }
+    },
+  };
+}
+
 // `base: "./"` keeps asset URLs relative so the build also works when
 // served from a GitHub Pages project subpath (matches manifest/sw "./").
 export default defineConfig({
   base: "./",
-  plugins: [react(), stampServiceWorkerVersion()],
+  plugins: [react(), stampServiceWorkerVersion(), prefetchLegacyBundle()],
   build: {
     target: "es2019",
     // The legacy app bundle is intentionally large until screens are
