@@ -21,6 +21,15 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Warm TLS to the Firebase hosts the DEFAULT login path hits, BEFORE the auth JS
+         runs: identitytoolkit (sign-in), securetoken (token refresh — fires on every
+         persisted-session restore, i.e. the common PWA reload), firestore (first read
+         right after auth). crossorigin because Firebase web fetches are anonymous CORS,
+         so the warmed socket is actually reused. (authDomain/firebaseapp.com is NOT
+         contacted — login is Friend ID + password, no OAuth popup/redirect.) -->
+    <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://securetoken.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
     <!-- Load the web fonts WITHOUT blocking first paint: media="print" keeps the
          stylesheet out of the critical render, then onload promotes it to all.
          Text shows immediately in the system fallback (display=swap) and swaps when
@@ -33,8 +42,10 @@
     />
     <link rel="stylesheet" href="./src/styles/utilities.css" />
     <link rel="stylesheet" href="./src/styles/app.css" />
-    <!-- Opt-in "研鑽" re-skin of the original/legacy UI. Inert unless <body class="ox-skin">. -->
-    <link rel="stylesheet" href="./src/styles/skin-kensan.css" />
+    <!-- Opt-in "研鑽" re-skin of the original/legacy UI. Inert unless <body class="ox-skin">.
+         NOT linked here anymore: it matched nothing on a normal visit yet bloated the
+         render-blocking entry stylesheet for everyone. main.js now lazy-imports
+         ./src/styles/skin-kensan.css only when the skin is actually enabled. -->
 
     <!-- 3D engine (three.js) is NOT loaded here synchronously anymore.
          It was render-blocking on every page; it is now fetched off the

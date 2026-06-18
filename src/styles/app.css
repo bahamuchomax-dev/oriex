@@ -119,10 +119,10 @@ body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"]{
    shows through softly. Scoped to `background:` (not color/border/shadow) and to the
    photo theme only; form fields get their white from a CSS class (not inline), so
    they are not matched. */
-body.oxbg-on [style*="background: rgb(255, 255, 255)"]:not(input):not(textarea):not(select):not(.rx-home):not(.rx-mp),
-body.oxbg-on [style*="background:rgb(255, 255, 255)"]:not(input):not(textarea):not(select):not(.rx-home):not(.rx-mp),
-body.oxbg-on [style*="background: #ffffff"]:not(input):not(textarea):not(select):not(.rx-home):not(.rx-mp),
-body.oxbg-on [style*="background:#ffffff"]:not(input):not(textarea):not(select):not(.rx-home):not(.rx-mp){
+body.oxbg-on [style*="background: rgb(255, 255, 255)"]:not(input):not(textarea):not(select):not(.rx-home):not(.rx-mp):not(.ox-plaza-announce):not(.ox-chat-bubble):not(.rx-talkbtn):not(.ox-review-head),
+body.oxbg-on [style*="background:rgb(255, 255, 255)"]:not(input):not(textarea):not(select):not(.rx-home):not(.rx-mp):not(.ox-plaza-announce):not(.ox-chat-bubble):not(.rx-talkbtn):not(.ox-review-head),
+body.oxbg-on [style*="background: #ffffff"]:not(input):not(textarea):not(select):not(.rx-home):not(.rx-mp):not(.ox-plaza-announce):not(.ox-chat-bubble):not(.rx-talkbtn):not(.ox-review-head),
+body.oxbg-on [style*="background:#ffffff"]:not(input):not(textarea):not(select):not(.rx-home):not(.rx-mp):not(.ox-plaza-announce):not(.ox-chat-bubble):not(.rx-talkbtn):not(.ox-review-head){
   background: rgba(255,255,255,.56) !important;
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
@@ -211,9 +211,22 @@ body.oxbg-on .ox-cal-screen .rx-goal-n{
     0 0 4px rgba(255,255,255,.95), 0 0 9px rgba(255,255,255,.8) !important;
 }
 /* The whole 予定カレンダー screen on a solid WHITE background (per request) so every
-   element — 戻る / title / 年月 / 曜日 / 日付 — reads as normal dark-on-white.
+   element — 戻る / title / 年月 / 曜日 / 日付 — reads as normal dark-on-white. Inset a
+   little from the screen edges + rounded corners so the white reads as a CARD floating
+   on the photo (丸みカード風), not a full-bleed 真四角. (.ox-cal-screen is a height:auto
+   .rx-home page-scroll screen, so a margin grows the page safely — no clipping.)
    `html …` beats oxHelpers' `body.oxbg-on .rx-home{background:transparent}`. */
-html body.oxbg-on .ox-cal-screen{ background:#ffffff !important; }
+html body.oxbg-on .ox-cal-screen{
+  background:#ffffff !important;
+  margin:8px 10px 0 !important;
+  border-radius:24px !important;
+  border:1px solid rgba(15,23,42,.08) !important;
+  box-shadow:0 12px 30px rgba(43,39,36,.13) !important;
+  /* fill down to just above the home bar (.ox-cal-screen is inline height:auto, so a
+     min-height is needed for it to reach the bottom even with short content). */
+  height:auto !important;
+  min-height:calc(100% - 8px) !important;
+}
 body.oxbg-on .ox-cal-screen .rx-cal-head{ color:var(--ink,#2b2724) !important; }
 /* dates: the inactive (non-today, no-event) days are dimmed to 45% opacity, which is
    unreadable on a photo. Restore full opacity + dark text so every date reads. */
@@ -366,11 +379,39 @@ body.oxbg-on .rx-topbar{
 
 /* A friend's profile (the .rx-mp that has a 戻る button — myPage has none) shows its
    name / ID / stats directly on the photo theme background, so it becomes hard to
-   read. Give that screen a frosted backing card so everything stays legible. */
+   read. Give that screen a frosted backing CARD — inset from the screen edges with
+   rounded corners (丸みカード風) so it floats on the photo instead of being a full-bleed
+   真四角. Horizontal inset + a small top margin only: this .rx-mp is height:100% with
+   internal scroll, so we must NOT pin an explicit height (it would break the height:auto
+   sibling back-screen that the same selector matches); the few clipped px sit behind the
+   bottom nav (--app-bottom-pad reserves clearance), so nothing readable is lost. */
 body.oxbg-on .rx-mp:has(.rx-back){
   background:rgba(255,255,255,.80) !important;
   -webkit-backdrop-filter:blur(9px);
   backdrop-filter:blur(9px);
+  margin:8px 10px 0 !important;
+  border-radius:24px !important;
+  border:1px solid rgba(255,255,255,.6) !important;
+  box-shadow:0 12px 30px rgba(43,39,36,.14) !important;
+  /* fill the column down to just above the home bar (drop the base height:100% which
+     only filled <main>'s content box; min-height fills even when content is short). */
+  height:auto !important;
+  min-height:calc(100% - 8px) !important;
+}
+
+/* ── card screens fill down to the home bar (下までの描画範囲を広げる) ─────────────
+   The white card is a child of the shared scrollable <main>, which reserves a tall
+   bottom pad — calc(safe-area-inset-bottom + 100px), to clear the floating bottom nav
+   (position:fixed; bottom:18px) — so the card stopped ~100px short of the bottom and a
+   photo strip showed below it. For these card screens ONLY (scoped via :has so every
+   other screen keeps its normal nav clearance) shrink <main>'s reserve to a sliver: the
+   white now fills down to just above the home bar (behind the frosted floating nav).
+   Nav clearance for the CONTENT is preserved by each card's own padding-bottom
+   (.rx-mp / .rx-home var(--app-bottom-pad) is unchanged), so 戻る…フレンド削除 still sit
+   well clear of the nav — only the white background extends further down. */
+body.oxbg-on main:has(> .rx-mp .rx-back),
+body.oxbg-on main:has(> .ox-cal-screen){
+  padding-bottom:8px !important;
 }
 /* Fallback for engines without :has() — a soft white halo on the bare text. */
 body.oxbg-on .rx-pname,
@@ -429,3 +470,124 @@ body.oxbg-on .ox-edit-idblock p{ /* profile-edit own name + ID (bare on photo) *
    The 28px-28px tile is unique to this overlay, so it never touches the soft orb
    glows (radial-gradient circles with border-radius:50% / filter:blur). */
 div[style*="radial-gradient"][style*="28px 28px"]{ display:none !important; }
+
+/* ── ひろば「お知らせ」preview: SOLID white on the photo theme ────────────────────
+   The plaza announcement-preview button renders inline background:#ffffff on the photo
+   theme, so the frost rule above turned it translucent. It is now excluded from that
+   rule (:not(.ox-plaza-announce)); pin it solid white here. Hook added in the bundle
+   render (className "ox-plaza-announce"). */
+html body.oxbg-on .ox-plaza-announce{
+  background:#ffffff !important;
+  border-color:rgba(15,23,42,.1) !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+}
+
+/* ── チャット/DM の吹き出し: SOLID white on the photo theme ───────────────────────
+   Both bubbles go solid white; own vs other stay distinct by alignment (own = right,
+   already flex-row-reverse in the bundle) + an indigo edge on own, not by fill colour.
+   Both are excluded from the frost rule above (:not(.ox-chat-bubble)). The own bubble's
+   inline indigo gradient + white text/timestamp are overridden so dark text reads on
+   white. Hooks added in the bundle render. */
+html body.oxbg-on .ox-chat-bubble{
+  background:#ffffff !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+  color:rgba(20,10,60,.92) !important;
+  border:1px solid rgba(15,23,42,.10) !important;
+  box-shadow:0 4px 14px rgba(43,39,36,.12) !important;
+}
+html body.oxbg-on .ox-chat-bubble-own{
+  border:1px solid rgba(99,102,241,.5) !important;
+}
+html body.oxbg-on .ox-chat-bubble-own p:last-child{
+  color:rgba(20,10,60,.45) !important;
+}
+
+/* ── つながり「メッセージ」button: clearly-visible rounded frame on the photo theme ──
+   .rx-talkbtn is now excluded from the frost rule above, so the existing
+   `html body.oxbg-on .rx-talkbtn{background:#fff}` pins the fill and this adds a visible
+   rounded slate border around the tappable area (the inline #E0E0E0 / frost border were
+   both invisible on a photo). */
+html body.oxbg-on .rx-talkbtn{
+  border:1.5px solid rgba(15,23,42,.22) !important;
+  border-radius:999px !important;
+}
+
+/* ── 学習の教科名 (英単語/化学/古文/熟語/漢字) の見切れ修正 ─────────────────────────
+   The stage-map subject title is rendered inline with a tight line box (bundle ~50028:
+   fontSize:34 + lineHeight:1.05) AND overflow:hidden, which shears the tops/bottoms of
+   the bold Zen-Maru-Gothic Japanese glyphs (and clipped its photo-theme white halo). The
+   cause is the inline style, so it clips on EVERY theme → fix globally. Subject names are
+   short (2-3 chars) and the title's parent column (bundle ~49976) still has overflow:
+   hidden + min-width:0, so dropping nowrap/ellipsis cannot break the header row. */
+.ox-subj-title{
+  line-height:1.3 !important;
+  overflow:visible !important;
+  padding-block:2px !important;
+}
+
+/* ── 学習ステージ画面の半透明タブを「半透明の白」に ───────────────────────────────
+   On the photo theme the INACTIVE direction tabs (単語→意味…) and subject pills are
+   frosted by oxHelpers to color-mix(var(--card) 88%) — tinted, not clearly white. Force
+   a clean semi-transparent WHITE frosted backing. `html …` (0,3,2) out-ranks oxHelpers'
+   (0,3,1) runtime rule; `:not(.on)` leaves the ACTIVE accent-filled tab untouched; colour
+   is NOT redeclared so the dark label text stays legible. */
+html body.oxbg-on .rx-dirbtn:not(.on),
+html body.oxbg-on .rx-cat:not(.on){
+  background:rgba(255,255,255,.72) !important;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.55) !important;
+}
+
+/* ── 復習(Review)ヘッダーの作り直し: 平たい白帯 → 上質なフロスト角丸カード ──────────
+   元は position:sticky の角丸も影もない白い帯で、写真の上で野暮ったかった。写真テーマ
+   (body.oxbg-on) ではカード化する: 半透明白(.86)+ぼかしで写真に馴染ませつつ下のスクロール
+   を隠し、角丸18px+柔らかい影で浮かせる。タイトルは黒(ink)に整え、本のアイコンだけを
+   アクセント色のソフトチップに収めて“一点の見せ場”にする。--accent はヘッダーの inline で
+   テーマ色を受け取る。非写真テーマでは従来の地続きの帯のままにしておく(このルールは
+   body.oxbg-on 限定)。frost ルールからは :not(.ox-review-head) で除外済み。 */
+html body.oxbg-on .ox-review-head{
+  gap:11px !important;
+  margin-bottom:14px !important;
+  padding:9px 13px 9px 9px !important;
+  background:rgba(255,255,255,.86) !important;
+  -webkit-backdrop-filter:blur(16px) saturate(1.3);
+  backdrop-filter:blur(16px) saturate(1.3);
+  border:1px solid rgba(255,255,255,.65) !important;
+  border-radius:18px !important;
+  box-shadow:0 10px 26px rgba(43,39,36,.13) !important;
+}
+/* 戻る: 控えめな丸いタップ領域 */
+html body.oxbg-on .ox-review-head .rx-back{
+  flex:none;
+  width:34px;
+  height:34px;
+  padding:0 !important;
+  justify-content:center;
+  border-radius:11px;
+}
+/* タイトル: フラットなアクセント → 落ち着いた黒(ink) */
+html body.oxbg-on .ox-review-head h2{
+  color:#2b2724 !important;
+  font-size:20px !important;
+  gap:11px !important;
+}
+/* 見せ場: 本アイコンをアクセント色のソフトチップに収める */
+html body.oxbg-on .ox-review-head h2 svg{
+  width:20px !important;
+  height:20px !important;
+  padding:8px;
+  box-sizing:content-box;
+  border-radius:11px;
+  color:var(--accent,#ff7a59);
+  background:color-mix(in srgb, var(--accent,#ff7a59) 15%, #fff);
+}
+/* 「9語」バッジ: アクセントの整ったピル */
+html body.oxbg-on .ox-review-head > span{
+  align-self:center;
+  background:color-mix(in srgb, var(--accent,#ff7a59) 12%, #fff) !important;
+  color:color-mix(in srgb, var(--accent,#ff7a59) 72%, #2b2724) !important;
+  border:1px solid color-mix(in srgb, var(--accent,#ff7a59) 24%, transparent) !important;
+}

@@ -42,8 +42,81 @@ function prefetchLegacyBundle() {
         if (!file) return html;
         return {
           html,
-          tags: [{ tag: "link", attrs: { rel: "prefetch", as: "script", href: "./" + file }, injectTo: "head" }],
+          // crossorigin matches the later `import("./legacy/oriex-app.bundle.js")` (a CORS
+          // module fetch, since the entry <script type=module> is crossorigin) so the
+          // prefetched bytes land in the SAME cache partition and are reused, not re-fetched.
+          tags: [{ tag: "link", attrs: { rel: "prefetch", as: "script", crossorigin: "", href: "./" + file }, injectTo: "head" }],
         };
+      } catch {
+        return html;
+      }
+    },
+  };
+}
+
+// Collapse the DEFAULT-login request waterfall. The login screen (modern Firebase Auth
+// cutover) is reached via a RUNTIME `import("mountModernCutover.jsx")` in main.js, so the
+// browser cannot discover the firebase/React/auth chunks until the entry chunk has
+// downloaded, parsed and executed — one full serial hop of dead time before the long pole
+// (firebase) even begins. This plugin walks the cutover chunk's transitive STATIC-import
+// graph from the Rollup bundle (by facadeModuleId / glob — never a hardcoded hash, so it
+// survives every rebuild) and injects <link rel="modulepreload"> for those JS chunks +
+// <link rel="preload" as="style"> for their CSS into <head>. The browser's preload scanner
+// then fetches them IN PARALLEL with the entry chunk. Vite's __vitePreload dedupes against
+// these links, so nothing is fetched twice. Pure HTML hint; no runtime/code change.
+function preloadDefaultLoginChunks() {
+  return {
+    name: "oriex-preload-default-login-chunks",
+    apply: "build",
+    transformIndexHtml(html, ctx) {
+      try {
+        if (!ctx || !ctx.bundle) return html;
+        const bundle = ctx.bundle;
+        // Find the cutover entry chunk durably (by source module, not hash).
+        let start = null;
+        for (const [fileName, chunk] of Object.entries(bundle)) {
+          if (chunk.type !== "chunk") continue;
+          const fid = (chunk.facadeModuleId || "").replace(/\\/g, "/");
+          if (fid.endsWith("src/features/auth/mountModernCutover.jsx")) {
+            start = fileName;
+            break;
+          }
+        }
+        if (!start) {
+          start = Object.keys(bundle).find((f) => /(^|\/)mountModernCutover-[^/]*\.js$/.test(f)) || null;
+        }
+        if (!start) return html;
+        // BFS over transitive STATIC imports; collect JS chunks + their imported CSS.
+        const jsFiles = new Set();
+        const cssFiles = new Set();
+        const seen = new Set();
+        const queue = [start];
+        while (queue.length) {
+          const name = queue.shift();
+          if (seen.has(name)) continue;
+          seen.add(name);
+          const chunk = bundle[name];
+          if (!chunk || chunk.type !== "chunk") continue;
+          // Traverse through every chunk (so shared deps aren't missed)...
+          for (const imp of chunk.imports || []) queue.push(imp);
+          // ...but never emit a hint for the entry chunk itself: it's already the
+          // <script type=module> and its CSS is already the blocking <link> in <head>.
+          if (chunk.isEntry) continue;
+          jsFiles.add(name);
+          for (const css of (chunk.viteMetadata && chunk.viteMetadata.importedCss) || []) cssFiles.add(css);
+        }
+        // Order JS largest-first so the long pole (firebase) gets a socket earliest.
+        const ordered = [...jsFiles].sort(
+          (a, b) => (bundle[b].code ? bundle[b].code.length : 0) - (bundle[a].code ? bundle[a].code.length : 0),
+        );
+        const tags = [];
+        for (const f of ordered) {
+          tags.push({ tag: "link", attrs: { rel: "modulepreload", crossorigin: "", href: "./" + f }, injectTo: "head" });
+        }
+        for (const f of cssFiles) {
+          tags.push({ tag: "link", attrs: { rel: "preload", as: "style", href: "./" + f }, injectTo: "head" });
+        }
+        return { html, tags };
       } catch {
         return html;
       }
@@ -55,12 +128,16 @@ function prefetchLegacyBundle() {
 // served from a GitHub Pages project subpath (matches manifest/sw "./").
 export default defineConfig({
   base: "./",
-  plugins: [react(), stampServiceWorkerVersion(), prefetchLegacyBundle()],
+  plugins: [react(), stampServiceWorkerVersion(), prefetchLegacyBundle(), preloadDefaultLoginChunks()],
   build: {
     target: "es2019",
     // The legacy app bundle is intentionally large until screens are
     // migrated out of it; silence the size warning for now.
     chunkSizeWarningLimit: 4096,
+    // Don't gzip every emitted asset at build time just to print a size table
+    // (the 1.8 MB legacy bundle + 1.24 MB pdf.worker make this slow). No effect
+    // on the emitted output — build-time DX only.
+    reportCompressedSize: false,
   },
   test: {
     environment: "node",

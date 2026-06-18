@@ -13,7 +13,12 @@
 var VERSION = '__APP_VERSION__';
 var SHELL = 'oriex-shell-' + VERSION;
 var FONTS = 'oriex-fonts-v1';
-var SHELL_URLS = ['./', './index.html', './manifest.webmanifest', './three.min.js', './icon-180.png', './icon-192.png', './icon-512.png'];
+/* Keep the install precache SMALL — it is re-fetched (cache:'no-cache') on every version
+   bump. Dropped: three.min.js (608 KB — deferred at runtime, only the hamster room needs
+   it; still cached on-demand via the same-origin SWR branch below), and the root
+   manifest/icon-180 (the built page references the HASHED ./assets/* copies, also SWR-
+   cached). The entry/login chunks are likewise covered by SWR after first fetch. */
+var SHELL_URLS = ['./', './index.html', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
@@ -65,18 +70,30 @@ self.addEventListener('fetch', function (e) {
   var url;
   try { url = new URL(req.url); } catch (_) { return; }
 
-  // App navigations: network-first, offline -> cached shell
+  // App navigations: network-first, but DON'T let a slow/flaky mobile network stall
+  // startup — race the network against a ~2.5s timer that serves the already-warm cached
+  // shell. The network still wins when it's responsive (fresh HTML), and its result still
+  // updates the cache. Offline / network error falls back to the cached shell as before.
   if (req.mode === 'navigate') {
     e.respondWith(
-      fetch(req).then(function (res) {
-        if (res && res.ok) {
-          var copy = res.clone();
-          caches.open(SHELL).then(function (c) { c.put('./', copy); });
+      new Promise(function (resolve) {
+        var done = false;
+        function settle(r) { if (!done && r) { done = true; resolve(r); } }
+        function cachedShell() {
+          return caches.match('./').then(function (r) { return r || caches.match('./index.html'); });
         }
-        return res;
-      }).catch(function () {
-        return caches.match('./').then(function (r) {
-          return r || caches.match('./index.html');
+        var timer = setTimeout(function () { cachedShell().then(settle); }, 2500);
+        fetch(req).then(function (res) {
+          clearTimeout(timer);
+          if (res && res.ok) {
+            var copy = res.clone();
+            caches.open(SHELL).then(function (c) { c.put('./', copy); });
+          }
+          // Prefer the (fresh) network response; if it somehow isn't usable, fall back.
+          if (res) { done = true; resolve(res); } else cachedShell().then(settle);
+        }).catch(function () {
+          clearTimeout(timer);
+          cachedShell().then(function (r) { done = true; resolve(r); });
         });
       })
     );

@@ -43,7 +43,13 @@ try {
   } catch {
     /* ignore */
   }
-  if (skinOn && document.body) document.body.classList.add("ox-skin");
+  if (skinOn) {
+    // Load the opt-in skin's CSS only when it's actually enabled (Vite emits it as its
+    // own hashed chunk). On a normal visit the skin <link> is no longer in index.html,
+    // so its rules stop bloating the render-blocking entry stylesheet for everyone.
+    import("./styles/skin-kensan.css").catch(() => {});
+    if (document.body) document.body.classList.add("ox-skin");
+  }
 } catch {
   /* ignore */
 }
@@ -103,6 +109,12 @@ import { isLegacyFallbackEnabled } from "./features/auth/legacyFallbackRoute.js"
 // (no React / no home code), so importing it never affects normal startup or
 // the initial bundle. Enabled only by ?oriexHome=1 / #oriex-home / localStorage.
 import { isHomePreviewEnabled } from "./features/home/homePreviewRoute.js";
+// Branded cutover veil. Dependency-free + idempotent (only reads BASE_URL, returns early
+// if already shown), so importing it statically into the ENTRY chunk costs ~nothing but
+// lets the default login paint its branded #fbf8f3 + icon cover the instant the entry
+// chunk runs — instead of waiting for the whole firebase/React/firestore batch behind the
+// lazy mountModernCutover import to download + instantiate before its own veil call.
+import { showCutoverVeil } from "./features/auth/cutoverVeil.js";
 
 // The application. Currently the original production build. Screens are being
 // peeled out of here into src/features/*. The legacy bundle self-mounts the
@@ -119,6 +131,9 @@ function startLegacyApp() {
 // (unedited) legacy app and show Oriex home. Separate lazy chunk; on any failure
 // it falls back to the legacy app so a normal visit is never left blank.
 function startModernCutover() {
+  // Paint the branded veil NOW, from the entry chunk — before the lazy cutover chunk
+  // (and its firebase/React/firestore static graph) has even downloaded.
+  showCutoverVeil();
   return import("./features/auth/mountModernCutover.jsx")
     .then((mod) => {
       if (typeof mod.mountModernCutover === "function") mod.mountModernCutover();

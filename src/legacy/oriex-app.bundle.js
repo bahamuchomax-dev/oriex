@@ -41556,9 +41556,6 @@ function CI() {
       `) : y && y.remove()
   }, [xr]), (0, P.useEffect)(() => {
     if (!e || !R.enabled || Ze.length === 0) return;
-    Ze.forEach(y => {
-      _i(`lastReadDm_${y.id}`) || wt(`lastReadDm_${y.id}`, Date.now().toString())
-    });
     let u = Ze.map(y => {
       let E = [e.uid, y.id].sort().join("_");
       return Ec(oa(bt(R.db, "artifacts", R.appId, "chats", E, "messages"), jc("timestamp", "desc"), li(1)), b => {
@@ -46026,7 +46023,7 @@ function CI() {
                 return (0, r.jsx)("div", {
                   className: `flex gap-3 ${y?"flex-row-reverse":""}`,
                   children: (0, r.jsxs)("div", {
-                    className: `p-4 rounded-[20px] max-w-[75%] shadow-sm ${y?"rounded-tr-none":"rounded-tl-none"}`,
+                    className: `ox-chat-bubble ${y?"ox-chat-bubble-own":"ox-chat-bubble-other"} p-4 rounded-[20px] max-w-[75%] shadow-sm ${y?"rounded-tr-none":"rounded-tl-none"}`,
                     style: y ? {
                       background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
                       color: "#ffffff"
@@ -48362,20 +48359,17 @@ function CI() {
                             marginTop: 3
                           },
                           children: i?.shortId ? `ID ${i.shortId}` : "ID ーーーー"
-                        }), (i?.isTeacher || (typeof window !== "undefined" && window.__oxIsDeveloper === true)) && (0, r.jsxs)("div", {
+                        }), (typeof window !== "undefined" && window.__oxIsDeveloper === true) && (0, r.jsx)("div", {
                           style: {
                             display: "flex",
                             gap: 6,
                             flexWrap: "wrap",
                             marginTop: 7
                           },
-                          children: [i?.isTeacher && (0, r.jsx)("span", {
-                            className: "ox-cover-badge ox-cover-teacher",
-                            children: "先生"
-                          }), typeof window !== "undefined" && window.__oxIsDeveloper === true && (0, r.jsx)("span", {
+                          children: (0, r.jsx)("span", {
                             className: "ox-cover-badge ox-cover-dev",
                             children: "デベロッパー"
-                          })]
+                          })
                         })]
                       })]
                     }), (0, r.jsxs)("span", {
@@ -51817,6 +51811,7 @@ function CI() {
                       })]
                     })
                   }), U("お知らせ"), (0, r.jsxs)("button", {
+                    className: "ox-plaza-announce",
                     onClick: () => u("announcementsList"),
                     style: {
                       display: "flex",
@@ -53629,11 +53624,12 @@ function CI() {
                 animation: "oxpop .32s cubic-bezier(.2,.8,.3,1)"
               },
               children: [(0, r.jsxs)("div", {
-                className: "flex items-center gap-4 mb-4 shrink-0",
+                className: "flex items-center gap-4 mb-4 shrink-0 ox-review-head",
                 style: {
                   position: "sticky",
                   top: 0,
                   zIndex: 6,
+                  "--accent": A.accent,
                   background: S ? A.bgColor || "#f5f5f7" : A.bgColor || "#121214",
                   paddingTop: 4,
                   paddingBottom: 8
