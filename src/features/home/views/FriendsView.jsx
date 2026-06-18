@@ -1,7 +1,6 @@
 import "./friends.css";
 import { useState, useEffect } from "react";
 import { useStudy, weekSeries, fmtMinutes } from "../studyStore.js";
-import Labo from "./labo/Labo.jsx";
 
 /* ============================================================
  * FriendsView — ひろば (social / leaderboard, demo)
@@ -81,12 +80,6 @@ const IcCheck = (
     <path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
-const IcLabo = (
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M9.5 3.5v5.2L5.2 17a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3l-4.3-8.3V3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-    <path d="M8.5 3.5h7M7.6 14.5h8.8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-  </svg>
-);
 
 // top-3 colored medal (svg + rank number, no emoji)
 const MEDAL = {
@@ -111,7 +104,7 @@ function Medal({ rank }) {
 function readTab() {
   try {
     const v = window.localStorage.getItem(TAB_KEY);
-    if (v === "rank" || v === "friends" || v === "labo") return v;
+    if (v === "rank" || v === "friends") return v;
   } catch { /* ignore */ }
   return "rank";
 }
@@ -198,22 +191,9 @@ export default function FriendsView({ onBack }) {
           >
             {IcPeople}<span>フレンド</span>
           </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === "labo"}
-            className={`oxv-fr-tab${tab === "labo" ? " oxv-fr-on" : ""}`}
-            onClick={() => pickTab("labo")}
-          >
-            {IcLabo}<span>LABO</span>
-          </button>
         </div>
 
-        {tab === "labo" ? (
-          <div className="oxv-fr-panel" key="labo">
-            <Labo />
-          </div>
-        ) : tab === "rank" ? (
+        {tab === "rank" ? (
           <div className="oxv-fr-panel" key="rank">
             {/* your standing -------------------------------------------------- */}
             <div className="oxv-fr-hero">

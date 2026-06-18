@@ -44531,7 +44531,7 @@ function CI() {
             children: [{
               id: "plaza",
               label: "ひろば",
-              match: ["plaza", "chat", "dm", "friendsList", "announcementsList", "stats", "factoryApp", "friendProfile", "recordsTimeline", "labo"]
+              match: ["plaza", "chat", "dm", "friendsList", "announcementsList", "stats", "factoryApp", "friendProfile", "recordsTimeline"]
             }, {
               id: "stageMap",
               label: "学習",
@@ -51379,29 +51379,6 @@ function CI() {
                 children: "追加する"
               })]
             })]
-          }), l === "labo" && (0, r.jsxs)("div", {
-            className: "rx-home",
-            children: [(0, r.jsxs)("div", {
-              className: "rx-topbar",
-              children: [(0, r.jsxs)("div", {
-                children: [(0, r.jsx)("div", {
-                  className: "rx-title",
-                  children: "LABO"
-                }), (0, r.jsx)("div", {
-                  className: "rx-goal-s",
-                  children: "塾の学習をサポート"
-                })]
-              }), (0, r.jsx)("button", {
-                className: "rx-streak",
-                onClick: () => u("plaza"),
-                children: "‹ ひろば"
-              })]
-            }), (0, r.jsx)("div", {
-              id: "ox-labo-host",
-              style: {
-                minHeight: 240
-              }
-            })]
           }), l === "plaza" && (0, r.jsx)("div", {
             className: "rx-home",
             style: {
@@ -51607,73 +51584,6 @@ function CI() {
                       marginBottom: 26
                     },
                     children: [(0, r.jsxs)("button", {
-                      onClick: () => u("labo"),
-                      style: {
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                        padding: "12px 10px",
-                        borderRadius: 18,
-                        border: "none",
-                        background: S ? "#E9F0FF" : "rgba(255,255,255,0.06)",
-                        cursor: "pointer",
-                        textAlign: "left",
-                        fontFamily: "inherit",
-                        minWidth: 0
-                      },
-                      children: [(0, r.jsx)("div", {
-                        style: {
-                          width: 54,
-                          height: 54,
-                          borderRadius: 14,
-                          flexShrink: 0,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          background: "linear-gradient(135deg,#7db4ff,#3f8dff)",
-                          color: "#fff",
-                          fontWeight: 900,
-                          fontSize: 13,
-                          letterSpacing: ".03em",
-                          fontFamily: '"Zen Maru Gothic",sans-serif'
-                        },
-                        children: "LABO"
-                      }), (0, r.jsxs)("span", {
-                        style: {
-                          flex: 1,
-                          minWidth: 0,
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 3
-                        },
-                        children: [(0, r.jsx)("b", {
-                          style: {
-                            fontSize: 14,
-                            fontWeight: 800,
-                            color: C,
-                            lineHeight: 1.25
-                          },
-                          children: "LABO"
-                        }), (0, r.jsx)("span", {
-                          style: {
-                            fontSize: 10.5,
-                            fontWeight: 600,
-                            color: q,
-                            lineHeight: 1.45
-                          },
-                          children: "宿題・質問・時間割・成績"
-                        })]
-                      }), (0, r.jsx)("span", {
-                        style: {
-                          fontSize: 15,
-                          fontWeight: 800,
-                          color: "#C9B89E",
-                          flexShrink: 0,
-                          alignSelf: "center"
-                        },
-                        children: "›"
-                      })]
-                    }), (0, r.jsxs)("button", {
                       onClick: () => u("hamuApp"),
                       style: {
                         display: "flex",

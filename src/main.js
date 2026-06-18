@@ -81,43 +81,6 @@ import "./services/oxHelpers.js"; // -> window.__oxBg / __oxPbg / __oxAv / __oxS
 import { installUiPatches } from "./services/oxUiPatches.js";
 installUiPatches();
 
-// LABO in the legacy ("old home") ひろば. The de-minified legacy app renders an
-// empty <div id="ox-labo-host"> on its `labo` screen; we lazy-load the React
-// mount the FIRST time that host appears, so React stays off the normal legacy
-// path (the legacy app ships its own React). Once loaded, the module installs
-// its own observer and this bootstrap watcher stops.
-(function bootstrapLegacyLabo() {
-  try {
-    if (typeof document === "undefined") return;
-    const root = document.body || document.documentElement;
-    if (!root) return;
-    let done = false;
-    let mo = null;
-    let iv = 0;
-    const stop = () => {
-      try { if (mo) mo.disconnect(); } catch { /* ignore */ }
-      try { if (iv) window.clearInterval(iv); } catch { /* ignore */ }
-    };
-    const check = () => {
-      if (done) return;
-      if (!document.getElementById("ox-labo-host")) return;
-      done = true;
-      stop();
-      import("./features/laboLegacy/mountLaboLegacy.jsx")
-        .then((m) => m.installLaboLegacy && m.installLaboLegacy())
-        .catch((err) => console.warn("[oriex] legacy LABO mount failed to load", err));
-    };
-    try {
-      mo = new MutationObserver(check);
-      mo.observe(root, { childList: true, subtree: true });
-    } catch { /* ignore */ }
-    try { iv = window.setInterval(check, 800); } catch { /* ignore */ }
-    check();
-  } catch {
-    /* a bootstrap watcher must never break startup */
-  }
-})();
-
 // Hidden diagnostic route. The embedded-AI device probe is NOT part of the
 // normal app: it opens ONLY when the URL explicitly asks for it
 // (?oriexProbe=embedded-ai or #embedded-ai-probe). This import is the tiny URL
