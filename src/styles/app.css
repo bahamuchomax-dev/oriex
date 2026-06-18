@@ -185,16 +185,18 @@ body.oxbg-on .rx-mp{ background: transparent !important; }
   color:rgba(43,39,36,.5) !important;
 }
 
-/* ── photo-bg: calendar text legibility ───────────────────────────────────────
-   The grid/cells are already frosted by oxHelpers, but the muted header + day text
-   can be low-contrast over a busy photo. Halo the weekday header and (unselected)
-   day text so dates stay readable; the selected day keeps its solid accent. */
-body.oxbg-on .rx-cal-head,
-body.oxbg-on .rx-cal-day:not(.on){
-  text-shadow:
-    1px 1px 0 #fff, -1px 1px 0 #fff, 1px -1px 0 #fff, -1px -1px 0 #fff,
-    0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff,
-    0 0 4px rgba(255,255,255,.95), 0 0 9px rgba(255,255,255,.8) !important;
+/* ── photo-bg: calendar SOLID WHITE (the frosted version was too faint to read) ──
+   Make the month hero + grid + (unselected) day cells opaque white with their normal
+   dark text — like the records/成績 cards — so the calendar reads clearly on any
+   photo. The selected day (.on) keeps its accent fill; today keeps its outline.
+   `html body.oxbg-on …` outranks oxHelpers' runtime frost rule. */
+html body.oxbg-on .rx-schedule-hero,
+html body.oxbg-on .rx-calendar-grid,
+html body.oxbg-on .rx-cal-day:not(.on){
+  background:#ffffff !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+  border-color:rgba(15,23,42,.1) !important;
 }
 
 /* ── つながり rows stay SOLID WHITE on a photo theme (フレンド/先生/未読) ────────
