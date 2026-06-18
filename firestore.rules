@@ -208,20 +208,6 @@ service cloud.firestore {
       allow write: if isAdmin();               // only admins grant/revoke teacher rights
     }
 
-    // ---------------- developer allowlist: admin-only, not listable ----------------
-    // Parallel to teacherAllowlist. A presence-doc keyed by uid that turns on
-    // DEVELOPER-FACING UI ONLY — the live Firestore read/write counter badge and a
-    // 「デベロッパー」name badge (see src/services/readCounter.js + oxUiPatches). It
-    // grants NO data authority anywhere in these rules (developer is never checked by
-    // any other match block). A user may GET their OWN doc so the client can decide to
-    // show the badge/counter; only an admin may grant/revoke; the list is never
-    // enumerable. A student can therefore never self-promote.
-    match /developerAllowlist/{u} {
-      allow get:   if isAdmin() || isSelf(u);
-      allow list:  if false;
-      allow write: if isAdmin();
-    }
-
     // ============================================================
     // LEGACY MODEL (live app paths). These were exposed by a deployed
     // `allow read, write: if true` wildcard (see FIRESTORE_RULES_DRIFT_AUDIT.md).
@@ -425,6 +411,16 @@ service cloud.firestore {
       match /public/data/teacherIndex/{docId} {
         allow read: if true;
         allow write: if isSelf(docId) && noAuthorityFields() && noAnswerFields();
+      }
+      // Developer display directory (parallel to teacherIndex, but ADMIN-written). A
+      // small admin-maintained list of developer uids that readCounter loads to show
+      // the「デベロッパー」badge on connections / friend profiles (and the live read
+      // counter). It grants NO data authority — `developer` is never checked anywhere
+      // else in these rules. Signed-in read (NOT public/unauth, unlike the Friend ID
+      // login dirs); admin-only write, so a student can never self-promote the badge.
+      match /public/data/developerList/{docId} {
+        allow read: if signedIn();
+        allow write: if isAdmin();
       }
       // Teacher WEEKLY PLANS (live legacy path: public/data/weeklyTasks). The bundle
       // CREATEs/DELETEs plan docs here {subject,total,unit,assignedTo,createdBy,

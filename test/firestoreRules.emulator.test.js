@@ -220,14 +220,14 @@ describe("admin", () => {
     });
     await assertFails(getDocs(collection(admin(), "teacherAllowlist")));
   });
-  it("can write the developerAllowlist", async () => {
-    await assertSucceeds(setDoc(doc(admin(), "developerAllowlist/student1"), { developer: true, grantedBy: "admin1" }));
-  });
-  it("cannot list the developerAllowlist", async () => {
-    await seed(async (db) => {
-      await setDoc(doc(db, "developerAllowlist/student1"), { developer: true });
-    });
-    await assertFails(getDocs(collection(admin(), "developerAllowlist")));
+  it("can grant developer by writing the public developerList", async () => {
+    await assertSucceeds(
+      setDoc(doc(admin(), "artifacts/app1/public/data/developerList/student1"), {
+        uid: "student1",
+        developer: true,
+        grantedBy: "admin1",
+      }),
+    );
   });
   it("may create a broadcast on behalf of any teacherId (admin exception)", async () => {
     await assertSucceeds(setDoc(doc(admin(), "public/data/teacherProblems/pAdmin"), { title: "t", body: "b", subject: "s", teacherId: "teacher2" }));
@@ -244,25 +244,21 @@ describe("admin", () => {
   });
 });
 
-describe("developer allowlist (in-app grant + self-promotion guard)", () => {
+describe("developer list (public badge directory + self-promotion guard)", () => {
   beforeEach(seedBaseline);
+  const DEV = "artifacts/app1/public/data/developerList";
 
   it("a student cannot grant THEMSELVES developer (no self-promotion)", async () => {
-    await assertFails(setDoc(doc(student(), "developerAllowlist/student1"), { developer: true }));
+    await assertFails(setDoc(doc(student(), `${DEV}/student1`), { developer: true }));
   });
   it("a teacher (non-admin) cannot grant developer", async () => {
-    await assertFails(setDoc(doc(teacher(), "developerAllowlist/student1"), { developer: true }));
+    await assertFails(setDoc(doc(teacher(), `${DEV}/student1`), { developer: true }));
   });
-  it("a user may READ their OWN developer doc (for the badge / read counter)", async () => {
+  it("any signed-in user may READ the list (to badge developers in connections)", async () => {
     await seed(async (db) => {
-      await setDoc(doc(db, "developerAllowlist/student1"), { developer: true });
+      await setDoc(doc(db, `${DEV}/student2`), { uid: "student2", developer: true });
     });
-    await assertSucceeds(getDoc(doc(student("student1"), "developerAllowlist/student1")));
-  });
-  it("a user cannot read ANOTHER user's developer doc", async () => {
-    await seed(async (db) => {
-      await setDoc(doc(db, "developerAllowlist/student2"), { developer: true });
-    });
-    await assertFails(getDoc(doc(student("student1"), "developerAllowlist/student2")));
+    await assertSucceeds(getDoc(doc(student("student1"), `${DEV}/student2`)));
+    await assertSucceeds(getDocs(collection(student("student1"), DEV)));
   });
 });

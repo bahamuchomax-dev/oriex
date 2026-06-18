@@ -102,15 +102,16 @@ export default function TeacherAdminPanel({ onClose } = {}) {
         return;
       }
       const who = found.name ? `${found.name}（${id}）` : id;
+      const devRef = doc(db, "artifacts", APP_ID, "public", "data", "developerList", found.uid);
       if (grant) {
         await setDoc(
-          doc(db, "developerAllowlist", found.uid),
-          { developer: true, shortId: id, name: found.name || "", grantedBy: uid(), grantedAt: Date.now() },
+          devRef,
+          { uid: found.uid, developer: true, shortId: id, name: found.name || "", grantedBy: uid(), grantedAt: Date.now() },
           { merge: true },
         );
         setDevMsg(`${who} にデベロッパーを付与しました。本人がアプリを再読み込みすると反映されます。`);
       } else {
-        await deleteDoc(doc(db, "developerAllowlist", found.uid));
+        await deleteDoc(devRef);
         setDevMsg(`${who} のデベロッパーを解除しました。`);
       }
       setDevFid("");

@@ -10,14 +10,20 @@
  *
  * An account is a developer if EITHER:
  *   - it has the server-set `developer` custom claim (CLI: scripts/grantDeveloper.mjs), OR
- *   - an admin granted it in-app — a presence doc at developerAllowlist/{uid}
- *     (rules: admin-only write, self-readable). See TeacherAdminPanel「デベロッパー付与」.
- * When developer, we also publish window.__oxIsDeveloper=true so oxUiPatches can show
- * the「デベロッパー」name badge (mirrors the teacher .rx-tbadge). The allowlist GET uses
- * the modern SDK (not the legacy __oxFsHook), so it is NOT self-counted.
+ *   - an admin added it to the public developer directory
+ *     artifacts/{appId}/public/data/developerList/{uid} (rules: admin-only write,
+ *     signed-in read). See TeacherAdminPanel「デベロッパー付与」.
+ * We load that directory once and publish window.__oxDevUids (a Set of developer uids)
+ * so the legacy bundle can show the「デベロッパー」badge on OTHER users too (connections
+ * list / friend profiles), and window.__oxIsDeveloper=true for the signed-in user so
+ * oxUiPatches shows it on their own profile (mirrors the teacher .rx-tbadge「先生」).
+ * The directory read uses the modern SDK (not the legacy __oxFsHook), so it is NOT
+ * self-counted.
  * ============================================================ */
 import { auth, db } from "../firebase/firebase.js";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+
+const APP_ID = "gen-ron-kai-app-v1";
 
 let reads = 0;
 let writes = 0;
@@ -81,36 +87,48 @@ function markDeveloper() {
   }
 }
 
-/** Install the counter / dev badge IF the signed-in user is a developer (custom
- *  claim OR admin-granted developerAllowlist doc). Idempotent; the allowlist read
- *  runs at most once per uid so it never spams reads for non-developers. */
+/** Load the public developer directory ONCE per uid: publish window.__oxDevUids (a
+ *  Set of developer uids) so the bundle can badge OTHER users, and decide the signed-
+ *  in user's own status (in the list OR a `developer` custom claim) to enable the
+ *  read counter + own badge. Runs for every user (not just developers) so dev friends
+ *  get badged. Modern SDK read — not self-counted. */
 export function installReadCounter() {
-  if (typeof window === "undefined" || window.__oxReadCounter) return;
+  if (typeof window === "undefined") return;
   try {
     const u = auth && auth.currentUser;
-    if (!u || typeof u.getIdTokenResult !== "function") return;
+    if (!u) return;
     if (window.__oxDevCheckedUid === u.uid) return; // already evaluated this user
     window.__oxDevCheckedUid = u.uid;
-    u.getIdTokenResult()
-      .then((res) => {
-        if (res && res.claims && res.claims.developer === true) {
+    getDocs(collection(db, "artifacts", APP_ID, "public", "data", "developerList"))
+      .then((snap) => {
+        const ids = new Set();
+        snap.forEach((d) => ids.add(String(d.id)));
+        window.__oxDevUids = ids;
+        if (ids.has(String(u.uid))) {
           markDeveloper();
           return;
         }
-        // No claim — fall back to the admin-managed in-app allowlist (self-readable).
-        getDoc(doc(db, "developerAllowlist", u.uid))
-          .then((snap) => {
-            if (snap && typeof snap.exists === "function" && snap.exists()) markDeveloper();
-          })
-          .catch(() => {
-            /* not a developer / unreadable — show nothing */
-          });
+        confirmByClaim(u); // not listed — may still be a CLI-claim developer
       })
       .catch(() => {
-        // token unavailable — allow a later retry for this uid
-        window.__oxDevCheckedUid = null;
+        // directory unreadable — still honor a `developer` custom claim for self
+        confirmByClaim(u);
       });
   } catch {
     /* ignore */
   }
+}
+
+/** Honor a server-set `developer` custom claim (scripts/grantDeveloper.mjs) so a
+ *  CLI-granted developer still gets the counter + own badge even if not in the list. */
+function confirmByClaim(u) {
+  if (!u || typeof u.getIdTokenResult !== "function") return;
+  u.getIdTokenResult()
+    .then((res) => {
+      if (res && res.claims && res.claims.developer === true) markDeveloper();
+    })
+    .catch(() => {
+      // token unavailable — allow a later retry for this uid
+      if (typeof window !== "undefined") window.__oxDevCheckedUid = null;
+    });
 }

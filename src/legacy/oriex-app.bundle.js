@@ -49281,7 +49281,10 @@ function CI() {
                   })
                 }), (0, r.jsxs)("div", {
                   className: "rx-pname",
-                  children: [C, u.isTeacher ? " 先生" : ""]
+                  children: [C, u.isTeacher ? " 先生" : "", typeof window !== "undefined" && window.__oxDevUids && window.__oxDevUids.has(String(u.uid || u.id || "")) && (0, r.jsx)("span", {
+                    className: "ox-devbadge",
+                    children: "デベロッパー"
+                  })]
                 }), (0, r.jsx)("div", {
                   style: {
                     display: "inline-flex",
@@ -51733,6 +51736,9 @@ function CI() {
                           children: [je.name || "フレンド", je.isTeacher && (0, r.jsx)("span", {
                             className: "rx-tbadge",
                             children: "先生"
+                          }), typeof window !== "undefined" && window.__oxDevUids && window.__oxDevUids.has(String(je.uid || je.id || "")) && (0, r.jsx)("span", {
+                            className: "ox-devbadge",
+                            children: "デベロッパー"
                           })]
                         }), (0, r.jsx)("div", {
                           className: "rx-trow-ls",
