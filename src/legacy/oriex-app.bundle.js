@@ -36128,25 +36128,6 @@ function AI({
             size: 16
           })
         })]
-      }), (0, r.jsxs)("button", {
-        onClick: T => {
-          T.preventDefault(), T.stopPropagation();
-          let D = ve(i),
-            Q = p || t?.uid || "",
-            F = `study_diary_print.html?uid=${encodeURIComponent(Q)}&week=${encodeURIComponent(D)}`;
-          window.open(F, "_blank")
-        },
-        className: "flex items-center gap-1.5 px-3 h-8 rounded-[12px] active:opacity-70 transition-all shrink-0",
-        style: {
-          background: "linear-gradient(135deg,#06b6d4,#0891b2)",
-          color: "white",
-          fontSize: 12,
-          fontWeight: 800,
-          boxShadow: "0 2px 8px rgba(6,182,212,0.4)"
-        },
-        children: [(0, r.jsx)(Jv, {
-          size: 14
-        }), "印刷"]
       })]
     }), (0, r.jsxs)("div", {
       className: "shrink-0 mb-3 rounded-[20px] overflow-hidden",
@@ -41790,7 +41771,7 @@ function CI() {
         };
       return (Y || []).forEach(b => E(b, !0)), i?.isTeacher && (Q || []).forEach(b => E(b, !1)), y
     }, qc = async (u, y) => {
-      void a0;
+      if (a0(u)) { Qe("先生・自動でつながった相手は削除できません", "error"); return }
       if (!u || !window.confirm(`${u.name||"この友だち"}さんをフレンドから削除しますか？`)) return;
       let E = u.uid || u.id;
       if (R.db && e?.uid) try {
@@ -49353,7 +49334,7 @@ function CI() {
                     size: 16,
                     color: "#fff"
                   }), " トークする"]
-                }), (0, r.jsxs)("button", {
+                }), !a0(ca) && (0, r.jsxs)("button", {
                   className: "rx-talkbtn",
                   onClick: () => qc(ca, () => h("plaza")),
                   style: {
@@ -52910,51 +52891,6 @@ function CI() {
                       left: Ji ? "calc(100% - 22px)" : "2px"
                     }
                   })
-                })]
-              })]
-            }), (0, r.jsxs)("div", {
-              className: "rounded-[20px] p-5 mb-4",
-              style: {
-                background: S ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.05)",
-                border: `1px solid ${A.cardBorder}`
-              },
-              children: [(0, r.jsx)("p", {
-                className: "text-[10px] font-black uppercase tracking-widest mb-3",
-                style: {
-                  color: A.textMuted
-                },
-                children: "パスワード変更"
-              }), (0, r.jsxs)("div", {
-                className: "space-y-2",
-                children: [(0, r.jsx)("input", {
-                  type: "password",
-                  value: Ut,
-                  onChange: u => ha(u.target.value),
-                  className: "w-full px-4 py-3 rounded-[12px] font-bold text-sm outline-none",
-                  style: {
-                    background: S ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.07)",
-                    border: `1px solid ${A.cardBorder}`,
-                    color: A.text
-                  },
-                  placeholder: "新しいパスワード"
-                }), Ut.length > 0 && (0, r.jsx)("input", {
-                  type: "password",
-                  value: zr,
-                  onChange: u => eo(u.target.value),
-                  className: "w-full px-4 py-3 rounded-[12px] font-bold text-sm outline-none",
-                  style: {
-                    background: S ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.07)",
-                    border: `1.5px solid ${zr&&zr!==Ut?"rgba(239,68,68,0.6)":A.cardBorder}`,
-                    color: A.text
-                  },
-                  placeholder: "パスワードを再入力"
-                }), Ut && Ut === zr && (0, r.jsx)("button", {
-                  onClick: fu,
-                  className: "w-full py-3 rounded-[12px] font-black text-white text-sm",
-                  style: {
-                    background: "linear-gradient(135deg,#10b981,#059669)"
-                  },
-                  children: "パスワードを変更"
                 })]
               })]
             }), (0, r.jsxs)("div", {

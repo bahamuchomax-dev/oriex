@@ -39,6 +39,18 @@ export function showCutoverVeil() {
       "touch-action:none",
     ].join(";");
 
+    // The icon sits inside a relatively-positioned wrapper so a spinner ring can
+    // orbit it (a static branded icon read as "stuck"; the ring signals progress).
+    const wrap = document.createElement("div");
+    wrap.style.cssText =
+      "position:relative;display:flex;align-items:center;justify-content:center;width:84px;height:84px";
+
+    const ring = document.createElement("div");
+    ring.setAttribute("aria-hidden", "true");
+    ring.style.cssText =
+      "position:absolute;inset:0;border-radius:50%;box-sizing:border-box;" +
+      "border:3px solid rgba(43,39,36,0.12);border-top-color:#ff7a59";
+
     const icon = document.createElement("img");
     icon.src = ICON_SRC;
     icon.width = 56;
@@ -48,8 +60,21 @@ export function showCutoverVeil() {
     icon.style.cssText =
       "width:56px;height:56px;border-radius:16px;box-shadow:0 8px 20px rgba(43,39,36,0.16)";
 
-    veil.appendChild(icon);
+    wrap.appendChild(ring);
+    wrap.appendChild(icon);
+    veil.appendChild(wrap);
     document.body.appendChild(veil);
+
+    // Spin the ring around the icon. Web Animations API → no @keyframes/stylesheet
+    // injection needed, and it works even before any CSS chunk has loaded.
+    try {
+      ring.animate(
+        [{ transform: "rotate(0deg)" }, { transform: "rotate(360deg)" }],
+        { duration: 900, iterations: Infinity, easing: "linear" },
+      );
+    } catch {
+      /* animation is best-effort; the static ring still reads as a loader */
+    }
   } catch {
     /* ignore — the veil is best-effort visual only */
   }
