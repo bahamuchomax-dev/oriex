@@ -38,6 +38,32 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Boot watchdog. Rarely, a stale service-worker cache or a transient chunk
+         fetch can leave the app blank on startup (a manual reload fixes it). If the
+         app has NOT mounted into #root a few seconds after load, reload ONCE
+         automatically so the user never has to. Guarded by sessionStorage so a
+         genuinely broken build can never loop; window.__oxBootOk() clears the guard
+         once the app has mounted (also auto-detected by the empty-#root check). -->
+    <script>
+      (function () {
+        var KEY = "oxBootReloaded";
+        function clearGuard() { try { sessionStorage.removeItem(KEY); } catch (e) {} }
+        window.__oxBootOk = clearGuard;
+        function mounted() {
+          var root = document.getElementById("root");
+          return !!(root && root.childElementCount > 0);
+        }
+        setTimeout(function () {
+          if (mounted()) { clearGuard(); return; }
+          try {
+            if (!sessionStorage.getItem(KEY)) {
+              sessionStorage.setItem(KEY, "1");
+              location.reload();
+            }
+          } catch (e) { /* ignore */ }
+        }, 8000);
+      })();
+    </script>
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>

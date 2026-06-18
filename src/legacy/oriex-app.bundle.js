@@ -52608,6 +52608,49 @@ function CI() {
                   color: "#fff"
                 },
                 children: "新ホームに切り替える"
+              }), (0, r.jsx)("input", {
+                id: "ox-home2-code",
+                placeholder: "ホームコードを入力（例：JIISAN）",
+                autoCapitalize: "characters",
+                spellCheck: !1,
+                className: "w-full p-3 rounded-[12px] font-bold text-sm outline-none",
+                style: {
+                  marginTop: 12,
+                  background: S ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.07)",
+                  border: `1.5px solid ${A.cardBorder}`,
+                  color: A.text
+                }
+              }), (0, r.jsx)("button", {
+                onClick: () => {
+                  var u = ((document.getElementById("ox-home2-code") || {}).value || "").trim().toUpperCase();
+                  if (u === "JIISAN") {
+                    try {
+                      window.localStorage.setItem("oriexHome", "2")
+                    } catch {}
+                    window.location.reload()
+                  } else window.alert("コードが正しくありません");
+                },
+                className: "w-full py-2.5 rounded-[12px] text-[12px] font-bold active:opacity-70",
+                style: {
+                  marginTop: 8,
+                  background: "linear-gradient(135deg,#6d28d9,#7c3aed)",
+                  color: "#fff"
+                },
+                children: "コードでホームを切り替え"
+              }), i?.isTeacher && (0, r.jsx)("button", {
+                onClick: () => {
+                  try {
+                    window.localStorage.setItem("oriexHome", "2")
+                  } catch {}
+                  window.location.reload()
+                },
+                className: "w-full py-2.5 rounded-[12px] text-[12px] font-bold active:opacity-70",
+                style: {
+                  marginTop: 8,
+                  background: "linear-gradient(135deg,#0891b2,#06b6d4)",
+                  color: "#fff"
+                },
+                children: "ホーム2へ（先生・コード不要）"
               })]
             }), (0, r.jsxs)("div", {
               className: "rounded-[20px] p-5 mb-4",
