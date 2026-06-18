@@ -220,6 +220,15 @@ describe("admin", () => {
     });
     await assertFails(getDocs(collection(admin(), "teacherAllowlist")));
   });
+  it("can write the developerAllowlist", async () => {
+    await assertSucceeds(setDoc(doc(admin(), "developerAllowlist/student1"), { developer: true, grantedBy: "admin1" }));
+  });
+  it("cannot list the developerAllowlist", async () => {
+    await seed(async (db) => {
+      await setDoc(doc(db, "developerAllowlist/student1"), { developer: true });
+    });
+    await assertFails(getDocs(collection(admin(), "developerAllowlist")));
+  });
   it("may create a broadcast on behalf of any teacherId (admin exception)", async () => {
     await assertSucceeds(setDoc(doc(admin(), "public/data/teacherProblems/pAdmin"), { title: "t", body: "b", subject: "s", teacherId: "teacher2" }));
   });
@@ -232,5 +241,28 @@ describe("admin", () => {
   it("can delete any teacher's problem", async () => {
     await assertSucceeds(deleteDoc(doc(admin(), "public/data/teacherProblems/pubT2")));
     await assertSucceeds(deleteDoc(doc(admin(), "deliveredProblems/topT2")));
+  });
+});
+
+describe("developer allowlist (in-app grant + self-promotion guard)", () => {
+  beforeEach(seedBaseline);
+
+  it("a student cannot grant THEMSELVES developer (no self-promotion)", async () => {
+    await assertFails(setDoc(doc(student(), "developerAllowlist/student1"), { developer: true }));
+  });
+  it("a teacher (non-admin) cannot grant developer", async () => {
+    await assertFails(setDoc(doc(teacher(), "developerAllowlist/student1"), { developer: true }));
+  });
+  it("a user may READ their OWN developer doc (for the badge / read counter)", async () => {
+    await seed(async (db) => {
+      await setDoc(doc(db, "developerAllowlist/student1"), { developer: true });
+    });
+    await assertSucceeds(getDoc(doc(student("student1"), "developerAllowlist/student1")));
+  });
+  it("a user cannot read ANOTHER user's developer doc", async () => {
+    await seed(async (db) => {
+      await setDoc(doc(db, "developerAllowlist/student2"), { developer: true });
+    });
+    await assertFails(getDoc(doc(student("student1"), "developerAllowlist/student2")));
   });
 });

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { auth, db } from "../../firebase/firebase.js";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, limit, query, setDoc, where } from "firebase/firestore";
 import { parseSheetCsvUrl, parseCsv, rowsToVocab } from "./sheetImport.js";
+import { normalizeFriendId, validateFriendIdFormat } from "../auth/friendIdAuth.js";
 import "./teacherAdmin.css";
 
 /* ============================================================
@@ -35,8 +36,90 @@ export default function TeacherAdminPanel({ onClose } = {}) {
   const [preview, setPreview] = useState(null); // { ok: [...], bad: [...] }
   const [impBusy, setImpBusy] = useState(false);
   const [impMsg, setImpMsg] = useState("");
+  // デベロッパー付与（admin only）
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [devFid, setDevFid] = useState("");
+  const [devBusy, setDevBusy] = useState(false);
+  const [devMsg, setDevMsg] = useState("");
 
   const uid = () => (auth && auth.currentUser ? auth.currentUser.uid : "teacher");
+
+  // Only an admin may grant/revoke developer (firestore.rules: developerAllowlist
+  // write = isAdmin). Reveal the section only to admins so a plain teacher never
+  // sees a control that would just permission-deny.
+  useEffect(() => {
+    let alive = true;
+    const u = auth && auth.currentUser;
+    if (u && typeof u.getIdTokenResult === "function") {
+      u.getIdTokenResult()
+        .then((r) => {
+          if (alive && r && r.claims && r.claims.admin === true) setIsAdmin(true);
+        })
+        .catch(() => {});
+    }
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // Resolve a Friend ID (shortId) -> uid via the PUBLIC login directory (doc id =
+  // uid). customApp is primary, teacherIndex the fallback — same order the app's
+  // Friend ID login uses. Returns { uid, name } or null.
+  const resolveUidByFriendId = async (id) => {
+    for (const coll of ["customApp", "teacherIndex"]) {
+      try {
+        const snap = await getDocs(
+          query(
+            collection(db, "artifacts", APP_ID, "public", "data", coll),
+            where("shortId", "==", id),
+            limit(1),
+          ),
+        );
+        if (!snap.empty) {
+          const d = snap.docs[0];
+          const data = d.data() || {};
+          return { uid: d.id, name: data.name || "" };
+        }
+      } catch {
+        /* try the next directory */
+      }
+    }
+    return null;
+  };
+
+  const grantDeveloper = async (grant) => {
+    const id = normalizeFriendId(devFid);
+    if (!validateFriendIdFormat(id)) {
+      setDevMsg("Friend ID（6文字）を正しく入力してください。");
+      return;
+    }
+    setDevBusy(true);
+    setDevMsg("");
+    try {
+      const found = await resolveUidByFriendId(id);
+      if (!found) {
+        setDevMsg("そのFriend IDのユーザーが見つかりませんでした。");
+        return;
+      }
+      const who = found.name ? `${found.name}（${id}）` : id;
+      if (grant) {
+        await setDoc(
+          doc(db, "developerAllowlist", found.uid),
+          { developer: true, shortId: id, name: found.name || "", grantedBy: uid(), grantedAt: Date.now() },
+          { merge: true },
+        );
+        setDevMsg(`${who} にデベロッパーを付与しました。本人がアプリを再読み込みすると反映されます。`);
+      } else {
+        await deleteDoc(doc(db, "developerAllowlist", found.uid));
+        setDevMsg(`${who} のデベロッパーを解除しました。`);
+      }
+      setDevFid("");
+    } catch {
+      setDevMsg("変更できませんでした。admin権限と通信状況をご確認ください。");
+    } finally {
+      setDevBusy(false);
+    }
+  };
 
   const postAnnounce = async () => {
     const text = announce.trim();
@@ -217,6 +300,41 @@ export default function TeacherAdminPanel({ onClose } = {}) {
         )}
         {impMsg && <p className="ox-ta-note">{impMsg}</p>}
       </section>
+
+      {isAdmin && (
+        <section className="ox-ta-card">
+          <h3 className="ox-ta-h3">デベロッパー付与</h3>
+          <p className="ox-ta-hint">
+            指定したアカウントを「デベロッパー」にします。有効化されるのは開発者向けUI（Firestore読み書きカウンタのバッジと、名前の横の「デベロッパー」バッジ）だけで、データ権限は付与しません。本人がアプリを再読み込みすると反映されます。
+          </p>
+          <input
+            className="ox-ta-input"
+            placeholder="Friend ID（6文字）"
+            value={devFid}
+            maxLength={8}
+            autoCapitalize="characters"
+            spellCheck={false}
+            onChange={(e) => setDevFid(e.target.value)}
+          />
+          <div className="ox-ta-row">
+            <button
+              className="ox-ta-primary"
+              disabled={devBusy || !devFid.trim()}
+              onClick={() => grantDeveloper(true)}
+            >
+              付与
+            </button>
+            <button
+              className="ox-ta-ghost"
+              disabled={devBusy || !devFid.trim()}
+              onClick={() => grantDeveloper(false)}
+            >
+              解除
+            </button>
+          </div>
+          {devMsg && <p className="ox-ta-note">{devMsg}</p>}
+        </section>
+      )}
     </div>
   );
 }

@@ -153,8 +153,9 @@ export async function handoffToLegacy(user, importLegacy) {
     /* non-fatal */
   }
 
-  // Developer-only: live Firestore read/write counter (gated by the `developer`
-  // custom claim; non-developers see nothing).
+  // Developer-only: live Firestore read/write counter + 「デベロッパー」name badge
+  // (gated by the `developer` custom claim OR an admin-granted developerAllowlist
+  // doc; non-developers see nothing).
   try {
     installReadCounter();
   } catch {

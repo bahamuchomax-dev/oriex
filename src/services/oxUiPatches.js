@@ -606,6 +606,38 @@ function backPlayViewOnce() {
   }
 }
 
+// Show a「デベロッパー」name badge next to the signed-in DEVELOPER's own name, the
+// same way teachers get the「先生」.rx-tbadge pill. readCounter publishes
+// window.__oxIsDeveloper=true once it confirms developer status (custom claim OR an
+// admin-granted developerAllowlist doc). We only annotate the user's OWN profile
+// name (.rx-pname on the myPage .rx-mp, which — unlike a friend's profile — has no
+// 戻る/.rx-back), because only the current user's developer status is known client-
+// side (the allowlist is not enumerable). Idempotent; cosmetic; bundle untouched.
+function injectDevBadgeOnce() {
+  try {
+    if (typeof document === "undefined" || !document.querySelectorAll) return;
+    if (!(typeof window !== "undefined" && window.__oxIsDeveloper === true)) return;
+    const names = document.querySelectorAll(".rx-pname");
+    for (let i = 0; i < names.length; i++) {
+      const name = names[i];
+      // Walk up to the screen container and skip a FRIEND's profile (it has a 戻る).
+      let screen = name;
+      for (let h = 0; h < 8 && screen; h += 1) {
+        if (screen.classList && screen.classList.contains("rx-mp")) break;
+        screen = screen.parentElement;
+      }
+      if (screen && screen.querySelector && screen.querySelector(".rx-back")) continue;
+      if (name.querySelector && name.querySelector(".ox-devbadge")) continue; // already added
+      const badge = document.createElement("span");
+      badge.className = "ox-devbadge";
+      badge.textContent = "デベロッパー";
+      name.appendChild(badge);
+    }
+  } catch {
+    /* a cosmetic badge must never break the app */
+  }
+}
+
 /** Install the relabel patches. Idempotent enough to call once at startup. */
 export function installUiPatches(map = RELABELS) {
   try {
@@ -634,6 +666,7 @@ export function installUiPatches(map = RELABELS) {
       backPlayViewOnce();
       injectHomeSwitchInSettingsOnce();
       applyAvatarFrameOnce();
+      injectDevBadgeOnce();
     };
 
     if (document.readyState !== "loading") setTimeout(run, 0);

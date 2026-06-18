@@ -50013,6 +50013,7 @@ function CI() {
                               children: "ホーム"
                             })]
                           }), (0, r.jsx)("div", {
+                            className: "ox-subj-title",
                             style: {
                               fontSize: 34,
                               fontWeight: 900,
@@ -54485,7 +54486,7 @@ function CI() {
                       onClick: () => {
                         au(B.key), Si(null)
                       },
-                      className: "px-3 py-1 rounded-full font-black text-xs transition-all flex items-center gap-1",
+                      className: "px-3 py-1 rounded-full font-black text-xs transition-all flex items-center gap-1 ox-subj-chip",
                       style: {
                         background: Ca === B.key ? B.color : S ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
                         color: Ca === B.key ? "white" : S ? "rgba(20,10,60,0.75)" : "rgba(255,255,255,0.75)",
@@ -55064,7 +55065,7 @@ function CI() {
                           ...Ie,
                           category: u.key
                         }),
-                        className: "px-3 py-1.5 rounded-full font-black text-xs transition-all flex items-center gap-1",
+                        className: "px-3 py-1.5 rounded-full font-black text-xs transition-all flex items-center gap-1 ox-subj-chip",
                         style: {
                           background: (Ie.category || "英単語") === u.key ? u.color : S ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.07)",
                           color: (Ie.category || "英単語") === u.key ? "white" : A.text,

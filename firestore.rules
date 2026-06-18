@@ -208,6 +208,20 @@ service cloud.firestore {
       allow write: if isAdmin();               // only admins grant/revoke teacher rights
     }
 
+    // ---------------- developer allowlist: admin-only, not listable ----------------
+    // Parallel to teacherAllowlist. A presence-doc keyed by uid that turns on
+    // DEVELOPER-FACING UI ONLY — the live Firestore read/write counter badge and a
+    // 「デベロッパー」name badge (see src/services/readCounter.js + oxUiPatches). It
+    // grants NO data authority anywhere in these rules (developer is never checked by
+    // any other match block). A user may GET their OWN doc so the client can decide to
+    // show the badge/counter; only an admin may grant/revoke; the list is never
+    // enumerable. A student can therefore never self-promote.
+    match /developerAllowlist/{u} {
+      allow get:   if isAdmin() || isSelf(u);
+      allow list:  if false;
+      allow write: if isAdmin();
+    }
+
     // ============================================================
     // LEGACY MODEL (live app paths). These were exposed by a deployed
     // `allow read, write: if true` wildcard (see FIRESTORE_RULES_DRIFT_AUDIT.md).

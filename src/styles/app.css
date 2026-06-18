@@ -69,6 +69,27 @@ body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"]{
   background:rgba(255,255,255,.96)!important;
 }
 
+/* ── developer name badge ──────────────────────────────────────────────────────
+   oxUiPatches injects <span class="ox-devbadge">デベロッパー</span> next to the
+   signed-in developer's own name (.rx-pname), mirroring the teacher「先生」.rx-tbadge
+   pill but in a distinct teal so the two roles read differently. */
+.ox-devbadge{
+  display:inline-block;
+  vertical-align:middle;
+  margin-left:8px;
+  color:#0e7490;
+  background:#cffafe;
+  border:1px solid rgba(8,145,178,.35);
+  border-radius:999px;
+  padding:2px 9px;
+  font-family:"Zen Maru Gothic",sans-serif;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.02em;
+  line-height:1.4;
+  white-space:nowrap;
+}
+
 /* ── stage / study-mode screen: tighter vertical rhythm ──────────────────────
    The subject stage / mode-selection screen left too much unused vertical space
    and showed too few mode cards in the initial mobile viewport. These rules
@@ -150,6 +171,31 @@ body.oxbg-on .rx-pid,
 body.oxbg-on .rx-stat .v,
 body.oxbg-on .rx-stat .l{
   text-shadow:0 1px 2px #fff, 0 0 6px rgba(255,255,255,.9);
+}
+
+/* ── photo-bg readability: 「最近の記録」横の「すべて見る」+ 学習の教科名 ──────────────
+   On a photo theme (body.oxbg-on) the .rx-home screens go transparent (oxHelpers
+   injectCSS), so accent-colored links and class-less subject labels sit directly on
+   the photo and become hard to read. Give JUST those a thick white outline — the same
+   8-direction halo the section headings get (oxUiPatches VEIL_HALO).
+   IMPORTANT — do NOT halo text that already has a card/colored backing: the subject
+   PICKER cards are white-backed via [data-ox-subject-card] (rules above), so they are
+   deliberately excluded; only genuinely-bare names are listed here. Two hooks are
+   added to the legacy bundle's render for the dynamic, class-less subject text:
+     .ox-subj-title — the big 学習(stageMap) title「英単語 / 化学…」(bundle ~line 50015)
+     .ox-subj-chip  — the bare 6%-bg subject-filter chips (bundle ~lines 54482 / 55059)
+   (Earlier this rule used .rx-nlab/.rx-nsub/[data-ox-subject-card]>span selectors that
+   matched nothing real OR matched already-backed text, so the names stayed unreadable.) */
+body.oxbg-on .rx-sec b,
+body.oxbg-on .rx-sec h3,
+body.oxbg-on .rx-sec a,
+body.oxbg-on .rx-sec button,   /* 「すべて見る」link next to 最近の記録 */
+body.oxbg-on .ox-subj-title,   /* big 学習 subject title (英単語/化学/…) */
+body.oxbg-on .ox-subj-chip{    /* bare subject-filter chips (no backing) */
+  text-shadow:
+    1px 1px 0 #fff, -1px 1px 0 #fff, 1px -1px 0 #fff, -1px -1px 0 #fff,
+    0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff,
+    0 0 4px rgba(255,255,255,.95), 0 0 9px rgba(255,255,255,.8) !important;
 }
 
 /* Swipe-to-switch (swipeNav): the screen shown after a left/right swipe slides in
