@@ -324,7 +324,7 @@ function haloVeilHeadingsOnce() {
 function swapHamsterIconsOnce() {
   try {
     if (typeof document === "undefined" || !document.querySelectorAll) return;
-    const imgs = document.querySelectorAll('img[src^="data:image/webp;base64,UklGR"]');
+    const imgs = document.querySelectorAll('img[src^="data:image/webp;base64,UklGR"]:not([data-oxnoswap])');
     for (let i = 0; i < imgs.length; i++) {
       const img = imgs[i];
       if (isHamsterIconSrc(img.getAttribute("src") || "")) {

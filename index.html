@@ -21,9 +21,15 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Load the web fonts WITHOUT blocking first paint: media="print" keeps the
+         stylesheet out of the critical render, then onload promotes it to all.
+         Text shows immediately in the system fallback (display=swap) and swaps when
+         the fonts arrive — so the first screen appears noticeably faster. -->
     <link
       href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Comfortaa:wght@500;700&family=Quicksand:wght@600;700&family=Fredoka:wght@500;600;700&family=Varela+Round&family=Mochiy+Pop+One&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
     <link rel="stylesheet" href="./src/styles/utilities.css" />
     <link rel="stylesheet" href="./src/styles/app.css" />
