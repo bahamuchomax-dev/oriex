@@ -46713,7 +46713,7 @@ function CI() {
               })
             })()]
           }), l === "scheduleCalendar" && (0, r.jsxs)("div", {
-            className: "rx-home",
+            className: "rx-home ox-cal-screen",
             style: {
               display: "block",
               minHeight: "auto",
@@ -46770,6 +46770,7 @@ function CI() {
                 })]
               })
             })(), (0, r.jsxs)("div", {
+              className: "ox-cal-toggle",
               style: {
                 display: "flex",
                 gap: 6,

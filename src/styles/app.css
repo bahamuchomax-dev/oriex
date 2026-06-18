@@ -198,6 +198,23 @@ html body.oxbg-on .rx-cal-day:not(.on){
   backdrop-filter:none !important;
   border-color:rgba(15,23,42,.1) !important;
 }
+/* 予定カレンダー: 戻る / title / 年月 sit bare on the transparent screen → halo them;
+   darken the weekday headers on the white grid; back the 追加/確認 toggle so its
+   inactive (dark-text) button reads. */
+body.oxbg-on .ox-cal-screen .rx-back,
+body.oxbg-on .ox-cal-screen .rx-title,
+body.oxbg-on .ox-cal-screen .rx-goal-l,
+body.oxbg-on .ox-cal-screen .rx-goal-n{
+  text-shadow:
+    1px 1px 0 #fff, -1px 1px 0 #fff, 1px -1px 0 #fff, -1px -1px 0 #fff,
+    0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff,
+    0 0 4px rgba(255,255,255,.95), 0 0 9px rgba(255,255,255,.8) !important;
+}
+body.oxbg-on .ox-cal-screen .rx-cal-head{ color:var(--ink,#2b2724) !important; }
+html body.oxbg-on .ox-cal-toggle{
+  background:#ffffff !important;
+  border:1px solid rgba(15,23,42,.1) !important;
+}
 
 /* ── つながり rows stay SOLID WHITE on a photo theme (フレンド/先生/未読) ────────
    oxHelpers frosts .rx-talk/.rx-trow to ~88% translucent; the user wants them clearly
