@@ -229,6 +229,33 @@ body.oxbg-on .ox-wb-select{
   backdrop-filter:blur(10px);
 }
 
+/* ── TEACHER「問題を作成して配布」white text on a PHOTO theme ───────────────────
+   On a photo theme the creation card reads as light, so its hardcoded white text is
+   unreadable. Darken the Tailwind white text and make the inputs visible. (The
+   bundle's [data-theme="light"] override only covers the light THEME, not photo.) */
+body.oxbg-on .ox-teacher-create .text-white,
+body.oxbg-on .ox-teacher-create [class*="text-white"]{
+  color:#2b2724 !important;
+}
+body.oxbg-on .ox-teacher-create input,
+body.oxbg-on .ox-teacher-create textarea{
+  background:rgba(0,0,0,.05) !important;
+  color:#2b2724 !important;
+  border:1px solid rgba(0,0,0,.16) !important;
+}
+body.oxbg-on .ox-teacher-create input::placeholder,
+body.oxbg-on .ox-teacher-create textarea::placeholder{
+  color:rgba(43,39,36,.5) !important;
+}
+
+/* ── 成績: 正解数 / 学習時間 boxes solid white on a photo theme ─────────────────
+   These cards use a ~5% translucent background, so on a photo theme they are nearly
+   invisible and the chart inside is unreadable. Give them an opaque white backing. */
+body.oxbg-on .ox-grade-box{
+  background:#ffffff !important;
+  border:1px solid rgba(15,23,42,.1) !important;
+}
+
 /* ── stage / study-mode screen: tighter vertical rhythm ──────────────────────
    The subject stage / mode-selection screen left too much unused vertical space
    and showed too few mode cards in the initial mobile viewport. These rules

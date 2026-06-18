@@ -46538,7 +46538,14 @@ function CI() {
                               try {
                                 localStorage.setItem("oriex_tasks_seen", String((Array.isArray(Tt) ? Tt : []).length))
                               } catch {}
-                            })(), St.go && St.go()
+                            })();
+                            St.go && St.go();
+                            try {
+                              ua.current && (ua.current.scrollTop = 0);
+                              requestAnimationFrame(() => {
+                                ua.current && (ua.current.scrollTop = 0)
+                              })
+                            } catch {}
                           },
                           children: [(0, r.jsx)("div", {
                             className: "ic",
@@ -49722,7 +49729,7 @@ function CI() {
                 })
               })()]
             }), (0, r.jsxs)("div", {
-              className: "p-6 rounded-[20px] relative",
+              className: "p-6 rounded-[20px] relative ox-grade-box",
               style: {
                 background: S ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.05)",
                 border: S ? "1px solid rgba(0,0,0,0.08)" : "1px solid rgba(255,255,255,0.1)"
@@ -49740,7 +49747,7 @@ function CI() {
                 type: "words"
               })]
             }), (0, r.jsxs)("div", {
-              className: "p-6 rounded-[20px] relative",
+              className: "p-6 rounded-[20px] relative ox-grade-box",
               style: {
                 background: S ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.05)",
                 border: S ? "1px solid rgba(0,0,0,0.08)" : "1px solid rgba(255,255,255,0.1)"
@@ -52595,41 +52602,35 @@ function CI() {
                   color: A.textMuted
                 },
                 children: "ホームを「トランセンド」または「でんじゃらすじーさん」に切り替えられます（いつでも元に戻せます）。"
-              }), (0, r.jsx)("button", {
-                onClick: () => {
-                  try {
-                    window.localStorage.setItem("oriexHome", "1")
-                  } catch {}
-                  window.location.reload()
-                },
-                className: "w-full py-2.5 rounded-[12px] text-[12px] font-bold active:opacity-70",
-                style: {
-                  background: "linear-gradient(135deg,#0E9489,#14b8a6)",
-                  color: "#fff"
-                },
-                children: "トランセンドに切り替える"
               }), (0, r.jsx)("input", {
-                id: "ox-home2-code",
+                id: "ox-home-code",
                 placeholder: "ホームコードを入力",
                 autoCapitalize: "characters",
                 spellCheck: !1,
                 className: "w-full p-3 rounded-[12px] font-bold text-sm outline-none",
                 style: {
-                  marginTop: 12,
+                  marginTop: 4,
                   background: S ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.07)",
                   border: `1.5px solid ${A.cardBorder}`,
                   color: A.text
                 }
               }), (0, r.jsx)("button", {
                 onClick: () => {
-                  var u = ((document.getElementById("ox-home2-code") || {}).value || "").trim().toUpperCase();
-                  if (u === "JIISAN") {
+                  var u = ((document.getElementById("ox-home-code") || {}).value || "").trim().toUpperCase();
+                  if (u === "UMAMUSUME") {
+                    try {
+                      window.localStorage.setItem("oriexTransUnlocked", "1")
+                    } catch {}
+                    var t = document.getElementById("ox-trans-switch");
+                    if (t) t.style.display = "block";
+                    window.alert("トランセンドを解除しました。下のボタンから切り替えできます。")
+                  } else if (u === "JIISAN") {
                     try {
                       window.localStorage.setItem("oriexHome2Unlocked", "1")
                     } catch {}
                     var b = document.getElementById("ox-home2-switch");
                     if (b) b.style.display = "block";
-                    window.alert("ホームを解除しました。下のボタンから切り替えできます。")
+                    window.alert("でんじゃらすじーさんを解除しました。下のボタンから切り替えできます。")
                   } else window.alert("コードが正しくありません");
                 },
                 className: "w-full py-2.5 rounded-[12px] text-[12px] font-bold active:opacity-70",
@@ -52640,6 +52641,28 @@ function CI() {
                   border: `1px solid ${A.cardBorder}`
                 },
                 children: "コードを確認"
+              }), (0, r.jsx)("button", {
+                id: "ox-trans-switch",
+                onClick: () => {
+                  try {
+                    window.localStorage.setItem("oriexHome", "1")
+                  } catch {}
+                  window.location.reload()
+                },
+                className: "w-full py-2.5 rounded-[12px] text-[12px] font-bold active:opacity-70",
+                style: {
+                  display: (i?.isTeacher || (() => {
+                    try {
+                      return window.localStorage.getItem("oriexTransUnlocked") === "1"
+                    } catch {
+                      return !1
+                    }
+                  })()) ? "block" : "none",
+                  marginTop: 8,
+                  background: "linear-gradient(135deg,#0E9489,#14b8a6)",
+                  color: "#fff"
+                },
+                children: "トランセンドに切り替える"
               }), (0, r.jsx)("button", {
                 id: "ox-home2-switch",
                 onClick: () => {
@@ -54583,14 +54606,14 @@ function CI() {
                       })
                     })
                   }].map(B => {
-                    let G = lr === B.key ? "white" : S ? "rgba(20,10,60,0.75)" : "rgba(255,255,255,0.75)";
+                    let G = lr === B.key ? "white" : "#2b2724";
                     return (0, r.jsxs)("button", {
                       onClick: () => Yo(B.key),
                       className: "flex-1 py-2 rounded-[12px] font-black text-sm transition-all flex items-center justify-center gap-1.5",
                       style: {
-                        background: lr === B.key ? "linear-gradient(135deg,#0891b2,#06b6d4)" : S ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
-                        color: lr === B.key ? "white" : S ? "rgba(20,10,60,0.75)" : "rgba(255,255,255,0.75)",
-                        border: lr === B.key ? "none" : S ? "1px solid rgba(0,0,0,0.15)" : "1px solid rgba(255,255,255,0.1)"
+                        background: lr === B.key ? "linear-gradient(135deg,#0891b2,#06b6d4)" : "rgba(255,255,255,0.92)",
+                        color: lr === B.key ? "white" : "#2b2724",
+                        border: lr === B.key ? "none" : "1px solid rgba(15,23,42,0.12)"
                       },
                       children: [B.iconFn(G), B.label]
                     }, B.key)
@@ -54603,15 +54626,15 @@ function CI() {
                       onClick: () => {
                         au(B.key), Si(null)
                       },
-                      className: "px-3 py-1 rounded-full font-black text-xs transition-all flex items-center gap-1 ox-subj-chip",
+                      className: "px-3 py-1 rounded-full font-black text-xs transition-all flex items-center gap-1",
                       style: {
-                        background: Ca === B.key ? B.color : S ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
-                        color: Ca === B.key ? "white" : S ? "rgba(20,10,60,0.75)" : "rgba(255,255,255,0.75)",
-                        border: Ca === B.key ? "none" : S ? "1px solid rgba(0,0,0,0.15)" : "1px solid rgba(255,255,255,0.1)"
+                        background: Ca === B.key ? B.color : "rgba(255,255,255,0.92)",
+                        color: Ca === B.key ? "white" : "#2b2724",
+                        border: Ca === B.key ? "none" : "1px solid rgba(15,23,42,0.12)"
                       },
                       children: [G && (0, r.jsx)(G, {
                         size: 12,
-                        color: Ca === B.key ? "white" : S ? "rgba(20,10,60,0.75)" : "rgba(255,255,255,0.75)"
+                        color: Ca === B.key ? "white" : "#2b2724"
                       }), B.label]
                     }, B.key)
                   })
