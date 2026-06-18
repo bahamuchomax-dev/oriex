@@ -1,0 +1,211 @@
+.oxll-hw {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 14px 24px;
+  color: #2A2320;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ----- summary card ----- */
+.oxll-hw-summary {
+  background: #FFFFFF;
+  border: 1px solid rgba(43, 34, 24, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(43, 34, 24, 0.07);
+  padding: 16px;
+}
+
+.oxll-hw-summary-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.oxll-hw-summary-title {
+  margin: 0;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #2A2320;
+}
+
+.oxll-hw-summary-count {
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  color: #9C8E7C;
+  white-space: nowrap;
+}
+
+.oxll-hw-summary-count strong {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2BA85B;
+}
+
+.oxll-hw-track {
+  height: 8px;
+  border-radius: 999px;
+  background: #FFF8EE;
+  border: 1px solid rgba(43, 34, 24, 0.08);
+  overflow: hidden;
+}
+
+.oxll-hw-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2BA85B, #3F8DFF);
+  transition: width 0.32s ease;
+}
+
+/* ----- list ----- */
+.oxll-hw-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.oxll-hw-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #FFFFFF;
+  border: 1px solid rgba(43, 34, 24, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(43, 34, 24, 0.07);
+  padding: 13px 14px;
+  animation: oxllHwFade 0.28s ease both;
+}
+
+.oxll-hw-row-done {
+  background: #FFF8EE;
+  box-shadow: none;
+}
+
+.oxll-hw-row-done .oxll-hw-title {
+  text-decoration: line-through;
+  color: #9C8E7C;
+}
+
+.oxll-hw-row-done .oxll-hw-body {
+  opacity: 0.62;
+}
+
+/* ----- checkbox ----- */
+.oxll-hw-check {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  margin-top: 1px;
+  border-radius: 999px;
+  border: 2px solid rgba(43, 34, 24, 0.22);
+  background: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+}
+
+.oxll-hw-check:active {
+  transform: translateY(1px);
+}
+
+.oxll-hw-row-done .oxll-hw-check {
+  background: #2BA85B;
+  border-color: #2BA85B;
+}
+
+/* ----- body ----- */
+.oxll-hw-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.oxll-hw-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.oxll-hw-tag {
+  flex: 0 0 auto;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 4px 9px;
+  border-radius: 999px;
+}
+
+.oxll-hw-due {
+  font-variant-numeric: tabular-nums;
+  font-size: 12.5px;
+  color: #9C8E7C;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.oxll-hw-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #2A2320;
+  word-break: break-word;
+}
+
+/* ----- due pill ----- */
+.oxll-hw-pill {
+  flex: 0 0 auto;
+  align-self: center;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.oxll-hw-pill-over {
+  color: #E8273C;
+  background: rgba(232, 39, 60, 0.1);
+}
+
+.oxll-hw-pill-today {
+  color: #E8923A;
+  background: rgba(232, 146, 58, 0.12);
+}
+
+.oxll-hw-pill-soon {
+  color: #9C8E7C;
+  background: rgba(43, 34, 24, 0.06);
+}
+
+.oxll-hw-row-done .oxll-hw-pill {
+  color: #9C8E7C;
+  background: rgba(43, 34, 24, 0.06);
+}
+
+@keyframes oxllHwFade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

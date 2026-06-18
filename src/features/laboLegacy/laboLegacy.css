@@ -1,0 +1,108 @@
+/* ============================================================
+ * laboLegacy.css — LIGHT/cream LABO hub mounted in the legacy ひろば.
+ * Everything is prefixed .oxll (zero global collisions); literal colors
+ * only (this lives in the legacy DOM, which has no design tokens).
+ * Per-feature styling lives in each feature's own .oxll-XX css.
+ * ============================================================ */
+
+.oxll {
+  font-family: "Zen Maru Gothic", system-ui, sans-serif;
+  color: #2a2320;
+  padding-bottom: 18px;
+  animation: oxllFade .24s ease;
+}
+@keyframes oxllFade {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+
+.oxll-intro {
+  margin: 2px 2px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.55;
+  color: #9c8e7c;
+}
+
+/* --- feature grid ---------------------------------------------------- */
+.oxll-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+}
+.oxll-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 15px 14px 14px;
+  border: 1px solid rgba(43, 34, 24, .1);
+  border-left: 4px solid var(--ac);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 2px 9px rgba(43, 34, 24, .07);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: transform .14s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.oxll-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(43, 34, 24, .12); }
+.oxll-card:active { transform: translateY(0) scale(.985); }
+.oxll-card-ic {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: var(--ac);
+  background: var(--acw);
+  border: 1px solid var(--acb);
+}
+.oxll-card-ic svg { width: 22px; height: 22px; }
+.oxll-card-tt { font-size: 15px; font-weight: 800; color: #2a2320; }
+.oxll-card-ds { font-size: 11px; font-weight: 600; color: #9c8e7c; line-height: 1.45; }
+.oxll-card-go { position: absolute; top: 13px; right: 11px; color: var(--ac); opacity: .85; }
+.oxll-card-go svg { width: 17px; height: 17px; }
+
+.oxll-foot {
+  margin: 16px 2px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #b3a692;
+  text-align: center;
+}
+
+/* --- feature header (drill-down inside LABO) ------------------------- */
+.oxll-fhead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+.oxll-fback {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(43, 34, 24, .12);
+  border-radius: 50%;
+  background: #fff;
+  color: #6a5f52;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(43, 34, 24, .06);
+}
+.oxll-fback:active { transform: scale(.95); }
+.oxll-fback svg { width: 20px; height: 20px; }
+.oxll-fic {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+}
+.oxll-fic svg { width: 20px; height: 20px; }
+.oxll-fname { font-size: 17px; font-weight: 800; color: #2a2320; }
