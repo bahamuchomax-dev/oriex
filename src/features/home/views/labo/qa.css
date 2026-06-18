@@ -1,0 +1,304 @@
+/* ============================================================
+ * qa.css — 質問箱 (Qa, LABO ask-the-teacher Q&A)
+ * Every selector is prefixed with .oxv-qa (zero global collisions);
+ * the only @keyframes are namespaced oxvQa*. Screen chrome (.oxh-sub /
+ * .oxv-body / back button / title) is supplied by the parent and NOT
+ * redefined here. Tokens (--ink/--muted/--red/--blue/--good/--glass/
+ * --glass-2/--line/...) cascade from the .oxh ancestor.
+ * ============================================================ */
+
+.oxv-qa {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- compose card ----------------------------------------------------- */
+.oxv-qa-compose {
+  padding: 15px 15px 16px;
+  margin-bottom: 18px;
+  border-radius: 18px;
+  background: var(--glass-2);
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .3);
+}
+.oxv-qa-chead {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-qa-chead svg { width: 18px; height: 18px; color: var(--blue); flex: none; }
+.oxv-qa-chead small {
+  margin-left: auto;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* subject chips */
+.oxv-qa-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+.oxv-qa-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--glass);
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 800;
+  font-family: "Zen Maru Gothic", sans-serif;
+  cursor: pointer;
+  transition: color .18s, background .18s, border-color .18s, transform .12s;
+}
+.oxv-qa-chip-dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  opacity: .5;
+  transition: opacity .18s;
+}
+.oxv-qa-chip:hover { color: var(--ink); }
+.oxv-qa-chip:active { transform: scale(.96); }
+.oxv-qa-chip-on { font-weight: 900; }
+.oxv-qa-chip-on .oxv-qa-chip-dot { opacity: 1; }
+
+/* textarea */
+.oxv-qa-ta {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 76px;
+  padding: 12px 13px;
+  margin-bottom: 12px;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, .28);
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.6;
+  font-family: inherit;
+  transition: border-color .2s, box-shadow .2s;
+}
+.oxv-qa-ta::placeholder { color: var(--muted); }
+.oxv-qa-ta:focus {
+  outline: none;
+  border-color: rgba(63, 141, 255, .55);
+  box-shadow: 0 0 0 3px rgba(63, 141, 255, .16);
+}
+
+/* primary submit */
+.oxv-qa-send {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 0;
+  border: 0;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+  font-family: "Zen Maru Gothic", sans-serif;
+  cursor: pointer;
+  background: linear-gradient(150deg, #ff6173, var(--red) 48%, var(--blue));
+  box-shadow: 0 10px 22px rgba(232, 39, 60, .32);
+  transition: filter .2s, box-shadow .22s, transform .14s, opacity .2s;
+}
+.oxv-qa-send svg { width: 18px; height: 18px; flex: none; }
+.oxv-qa-send:hover:not(:disabled) { filter: brightness(1.07); box-shadow: 0 12px 26px rgba(63, 141, 255, .38); }
+.oxv-qa-send:active:not(:disabled) { transform: translateY(1px) scale(.98); }
+.oxv-qa-send:disabled {
+  cursor: default;
+  opacity: .42;
+  filter: grayscale(.4);
+  box-shadow: none;
+}
+
+/* --- history heading -------------------------------------------------- */
+.oxv-qa-h {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 2px 11px;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-qa-h svg { width: 17px; height: 17px; color: var(--gold); flex: none; }
+.oxv-qa-h small {
+  margin-left: auto;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- thread list ------------------------------------------------------ */
+.oxv-qa-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding-bottom: 8px;
+}
+.oxv-qa-card {
+  padding: 13px 14px;
+  border-radius: 16px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .22);
+  animation: oxvQaFade .26s ease;
+}
+@keyframes oxvQaFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* card top row: subject tag + date + status badge */
+.oxv-qa-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.oxv-qa-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 900;
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-qa-tag-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; }
+.oxv-qa-date {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.oxv-qa-badge {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.oxv-qa-badge svg { width: 13px; height: 13px; flex: none; }
+.oxv-qa-badge-ok {
+  color: var(--good);
+  background: rgba(43, 212, 126, .12);
+  border-color: rgba(43, 212, 126, .42);
+}
+
+/* question text */
+.oxv-qa-q {
+  display: flex;
+  gap: 9px;
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.62;
+  font-weight: 600;
+  color: var(--ink);
+}
+.oxv-qa-q-mark {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  font-style: normal;
+  font-size: 12.5px;
+  font-weight: 900;
+  color: var(--blue);
+  background: rgba(63, 141, 255, .16);
+  border: 1px solid rgba(63, 141, 255, .4);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+
+/* answered: teacher reply block (indented, distinct background) */
+.oxv-qa-reply {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 11px 12px;
+  border-radius: 13px;
+  background: var(--glass-2);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--good);
+}
+.oxv-qa-av {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+  font-family: "Zen Maru Gothic", sans-serif;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 4px 10px rgba(0, 0, 0, .32);
+}
+.oxv-qa-reply-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.oxv-qa-teacher {
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+.oxv-qa-a {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: #d6dcec;
+}
+
+/* pending: waiting note */
+.oxv-qa-wait {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 12px 0 0;
+  padding: 9px 11px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, .04);
+  border: 1px dashed var(--line);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.oxv-qa-wait svg { width: 14px; height: 14px; flex: none; }
