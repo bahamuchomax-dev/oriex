@@ -1,5 +1,19 @@
 rules_version = '2';
 
+/* ##############################################################
+ * #  ⛔ DO NOT DEPLOY UNTIL FIREBASE AUTH MIGRATION IS COMPLETE  #
+ * ##############################################################
+ * This ruleset adds noSecretFields(), which REJECTS any write carrying a
+ * plaintext credential (password / passwordHash / pass / pin / secret /
+ * credential). The CURRENT live legacy bundle still writes a plaintext
+ * `password` field on signup, profile-save, password-change, AND customApp
+ * card-sync. Deploying this today would DENY those writes and break the live
+ * app. This hardening is correct ONLY AFTER the application-layer Firebase Auth
+ * migration removes the plaintext-password writes. See AUTH_RECOVERY_PLAN.md
+ * (§3 / "Sequencing & deploy") and PR #21. Do not merge to main and do not run
+ * `firebase deploy --only firestore:rules` from this branch before then.
+ * ============================================================ */
+
 /* ============================================================
  * Oriex Firestore Security Rules — pre-production hardened (through stage 4.6)
  * ------------------------------------------------------------
@@ -73,6 +87,16 @@ service cloud.firestore {
     function noAuthorityFields() {
       return !request.resource.data.keys()
         .hasAny(['role', 'isTeacher', 'admin', 'teacher', 'teacherId', 'claims', 'permissions']);
+    }
+    // No document may store a plaintext credential. The legacy bundle did client-
+    // side plaintext "auth" (read profile/main.password, compare on the client);
+    // during the allow-true window that doc was world-readable. Auth is Firebase
+    // Auth only after migration — no credential field belongs in Firestore, least
+    // of all in a world-readable login directory. ⛔ See the DO-NOT-DEPLOY banner
+    // at the top of this file and AUTH_RECOVERY_PLAN.md.
+    function noSecretFields() {
+      return !request.resource.data.keys()
+        .hasAny(['password', 'passwordHash', 'pass', 'pin', 'secret', 'credential']);
     }
     // an update must not change any authority marker
     function authorityUnchanged() {
@@ -224,8 +248,9 @@ service cloud.firestore {
       allow create: if isSelf(u)
                     && (!('isTeacher' in request.resource.data) || request.resource.data.isTeacher == false)
                     && !request.resource.data.keys()
-                         .hasAny(['role', 'admin', 'teacher', 'teacherId', 'claims', 'permissions']);
-      allow update: if isAdmin() || (isSelf(u) && authorityUnchanged());
+                         .hasAny(['role', 'admin', 'teacher', 'teacherId', 'claims', 'permissions'])
+                    && noSecretFields();
+      allow update: if isAdmin() || (isSelf(u) && authorityUnchanged() && noSecretFields());
       allow delete: if isAdmin();
     }
 
@@ -303,7 +328,7 @@ service cloud.firestore {
     // signed-in user; writable only by the owner; never authority/answer fields. ----
     match /public/data/customApp/{cardUid} {
       allow read: if signedIn();
-      allow create, update: if isSelf(cardUid) && noAuthorityFields() && noAnswerFields();
+      allow create, update: if isSelf(cardUid) && noAuthorityFields() && noAnswerFields() && noSecretFields();
       allow delete: if isSelf(cardUid) || isAdmin();
     }
 
@@ -398,7 +423,7 @@ service cloud.firestore {
       // xp, streak, shortId); no authority, no answers. WRITE stays owner-only.
       match /public/data/customApp/{cardUid} {
         allow read: if true;
-        allow write: if isSelf(cardUid);
+        allow write: if isSelf(cardUid) && noSecretFields();
       }
       // Friend ID login directory. Despite the legacy name, EVERY user has their
       // OWN entry here (doc id = the user's uid; fields {shortId, uid, name,
@@ -410,7 +435,7 @@ service cloud.firestore {
       // WRITE stays owner-only (doc id == uid) and authority/answer free.
       match /public/data/teacherIndex/{docId} {
         allow read: if true;
-        allow write: if isSelf(docId) && noAuthorityFields() && noAnswerFields();
+        allow write: if isSelf(docId) && noAuthorityFields() && noAnswerFields() && noSecretFields();
       }
       // Developer display directory (parallel to teacherIndex, but ADMIN-written). A
       // small admin-maintained list of developer uids that readCounter loads to show
