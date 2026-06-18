@@ -83,12 +83,34 @@ window.OriexHamu3D = function (canvas, env) {
   if ("outputColorSpace" in renderer && THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
   else if (THREE.sRGBEncoding != null) renderer.outputEncoding = THREE.sRGBEncoding;
   if (THREE.ACESFilmicToneMapping != null) renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.12; /* bright; saturation is handled per-material (satCol) */
+  renderer.toneMappingExposure = 0.86; /* lowered hard: bright light was blowing surfaces to pale, killing the deep colors */
 
   var scene = new THREE.Scene();
-  /* deeper warm-tan background (was a near-white cream) so the scene isn't washed out */
-  scene.background = new THREE.Color(P ? 0xc2a472 : 0x221d17);
-  scene.fog = new THREE.Fog(P ? 0xc2a472 : 0x221d17, 1400, 2600);
+  /* §4 house-like patterned background: a soft polka-dot "wallpaper" instead of a flat color */
+  function roomBgTex() {
+    try {
+      if (typeof document === "undefined") return null;
+      var cv = document.createElement("canvas"); cv.width = 256; cv.height = 256;
+      var g = cv.getContext("2d"); if (!g) return null;
+      var grd = g.createLinearGradient(0, 0, 0, 256);
+      grd.addColorStop(0, "#ecd9b4"); grd.addColorStop(1, "#dcc191"); /* warm wall, lighter up top */
+      g.fillStyle = grd; g.fillRect(0, 0, 256, 256);
+      g.fillStyle = "rgba(198,166,108,0.5)"; /* soft tan dots */
+      for (var yy = 0; yy < 256; yy += 46) {
+        var ox = (Math.round(yy / 46) % 2) ? 23 : 0;
+        for (var xx = -23; xx < 256; xx += 46) {
+          g.beginPath(); g.arc(xx + ox, yy + 23, 6.5, 0, Math.PI * 2); g.fill();
+        }
+      }
+      var t = new THREE.CanvasTexture(cv);
+      if ("colorSpace" in t && THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace;
+      else if (THREE.sRGBEncoding != null) t.encoding = THREE.sRGBEncoding;
+      return t;
+    } catch (e) { return null; }
+  }
+  var bgTex = P ? roomBgTex() : null;
+  scene.background = bgTex || new THREE.Color(P ? 0xc2a472 : 0x221d17);
+  scene.fog = new THREE.Fog(P ? 0xd6bd8a : 0x221d17, 1400, 2600);
 
   var camera = new THREE.PerspectiveCamera(42, 1, 10, 4000);
 
@@ -96,9 +118,9 @@ window.OriexHamu3D = function (canvas, env) {
   /* §1.2: trim the flat ambient, lean on a stronger WARM KEY (sun) for form; a soft
      warm hemisphere keeps shadows from going muddy, the cool fill (below) separates. */
   /* deepen the flat fill so pale pastels read richer (less washed); KEY stays strong for form */
-  scene.add(new THREE.AmbientLight(0xffffff, P ? 0.30 : 0.20));
-  var hemi = new THREE.HemisphereLight(0xfff7ea, 0xd8c2a0, P ? 0.30 : 0.20); scene.add(hemi);
-  var sun = new THREE.DirectionalLight(0xfff3e2, P ? 0.74 : 0.62);
+  scene.add(new THREE.AmbientLight(0xffffff, P ? 0.26 : 0.18));
+  var hemi = new THREE.HemisphereLight(0xfff7ea, 0xd8c2a0, P ? 0.26 : 0.18); scene.add(hemi);
+  var sun = new THREE.DirectionalLight(0xfff3e2, P ? 0.62 : 0.54);
   sun.position.set(380, 620, 260);
   sun.castShadow = true;
   /* 影解像度: PC(細かいポインタ)は2048で輪郭をくっきり、モバイル(coarse)は1024で軽量に保つ＝ジャギー軽減と負荷両立 */
@@ -237,7 +259,8 @@ window.OriexHamu3D = function (canvas, env) {
      Denser + 6 light-beige tones + random size/rotation/tilt; kept LOW (y<=1.7,
      flat scale) so the hamster body and props never get buried. */
   (function () {
-    var tones = P ? [0xF9ECC8, 0xF1DCAC, 0xE5C98E, 0xD9B677, 0xC9A062, 0xB88F54]
+    /* deeper tan range (was near-cream) so the bedding reads as real wood shavings, not pale */
+    var tones = P ? [0xD3B074, 0xC6A05E, 0xB78F4A, 0xA67E39, 0x946C2B, 0x825B20]
                   : [0x8b7c62, 0x83745b, 0x77684f, 0x6d5f49, 0x655842, 0x5d5040];
     function seed(n) { return ((n * 9301 + 49297) % 233280) / 233280; }
     var Eu = new THREE.Euler();
@@ -1016,6 +1039,7 @@ window.OriexHamu3D = function (canvas, env) {
       window.removeEventListener("resize", rs);
       GEO.forEach(function (g) { g.dispose(); });
       if (woodTex) woodTex.dispose();
+      if (bgTex) bgTex.dispose();
       MAT.forEach(function (m) { m.dispose(); });
       renderer.dispose();
     }
