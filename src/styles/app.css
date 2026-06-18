@@ -604,3 +604,22 @@ html body.oxbg-on .ox-review-head > span{
   color:color-mix(in srgb, var(--accent,#ff7a59) 72%, #2b2724) !important;
   border:1px solid color-mix(in srgb, var(--accent,#ff7a59) 24%, transparent) !important;
 }
+
+/* ── 志望校 row (profile): label left, school right, hairline separator (Image#17) ── */
+.rx-school{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:14px 0 4px;
+  padding:14px 4px;
+  border-top:1px solid var(--line);
+}
+.rx-school-l{ color:var(--ink-soft); font-size:13px; font-weight:700; }
+.rx-school-v{
+  color:var(--ink);
+  font-family:"Zen Maru Gothic",sans-serif;
+  font-size:16px;
+  font-weight:900;
+  text-align:right;
+}

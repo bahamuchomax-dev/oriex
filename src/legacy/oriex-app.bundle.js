@@ -42143,6 +42143,7 @@ function CI() {
           name: Wa,
           displayName: Wa,
           bio: Ks.trim() || i?.bio || "",
+          targetSchool: ((typeof document !== "undefined" && document.getElementById("ox-tgt-school") ? document.getElementById("ox-tgt-school").value : "") || i?.targetSchool || "").trim(),
           avatar: Wr || Qa.char,
           coverImage: gs || null,
           color: Gs.bg,
@@ -45565,6 +45566,27 @@ function CI() {
                 color: A.text
               }
             })]
+          }), (l === "profileEdit" || l === "register") && (0, r.jsxs)("div", {
+            className: "mb-4",
+            children: [(0, r.jsx)("p", {
+              className: "text-[10px] font-black uppercase tracking-widest mb-2 px-1",
+              style: {
+                color: A.textMuted
+              },
+              children: "志望校"
+            }), (0, r.jsx)("input", {
+              id: "ox-tgt-school",
+              type: "text",
+              defaultValue: i?.targetSchool || "",
+              maxLength: 40,
+              placeholder: "志望校（例: 名古屋大学）",
+              className: "w-full px-5 py-3.5 rounded-[20px] font-bold text-sm outline-none transition-all",
+              style: {
+                background: A.card,
+                border: `2px solid ${A.cardBorder}`,
+                color: A.text
+              }
+            })]
           }), l === "register" && qa !== "genronkai.miwa" && (0, r.jsxs)("div", {
             className: "mb-4",
             children: [(0, r.jsxs)("div", {
@@ -48401,6 +48423,15 @@ function CI() {
                           lineHeight: 1.6
                         },
                         children: i?.bio || "こんにちは！"
+                      }), i?.targetSchool && (0, r.jsxs)("div", {
+                        className: "rx-school",
+                        children: [(0, r.jsx)("span", {
+                          className: "rx-school-l",
+                          children: "志望校"
+                        }), (0, r.jsx)("span", {
+                          className: "rx-school-v",
+                          children: i.targetSchool
+                        })]
                       })]
                     })
                   }), (0, r.jsx)("div", {
@@ -49295,6 +49326,15 @@ function CI() {
                 }), (0, r.jsx)("div", {
                   className: "rx-bio",
                   children: q || "自己紹介はまだありません。"
+                }), (E.targetSchool || y.targetSchool || u.targetSchool) && (0, r.jsxs)("div", {
+                  className: "rx-school",
+                  children: [(0, r.jsx)("span", {
+                    className: "rx-school-l",
+                    children: "志望校"
+                  }), (0, r.jsx)("span", {
+                    className: "rx-school-v",
+                    children: E.targetSchool || y.targetSchool || u.targetSchool
+                  })]
                 }), (0, r.jsxs)("div", {
                   className: "rx-stats",
                   children: [(0, r.jsxs)("div", {
