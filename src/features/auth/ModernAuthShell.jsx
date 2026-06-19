@@ -43,6 +43,8 @@ export default function ModernAuthShell({ onAuthed } = {}) {
   const [inviteCode, setInviteCode] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  // 志望校 (target school) — optional, set at signup, shown on the profile.
+  const [targetSchool, setTargetSchool] = useState("");
   // Account icon chosen on signup. `avatar` is either a character key OR a small
   // cropped photo data URL (the legacy app renders avatar as <img src>). `color`
   // is the background.
@@ -107,6 +109,7 @@ export default function ModernAuthShell({ onAuthed } = {}) {
           name: isDebug ? "デバッグ生徒" : name,
           avatar: icon.avatar,
           color: icon.color,
+          targetSchool,
           debug: isDebug,
         });
         setGeneratedFriendId(shortId); // a Friend ID is GENERATED, not typed
@@ -293,6 +296,19 @@ export default function ModernAuthShell({ onAuthed } = {}) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 autoComplete="nickname"
+              />
+            </label>
+          )}
+
+          {mode === "signup" && (
+            <label className="ox-auth-field">
+              <span className="ox-auth-label">志望校（任意）</span>
+              <input
+                className="ox-auth-input"
+                value={targetSchool}
+                onChange={(e) => setTargetSchool(e.target.value)}
+                maxLength={40}
+                placeholder="例: 名古屋大学"
               />
             </label>
           )}

@@ -66,10 +66,17 @@ async function publishCover(uid) {
     const snap = await getDoc(doc(db, "artifacts", APP_ID, "users", uid, "profile", "main"));
     const profile = snap && snap.exists() ? snap.data() || {} : {};
     const coverImage = profile.coverImage || null;
+    let frame = "none";
+    try {
+      frame = localStorage.getItem("oxhIconFrame") || "none";
+    } catch {
+      /* ignore */
+    }
     const patch = {
       ...publicProfileFields(profile),
       coverImage: coverImage || null,
       coverSettings: currentCoverSettings(),
+      frame,
       uid,
     };
     const shortId = (typeof profile.shortId === "string" && profile.shortId) || ownShortId(uid);

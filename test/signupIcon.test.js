@@ -63,7 +63,7 @@ describe("signup icon — persistence wiring", () => {
   });
   it("signup passes the chosen avatar/color to the API", () => {
     expect(SHELL).toMatch(/signUpWithInviteCode\(\{[\s\S]*?avatar: icon\.avatar[\s\S]*?color: icon\.color/);
-    expect(API).toMatch(/signUpWithInviteCode\(\{ inviteCode, password, name, avatar, color(, debug = false)? \}/);
+    expect(API).toMatch(/signUpWithInviteCode\(\{ inviteCode, password, name, avatar, color(, targetSchool)?(, debug = false)? \}/);
   });
   it("writes the icon to the profile + public card via assertSafePayload", () => {
     expect(API).toContain("withIconFields");

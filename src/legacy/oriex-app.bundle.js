@@ -47955,7 +47955,69 @@ function CI() {
                   flexDirection: "column",
                   gap: 14
                 },
-                children: [b, ...K.map(q => {
+                children: [b, E.length > 0 && (0, r.jsxs)("div", {
+                  style: {
+                    background: S ? "#fff" : A.card,
+                    border: `1px solid ${A.cardBorder}`,
+                    borderRadius: 18,
+                    padding: 14,
+                    boxShadow: "0 8px 24px rgba(43,39,36,.06)"
+                  },
+                  children: [(0, r.jsx)("div", {
+                    style: {
+                      fontWeight: 800,
+                      fontSize: 14,
+                      color: A.text,
+                      marginBottom: 10
+                    },
+                    children: "生徒別 全体達成率"
+                  }), ...E.map((s, si) => {
+                    let _ts = K.filter(q => C(q, s.id)),
+                      _ps = _ts.map(q => {
+                        let _d = (mn || []).find(x => x.taskId === q.id && x.uid === s.id)?.done || 0,
+                          _t = Number(q.total) || 0;
+                        return _t > 0 ? Math.min(100, Math.round(_d / _t * 100)) : 0
+                      }),
+                      _ov = _ps.length ? Math.round(_ps.reduce((a, c) => a + c, 0) / _ps.length) : 0;
+                    return (0, r.jsxs)("div", {
+                      style: {
+                        marginBottom: 9
+                      },
+                      children: [(0, r.jsxs)("div", {
+                        style: {
+                          display: "flex",
+                          justifyContent: "space-between",
+                          fontSize: 12.5,
+                          color: A.text,
+                          fontWeight: 800,
+                          marginBottom: 3
+                        },
+                        children: [(0, r.jsx)("span", {
+                          children: s.name || "生徒"
+                        }), (0, r.jsxs)("span", {
+                          style: {
+                            color: A.accent
+                          },
+                          children: [_ov, "%", (0, r.jsxs)("span", {
+                            style: {
+                              color: A.textMuted,
+                              fontWeight: 700,
+                              marginLeft: 6
+                            },
+                            children: ["(", _ts.length, "課題)"]
+                          })]
+                        })]
+                      }), (0, r.jsx)("div", {
+                        className: "rx-task-bar",
+                        children: (0, r.jsx)("div", {
+                          style: {
+                            width: `${_ov}%`
+                          }
+                        })
+                      })]
+                    }, s.id || si)
+                  })]
+                }), ...K.map(q => {
                   let B = Number(q.total) || 0,
                     G = q.unit || "";
                   return (0, r.jsxs)("div", {

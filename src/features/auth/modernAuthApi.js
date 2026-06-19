@@ -62,19 +62,22 @@ function withIconFields(base, { avatar, color } = {}) {
 
 // Write the authenticated user's OWN profile + public directory card. No
 // password, no authority, no answers — guarded by assertSafePayload.
-async function writeOwnProfile(uid, { shortId, name, avatar, color }) {
+async function writeOwnProfile(uid, { shortId, name, avatar, color, targetSchool }) {
   const safeName = typeof name === "string" && name.trim() ? name.trim() : shortId;
   const icon = { avatar, color };
+  // 志望校 (target school) — optional, non-secret display field. assertSafePayload
+  // permits it (not a credential/authority/answer field).
+  const ts = typeof targetSchool === "string" && targetSchool.trim() ? targetSchool.trim() : "";
 
-  const profile = assertSafePayload(
-    withIconFields({ shortId, name: safeName, updatedAt: serverTimestamp() }, icon),
-  );
+  const profileBase = withIconFields({ shortId, name: safeName, updatedAt: serverTimestamp() }, icon);
+  if (ts) profileBase.targetSchool = ts;
+  const profile = assertSafePayload(profileBase);
   await setDoc(doc(db, "users", uid, "profile", "main"), profile, { merge: true });
 
   // Public, non-secret lookup/display card (friend search / leaderboard).
-  const card = assertSafePayload(
-    withIconFields({ shortId, uid, name: safeName, updatedAt: serverTimestamp() }, icon),
-  );
+  const cardBase = withIconFields({ shortId, uid, name: safeName, updatedAt: serverTimestamp() }, icon);
+  if (ts) cardBase.targetSchool = ts;
+  const card = assertSafePayload(cardBase);
   await setDoc(doc(db, "public", "data", "customApp", uid), card, { merge: true });
 }
 
@@ -87,7 +90,7 @@ async function writeOwnProfile(uid, { shortId, name, avatar, color }) {
  * The invite code is validated but NEVER written to Firestore and NEVER logged.
  * @returns {Promise<{ uid: string, shortId: string }>}
  */
-export async function signUpWithInviteCode({ inviteCode, password, name, avatar, color, debug = false } = {}) {
+export async function signUpWithInviteCode({ inviteCode, password, name, avatar, color, targetSchool, debug = false } = {}) {
   // `debug` is the test-student shortcut (name === "デバッグ123"): it skips the
   // invite-code gate so a throwaway test account can be made without a code. It
   // still creates a real Firebase user keyed by a generated Friend ID — nothing
@@ -99,7 +102,7 @@ export async function signUpWithInviteCode({ inviteCode, password, name, avatar,
 
   const cred = await createUserWithEmailAndPassword(auth, email, password);
   const uid = cred.user.uid;
-  await writeOwnProfile(uid, { shortId, name, avatar, color });
+  await writeOwnProfile(uid, { shortId, name, avatar, color, targetSchool });
   return { uid, shortId };
 }
 

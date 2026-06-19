@@ -25,6 +25,9 @@ const PUBLIC_NUMBER_FIELDS = ["xp", "streak", "level", "totalMinutes", "studyMin
 function publicProfileFields(src = {}) {
   const out = {};
   if (typeof src.comment === "string") out.comment = src.comment;
+  // 志望校 (target school): a non-secret display string the legacy app shows on the
+  // own profile (artifacts profile/main) and friend profile (artifacts customApp card).
+  if (typeof src.targetSchool === "string" && src.targetSchool) out.targetSchool = src.targetSchool;
   for (const key of PUBLIC_NUMBER_FIELDS) {
     if (src[key] == null || src[key] === "") continue;
     if (Number.isFinite(Number(src[key]))) out[key] = Number(src[key]);
