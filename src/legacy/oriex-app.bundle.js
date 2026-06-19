@@ -43394,6 +43394,32 @@ function CI() {
             cursor: _liked ? "default" : "pointer"
           },
           children: [_liked ? "♥" : "♡", " ", (b.likedBy || []).length]
+        }), b.uid === me && (0, r.jsx)("button", {
+          onClick: async () => {
+            if (!window.confirm("この記録を削除しますか？")) return;
+            let _id = b.id || b.createdAt,
+              _e = (vr || []).filter(x => String(x.id || x.createdAt) !== String(_id));
+            if (R.enabled && b.id) try {
+              await Sr(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", String(_id)))
+            } catch {}
+            Na(_e);
+            try {
+              localStorage.setItem("oritan_book_logs", JSON.stringify(_e))
+            } catch {}
+          },
+          title: "削除",
+          style: {
+            marginLeft: "auto",
+            border: "none",
+            background: "transparent",
+            color: A.textMuted,
+            fontSize: 16,
+            lineHeight: 1,
+            cursor: "pointer",
+            padding: "0 4px",
+            flexShrink: 0
+          },
+          children: "×"
         })]
       })]
     }, b.id || b.createdAt)
@@ -49525,7 +49551,7 @@ function CI() {
                 y = i?.isTeacher,
                 _fr = !y,
                 _fset = new Set((Ze || []).map(_f => _f && (_f.uid || _f.id)).filter(Boolean)),
-                _rawF = (vr || []).filter(U => U.uid && (U.uid === u || _fset.has(U.uid)) && U.createdAt).sort((a, c) => (Date.parse(c.createdAt) || 0) - (Date.parse(a.createdAt) || 0)).slice(0, 200),
+                _rawF = (vr || []).filter(U => U.uid && U.createdAt && (y ? !Te?.[U.uid]?.isTeacher : U.uid === u || _fset.has(U.uid))).sort((a, c) => (Date.parse(c.createdAt) || 0) - (Date.parse(a.createdAt) || 0)).slice(0, 200),
                 E = [...(vr || []).filter(U => y ? !Te?.[U.uid]?.isTeacher : _fr ? U.uid && (U.uid === u || _fset.has(U.uid)) : U.uid === u).map(U => ({
                   kind: "book",
                   ts: U.createdAt ? Date.parse(U.createdAt) : 0,
@@ -49694,7 +49720,7 @@ function CI() {
                       }, ue))
                     })]
                   })]
-                }), (_fr ? (_rawF.length ? (0, r.jsx)("div", {
+                }), (_fr || y ? (_rawF.length ? (0, r.jsx)("div", {
                   style: {
                     display: "flex",
                     flexDirection: "column",
