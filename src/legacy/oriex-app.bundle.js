@@ -39904,7 +39904,7 @@ function EI({
   return (0, r.jsxs)("div", {
     style: {
       position: "relative",
-      borderRadius: 24,
+      borderRadius: 20,
       padding: "18px 18px 12px",
       color: "#fff",
       background: "linear-gradient(150deg,#4fd99a 0%,#1fae66 45%,#0c7a44 100%)",
@@ -40169,7 +40169,7 @@ function SI({
       border: "1px solid var(--line)",
       borderRadius: 20,
       boxShadow: "0 8px 22px rgba(43,39,36,0.07)",
-      padding: "13px 14px 9px",
+      padding: "15px 16px 11px",
       marginBottom: 16
     },
     children: [(0, r.jsxs)("div", {
@@ -42192,7 +42192,11 @@ function CI() {
           uid: C,
           name: b.name,
           avatar: b.avatar || "",
-          color: b.color || ""
+          color: b.color || "",
+          bio: b.bio || "",
+          targetSchool: b.targetSchool || "",
+          coverImage: b.coverImage || null,
+          streakCount: b.streakCount || 0
         })) : await qn(et(R.db, "artifacts", R.appId, "public", "data", "customApp", C), {
           ...(() => { const { password: _pw, passwordHash: _ph, isTeacher: _it, ...pub } = b; return pub; })(),
           score: b.totalExp,
@@ -46243,7 +46247,10 @@ function CI() {
                 }), (0, r.jsxs)("button", {
                   className: "rx-planbtn",
                   style: {
-                    position: "relative"
+                    position: "relative",
+                    borderRadius: 20,
+                    padding: "15px 16px",
+                    marginTop: 16
                   },
                   onClick: () => {
                     Lr(), m("start"), Qt("now"), h("weeklyPlan")
