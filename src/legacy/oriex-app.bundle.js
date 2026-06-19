@@ -42901,15 +42901,22 @@ function CI() {
         return
       }
       return void(async () => {
+        let mp = new Map();
         try {
-          let [g, o2] = await Promise.all([rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80))), rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), wc("uid", "==", e.uid), li(100)))]),
-            mp = new Map();
-          [...g.docs, ...o2.docs].forEach(d => mp.set(d.id, {
+          let g = await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80)));
+          g.docs.forEach(d => mp.set(d.id, {
             id: d.id,
             ...d.data()
-          }));
-          Na([...mp.values()].sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0)))
+          }))
         } catch {}
+        try {
+          let o2 = await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), wc("uid", "==", e.uid), li(100)));
+          o2.docs.forEach(d => mp.set(d.id, {
+            id: d.id,
+            ...d.data()
+          }))
+        } catch {}
+        mp.size && Na([...mp.values()].sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0)))
       })()
     }
   }, [e?.uid, R.enabled]), (0, P.useEffect)(() => {
@@ -46566,7 +46573,7 @@ function CI() {
                     borderRadius: 20,
                     overflow: "hidden",
                     marginBottom: 16,
-                    backgroundImage: "linear-gradient(rgba(255,255,255,0.68),rgba(255,255,255,0.76)), url('./card-bg-meadow.png')",
+                    backgroundImage: "linear-gradient(rgba(255,255,255,0.73),rgba(255,255,255,0.80)), url('./card-bg-meadow.png')",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundColor: "var(--card)",
@@ -47033,10 +47040,11 @@ function CI() {
                       children: "「編集」から好みのアプリを追加できます"
                     })
                   })(), (() => {
+                    return null;
                     let me = e?.uid || "local",
                       _fs = new Set((Ze || []).map(f => f && (f.uid || f.id)).filter(Boolean)),
                       L10 = (vr || []).filter(b => b.uid && (b.uid === me || _fs.has(b.uid)) && b.createdAt).sort((a, c) => (Date.parse(c.createdAt) || 0) - (Date.parse(a.createdAt) || 0)).slice(0, 10);
-                    return L10.length ? (0, r.jsxs)("div", {
+                    return (0, r.jsxs)("div", {
                       style: {
                         marginTop: 18
                       },
@@ -47071,15 +47079,24 @@ function CI() {
                           },
                           children: "›"
                         })]
-                      }), (0, r.jsx)("div", {
+                      }), L10.length ? (0, r.jsx)("div", {
                         style: {
                           display: "flex",
                           flexDirection: "column",
                           gap: 8
                         },
                         children: L10.map(oxFriendCard)
+                      }) : (0, r.jsx)("div", {
+                        style: {
+                          padding: "14px 4px",
+                          color: A.textMuted,
+                          fontSize: 13,
+                          fontWeight: 600,
+                          textAlign: "center"
+                        },
+                        children: "フレンドや自分の記録がまだありません"
                       })]
-                    }) : null
+                    })
                   })()]
                 })]
               })
@@ -48653,7 +48670,43 @@ function CI() {
                 })]
               })]
             })]}), (() => {
-              return null;
+              let _me = e?.uid || "local",
+                _fs2 = new Set((Ze || []).map(f => f && (f.uid || f.id)).filter(Boolean)),
+                _L10 = (vr || []).filter(b => b.uid && (b.uid === _me || _fs2.has(b.uid)) && b.createdAt).sort((a, c) => (Date.parse(c.createdAt) || 0) - (Date.parse(a.createdAt) || 0)).slice(0, 10);
+              return (0, r.jsxs)("div", {
+                style: {
+                  marginTop: 16
+                },
+                children: [(0, r.jsx)("div", {
+                  className: "rx-sec",
+                  style: {
+                    margin: "0 2px 6px"
+                  },
+                  children: (0, r.jsx)("b", {
+                    style: {
+                      fontSize: 15,
+                      fontWeight: 700
+                    },
+                    children: "フレンドタイムライン"
+                  })
+                }), _L10.length ? (0, r.jsx)("div", {
+                  style: {
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8
+                  },
+                  children: _L10.map(oxFriendCard)
+                }) : (0, r.jsx)("div", {
+                  style: {
+                    padding: "14px 4px",
+                    color: A.textMuted,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    textAlign: "center"
+                  },
+                  children: "フレンドや自分の記録がまだありません"
+                })]
+              });
               let u = e?.uid || "local",
                 _fset = new Set((Ze || []).map(_f => _f && (_f.uid || _f.id)).filter(Boolean)),
                 _fd = ms => {
