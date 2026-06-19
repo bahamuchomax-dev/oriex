@@ -40041,35 +40041,60 @@ function EI({
             }), "タイマー"]
           })]
         })]
-      }), (0, r.jsx)("div", {
+      }), (0, r.jsxs)("div", {
         style: {
-          width: 112,
-          height: 112,
-          borderRadius: 999,
+          position: "relative",
+          width: 124,
+          height: 124,
           flex: "none",
-          marginRight: 8,
+          marginRight: 2,
           alignSelf: "center",
-          boxSizing: "border-box",
-          border: "2px solid rgba(0,0,0,0.16)",
           display: "grid",
-          placeItems: "center",
-          background: `conic-gradient(#1fae66 ${j}%, rgba(31,174,102,0.18) ${j}%)`
+          placeItems: "center"
         },
-        children: (0, r.jsxs)("div", {
+        children: [(0, r.jsxs)("svg", {
+          width: 124,
+          height: 124,
+          viewBox: "0 0 124 124",
           style: {
-            width: 94,
-            height: 94,
-            borderRadius: 999,
-            background: "#fff",
-            color: "#0c7a44",
-            border: "1px solid rgba(31,174,102,0.28)",
-            display: "grid",
-            placeItems: "center",
-            fontWeight: 900,
-            fontSize: 18
+            position: "absolute",
+            inset: 0,
+            transform: "rotate(-90deg)"
           },
-          children: [j, "%"]
-        })
+          children: [(0, r.jsx)("circle", {
+            cx: 62,
+            cy: 62,
+            r: 54,
+            fill: "none",
+            stroke: "rgba(31,174,102,0.15)",
+            strokeWidth: 13
+          }), (0, r.jsx)("circle", {
+            cx: 62,
+            cy: 62,
+            r: 54,
+            fill: "none",
+            stroke: "#1fae66",
+            strokeWidth: 13,
+            strokeLinecap: "round",
+            strokeDasharray: 2 * Math.PI * 54,
+            strokeDashoffset: 2 * Math.PI * 54 * (1 - Math.min(100, Math.max(0, j)) / 100)
+          })]
+        }), (0, r.jsxs)("div", {
+          style: {
+            position: "relative",
+            fontWeight: 900,
+            fontSize: 27,
+            color: "#0c7a44",
+            lineHeight: 1,
+            fontFamily: '"Zen Maru Gothic", sans-serif'
+          },
+          children: [j, (0, r.jsx)("span", {
+            style: {
+              fontSize: 14
+            },
+            children: "%"
+          })]
+        })]
       })]
     }), (0, r.jsxs)("button", {
       onClick: l,
@@ -43061,17 +43086,17 @@ function CI() {
     }
   }, Ng = async u => {
     let y = e?.uid || "local";
-    if (!(u.likedBy || []).includes(y))
-      if (R.enabled && u.id) await Ch(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", u.id), {
+    if ((u.likedBy || []).includes(y)) return;
+    let E = vr.map(b => (b.id || b.createdAt) === (u.id || u.createdAt) ? {
+      ...b,
+      likedBy: [...b.likedBy || [], y]
+    } : b);
+    Na(E);
+    if (R.enabled && u.id) try {
+      await Ch(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", u.id), {
         likedBy: Dv(y)
-      });
-      else {
-        let E = vr.map(b => b.id === u.id ? {
-          ...b,
-          likedBy: [...b.likedBy || [], y]
-        } : b);
-        Na(E), localStorage.setItem("oritan_book_logs", JSON.stringify(E))
-      }
+      })
+    } catch {} else localStorage.setItem("oritan_book_logs", JSON.stringify(E))
   }, p0 = async u => {
     let y = window.prompt("コメントを入力");
     if (!y || !y.trim()) return;
@@ -43080,17 +43105,16 @@ function CI() {
       name: i?.name || "User",
       text: y.trim(),
       createdAt: Da()
-    };
-    if (R.enabled && u.id) await Ch(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", u.id), {
-      comments: Dv(E)
-    });
-    else {
-      let b = vr.map(C => C.id === u.id ? {
-        ...C,
-        comments: [...C.comments || [], E]
-      } : C);
-      Na(b), localStorage.setItem("oritan_book_logs", JSON.stringify(b))
-    }
+    }, b = vr.map(C => (C.id || C.createdAt) === (u.id || u.createdAt) ? {
+      ...C,
+      comments: [...C.comments || [], E]
+    } : C);
+    Na(b);
+    if (R.enabled && u.id) try {
+      await Ch(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", u.id), {
+        comments: Dv(E)
+      })
+    } catch {} else localStorage.setItem("oritan_book_logs", JSON.stringify(b))
   }, m0 = async (u, y) => {
     if (!(!i?.isTeacher || !u.id))
       if (R.enabled) await Ch(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", u.id), {
@@ -48284,15 +48308,11 @@ function CI() {
             })]}), (() => {
               let u = e?.uid || "local",
                 _fset = new Set((Ze || []).map(_f => _f && (_f.uid || _f.id)).filter(Boolean)),
-                E = [...(vr || []).filter(b => b.uid && b.uid !== u && _fset.has(b.uid)).map(b => ({
-                  kind: "book",
-                  ts: b.createdAt ? Date.parse(b.createdAt) : 0,
-                  title: (b.userName ? b.userName + " ・ " : "") + (b.bookTitle || "参考書"),
-                  sub: `${b.subject?b.subject+" ・ ":""}${b.minutes||0}分${b.currentPage?` ・ ${b.currentPage}p`:""}`,
-                  memo: b.memo || "",
-                  id: "b_" + (b.id || b.createdAt),
-                  _rid: b.id || b.createdAt
-                }))].filter(b => b.ts > 0).sort((b, C) => C.ts - b.ts).slice(0, 999);
+                _fd = ms => {
+                  let s = String(ms || "");
+                  return s ? s.slice(5, 16).replace("T", " ") : ""
+                },
+                E = (vr || []).filter(b => b.uid && b.uid !== u && _fset.has(b.uid) && b.createdAt).sort((b, C) => (Date.parse(C.createdAt) || 0) - (Date.parse(b.createdAt) || 0)).slice(0, 30);
               return (0, r.jsxs)("div", {
                 style: {
                   marginTop: 20
@@ -48329,45 +48349,217 @@ function CI() {
                     })]
                   })]
                 }), E.length ? (0, r.jsx)("div", {
-                  className: "rx-talk",
-                  children: E.slice(0, 20).map((b, C) => (0, r.jsxs)("div", {
-                    className: "rx-trow",
-                    style: {
-                      borderTop: C ? "1px solid var(--line)" : "none"
-                    },
-                    onClick: () => {
-                      setOxTLF(!0), m("recordHub"), h("recordsTimeline")
-                    },
-                    children: [(0, r.jsxs)("div", {
+                  style: {
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8
+                  },
+                  children: E.map(b => {
+                    let _av = b.userAvatar || Te?.[b.uid]?.avatar || "",
+                      _avImg = String(_av).startsWith("data:") || String(_av).startsWith("http"),
+                      _AvC = Bo[_av],
+                      _liked = (b.likedBy || []).includes(u),
+                      _pg = b.currentPage ? `${b.currentPage}/${b.totalPages||"?"}p` : "";
+                    return (0, r.jsxs)("div", {
                       style: {
-                        flex: 1,
-                        minWidth: 0
+                        background: A.card,
+                        border: "1px solid " + A.cardBorder,
+                        borderRadius: 14,
+                        padding: "10px 11px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 6
                       },
-                      children: [(0, r.jsx)("div", {
-                        className: "rx-trow-nm",
+                      children: [(0, r.jsxs)("div", {
                         style: {
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis"
+                          display: "flex",
+                          gap: 9,
+                          alignItems: "center"
                         },
-                        children: b.title
-                      }), b.sub ? (0, r.jsx)("div", {
-                        className: "rx-trow-ls",
-                        children: b.sub
-                      }) : null]
-                    }), (0, r.jsx)("div", {
-                      style: {
-                        fontSize: 11,
-                        color: A.textMuted,
-                        fontWeight: 600,
-                        flex: "none"
-                      },
-                      children: (() => {
-                        let K = new Date(b.ts);
-                        return `${K.getMonth()+1}/${K.getDate()}`
-                      })()
-                    })]
-                  }, b.id))
+                        children: [(0, r.jsx)("span", {
+                          className: b.userColor || Te?.[b.uid]?.color || "bg-amber-500",
+                          style: {
+                            width: 34,
+                            height: 34,
+                            borderRadius: 11,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "hidden",
+                            flexShrink: 0,
+                            color: "#fff"
+                          },
+                          children: _avImg ? (0, r.jsx)("img", {
+                            src: _av,
+                            alt: "",
+                            style: {
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover"
+                            }
+                          }) : _AvC ? (0, r.jsx)(_AvC, {
+                            size: 20,
+                            color: "currentColor"
+                          }) : _av ? (0, r.jsx)("span", {
+                            style: {
+                              fontSize: 18
+                            },
+                            children: _av
+                          }) : (0, r.jsx)(Nl, {
+                            size: 18,
+                            color: "currentColor"
+                          })
+                        }), (0, r.jsxs)("div", {
+                          style: {
+                            flex: 1,
+                            minWidth: 0
+                          },
+                          children: [(0, r.jsxs)("div", {
+                            style: {
+                              display: "flex",
+                              justifyContent: "space-between",
+                              gap: 8,
+                              alignItems: "baseline"
+                            },
+                            children: [(0, r.jsx)("span", {
+                              style: {
+                                fontWeight: 800,
+                                fontSize: 13,
+                                color: A.text,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap"
+                              },
+                              children: b.userName || "User"
+                            }), (0, r.jsx)("span", {
+                              style: {
+                                fontSize: 10.5,
+                                color: A.textMuted,
+                                fontWeight: 600,
+                                flexShrink: 0
+                              },
+                              children: _fd(b.createdAt)
+                            })]
+                          }), (0, r.jsxs)("div", {
+                            style: {
+                              display: "flex",
+                              gap: 5,
+                              alignItems: "center",
+                              marginTop: 2
+                            },
+                            children: [(0, r.jsx)("span", {
+                              style: {
+                                width: 20,
+                                height: 20,
+                                borderRadius: 6,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                background: "linear-gradient(145deg,#67e8f9,#14b8a6)",
+                                flexShrink: 0
+                              },
+                              children: (0, r.jsxs)("svg", {
+                                width: 12,
+                                height: 12,
+                                viewBox: "0 0 24 24",
+                                fill: "none",
+                                stroke: "#fff",
+                                strokeWidth: 2,
+                                strokeLinecap: "round",
+                                strokeLinejoin: "round",
+                                children: [(0, r.jsx)("path", {
+                                  d: "M5 4h11l3 3v13H5z"
+                                }), (0, r.jsx)("path", {
+                                  d: "M8 9h8M8 13h6"
+                                })]
+                              })
+                            }), (0, r.jsx)("span", {
+                              style: {
+                                fontWeight: 800,
+                                fontSize: 13,
+                                color: A.text,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap"
+                              },
+                              children: b.bookTitle || "参考書"
+                            })]
+                          })]
+                        })]
+                      }), (0, r.jsxs)("div", {
+                        style: {
+                          fontSize: 11.5,
+                          color: A.textMuted,
+                          fontWeight: 600
+                        },
+                        children: [b.subject ? b.subject + " ・ " : "", b.minutes || 0, "分", _pg ? " ・ " + _pg : ""]
+                      }), b.memo ? (0, r.jsx)("div", {
+                        style: {
+                          fontSize: 12,
+                          color: A.text,
+                          lineHeight: 1.5,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical"
+                        },
+                        children: b.memo
+                      }) : null, b.teacherComment ? (0, r.jsxs)("div", {
+                        style: {
+                          fontSize: 11.5,
+                          fontWeight: 700,
+                          color: A.accent,
+                          background: A.accent + "14",
+                          borderRadius: 9,
+                          padding: "6px 9px",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap"
+                        },
+                        children: ["先生: ", b.teacherComment]
+                      }) : null, (0, r.jsxs)("div", {
+                        style: {
+                          display: "flex",
+                          gap: 7
+                        },
+                        children: [(0, r.jsxs)("button", {
+                          onClick: () => p0(b),
+                          style: {
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                            borderRadius: 999,
+                            padding: "5px 11px",
+                            background: "transparent",
+                            border: "1px solid " + A.cardBorder,
+                            color: A.textMuted,
+                            fontSize: 11.5,
+                            fontWeight: 800,
+                            cursor: "pointer"
+                          },
+                          children: ["💬 コメント", (b.comments || []).length ? " " + (b.comments || []).length : ""]
+                        }), (0, r.jsxs)("button", {
+                          onClick: () => Ng(b),
+                          disabled: _liked,
+                          style: {
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                            borderRadius: 999,
+                            padding: "5px 11px",
+                            background: _liked ? "rgba(239,68,68,0.12)" : "transparent",
+                            border: "1px solid " + (_liked ? "rgba(239,68,68,0.45)" : A.cardBorder),
+                            color: _liked ? "#dc2626" : A.textMuted,
+                            fontSize: 11.5,
+                            fontWeight: 800,
+                            cursor: _liked ? "default" : "pointer"
+                          },
+                          children: [_liked ? "♥" : "♡", " ", (b.likedBy || []).length]
+                        })]
+                      })]
+                    }, b.id || b.createdAt)
+                  })
                 }) : (0, r.jsx)("div", {
                   style: {
                     padding: "18px 4px",

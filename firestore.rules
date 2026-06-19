@@ -488,6 +488,28 @@ service cloud.firestore {
         allow update, delete: if signedIn()
                               && (resource.data.uid == request.auth.uid || isTeacher());
       }
+      // Reference-book SHELF (live legacy path: public/data/bookShelf). The bundle
+      // writes artifacts/{appId}/public/data/bookShelf/{bookId} = {uid, ownerUid,
+      // title, subject, icon, totalPages, ...}. The top-level /public/data/bookShelf
+      // rule does NOT cover this path, so the blanket public/data write-deny above had
+      // blocked 参考書追加 (permission-denied). This sibling rule restores it. Owner-only
+      // create/update/delete — accepts EITHER ownerUid (React booksApi) OR uid (legacy
+      // bundle / older docs) as the owner field. Read stays signed-in via the wildcard.
+      match /public/data/bookShelf/{bookId} {
+        allow create: if signedIn()
+                      && (request.resource.data.ownerUid == request.auth.uid
+                          || request.resource.data.uid == request.auth.uid)
+                      && noAnswerFields();
+        allow update: if isAdmin()
+                      || (signedIn()
+                          && (resource.data.ownerUid == request.auth.uid
+                              || resource.data.uid == request.auth.uid)
+                          && noAnswerFields());
+        allow delete: if isAdmin()
+                      || (signedIn()
+                          && (resource.data.ownerUid == request.auth.uid
+                              || resource.data.uid == request.auth.uid));
+      }
       // Teacher problem distribution (live legacy paths). The bundle CREATEs/DELETEs
       // word problems at public/data/customVocabulary and distributed apps/links at
       // public/data/sharedApps; the blanket public/data write-deny had broken both
