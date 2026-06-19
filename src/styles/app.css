@@ -623,3 +623,14 @@ html body.oxbg-on .ox-review-head > span{
   font-weight:900;
   text-align:right;
 }
+
+/* ── 参考書(book log)画面: 写真背景で見切れていた見出し/カテゴリ/本名に白ハロー ──────
+   These texts render with the theme's dark color directly on the transparent photo
+   screen, so they wash out on a busy/dark photo. The 8-direction white halo (same as
+   .ox-subj-title) makes them readable without a card backing. Photo theme only. */
+body.oxbg-on .ox-bl-text{
+  text-shadow:
+    1px 1px 0 #fff, -1px 1px 0 #fff, 1px -1px 0 #fff, -1px -1px 0 #fff,
+    0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff,
+    0 0 4px rgba(255,255,255,.95), 0 0 9px rgba(255,255,255,.8) !important;
+}

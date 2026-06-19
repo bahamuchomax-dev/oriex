@@ -43819,6 +43819,7 @@ function CI() {
         },
         children: [(0, r.jsxs)("div", {
           children: [(0, r.jsx)("p", {
+            className: "ox-bl-text",
             style: {
               fontSize: 11,
               color: U,
@@ -43827,6 +43828,7 @@ function CI() {
             },
             children: ne.shelf
           }), (0, r.jsx)("h3", {
+            className: "ox-bl-text",
             style: {
               fontSize: 18,
               fontWeight: 700,
@@ -43877,6 +43879,7 @@ function CI() {
                     d: "M6 2h12a1 1 0 0 1 1 1v18l-7-4-7 4V3a1 1 0 0 1 1-1z"
                   })
                 }), (0, r.jsx)("p", {
+                  className: "ox-bl-text",
                   style: {
                     fontSize: 14,
                     fontWeight: 700,
@@ -44012,6 +44015,7 @@ function CI() {
                         })
                       }) : null]
                     }), (0, r.jsx)("p", {
+                      className: "ox-bl-text",
                       style: {
                         marginTop: 5,
                         fontSize: 10,
