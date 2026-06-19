@@ -39906,8 +39906,9 @@ function EI({
       position: "relative",
       borderRadius: 0,
       padding: "18px 18px 15px",
-      color: "#fff",
-      background: "linear-gradient(150deg,#4fd99a 0%,#1fae66 45%,#0c7a44 100%)",
+      color: "#0c7a44",
+      background: "#fff",
+      border: "none",
       boxShadow: "none",
       marginBottom: 0
     },
@@ -39965,9 +39966,9 @@ function EI({
               gap: 5,
               padding: "6px 10px 6px 12px",
               borderRadius: 999,
-              background: "rgba(255,255,255,0.2)",
-              border: "1px solid rgba(255,255,255,0.35)",
-              color: "#fff",
+              background: "rgba(31,174,102,0.08)",
+              border: "1px solid rgba(31,174,102,0.45)",
+              color: "#0c7a44",
               fontSize: 11.5,
               fontWeight: 900,
               cursor: "pointer",
@@ -39987,7 +39988,7 @@ function EI({
                 WebkitAppearance: "none",
                 background: "transparent",
                 border: "none",
-                color: "#fff",
+                color: "#0c7a44",
                 fontSize: 11.5,
                 fontWeight: 900,
                 fontFamily: "inherit",
@@ -40047,14 +40048,16 @@ function EI({
           flex: "none",
           display: "grid",
           placeItems: "center",
-          background: `conic-gradient(#fff ${j}%, rgba(255,255,255,0.28) 0)`
+          background: `conic-gradient(#1fae66 ${j}%, rgba(31,174,102,0.18) 0)`
         },
         children: (0, r.jsxs)("div", {
           style: {
             width: 66,
             height: 66,
             borderRadius: 999,
-            background: "rgba(12,122,68,0.5)",
+            background: "#fff",
+            color: "#0c7a44",
+            border: "1px solid rgba(31,174,102,0.28)",
             display: "grid",
             placeItems: "center",
             fontWeight: 900,
@@ -40074,8 +40077,8 @@ function EI({
         padding: "11px 2px 4px",
         background: "none",
         border: "none",
-        borderTop: "1px solid rgba(255,255,255,0.28)",
-        color: "#fff",
+        borderTop: "1px solid rgba(31,174,102,0.24)",
+        color: "#0c7a44",
         cursor: "pointer",
         textAlign: "left",
         fontFamily: "inherit"
@@ -40167,7 +40170,7 @@ function SI({
     style: {
       background: "transparent",
       border: "none",
-      borderTop: "1px solid var(--line)",
+      borderTop: "1px solid rgba(31,174,102,0.24)",
       borderRadius: 0,
       boxShadow: "none",
       padding: "14px 16px 12px",
@@ -46247,8 +46250,8 @@ function CI() {
                     overflow: "hidden",
                     marginBottom: 16,
                     background: "var(--card)",
-                    border: "1px solid var(--line)",
-                    boxShadow: "0 12px 30px rgba(20,90,60,0.16)"
+                    border: "2px solid #1fae66",
+                    boxShadow: "0 12px 30px rgba(20,90,60,0.12)"
                   },
                   children: [(0, r.jsx)(EI, {
                   today: y,
@@ -46272,7 +46275,7 @@ function CI() {
                     marginTop: 0,
                     background: "transparent",
                     border: "none",
-                    borderTop: "1px solid var(--line)",
+                    borderTop: "1px solid rgba(31,174,102,0.24)",
                     boxShadow: "none"
                   },
                   onClick: () => {
@@ -49418,9 +49421,13 @@ function CI() {
                       minHeight: 168,
                       display: "flex",
                       alignItems: "center",
-                      padding: "22px 18px"
+                      padding: "22px 18px",
+                      backgroundImage: E.coverImage ? `url("${E.coverImage}")` : void 0,
+                      backgroundSize: (E.coverSettings && E.coverSettings.size) || "cover",
+                      backgroundPosition: (E.coverSettings && E.coverSettings.pos) || "center",
+                      backgroundRepeat: "no-repeat"
                     },
-                    children: [(0, r.jsx)("div", {
+                    children: [!E.coverImage && (0, r.jsx)("div", {
                       className: "pat"
                     }), (0, r.jsxs)("div", {
                       style: {
@@ -51869,6 +51876,12 @@ function CI() {
                   K = S ? "#777777" : A.textMuted,
                   q = S ? "#999999" : A.textMuted,
                   B = S ? "#ffffff" : A.card,
+                  plazaSectionStyle = {
+                    background: B,
+                    border: `1px solid ${b}`,
+                    borderRadius: 20,
+                    boxShadow: "none"
+                  },
                   G = Vc().filter(je => !je.isTeacher).length,
                   ne = Vc().filter(je => je.isTeacher).length,
                   he = (() => {
@@ -51891,7 +51904,11 @@ function CI() {
                   }),
                   U = je => (0, r.jsx)("div", {
                     style: {
-                      margin: "0 2px 11px"
+                      ...plazaSectionStyle,
+                      borderBottom: "none",
+                      borderRadius: "20px 20px 0 0",
+                      padding: "14px 16px 0",
+                      margin: 0
                     },
                     children: (0, r.jsx)("h3", {
                       style: {
@@ -51958,11 +51975,8 @@ function CI() {
                   children: [(0, r.jsxs)("div", {
                     className: "ox-plaza-head",
                     style: {
-                      background: "rgba(255,255,255,0.97)",
-                      border: `1px solid ${b}`,
-                      borderRadius: 22,
-                      boxShadow: "0 1px 6px rgba(34,27,21,0.06)",
-                      marginBottom: 24,
+                      ...plazaSectionStyle,
+                      marginBottom: 16,
                       overflow: "hidden"
                     },
                     children: [(0, r.jsxs)("div", {
@@ -52017,7 +52031,11 @@ function CI() {
                   })]
                   }), (0, r.jsx)("div", {
                     style: {
-                      margin: "0 2px 12px"
+                      ...plazaSectionStyle,
+                      borderBottom: "none",
+                      borderRadius: "20px 20px 0 0",
+                      padding: "14px 16px 0",
+                      margin: 0
                     },
                     children: (0, r.jsx)("h3", {
                       style: {
@@ -52031,10 +52049,14 @@ function CI() {
                     })
                   }), (0, r.jsxs)("div", {
                     style: {
+                      ...plazaSectionStyle,
                       display: "grid",
                       gridTemplateColumns: "repeat(2,1fr)",
                       gap: 11,
-                      marginBottom: 26
+                      borderTop: "none",
+                      borderRadius: "0 0 20px 20px",
+                      padding: 12,
+                      marginBottom: 18
                     },
                     children: [(0, r.jsxs)("button", {
                       onClick: () => u("hamuApp"),
@@ -52044,8 +52066,8 @@ function CI() {
                         gap: 6,
                         padding: "12px 10px",
                         borderRadius: 18,
-                        border: "none",
-                        background: S ? "#FCEFD9" : "rgba(255,255,255,0.06)",
+                        border: "1px solid rgba(230,168,66,0.55)",
+                        background: "rgba(230,168,66,0.16)",
                         cursor: "pointer",
                         textAlign: "left",
                         fontFamily: "inherit",
@@ -52103,8 +52125,8 @@ function CI() {
                         gap: 6,
                         padding: "12px 10px",
                         borderRadius: 18,
-                        border: "none",
-                        background: S ? "#FBE4E2" : "rgba(255,255,255,0.06)",
+                        border: "1px solid rgba(232,120,100,0.55)",
+                        background: "rgba(232,120,100,0.16)",
                         cursor: "pointer",
                         textAlign: "left",
                         fontFamily: "inherit",
@@ -52156,11 +52178,13 @@ function CI() {
                       })]
                     })]
                   }), U("つながり"), Vc().length > 0 ? (0, r.jsx)("div", {
-                    className: "rx-talk",
+                    className: "rx-talk ox-plaza-section-body",
                     style: {
-                      marginBottom: 26,
-                      borderRadius: 18,
-                      boxShadow: "0 1px 5px rgba(34,27,21,0.04)"
+                      ...plazaSectionStyle,
+                      borderTop: "none",
+                      borderRadius: "0 0 20px 20px",
+                      marginBottom: 18,
+                      overflow: "hidden"
                     },
                     children: Vc().map((je, tn) => (0, r.jsxs)("div", {
                       className: "rx-trow",
@@ -52223,11 +52247,13 @@ function CI() {
                       })]
                     }, je.uid || je.shortId || tn))
                   }) : (0, r.jsx)("div", {
-                    className: "rx-peek",
+                    className: "rx-peek ox-plaza-section-body",
                     style: {
-                      marginBottom: 26,
-                      borderRadius: 18,
-                      boxShadow: "0 1px 5px rgba(34,27,21,0.04)"
+                      ...plazaSectionStyle,
+                      borderTop: "none",
+                      borderRadius: "0 0 20px 20px",
+                      marginBottom: 18,
+                      overflow: "hidden"
                     },
                     children: (0, r.jsxs)("div", {
                       className: "rx-prow",
@@ -52257,13 +52283,14 @@ function CI() {
                       gap: 11,
                       width: "100%",
                       padding: "13px 14px",
-                      borderRadius: 16,
+                      borderRadius: "0 0 20px 20px",
                       border: `1px solid ${b}`,
+                      borderTop: "none",
                       background: B,
                       cursor: "pointer",
                       textAlign: "left",
                       fontFamily: "inherit",
-                      boxShadow: "0 1px 5px rgba(34,27,21,0.04)",
+                      boxShadow: "none",
                       position: "relative",
                       marginBottom: 8
                     },
