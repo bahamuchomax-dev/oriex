@@ -42901,21 +42901,16 @@ function CI() {
         return
       }
       return void(async () => {
-        let mp = new Map();
-        try {
-          let g = await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80)));
-          g.docs.forEach(d => mp.set(d.id, {
-            id: d.id,
-            ...d.data()
-          }))
-        } catch {}
-        try {
-          let o2 = await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), wc("uid", "==", e.uid), li(100)));
-          o2.docs.forEach(d => mp.set(d.id, {
-            id: d.id,
-            ...d.data()
-          }))
-        } catch {}
+        let mp = new Map(),
+          [g, o2] = await Promise.all([rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80))).catch(() => null), rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), wc("uid", "==", e.uid), li(100))).catch(() => null)]);
+        g && g.docs.forEach(d => mp.set(d.id, {
+          id: d.id,
+          ...d.data()
+        }));
+        o2 && o2.docs.forEach(d => mp.set(d.id, {
+          id: d.id,
+          ...d.data()
+        }));
         mp.size && Na([...mp.values()].sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0)))
       })()
     }
@@ -43154,13 +43149,21 @@ function CI() {
         } : b);
         Na(E), localStorage.setItem("oritan_book_logs", JSON.stringify(E))
       }
-  }, oxNameOf = uid => {
-    if (!uid) return "フレンド";
-    let r = (vr || []).find(x => x.uid === uid && x.userName);
-    return r && r.userName || Te?.[uid]?.name || (Ze || []).find(f => (f.uid || f.id) === uid)?.name || (Q || []).find(x => (x.uid || x.id) === uid)?.name || "フレンド"
   }, oxSocialNotifs = () => {
     let me = e?.uid || "local",
-      out = [];
+      out = [],
+      nm = new Map();
+    (vr || []).forEach(b => {
+      b.uid && b.userName && !nm.has(b.uid) && nm.set(b.uid, b.userName)
+    });
+    Object.entries(Te || {}).forEach(([k, v]) => {
+      v && v.name && !nm.has(k) && nm.set(k, v.name)
+    });
+    (Ze || []).forEach(f => {
+      let k = f && (f.uid || f.id);
+      k && f.name && !nm.has(k) && nm.set(k, f.name)
+    });
+    let nameOf = u => u && nm.get(u) || "フレンド";
     (vr || []).forEach(b => {
       if (b.uid !== me) return;
       let book = b.bookTitle || "参考書",
@@ -43168,7 +43171,7 @@ function CI() {
       (b.likedBy || []).forEach(li => {
         li && li !== me && out.push({
           type: "like",
-          who: oxNameOf(li),
+          who: nameOf(li),
           book: book,
           ts: bts,
           key: "like_" + (b.id || b.createdAt) + "_" + li
@@ -43177,7 +43180,7 @@ function CI() {
       (b.comments || []).forEach((c, ci) => {
         c && c.uid !== me && out.push({
           type: "comment",
-          who: c.name && c.name !== "User" ? c.name : oxNameOf(c.uid),
+          who: c.name && c.name !== "User" ? c.name : nameOf(c.uid),
           text: c.text || "",
           book: book,
           ts: Date.parse(c.createdAt) || bts,
@@ -46573,7 +46576,7 @@ function CI() {
                     borderRadius: 20,
                     overflow: "hidden",
                     marginBottom: 16,
-                    backgroundImage: "linear-gradient(rgba(255,255,255,0.73),rgba(255,255,255,0.80)), url('./card-bg-meadow.png')",
+                    backgroundImage: "linear-gradient(rgba(255,255,255,0.78),rgba(255,255,255,0.85)), url('./card-bg-meadow.jpg')",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundColor: "var(--card)",
