@@ -64,7 +64,12 @@ async function publishCover(uid) {
   try {
     if (!uid) return;
     const snap = await getDoc(doc(db, "artifacts", APP_ID, "users", uid, "profile", "main"));
-    const profile = snap && snap.exists() ? snap.data() || {} : {};
+    // A missing/denied read returns a non-existent snapshot, NOT a throw. Treat that
+    // as "unknown" and bail — publishing here would write coverImage:null and CLOBBER
+    // an already-good card (merge does not protect against an explicit null), which is
+    // how a friend's cover silently reverts to the default gradient for everyone.
+    if (!snap || !snap.exists()) return;
+    const profile = snap.data() || {};
     const coverImage = profile.coverImage || null;
     let frame = "none";
     try {
@@ -74,11 +79,15 @@ async function publishCover(uid) {
     }
     const patch = {
       ...publicProfileFields(profile),
-      coverImage: coverImage || null,
-      coverSettings: currentCoverSettings(),
       frame,
       uid,
     };
+    // Only publish the cover when we actually have one — never write a null that would
+    // erase a previously-published cover. The crop is meaningful only with an image.
+    if (coverImage) {
+      patch.coverImage = coverImage;
+      patch.coverSettings = currentCoverSettings();
+    }
     const shortId = (typeof profile.shortId === "string" && profile.shortId) || ownShortId(uid);
     if (shortId) patch.shortId = shortId; // only when known — never clobber with ""
     await setDoc(doc(db, "artifacts", APP_ID, "public", "data", "customApp", uid), patch, {
