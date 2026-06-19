@@ -485,8 +485,17 @@ service cloud.firestore {
         allow create: if signedIn()
                       && request.resource.data.uid == request.auth.uid
                       && noAnswerFields();
-        allow update, delete: if signedIn()
-                              && (resource.data.uid == request.auth.uid || isTeacher());
+        // Owner or teacher may edit any field; ANY signed-in user may update when the
+        // ONLY changed fields are social ones (likedBy / comments) — this is what lets
+        // friends like/comment on each other's records (the owner then sees it as a
+        // notification). Without this, a non-owner's like/comment was permission-denied,
+        // so it never persisted and no notification was generated.
+        allow update: if signedIn()
+                      && (resource.data.uid == request.auth.uid
+                          || isTeacher()
+                          || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likedBy', 'comments']));
+        allow delete: if signedIn()
+                      && (resource.data.uid == request.auth.uid || isTeacher());
       }
       // Reference-book SHELF (live legacy path: public/data/bookShelf). The bundle
       // writes artifacts/{appId}/public/data/bookShelf/{bookId} = {uid, ownerUid,

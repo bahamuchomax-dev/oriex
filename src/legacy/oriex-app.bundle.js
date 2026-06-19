@@ -43145,6 +43145,10 @@ function CI() {
         } : b);
         Na(E), localStorage.setItem("oritan_book_logs", JSON.stringify(E))
       }
+  }, oxNameOf = uid => {
+    if (!uid) return "フレンド";
+    let r = (vr || []).find(x => x.uid === uid && x.userName);
+    return r && r.userName || Te?.[uid]?.name || (Ze || []).find(f => (f.uid || f.id) === uid)?.name || (Q || []).find(x => (x.uid || x.id) === uid)?.name || "フレンド"
   }, oxSocialNotifs = () => {
     let me = e?.uid || "local",
       out = [];
@@ -43155,7 +43159,7 @@ function CI() {
       (b.likedBy || []).forEach(li => {
         li && li !== me && out.push({
           type: "like",
-          who: Te?.[li]?.name || (Ze || []).find(f => (f.uid || f.id) === li)?.name || "フレンド",
+          who: oxNameOf(li),
           book: book,
           ts: bts,
           key: "like_" + (b.id || b.createdAt) + "_" + li
@@ -43164,7 +43168,7 @@ function CI() {
       (b.comments || []).forEach((c, ci) => {
         c && c.uid !== me && out.push({
           type: "comment",
-          who: c.name || "フレンド",
+          who: c.name && c.name !== "User" ? c.name : oxNameOf(c.uid),
           text: c.text || "",
           book: book,
           ts: Date.parse(c.createdAt) || bts,
@@ -43173,6 +43177,226 @@ function CI() {
       })
     });
     return out.sort((a, c) => c.ts - a.ts)
+  }, oxFriendCard = b => {
+    let me = e?.uid || "local",
+      _av = b.userAvatar || Te?.[b.uid]?.avatar || "",
+      _avImg = String(_av).startsWith("data:") || String(_av).startsWith("http"),
+      _AvC = Bo[_av],
+      _bookImg = String(b.bookIcon || "").startsWith("data:") || String(b.bookIcon || "").startsWith("http"),
+      _liked = (b.likedBy || []).includes(me),
+      _dt = (() => {
+        let s = String(b.createdAt || "");
+        return s ? s.slice(5, 16).replace("T", " ") : ""
+      })(),
+      _pg = b.currentPage ? `${b.currentPage}/${b.totalPages||"?"}p` : "";
+    return (0, r.jsxs)("div", {
+      style: {
+        background: A.card,
+        border: "1px solid " + A.cardBorder,
+        borderRadius: 14,
+        padding: "10px 11px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 6
+      },
+      children: [(0, r.jsxs)("div", {
+        style: {
+          display: "flex",
+          gap: 9,
+          alignItems: "center"
+        },
+        children: [(0, r.jsx)("span", {
+          className: b.userColor || Te?.[b.uid]?.color || "bg-amber-500",
+          style: {
+            width: 34,
+            height: 34,
+            borderRadius: 11,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+            flexShrink: 0,
+            color: "#fff"
+          },
+          children: _avImg ? (0, r.jsx)("img", {
+            src: _av,
+            alt: "",
+            style: {
+              width: "100%",
+              height: "100%",
+              objectFit: "cover"
+            }
+          }) : _AvC ? (0, r.jsx)(_AvC, {
+            size: 20,
+            color: "currentColor"
+          }) : _av ? (0, r.jsx)("span", {
+            style: {
+              fontSize: 18
+            },
+            children: _av
+          }) : (0, r.jsx)(Nl, {
+            size: 18,
+            color: "currentColor"
+          })
+        }), (0, r.jsxs)("div", {
+          style: {
+            flex: 1,
+            minWidth: 0
+          },
+          children: [(0, r.jsxs)("div", {
+            style: {
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 8,
+              alignItems: "baseline"
+            },
+            children: [(0, r.jsx)("span", {
+              style: {
+                fontWeight: 800,
+                fontSize: 13,
+                color: A.text,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap"
+              },
+              children: b.userName || "User"
+            }), (0, r.jsx)("span", {
+              style: {
+                fontSize: 10.5,
+                color: A.textMuted,
+                fontWeight: 600,
+                flexShrink: 0
+              },
+              children: _dt
+            })]
+          }), (0, r.jsxs)("div", {
+            style: {
+              display: "flex",
+              gap: 5,
+              alignItems: "center",
+              marginTop: 2
+            },
+            children: [(0, r.jsx)("span", {
+              style: {
+                width: 26,
+                height: 32,
+                borderRadius: 6,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "linear-gradient(145deg,#67e8f9,#14b8a6)",
+                overflow: "hidden",
+                flexShrink: 0
+              },
+              children: _bookImg ? (0, r.jsx)("img", {
+                src: b.bookIcon,
+                alt: "",
+                style: {
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover"
+                }
+              }) : (0, r.jsxs)("svg", {
+                width: 13,
+                height: 13,
+                viewBox: "0 0 24 24",
+                fill: "none",
+                stroke: "#fff",
+                strokeWidth: 2,
+                strokeLinecap: "round",
+                strokeLinejoin: "round",
+                children: [(0, r.jsx)("path", {
+                  d: "M5 4h11l3 3v13H5z"
+                }), (0, r.jsx)("path", {
+                  d: "M8 9h8M8 13h6"
+                })]
+              })
+            }), (0, r.jsx)("span", {
+              style: {
+                fontWeight: 800,
+                fontSize: 13,
+                color: A.text,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap"
+              },
+              children: b.bookTitle || "参考書"
+            })]
+          })]
+        })]
+      }), (0, r.jsxs)("div", {
+        style: {
+          fontSize: 11.5,
+          color: A.textMuted,
+          fontWeight: 600
+        },
+        children: [b.subject ? b.subject + " ・ " : "", b.minutes || 0, "分", _pg ? " ・ " + _pg : ""]
+      }), b.memo ? (0, r.jsx)("div", {
+        style: {
+          fontSize: 12,
+          color: A.text,
+          lineHeight: 1.5,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical"
+        },
+        children: b.memo
+      }) : null, b.teacherComment ? (0, r.jsxs)("div", {
+        style: {
+          fontSize: 11.5,
+          fontWeight: 700,
+          color: A.accent,
+          background: A.accent + "14",
+          borderRadius: 9,
+          padding: "6px 9px",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap"
+        },
+        children: ["先生: ", b.teacherComment]
+      }) : null, (0, r.jsxs)("div", {
+        style: {
+          display: "flex",
+          gap: 7
+        },
+        children: [(0, r.jsxs)("button", {
+          onClick: () => p0(b),
+          style: {
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+            borderRadius: 999,
+            padding: "5px 11px",
+            background: "transparent",
+            border: "1px solid " + A.cardBorder,
+            color: A.textMuted,
+            fontSize: 11.5,
+            fontWeight: 800,
+            cursor: "pointer"
+          },
+          children: ["💬 コメント", (b.comments || []).length ? " " + (b.comments || []).length : ""]
+        }), (0, r.jsxs)("button", {
+          onClick: () => Ng(b),
+          disabled: _liked,
+          style: {
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+            borderRadius: 999,
+            padding: "5px 11px",
+            background: _liked ? "rgba(239,68,68,0.12)" : "transparent",
+            border: "1px solid " + (_liked ? "rgba(239,68,68,0.45)" : A.cardBorder),
+            color: _liked ? "#dc2626" : A.textMuted,
+            fontSize: 11.5,
+            fontWeight: 800,
+            cursor: _liked ? "default" : "pointer"
+          },
+          children: [_liked ? "♥" : "♡", " ", (b.likedBy || []).length]
+        })]
+      })]
+    }, b.id || b.createdAt)
   }, y0 = () => {
     let u = l === "chat",
       y = e?.uid || "local",
@@ -46600,7 +46824,7 @@ function CI() {
                         }))
                       }, {
                         k: "recordsTimeline",
-                        l: "記録",
+                        l: "フレンド",
                         c: "#8B5CF6",
                         bg: "#EFE9FD",
                         go: () => {
@@ -48346,10 +48570,11 @@ function CI() {
                     size: 22
                   })
                 }), (0, r.jsx)("b", {
-                  children: "記録タイムライン"
+                  children: "フレンドタイムライン"
                 })]
               })]
             })]}), (() => {
+              return null;
               let u = e?.uid || "local",
                 _fset = new Set((Ze || []).map(_f => _f && (_f.uid || _f.id)).filter(Boolean)),
                 _fd = ms => {
@@ -49282,10 +49507,10 @@ function CI() {
               }), (0, r.jsxs)("div", {
                 children: [(0, r.jsx)("div", {
                   className: "rx-greet",
-                  children: oxTLF && !i?.isTeacher ? "フレンドの" : "あなたの"
+                  children: i?.isTeacher ? "あなたの" : "フレンド"
                 }), (0, r.jsx)("div", {
                   className: "rx-title",
-                  children: "記録タイムライン"
+                  children: i?.isTeacher ? "記録タイムライン" : "タイムライン"
                 })]
               })]
             }), Dn ? (0, r.jsx)("div", {
@@ -49298,8 +49523,9 @@ function CI() {
             }) : (() => {
               let u = e?.uid || "local",
                 y = i?.isTeacher,
-                _fr = oxTLF && !y,
+                _fr = !y,
                 _fset = new Set((Ze || []).map(_f => _f && (_f.uid || _f.id)).filter(Boolean)),
+                _rawF = (vr || []).filter(U => U.uid && (U.uid === u || _fset.has(U.uid)) && U.createdAt).sort((a, c) => (Date.parse(c.createdAt) || 0) - (Date.parse(a.createdAt) || 0)).slice(0, 200),
                 E = [...(vr || []).filter(U => y ? !Te?.[U.uid]?.isTeacher : _fr ? U.uid && (U.uid === u || _fset.has(U.uid)) : U.uid === u).map(U => ({
                   kind: "book",
                   ts: U.createdAt ? Date.parse(U.createdAt) : 0,
@@ -49468,7 +49694,23 @@ function CI() {
                       }, ue))
                     })]
                   })]
-                }), (_fr || y) && (E.length === 0 ? (0, r.jsx)("div", {
+                }), (_fr ? (_rawF.length ? (0, r.jsx)("div", {
+                  style: {
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8
+                  },
+                  children: _rawF.map(oxFriendCard)
+                }) : (0, r.jsx)("div", {
+                  style: {
+                    padding: "18px 4px",
+                    color: A.textMuted,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    textAlign: "center"
+                  },
+                  children: "フレンドの記録がまだありません"
+                })) : E.length === 0 ? (0, r.jsx)("div", {
                   className: "rx-peek",
                   children: (0, r.jsxs)("div", {
                     className: "rx-prow",
