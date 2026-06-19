@@ -47027,6 +47027,54 @@ function CI() {
                       },
                       children: "「編集」から好みのアプリを追加できます"
                     })
+                  })(), (() => {
+                    let me = e?.uid || "local",
+                      _fs = new Set((Ze || []).map(f => f && (f.uid || f.id)).filter(Boolean)),
+                      L10 = (vr || []).filter(b => b.uid && (b.uid === me || _fs.has(b.uid)) && b.createdAt).sort((a, c) => (Date.parse(c.createdAt) || 0) - (Date.parse(a.createdAt) || 0)).slice(0, 10);
+                    return L10.length ? (0, r.jsxs)("div", {
+                      style: {
+                        marginTop: 18
+                      },
+                      children: [(0, r.jsxs)("button", {
+                        onClick: () => {
+                          m("recordHub"), h("recordsTimeline")
+                        },
+                        style: {
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                          width: "100%",
+                          background: "none",
+                          border: "none",
+                          padding: "0 2px 8px",
+                          cursor: "pointer"
+                        },
+                        children: [(0, r.jsx)("b", {
+                          style: {
+                            fontSize: 15,
+                            fontWeight: 800,
+                            flex: 1,
+                            textAlign: "left",
+                            color: A.text
+                          },
+                          children: "フレンドタイムライン"
+                        }), (0, r.jsx)("span", {
+                          style: {
+                            fontSize: 16,
+                            fontWeight: 900,
+                            color: A.textMuted
+                          },
+                          children: "›"
+                        })]
+                      }), (0, r.jsx)("div", {
+                        style: {
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 8
+                        },
+                        children: L10.map(oxFriendCard)
+                      })]
+                    }) : null
                   })()]
                 })]
               })
