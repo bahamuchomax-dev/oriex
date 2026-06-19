@@ -42902,11 +42902,13 @@ function CI() {
       }
       return void(async () => {
         try {
-          let u = await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80)));
-          Na(u.docs.map(y => ({
-            id: y.id,
-            ...y.data()
-          })))
+          let [g, o2] = await Promise.all([rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80))), rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), wc("uid", "==", e.uid), li(100)))]),
+            mp = new Map();
+          [...g.docs, ...o2.docs].forEach(d => mp.set(d.id, {
+            id: d.id,
+            ...d.data()
+          }));
+          Na([...mp.values()].sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0)))
         } catch {}
       })()
     }
@@ -46564,7 +46566,7 @@ function CI() {
                     borderRadius: 20,
                     overflow: "hidden",
                     marginBottom: 16,
-                    backgroundImage: "linear-gradient(rgba(255,255,255,0.82),rgba(255,255,255,0.87)), url('./card-bg-meadow.png')",
+                    backgroundImage: "linear-gradient(rgba(255,255,255,0.68),rgba(255,255,255,0.76)), url('./card-bg-meadow.png')",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundColor: "var(--card)",
