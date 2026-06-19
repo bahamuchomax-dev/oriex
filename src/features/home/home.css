@@ -100,9 +100,9 @@ html:has(.oxh),body:has(.oxh),#root:has(.oxh){background:#0a0c14 !important;}
 
 /* today card — compact, narrower than half the frame; timer sits INSIDE -------- */
 .oxh-today{position:absolute;right:14px;top:362px;width:180px;z-index:5;}
-.oxh-today-card{position:relative;background:var(--glass-2);border:1.5px solid rgba(232,39,60,.6);border-radius:15px;
+.oxh-today-card{position:relative;background:var(--glass-2);border:1px solid var(--line);border-radius:16px;
   padding:9px 66px 10px 12px;backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);
-  box-shadow:0 12px 28px rgba(0,0,0,.45),0 0 0 1px rgba(232,39,60,.22),0 6px 22px rgba(232,39,60,.24);}
+  box-shadow:0 12px 28px rgba(0,0,0,.45),0 4px 18px rgba(232,39,60,.16);}
 .oxh-today-h{font-size:11px;font-weight:900;color:#ff8a96;display:flex;align-items:center;gap:4px;font-family:"Zen Maru Gothic",sans-serif;}
 .oxh-today-h svg{width:14px;height:14px;color:var(--red);}
 .oxh-today-goal{font-size:9.5px;font-weight:800;color:var(--muted);margin-top:4px;}
@@ -135,30 +135,33 @@ html:has(.oxh),body:has(.oxh),#root:has(.oxh){background:#0a0c14 !important;}
 
 /* two compact cards: chart + plan ------------------------------------------- */
 .oxh-row2{display:flex;gap:10px;}
-/* the two row cards are LIGHT (cream) per the reference — dark ink on white */
-.oxh-card{flex:1;min-width:0;background:#f7f3ec;border:1px solid rgba(20,24,40,.10);border-radius:16px;padding:10px;
-  color:#1b2236;box-shadow:0 10px 24px rgba(0,0,0,.34);}
-.oxh-card-h{font-size:11px;font-weight:900;display:flex;align-items:center;gap:5px;color:#1b2236;font-family:"Zen Maru Gothic",sans-serif;}
+/* [19] 3カード統合デザイン: chart + plan share the same dark-glass material as the
+   きょうの学習 / profile cards (one cohesive family), using the MORE-OPAQUE --glass-2 +
+   blur so light-on-glass text stays readable over the character (the reason the old
+   cream split existed). All three content cards now read as one design language. */
+.oxh-card{flex:1;min-width:0;background:var(--glass-2);border:1px solid var(--line);border-radius:16px;padding:10px;
+  color:var(--ink);backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);box-shadow:0 12px 28px rgba(0,0,0,.42);}
+.oxh-card-h{font-size:11px;font-weight:900;display:flex;align-items:center;gap:5px;color:var(--ink);font-family:"Zen Maru Gothic",sans-serif;}
 .oxh-card-h svg{width:14px;height:14px;}
-.oxh-more{margin-left:auto;font-size:9px;font-weight:800;color:#6b7180;background:rgba(20,24,40,.07);
+.oxh-more{margin-left:auto;font-size:9px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.08);
   border:none;border-radius:99px;padding:2px 7px;}
 .oxh-chart{display:flex;align-items:flex-end;gap:4px;height:62px;margin:8px 1px 3px;}
 .oxh-bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px;}
-.oxh-bar i{width:100%;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#ff5161,#c8102e);display:block;}
+.oxh-bar i{width:100%;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#ff6171,#c8102e);display:block;}
 .oxh-bar.oxh-bar-t i{background:repeating-linear-gradient(45deg,#3f8dff,#3f8dff 3px,#7fb3ff 3px,#7fb3ff 6px);}
-.oxh-bar span{font-size:8px;color:#8a8f9c;font-weight:700;}
-.oxh-avg{font-size:10px;font-weight:800;color:#6b7180;}
-.oxh-avg b{color:#c8102e;}
+.oxh-bar span{font-size:8px;color:var(--muted);font-weight:700;}
+.oxh-avg{font-size:10px;font-weight:800;color:var(--muted);}
+.oxh-avg b{color:#ff8a96;}
 .oxh-plan{display:flex;flex-direction:column;gap:5px;margin-top:7px;}
-.oxh-pl-empty{font-size:11px;color:#8a8f9c;font-weight:600;text-align:center;padding:16px 6px;line-height:1.6;}
+.oxh-pl-empty{font-size:11px;color:var(--muted);font-weight:600;text-align:center;padding:16px 6px;line-height:1.6;}
 .oxh-pl{display:flex;align-items:center;gap:6px;font-size:10.5px;}
-.oxh-box{width:13px;height:13px;border-radius:4px;border:1.5px solid #b9bdc8;flex:none;display:grid;place-items:center;}
+.oxh-box{width:13px;height:13px;border-radius:4px;border:1.5px solid var(--muted);flex:none;display:grid;place-items:center;}
 .oxh-box.oxh-on{background:var(--good);border-color:var(--good);}
 .oxh-box.oxh-on svg{width:9px;height:9px;stroke:#fff;stroke-width:3;fill:none;}
-.oxh-nm{flex:1;font-weight:700;color:#1b2236;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.oxh-nm.oxh-done{color:#a2a6b0;text-decoration:line-through;}
-.oxh-mn{font-size:9px;color:#8a8f9c;font-weight:800;}
-.oxh-plan-foot{font-size:10px;font-weight:900;text-align:right;margin-top:6px;color:#bd8b12;
+.oxh-nm{flex:1;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.oxh-nm.oxh-done{color:var(--muted);text-decoration:line-through;}
+.oxh-mn{font-size:9px;color:var(--muted);font-weight:800;}
+.oxh-plan-foot{font-size:10px;font-weight:900;text-align:right;margin-top:6px;color:var(--gold);
   display:flex;align-items:center;justify-content:flex-end;gap:4px;font-family:"Zen Maru Gothic",sans-serif;}
 .oxh-plan-foot svg{width:13px;height:13px;}
 
