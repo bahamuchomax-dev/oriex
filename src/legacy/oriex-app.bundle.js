@@ -39898,7 +39898,7 @@ function EI({
       return 60
     }
   }), m = [60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720, 780, 840, 900], j = Math.min(100, Math.round(e / h * 100)), v = {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 900
   };
   return (0, r.jsxs)("div", {
@@ -39933,7 +39933,7 @@ function EI({
           children: "今日の勉強"
         }), (0, r.jsx)("div", {
           style: {
-            fontSize: 42,
+            fontSize: 50,
             fontWeight: 900,
             lineHeight: 1.05,
             fontFamily: '"Zen Maru Gothic", sans-serif'
@@ -39955,9 +39955,9 @@ function EI({
         }), (0, r.jsxs)("div", {
           style: {
             display: "flex",
-            gap: 8,
+            gap: 6,
             marginTop: 9,
-            flexWrap: "wrap"
+            flexWrap: "nowrap"
           },
           children: [(0, r.jsxs)("label", {
             style: {
@@ -40042,19 +40042,21 @@ function EI({
         })]
       }), (0, r.jsx)("div", {
         style: {
-          width: 96,
-          height: 96,
+          width: 100,
+          height: 100,
           borderRadius: 999,
           flex: "none",
-          marginRight: 12,
+          marginRight: 10,
+          boxSizing: "border-box",
+          border: "2px solid rgba(0,0,0,0.16)",
           display: "grid",
           placeItems: "center",
           background: `conic-gradient(#1fae66 ${j}%, rgba(31,174,102,0.18) 0)`
         },
         children: (0, r.jsxs)("div", {
           style: {
-            width: 76,
-            height: 76,
+            width: 82,
+            height: 82,
             borderRadius: 999,
             background: "#fff",
             color: "#0c7a44",
@@ -40062,7 +40064,7 @@ function EI({
             display: "grid",
             placeItems: "center",
             fontWeight: 900,
-            fontSize: 17
+            fontSize: 18
           },
           children: [j, "%"]
         })
