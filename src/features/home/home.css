@@ -170,6 +170,10 @@ html:has(.oxh),body:has(.oxh),#root:has(.oxh){background:#0a0c14 !important;}
 .oxh-tool-ic svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
 .oxh-tool-lb{display:block;background:rgba(0,0,0,.42);font-size:7px;font-weight:800;line-height:1.25;
   padding:3px 1px 4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* 単語配布の赤ぽっち — sits INSIDE the tile (.oxh-tool is overflow:hidden), top-right */
+.oxh-tool-dot{position:absolute;top:3px;right:3px;min-width:15px;height:15px;padding:0 3px;border-radius:8px;
+  background:var(--red);color:#fff;font-size:9px;font-weight:900;font-variant-numeric:tabular-nums;
+  display:grid;place-items:center;box-shadow:0 0 0 1.5px rgba(0,0,0,.4);z-index:2;}
 .oxh-t-red{background:linear-gradient(135deg,#ff4d5e,#c8102e);}
 .oxh-t-blue{background:linear-gradient(135deg,#4f8dff,#2856c8);}
 .oxh-t-purple{background:linear-gradient(135deg,#9a6bff,#6634c8);}

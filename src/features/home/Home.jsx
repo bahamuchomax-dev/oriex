@@ -32,6 +32,7 @@ import { useStudy, totalMinutes, streakDays, todayMinutes, weekSeries, fmtMinute
 import { getFrame, frameRing } from "./iconFrames.js";
 import { getAccount, accountAvatarImg, getRealStudy } from "./realAccount.js";
 import { useTeacherPlan } from "./teacherPlan.js";
+import { useDistributedVocabUnread } from "./distributedVocab.js";
 import { HOME_FLAG, TOGGLE_FLAG, switchToOriginalHome } from "./homeSwitch.js";
 
 /* ============================================================
@@ -249,6 +250,8 @@ export default function Home({ profile, onOpen = () => {}, characterUrl } = {}) 
   const wsAvg = Math.round(ws.reduce((a, d) => a + d.minutes, 0) / 7);
 
   const teacherPlan = useTeacherPlan(); // 先生からの週計画 (live Firestore), or null
+  // 先生の単語配布の赤ぽっち: count of distributed words newer than the last 単語帳 open.
+  const vocabUnread = useDistributedVocabUnread(view);
 
   // localStorage-backed side data (週計画 + お知らせ/ギフト counts). Read ONCE here and
   // re-read only on a view CHANGE (e.g. returning from 週計画/お知らせ/ギフト) — NOT on
@@ -419,9 +422,13 @@ export default function Home({ profile, onOpen = () => {}, characterUrl } = {}) 
 
             <div className="oxh-tools">
               {TOOLS.map((t) => (
-                <button className={`oxh-tool ${t.tone}`} key={t.key} onClick={() => go(t.key)}>
+                <button className={`oxh-tool ${t.tone}`} key={t.key} onClick={() => go(t.key)}
+                  aria-label={t.key === "vocab" && vocabUnread > 0 ? `${t.label} 新着${vocabUnread}件` : undefined}>
                   <span className="oxh-tool-ic"><svg viewBox="0 0 24 24">{TOOL_ICONS[t.key]}</svg></span>
                   <span className="oxh-tool-lb">{t.label}</span>
+                  {t.key === "vocab" && vocabUnread > 0 && (
+                    <span className="oxh-tool-dot">{vocabUnread > 99 ? "99+" : vocabUnread}</span>
+                  )}
                 </button>
               ))}
             </div>

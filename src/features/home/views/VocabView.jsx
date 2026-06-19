@@ -1,5 +1,6 @@
 import "./vocab.css";
 import { useState, useEffect } from "react";
+import { loadDistributedVocab, getVocabSeenAt, markVocabSeen } from "../distributedVocab.js";
 
 /* persisted shape: [{ id, term, meaning, known }] under "oxhVocab" */
 const STORE_KEY = "oxhVocab";
@@ -49,6 +50,25 @@ export default function VocabView({ onBack }) {
   const [tab, setTab] = useState("list"); // "list" | "study"
   const [form, setForm] = useState({ term: "", meaning: "" });
 
+  // 先生から届いた単語 (teacher-distributed, bridged from the legacy customVocabulary path).
+  // Opening this view marks them seen, which clears the home's 単語配布 赤ぽっち.
+  const [distWords, setDistWords] = useState([]);
+  const [distPriorSeen, setDistPriorSeen] = useState(0);
+  useEffect(() => {
+    let active = true;
+    setDistPriorSeen(getVocabSeenAt()); // captured BEFORE marking seen, to flag 新着
+    loadDistributedVocab().then((ws) => {
+      if (!active) return;
+      if (Array.isArray(ws)) {
+        setDistWords(ws);
+        markVocabSeen(); // success (incl. empty) → the introduction is "seen"
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   // study session: queue of ids still to master, plus the session size
   const [session, setSession] = useState({ queue: [], total: 0 });
   const [revealed, setRevealed] = useState(false);
@@ -78,6 +98,32 @@ export default function VocabView({ onBack }) {
   }
   function removeWord(id) {
     setVocab((prev) => prev.filter((w) => w.id !== id));
+  }
+
+  // ----- teacher-distributed words -> personal list (dedup by term, case-insensitive) -----
+  function addDistWord(w) {
+    const term = (w.en || "").trim();
+    if (!term) return;
+    setVocab((prev) =>
+      prev.some((v) => v.term.trim().toLowerCase() === term.toLowerCase())
+        ? prev
+        : [{ id: genId(), term, meaning: (w.ja || "").trim(), known: false }, ...prev]
+    );
+  }
+  function addAllDist() {
+    setVocab((prev) => {
+      const have = new Set(prev.map((v) => v.term.trim().toLowerCase()));
+      const additions = [];
+      distWords.forEach((w) => {
+        const term = (w.en || "").trim();
+        const key = term.toLowerCase();
+        if (term && !have.has(key)) {
+          have.add(key);
+          additions.push({ id: genId(), term, meaning: (w.ja || "").trim(), known: false });
+        }
+      });
+      return additions.length ? [...additions, ...prev] : prev;
+    });
   }
 
   // ----- study session -----
@@ -110,6 +156,16 @@ export default function VocabView({ onBack }) {
       : null;
   const mastered = session.total - session.queue.length;
   const sessionPct = session.total ? Math.round((mastered / session.total) * 100) : 0;
+
+  // distributed-words derived state (which are already in the personal list / which are 新着)
+  const ownTerms = new Set(vocab.map((v) => v.term.trim().toLowerCase()));
+  const newDistCount = distWords.reduce(
+    (n, w) => ((Number(w.timestamp) || 0) > distPriorSeen ? n + 1 : n),
+    0
+  );
+  const distHasUnadded = distWords.some(
+    (w) => !ownTerms.has((w.en || "").trim().toLowerCase())
+  );
 
   return (
     <div className="oxh-sub oxv-vc">
@@ -162,6 +218,58 @@ export default function VocabView({ onBack }) {
 
         {tab === "list" ? (
           <div className="oxv-vc-listwrap">
+            {/* 先生から届いた単語 — teacher-distributed; 新着 are flagged with a red pip */}
+            {distWords.length > 0 && (
+              <div className="oxv-vc-dist">
+                <div className="oxv-vc-dist-h">
+                  <span className="oxv-vc-dist-title">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM19 3v16M8 8h7M8 12h5" />
+                    </svg>
+                    先生から届いた単語
+                  </span>
+                  {newDistCount > 0 ? (
+                    <span className="oxv-vc-dist-new" aria-label={`新着${newDistCount}語`}>
+                      新着 {newDistCount}
+                    </span>
+                  ) : (
+                    <span className="oxv-vc-dist-count">{distWords.length}語</span>
+                  )}
+                </div>
+                <ul className="oxv-vc-dist-list">
+                  {distWords.map((w) => {
+                    const term = (w.en || "").trim();
+                    const added = ownTerms.has(term.toLowerCase());
+                    const isNew = (Number(w.timestamp) || 0) > distPriorSeen;
+                    return (
+                      <li key={w.id} className={"oxv-vc-dist-row" + (isNew ? " is-new" : "")}>
+                        <div className="oxv-vc-dist-text">
+                          <span className="oxv-vc-dist-term">
+                            {isNew && <i className="oxv-vc-dist-pip" aria-label="新着" />}
+                            {term || "（単語なし）"}
+                          </span>
+                          <span className="oxv-vc-dist-mean">{(w.ja || "").trim() || "（意味なし）"}</span>
+                        </div>
+                        <button
+                          type="button"
+                          className={"oxv-vc-dist-add" + (added ? " is-added" : "")}
+                          onClick={() => addDistWord(w)}
+                          disabled={added}
+                        >
+                          {added ? "追加済み" : "追加"}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+                {distHasUnadded && (
+                  <button type="button" className="oxv-vc-dist-all" onClick={addAllDist}>
+                    すべてリストに追加
+                  </button>
+                )}
+              </div>
+            )}
+
             {/* inline add form */}
             <div className="oxv-vc-add">
               <span className="oxv-vc-add-h">新規追加</span>

@@ -79,6 +79,63 @@
   background:var(--glass);color:var(--muted);
 }
 
+/* ---------- 先生から届いた単語 (teacher-distributed) ---------- */
+.oxv-vc-dist{
+  background:
+    radial-gradient(120% 100% at 0% 0%,rgba(63,141,255,.16),transparent 60%),
+    var(--glass-2);
+  border:1px solid rgba(63,141,255,.32);border-radius:16px;
+  padding:13px;margin-bottom:14px;box-shadow:0 12px 30px rgba(0,0,0,.34);
+}
+.oxv-vc-dist-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+.oxv-vc-dist-title{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:13px;color:#fff;
+}
+.oxv-vc-dist-title svg{width:17px;height:17px;fill:none;stroke:var(--blue);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.oxv-vc-dist-new{
+  flex:none;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:900;color:#fff;
+  background:linear-gradient(135deg,#ff4d5e,#c8102e);box-shadow:0 4px 12px rgba(200,16,46,.45);
+  font-variant-numeric:tabular-nums;
+}
+.oxv-vc-dist-count{flex:none;font-size:11.5px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;}
+.oxv-vc-dist-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;max-height:248px;overflow-y:auto;}
+.oxv-vc-dist-row{
+  display:flex;align-items:center;gap:10px;
+  background:var(--glass);border:1px solid var(--line);border-radius:12px;padding:9px 11px;
+}
+.oxv-vc-dist-row.is-new{border-color:rgba(255,77,94,.4);background:rgba(232,39,60,.08);}
+.oxv-vc-dist-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.oxv-vc-dist-term{
+  display:flex;align-items:center;gap:6px;
+  font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:14px;color:#fff;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.oxv-vc-dist-pip{flex:none;width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 8px rgba(232,39,60,.7);}
+.oxv-vc-dist-mean{
+  font-size:11.5px;font-weight:600;color:var(--muted);line-height:1.4;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.oxv-vc-dist-add{
+  flex:none;cursor:pointer;border:1px solid rgba(63,141,255,.5);background:rgba(63,141,255,.14);
+  color:#cfe0ff;border-radius:99px;padding:7px 13px;font-weight:900;font-size:11.5px;
+  font-family:"Zen Maru Gothic",sans-serif;
+  transition:transform .1s ease, filter .15s ease, background .15s ease;
+}
+.oxv-vc-dist-add:hover{filter:brightness(1.1);}
+.oxv-vc-dist-add:active{transform:scale(.93);}
+.oxv-vc-dist-add.is-added{
+  cursor:default;border-color:rgba(43,212,126,.45);background:rgba(43,212,126,.14);color:var(--good);
+}
+.oxv-vc-dist-all{
+  width:100%;margin-top:10px;cursor:pointer;border:none;border-radius:12px;padding:11px 0;
+  color:#fff;font-weight:900;font-size:12.5px;font-family:"Zen Maru Gothic",sans-serif;
+  background:linear-gradient(135deg,var(--blue),#2f6fe0);box-shadow:0 6px 16px rgba(63,141,255,.38);
+  transition:transform .12s ease, filter .15s ease;
+}
+.oxv-vc-dist-all:hover{filter:brightness(1.07);}
+.oxv-vc-dist-all:active{transform:scale(.98);}
+
 /* ---------- list ---------- */
 .oxv-vc-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;}
 .oxv-vc-row{
