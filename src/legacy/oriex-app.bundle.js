@@ -40556,6 +40556,12 @@ function CI() {
     } catch {
       return []
     }
+  }), [oxSeenSocial, setOxSeenSocial] = (0, P.useState)(() => {
+    try {
+      return JSON.parse(localStorage.getItem("oriex_seen_social") || "[]")
+    } catch {
+      return []
+    }
   }), [Ze, rt] = (0, P.useState)([]), [Pe, Z] = (0, P.useState)({
     locked: !1
   }), [T, D] = (0, P.useState)(() => {
@@ -42905,6 +42911,15 @@ function CI() {
       })()
     }
   }, [e?.uid, R.enabled]), (0, P.useEffect)(() => {
+    if (l !== "announcementsList") return;
+    let _k = oxSocialNotifs().map(_n => _n.key);
+    if (!_k.length) return;
+    let _m = [...new Set([...(Array.isArray(oxSeenSocial) ? oxSeenSocial : []), ..._k])];
+    setOxSeenSocial(_m);
+    try {
+      localStorage.setItem("oriex_seen_social", JSON.stringify(_m))
+    } catch {}
+  }, [l]), (0, P.useEffect)(() => {
     if (!e || !R.enabled || l !== "plaza") return;
     let u = !0;
     return (async () => {
@@ -43130,6 +43145,34 @@ function CI() {
         } : b);
         Na(E), localStorage.setItem("oritan_book_logs", JSON.stringify(E))
       }
+  }, oxSocialNotifs = () => {
+    let me = e?.uid || "local",
+      out = [];
+    (vr || []).forEach(b => {
+      if (b.uid !== me) return;
+      let book = b.bookTitle || "参考書",
+        bts = Date.parse(b.createdAt) || 0;
+      (b.likedBy || []).forEach(li => {
+        li && li !== me && out.push({
+          type: "like",
+          who: Te?.[li]?.name || (Ze || []).find(f => (f.uid || f.id) === li)?.name || "フレンド",
+          book: book,
+          ts: bts,
+          key: "like_" + (b.id || b.createdAt) + "_" + li
+        })
+      });
+      (b.comments || []).forEach((c, ci) => {
+        c && c.uid !== me && out.push({
+          type: "comment",
+          who: c.name || "フレンド",
+          text: c.text || "",
+          book: book,
+          ts: Date.parse(c.createdAt) || bts,
+          key: "cmt_" + (b.id || b.createdAt) + "_" + (c.createdAt || ci)
+        })
+      })
+    });
+    return out.sort((a, c) => c.ts - a.ts)
   }, y0 = () => {
     let u = l === "chat",
       y = e?.uid || "local",
@@ -46684,7 +46727,8 @@ function CI() {
                       children: (() => {
                         let Vt = (Array.isArray(je) ? je : []).filter(St => !((Array.isArray(We) ? We : []).includes(St.id) || St.id === Ho)).length,
                           nn = Math.max(0, (Array.isArray(Tt) ? Tt : []).length - Number(localStorage.getItem("oriex_tasks_seen") || 0)),
-                          pa = St => St === "plaza" ? Vt > 0 : St === "customApp" ? nn > 0 : !1;
+                          _su = oxSocialNotifs().filter(_n => !(Array.isArray(oxSeenSocial) ? oxSeenSocial : []).includes(_n.key)).length,
+                          pa = St => St === "plaza" ? Vt > 0 || _su > 0 : St === "customApp" ? nn > 0 : !1;
                         return jt.map(St => (0, r.jsxs)("div", {
                           className: "rx-q",
                           onClick: () => {
@@ -50493,7 +50537,64 @@ function CI() {
                 },
                 children: "全既読"
               })]
-            }), (i?.isTeacher || Vi) && (0, r.jsxs)("div", {
+            }), (() => {
+              let _n = oxSocialNotifs();
+              return _n.length ? (0, r.jsx)("div", {
+                style: {
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8
+                },
+                children: _n.slice(0, 50).map(_x => (0, r.jsxs)("div", {
+                  style: {
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    background: S ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.07)",
+                    border: "1px solid " + A.cardBorder,
+                    borderRadius: 16,
+                    padding: "11px 13px"
+                  },
+                  children: [(0, r.jsx)("span", {
+                    style: {
+                      width: 32,
+                      height: 32,
+                      borderRadius: 999,
+                      flexShrink: 0,
+                      display: "grid",
+                      placeItems: "center",
+                      fontSize: 16,
+                      color: _x.type === "like" ? "#f43f5e" : "#14b8a6",
+                      background: _x.type === "like" ? "rgba(244,63,94,0.15)" : "rgba(20,184,166,0.15)"
+                    },
+                    children: _x.type === "like" ? "♥" : "💬"
+                  }), (0, r.jsxs)("div", {
+                    style: {
+                      flex: 1,
+                      minWidth: 0
+                    },
+                    children: [(0, r.jsx)("div", {
+                      style: {
+                        fontSize: 13,
+                        fontWeight: 800,
+                        color: S ? "rgba(20,10,60,0.9)" : "#fff"
+                      },
+                      children: _x.type === "like" ? `${_x.who}さんがいいね！しました！` : `${_x.who}さんがあなたの記録にコメントしました！`
+                    }), (0, r.jsxs)("div", {
+                      style: {
+                        fontSize: 11,
+                        fontWeight: 600,
+                        color: S ? "rgba(20,10,60,0.5)" : "rgba(255,255,255,0.6)",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap"
+                      },
+                      children: [_x.book, _x.text ? "「" + _x.text + "」" : ""]
+                    })]
+                  })]
+                }, _x.key))
+              }) : null
+            })(), (i?.isTeacher || Vi) && (0, r.jsxs)("div", {
               className: "rounded-[20px] p-5 text-left",
               style: {
                 background: S ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.05)",
