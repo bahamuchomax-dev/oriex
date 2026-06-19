@@ -40608,6 +40608,10 @@ function CI() {
           let y = await Cl(et(R.db, "artifacts", R.appId, "public", "data", "customApp", u.uid)),
             E = y.exists() ? y.data() : {},
             b = 0;
+          if (!y.exists()) try {
+            let _ti = await Cl(et(R.db, "artifacts", R.appId, "public", "data", "teacherIndex", u.uid));
+            _ti.exists() && (E = _ti.data())
+          } catch {}
           try {
             b = (await rn(bt(R.db, "artifacts", R.appId, "users", u.uid, "friends"))).size
           } catch {}
@@ -49632,10 +49636,10 @@ function CI() {
                           })
                         }), (0, r.jsx)("div", {
                           style: {
-                            fontSize: 22,
+                            fontSize: 18,
                             fontWeight: 800,
                             color: "var(--ink)",
-                            lineHeight: 1
+                            lineHeight: 1.1
                           },
                           children: U(ue)
                         }), (0, r.jsx)("div", {
@@ -49687,10 +49691,10 @@ function CI() {
                           })
                         }), (0, r.jsx)("div", {
                           style: {
-                            fontSize: 22,
+                            fontSize: 18,
                             fontWeight: 800,
                             color: "var(--ink)",
-                            lineHeight: 1
+                            lineHeight: 1.1
                           },
                           children: ne
                         }), (0, r.jsx)("div", {
@@ -49734,10 +49738,10 @@ function CI() {
                           })
                         }), (0, r.jsx)("div", {
                           style: {
-                            fontSize: 22,
+                            fontSize: 18,
                             fontWeight: 800,
                             color: "var(--ink)",
-                            lineHeight: 1
+                            lineHeight: 1.1
                           },
                           children: B
                         }), (0, r.jsx)("div", {
@@ -49754,6 +49758,9 @@ function CI() {
                 })]
                 }), (0, r.jsxs)("button", {
                   className: "rx-bigedit",
+                  style: {
+                    marginTop: 14
+                  },
                   onClick: () => {
                     Ba(ca), m("friendProfile"), h("dm")
                   },
