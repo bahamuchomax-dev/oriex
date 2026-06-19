@@ -42,6 +42,23 @@ async function fetchCard(shortId) {
         res = { coverImage: v.coverImage, size: s.size || "cover", pos: s.pos || "center" };
       }
     });
+    // Teachers have NO customApp card (it's deleted on save) — their public data lives in
+    // teacherIndex. Fall back there so a teacher friend's cover photo still paints.
+    if (!res) {
+      const tq = query(
+        collection(db, "artifacts", APP_ID, "public", "data", "teacherIndex"),
+        where("shortId", "==", shortId),
+        limit(1),
+      );
+      const tsnap = await getDocs(tq);
+      tsnap.forEach((d) => {
+        const v = d.data() || {};
+        if (v.coverImage) {
+          const s = v.coverSettings || {};
+          res = { coverImage: v.coverImage, size: s.size || "cover", pos: s.pos || "center" };
+        }
+      });
+    }
     cache.set(shortId, res);
   } catch {
     cache.set(shortId, null);

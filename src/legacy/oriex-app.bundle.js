@@ -49467,7 +49467,7 @@ function CI() {
                             fontWeight: 600,
                             marginTop: 2
                           },
-                          children: u.shortId ? `ID ${u.shortId}` : "ID ーーーー"
+                          children: (u.shortId || E.shortId || y.shortId) ? `ID ${u.shortId || E.shortId || y.shortId}` : "ID ーーーー"
                         }), (0, r.jsxs)("div", {
                           style: {
                             display: "flex",
