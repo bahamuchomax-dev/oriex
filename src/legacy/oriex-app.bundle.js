@@ -39907,8 +39907,8 @@ function EI({
       borderRadius: 24,
       padding: "18px 18px 12px",
       color: "#fff",
-      background: "linear-gradient(150deg,#ff7a6b 0%,#e94b3c 45%,#c41e33 100%)",
-      boxShadow: "0 14px 32px rgba(196,30,51,0.3)",
+      background: "linear-gradient(150deg,#4fd99a 0%,#1fae66 45%,#0c7a44 100%)",
+      boxShadow: "0 14px 32px rgba(12,122,68,0.32)",
       marginBottom: 16
     },
     children: [(0, r.jsxs)("div", {
@@ -40013,7 +40013,7 @@ function EI({
               borderRadius: 999,
               background: "#ffffff",
               border: "none",
-              color: "#c41e33",
+              color: "#0c7a44",
               fontSize: 11.5,
               fontWeight: 900,
               cursor: "pointer",
@@ -40054,7 +40054,7 @@ function EI({
             width: 66,
             height: 66,
             borderRadius: 999,
-            background: "rgba(196,30,51,0.55)",
+            background: "rgba(12,122,68,0.5)",
             display: "grid",
             placeItems: "center",
             fontWeight: 900,
@@ -54385,7 +54385,7 @@ function CI() {
                         children: (0, r.jsx)(l8, {
                           size: 28,
                           style: {
-                            color: A.accent,
+                            color: "#0c7a44",
                             animation: "spin 1s linear infinite"
                           }
                         })

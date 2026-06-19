@@ -326,8 +326,8 @@
   height: 34px;
   margin: 16px auto 0;
   border-radius: 50%;
-  border: 3px solid rgba(46, 158, 107, 0.22);
-  border-top-color: var(--accent, #2e9e6b);
+  border: 3px solid rgba(12, 122, 68, 0.2);
+  border-top-color: #0c7a44;
   animation: ox-auth-spin 0.8s linear infinite;
 }
 @keyframes ox-auth-spin {
