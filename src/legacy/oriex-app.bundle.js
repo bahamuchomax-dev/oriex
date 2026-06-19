@@ -39955,9 +39955,10 @@ function EI({
         }), (0, r.jsxs)("div", {
           style: {
             display: "flex",
-            gap: 6,
-            marginTop: 9,
-            flexWrap: "nowrap"
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: 7,
+            marginTop: 10
           },
           children: [(0, r.jsxs)("label", {
             style: {
@@ -40042,21 +40043,22 @@ function EI({
         })]
       }), (0, r.jsx)("div", {
         style: {
-          width: 100,
-          height: 100,
+          width: 112,
+          height: 112,
           borderRadius: 999,
           flex: "none",
-          marginRight: 10,
+          marginRight: 8,
+          alignSelf: "center",
           boxSizing: "border-box",
           border: "2px solid rgba(0,0,0,0.16)",
           display: "grid",
           placeItems: "center",
-          background: `conic-gradient(#1fae66 ${j}%, rgba(31,174,102,0.18) 0)`
+          background: `conic-gradient(#1fae66 ${j}%, rgba(31,174,102,0.18) ${j}%)`
         },
         children: (0, r.jsxs)("div", {
           style: {
-            width: 82,
-            height: 82,
+            width: 94,
+            height: 94,
             borderRadius: 999,
             background: "#fff",
             color: "#0c7a44",
@@ -40127,6 +40129,8 @@ function EI({
           fontSize: 13,
           fontWeight: 800,
           opacity: .72,
+          textAlign: "center",
+          marginTop: 4,
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap"
@@ -40508,7 +40512,7 @@ function II({
 }
 
 function CI() {
-  let [e, t] = (0, P.useState)(null), [i, o] = (0, P.useState)(null), [l, h] = (0, P.useState)("loading"), [p, m] = (0, P.useState)("start"), [j, v] = (0, P.useState)(!0), [I, M] = (0, P.useState)(() => {
+  let [e, t] = (0, P.useState)(null), [i, o] = (0, P.useState)(null), [l, h] = (0, P.useState)("loading"), [p, m] = (0, P.useState)("start"), [oxTLF, setOxTLF] = (0, P.useState)(!1), [j, v] = (0, P.useState)(!0), [I, M] = (0, P.useState)(() => {
     let u = new Date(Date.now() + 324e5);
     return `${String(u.getUTCHours()).padStart(2,"0")}:${String(u.getUTCMinutes()).padStart(2,"0")}`
   });
@@ -42966,7 +42970,9 @@ function CI() {
     }
     let E = {
       uid: e?.uid || "local",
+      ownerUid: e?.uid || null,
       userName: i?.name || "User",
+      ownerName: i?.name || "User",
       title: u,
       subject: cr.subject || "未分類",
       icon: cr.icon || "bk0",
@@ -46527,7 +46533,9 @@ function CI() {
                         l: "記録",
                         c: "#8B5CF6",
                         bg: "#EFE9FD",
-                        go: () => pe("recordsTimeline"),
+                        go: () => {
+                          setOxTLF(!1), pe("recordsTimeline")
+                        },
                         ic: ze((0, r.jsxs)(r.Fragment, {
                           children: [(0, r.jsx)("path", {
                             d: "M6 4v16"
@@ -48255,7 +48263,7 @@ function CI() {
               }), (0, r.jsxs)("button", {
                 className: "rx-rec-s",
                 onClick: () => {
-                  m("recordHub"), h("recordsTimeline")
+                  setOxTLF(!1), m("recordHub"), h("recordsTimeline")
                 },
                 children: [(0, r.jsx)("span", {
                   className: "ic",
@@ -48299,7 +48307,7 @@ function CI() {
                     children: "フレンドタイムライン"
                   }), (0, r.jsxs)("button", {
                     onClick: () => {
-                      m("recordHub"), h("recordsTimeline")
+                      setOxTLF(!0), m("recordHub"), h("recordsTimeline")
                     },
                     style: {
                       display: "inline-flex",
@@ -48325,7 +48333,7 @@ function CI() {
                       borderTop: C ? "1px solid var(--line)" : "none"
                     },
                     onClick: () => {
-                      m("recordHub"), h("recordsTimeline")
+                      setOxTLF(!0), m("recordHub"), h("recordsTimeline")
                     },
                     children: [(0, r.jsxs)("div", {
                       style: {
@@ -49025,7 +49033,7 @@ function CI() {
               }), (0, r.jsxs)("div", {
                 children: [(0, r.jsx)("div", {
                   className: "rx-greet",
-                  children: "あなたの"
+                  children: oxTLF && !i?.isTeacher ? "フレンドの" : "あなたの"
                 }), (0, r.jsx)("div", {
                   className: "rx-title",
                   children: "記録タイムライン"
@@ -49041,16 +49049,18 @@ function CI() {
             }) : (() => {
               let u = e?.uid || "local",
                 y = i?.isTeacher,
-                E = [...(vr || []).filter(U => y ? !Te?.[U.uid]?.isTeacher : U.uid === u).map(U => ({
+                _fr = oxTLF && !y,
+                _fset = new Set((Ze || []).map(_f => _f && (_f.uid || _f.id)).filter(Boolean)),
+                E = [...(vr || []).filter(U => y ? !Te?.[U.uid]?.isTeacher : _fr ? U.uid && U.uid !== u && _fset.has(U.uid) : U.uid === u).map(U => ({
                   kind: "book",
                   ts: U.createdAt ? Date.parse(U.createdAt) : 0,
-                  title: (y && U.userName ? U.userName + " ・ " : "") + (U.bookTitle || "参考書"),
+                  title: ((y || _fr) && U.userName ? U.userName + " ・ " : "") + (U.bookTitle || "参考書"),
                   sub: `${U.subject?U.subject+" ・ ":""}${U.minutes||0}分${U.currentPage?` ・ ${U.currentPage}p`:""}`,
                   memo: U.memo || "",
                   id: "b_" + (U.id || U.createdAt),
                   _rid: U.id || U.createdAt,
                   min: Number(U.minutes) || 0
-                })), ...y ? [] : (L || []).map(U => ({
+                })), ...(y || _fr) ? [] : (L || []).map(U => ({
                   kind: U.isClear ? "clear" : "study",
                   ts: Number(U.timestamp) || 0,
                   title: `${U.category?U.category+" ":""}ステージ${U.stage??"-"} ${U.isClear?"クリア":"学習"}`,
