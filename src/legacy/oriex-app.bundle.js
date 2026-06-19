@@ -49384,10 +49384,11 @@ function CI() {
                     style: {
                       borderRadius: 0,
                       margin: 0,
-                      height: 132,
+                      height: "auto",
+                      minHeight: 168,
                       display: "flex",
-                      alignItems: "flex-end",
-                      padding: "0 16px 14px"
+                      alignItems: "center",
+                      padding: "22px 18px"
                     },
                     children: [(0, r.jsx)("div", {
                       className: "pat"
@@ -49395,14 +49396,14 @@ function CI() {
                       style: {
                         position: "relative",
                         display: "flex",
-                        alignItems: "flex-end",
-                        gap: 13,
+                        alignItems: "center",
+                        gap: 15,
                         width: "100%"
                       },
                       children: [(0, r.jsx)("div", {
                         style: {
-                          width: 74,
-                          height: 74,
+                          width: 78,
+                          height: 78,
                           borderRadius: 999,
                           background: "#fff",
                           border: "3px solid #fff",
@@ -49430,12 +49431,11 @@ function CI() {
                       }), (0, r.jsxs)("div", {
                         style: {
                           minWidth: 0,
-                          flex: 1,
-                          paddingBottom: 4
+                          flex: 1
                         },
                         children: [(0, r.jsx)("div", {
                           style: {
-                            fontSize: 22,
+                            fontSize: 23,
                             fontWeight: 900,
                             color: "#fff",
                             textShadow: "0 1px 5px rgba(0,0,0,.4)",
