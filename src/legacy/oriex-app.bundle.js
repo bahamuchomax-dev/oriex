@@ -39904,12 +39904,12 @@ function EI({
   return (0, r.jsxs)("div", {
     style: {
       position: "relative",
-      borderRadius: 20,
-      padding: "18px 18px 12px",
+      borderRadius: 0,
+      padding: "18px 18px 15px",
       color: "#fff",
       background: "linear-gradient(150deg,#4fd99a 0%,#1fae66 45%,#0c7a44 100%)",
-      boxShadow: "0 14px 32px rgba(12,122,68,0.32)",
-      marginBottom: 16
+      boxShadow: "none",
+      marginBottom: 0
     },
     children: [(0, r.jsxs)("div", {
       style: {
@@ -40165,12 +40165,13 @@ function SI({
     j = _S.total;
   return (0, r.jsxs)("div", {
     style: {
-      background: "var(--card)",
-      border: "1px solid var(--line)",
-      borderRadius: 20,
-      boxShadow: "0 8px 22px rgba(43,39,36,0.07)",
-      padding: "15px 16px 11px",
-      marginBottom: 16
+      background: "transparent",
+      border: "none",
+      borderTop: "1px solid var(--line)",
+      borderRadius: 0,
+      boxShadow: "none",
+      padding: "14px 16px 12px",
+      marginBottom: 0
     },
     children: [(0, r.jsxs)("div", {
       style: {
@@ -46235,7 +46236,16 @@ function CI() {
                 je = U && Number.isFinite(Number(U.startAt)) ? Math.round((Ce(Number(U.startAt)) - Ce(Date.now())) / 864e5) : null,
                 tn = ue[(Math.floor(Ce(Date.now()) / 864e5) % ue.length + ue.length) % ue.length];
               return (0, r.jsxs)(r.Fragment, {
-                children: [(0, r.jsx)(EI, {
+                children: [(0, r.jsxs)("div", {
+                  style: {
+                    borderRadius: 20,
+                    overflow: "hidden",
+                    marginBottom: 16,
+                    background: "var(--card)",
+                    border: "1px solid var(--line)",
+                    boxShadow: "0 12px 30px rgba(20,90,60,0.16)"
+                  },
+                  children: [(0, r.jsx)(EI, {
                   today: y,
                   onTimer: () => pe("oxTimer"),
                   plan: U ? {
@@ -46252,9 +46262,13 @@ function CI() {
                   className: "rx-planbtn",
                   style: {
                     position: "relative",
-                    borderRadius: 20,
-                    padding: "15px 16px",
-                    marginTop: 16
+                    borderRadius: 0,
+                    padding: "14px 16px",
+                    marginTop: 0,
+                    background: "transparent",
+                    border: "none",
+                    borderTop: "1px solid var(--line)",
+                    boxShadow: "none"
                   },
                   onClick: () => {
                     Lr(), m("start"), Qt("now"), h("weeklyPlan")
@@ -46303,7 +46317,7 @@ function CI() {
                     className: "rx-tm",
                     children: "›"
                   })]
-                }), i?.isTeacher && (0, r.jsxs)("button", {
+                })]}), i?.isTeacher && (0, r.jsxs)("button", {
                   className: "rx-planbtn ghost",
                   onClick: () => {
                     m("start"), h("weeklyTaskAdmin")
