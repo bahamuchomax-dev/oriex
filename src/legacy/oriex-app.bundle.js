@@ -39907,7 +39907,7 @@ function EI({
       borderRadius: 0,
       padding: "18px 18px 15px",
       color: "#0c7a44",
-      background: "#fff",
+      background: "transparent",
       border: "none",
       boxShadow: "none",
       marginBottom: 0
@@ -46564,7 +46564,10 @@ function CI() {
                     borderRadius: 20,
                     overflow: "hidden",
                     marginBottom: 16,
-                    background: "var(--card)",
+                    backgroundImage: "linear-gradient(rgba(255,255,255,0.82),rgba(255,255,255,0.87)), url('./card-bg-meadow.png')",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundColor: "var(--card)",
                     border: "2px solid #1fae66",
                     boxShadow: "0 12px 30px rgba(20,90,60,0.12)"
                   },
