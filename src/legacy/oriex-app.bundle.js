@@ -48312,7 +48312,7 @@ function CI() {
                   let s = String(ms || "");
                   return s ? s.slice(5, 16).replace("T", " ") : ""
                 },
-                E = (vr || []).filter(b => b.uid && b.uid !== u && _fset.has(b.uid) && b.createdAt).sort((b, C) => (Date.parse(C.createdAt) || 0) - (Date.parse(b.createdAt) || 0)).slice(0, 30);
+                E = (vr || []).filter(b => b.uid && (b.uid === u || _fset.has(b.uid)) && b.createdAt).sort((b, C) => (Date.parse(C.createdAt) || 0) - (Date.parse(b.createdAt) || 0)).slice(0, 30);
               return (0, r.jsxs)("div", {
                 style: {
                   marginTop: 20
@@ -48358,6 +48358,7 @@ function CI() {
                     let _av = b.userAvatar || Te?.[b.uid]?.avatar || "",
                       _avImg = String(_av).startsWith("data:") || String(_av).startsWith("http"),
                       _AvC = Bo[_av],
+                      _bookImg = String(b.bookIcon || "").startsWith("data:") || String(b.bookIcon || "").startsWith("http"),
                       _liked = (b.likedBy || []).includes(u),
                       _pg = b.currentPage ? `${b.currentPage}/${b.totalPages||"?"}p` : "";
                     return (0, r.jsxs)("div", {
@@ -48449,18 +48450,27 @@ function CI() {
                             },
                             children: [(0, r.jsx)("span", {
                               style: {
-                                width: 20,
-                                height: 20,
+                                width: 26,
+                                height: 32,
                                 borderRadius: 6,
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 background: "linear-gradient(145deg,#67e8f9,#14b8a6)",
+                                overflow: "hidden",
                                 flexShrink: 0
                               },
-                              children: (0, r.jsxs)("svg", {
-                                width: 12,
-                                height: 12,
+                              children: _bookImg ? (0, r.jsx)("img", {
+                                src: b.bookIcon,
+                                alt: "",
+                                style: {
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover"
+                                }
+                              }) : (0, r.jsxs)("svg", {
+                                width: 13,
+                                height: 13,
                                 viewBox: "0 0 24 24",
                                 fill: "none",
                                 stroke: "#fff",
@@ -49246,7 +49256,7 @@ function CI() {
                 y = i?.isTeacher,
                 _fr = oxTLF && !y,
                 _fset = new Set((Ze || []).map(_f => _f && (_f.uid || _f.id)).filter(Boolean)),
-                E = [...(vr || []).filter(U => y ? !Te?.[U.uid]?.isTeacher : _fr ? U.uid && U.uid !== u && _fset.has(U.uid) : U.uid === u).map(U => ({
+                E = [...(vr || []).filter(U => y ? !Te?.[U.uid]?.isTeacher : _fr ? U.uid && (U.uid === u || _fset.has(U.uid)) : U.uid === u).map(U => ({
                   kind: "book",
                   ts: U.createdAt ? Date.parse(U.createdAt) : 0,
                   title: ((y || _fr) && U.userName ? U.userName + " ・ " : "") + (U.bookTitle || "参考書"),
@@ -49290,7 +49300,7 @@ function CI() {
               let he = Math.max(1, ...ne.map(U => U.m)),
                 pe = U => U <= 0 ? "0分" : U >= 60 ? Math.floor(U / 60) + "時間" + (U % 60 ? U % 60 + "分" : "") : U + "分";
               return (0, r.jsxs)(r.Fragment, {
-                children: [(0, r.jsxs)("div", {
+                children: [!_fr && (0, r.jsxs)("div", {
                   style: {
                     marginBottom: 14
                   },
@@ -49414,7 +49424,7 @@ function CI() {
                       }, ue))
                     })]
                   })]
-                }), E.length === 0 ? (0, r.jsx)("div", {
+                }), (_fr || y) && (E.length === 0 ? (0, r.jsx)("div", {
                   className: "rx-peek",
                   children: (0, r.jsxs)("div", {
                     className: "rx-prow",
@@ -49533,7 +49543,7 @@ function CI() {
                       children: "\xD7"
                     })]
                   }, U.id))
-                })]
+                }))]
               })
             })()]
           }), l === "friendProfile" && (0, r.jsx)("div", {
