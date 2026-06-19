@@ -42979,8 +42979,11 @@ function CI() {
       totalPages: Math.max(0, Number(cr.totalPages) || 0),
       createdAt: Da()
     };
-    if (e && R.enabled) await Ds(bt(R.db, "artifacts", R.appId, "public", "data", "bookShelf"), E);
-    else {
+    if (e && R.enabled) try {
+      await Ds(bt(R.db, "artifacts", R.appId, "public", "data", "bookShelf"), E)
+    } catch (er) {
+      return console.error("bookShelf add failed", er), Qe("参考書の追加に失敗しました（" + (er?.code || er?.message || "エラー") + "）", "error")
+    } else {
       let b = [{
         id: Date.now().toString(),
         ...E
