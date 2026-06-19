@@ -50067,12 +50067,15 @@ function CI() {
                 })(),
                 he = typeof K == "string" && (K.startsWith("data:") || K.startsWith("http")),
                 pe = Bo[K],
-                _fring = ({
-                  bronze: "0 0 0 3px #b9742f",
-                  silver: "0 0 0 3px #9fb2c8",
-                  gold: "0 0 0 3px #e8b53a, 0 0 12px rgba(232,181,58,.55)",
-                  legend: "0 0 0 3px #e8273c, 0 0 0 6px #ffd36e, 0 0 18px rgba(232,39,46,.65)"
-                })[u.frame || E.frame || y.frame] || "",
+                _fring = (() => {
+                  let _fk = [E.frame, y.frame, u.frame].find(f => f && f !== "none");
+                  return ({
+                    bronze: "0 0 0 3px #b9742f",
+                    silver: "0 0 0 3px #9fb2c8",
+                    gold: "0 0 0 3px #e8b53a, 0 0 12px rgba(232,181,58,.55)",
+                    legend: "0 0 0 3px #e8273c, 0 0 0 6px #ffd36e, 0 0 18px rgba(232,39,46,.65)"
+                  })[_fk] || ""
+                })(),
                 U = ze => {
                   let ct = Math.floor(ze / 60),
                     jt = ze % 60;
