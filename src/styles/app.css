@@ -385,16 +385,15 @@ body.oxbg-on .rx-topbar{
    internal scroll, so we must NOT pin an explicit height (it would break the height:auto
    sibling back-screen that the same selector matches); the few clipped px sit behind the
    bottom nav (--app-bottom-pad reserves clearance), so nothing readable is lost. */
+/* On the Oriex (photo) theme, the back-button screens (学習ステージ / フレンドプロフィール …)
+   stay TRANSPARENT so the photo shows through — content sits in its own cards/rows, which are
+   readable on the light photo. (Was an 80% white frosted panel; the user wants it透明.) */
 body.oxbg-on .rx-mp:has(.rx-back){
-  background:rgba(255,255,255,.80) !important;
-  -webkit-backdrop-filter:blur(9px);
-  backdrop-filter:blur(9px);
-  margin:8px 10px 0 !important;
-  border-radius:24px !important;
-  border:1px solid rgba(255,255,255,.6) !important;
-  box-shadow:0 12px 30px rgba(43,39,36,.14) !important;
-  /* fill the column down to just above the home bar (drop the base height:100% which
-     only filled <main>'s content box; min-height fills even when content is short). */
+  background:transparent !important;
+  margin:0 !important;
+  border:none !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
   height:auto !important;
   min-height:calc(100% - 8px) !important;
 }
