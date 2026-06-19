@@ -49370,98 +49370,381 @@ function CI() {
                       d: "M15 6l-6 6 6 6"
                     })
                   }), "戻る"]
-                }), (0, r.jsx)("div", {
-                  className: "rx-cover",
-                  children: (0, r.jsx)("div", {
-                    className: "pat"
-                  })
-                }), (0, r.jsx)("div", {
-                  className: "rx-avatar",
+                }), (0, r.jsxs)("div", {
                   style: {
-                    boxShadow: (y?.isTeacher ? "0 0 0 2px #fff, 0 0 0 4px #E5B23A, 0 0 12px #E5B23Acc, " : "") + (Uc(Tn(y), 6, E.avatarFrameMin ?? y.avatarFrameMin ?? u.avatarFrameMin) || "") || void 0
+                    marginTop: 6,
+                    borderRadius: 22,
+                    overflow: "hidden",
+                    border: "1px solid var(--line)",
+                    boxShadow: "0 6px 20px rgba(15,23,42,.10)",
+                    background: "var(--card)"
                   },
-                  children: he ? (0, r.jsx)("img", {
-                    src: K,
-                    alt: "",
-                    style: {
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover"
-                    }
-                  }) : pe ? (0, r.jsx)(pe, {
-                    size: 52,
-                    color: b
-                  }) : (0, r.jsx)(Nl, {
-                    size: 48,
-                    color: b
-                  })
-                }), (0, r.jsxs)("div", {
-                  className: "rx-pname",
-                  children: [C, u.isTeacher ? " 先生" : "", typeof window !== "undefined" && window.__oxDevUids && window.__oxDevUids.has(String(u.uid || u.id || "")) && (0, r.jsx)("span", {
-                    className: "ox-devbadge",
-                    children: "デベロッパー"
-                  })]
-                }), (0, r.jsx)("div", {
-                  style: {
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                    alignSelf: "center",
-                    margin: "2px 0 4px",
-                    padding: "3px 12px",
-                    borderRadius: 999,
-                    background: `${b}1a`,
-                    color: b,
-                    fontSize: 12,
-                    fontWeight: 700,
-                    letterSpacing: "0.02em"
-                  },
-                  children: `Lv.${Bd((E.totalExp??y.totalExp??u.totalExp)||0)}`
-                }), (0, r.jsxs)("div", {
-                  className: "rx-pid",
-                  children: [u.shortId ? `ID ${u.shortId}` : "", G == null ? "" : `フレンド ${G}人`]
-                }), (0, r.jsx)("div", {
-                  className: "rx-bio",
-                  children: q || "自己紹介はまだありません。"
-                }), (E.targetSchool || y.targetSchool || u.targetSchool) && (0, r.jsxs)("div", {
-                  className: "rx-school",
-                  children: [(0, r.jsx)("span", {
-                    className: "rx-school-l",
-                    children: "志望校"
-                  }), (0, r.jsx)("span", {
-                    className: "rx-school-v",
-                    children: E.targetSchool || y.targetSchool || u.targetSchool
-                  })]
-                }), (0, r.jsxs)("div", {
-                  className: "rx-stats",
                   children: [(0, r.jsxs)("div", {
-                    className: "rx-stat",
+                    className: "rx-cover",
+                    style: {
+                      borderRadius: 0,
+                      margin: 0,
+                      height: 132,
+                      display: "flex",
+                      alignItems: "flex-end",
+                      padding: "0 16px 14px"
+                    },
                     children: [(0, r.jsx)("div", {
-                      className: "v",
-                      children: U(ue)
-                    }), (0, r.jsx)("div", {
-                      className: "l",
-                      children: "総勉強時間"
+                      className: "pat"
+                    }), (0, r.jsxs)("div", {
+                      style: {
+                        position: "relative",
+                        display: "flex",
+                        alignItems: "flex-end",
+                        gap: 13,
+                        width: "100%"
+                      },
+                      children: [(0, r.jsx)("div", {
+                        style: {
+                          width: 74,
+                          height: 74,
+                          borderRadius: 999,
+                          background: "#fff",
+                          border: "3px solid #fff",
+                          display: "grid",
+                          placeItems: "center",
+                          overflow: "hidden",
+                          flex: "none",
+                          boxShadow: "0 6px 16px rgba(0,0,0,.22)"
+                        },
+                        children: he ? (0, r.jsx)("img", {
+                          src: K,
+                          alt: "",
+                          style: {
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover"
+                          }
+                        }) : pe ? (0, r.jsx)(pe, {
+                          size: 46,
+                          color: b
+                        }) : (0, r.jsx)(Nl, {
+                          size: 42,
+                          color: b
+                        })
+                      }), (0, r.jsxs)("div", {
+                        style: {
+                          minWidth: 0,
+                          flex: 1,
+                          paddingBottom: 4
+                        },
+                        children: [(0, r.jsx)("div", {
+                          style: {
+                            fontSize: 22,
+                            fontWeight: 900,
+                            color: "#fff",
+                            textShadow: "0 1px 5px rgba(0,0,0,.4)",
+                            fontFamily: '"Zen Maru Gothic",sans-serif',
+                            lineHeight: 1.15,
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis"
+                          },
+                          children: C
+                        }), (0, r.jsx)("div", {
+                          className: "rx-pid",
+                          style: {
+                            textAlign: "left",
+                            color: "rgba(255,255,255,.92)",
+                            textShadow: "0 1px 4px rgba(0,0,0,.45)",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            marginTop: 2
+                          },
+                          children: u.shortId ? `ID ${u.shortId}` : "ID ーーーー"
+                        }), (0, r.jsxs)("div", {
+                          style: {
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 6,
+                            marginTop: 7
+                          },
+                          children: [u.isTeacher && (0, r.jsx)("span", {
+                            style: {
+                              padding: "3px 11px",
+                              borderRadius: 999,
+                              background: "rgba(255,255,255,.95)",
+                              color: "#d97706",
+                              fontSize: 11.5,
+                              fontWeight: 800
+                            },
+                            children: "先生"
+                          }), (typeof window !== "undefined" && window.__oxDevUids && window.__oxDevUids.has(String(u.uid || u.id || ""))) && (0, r.jsx)("span", {
+                            style: {
+                              padding: "3px 11px",
+                              borderRadius: 999,
+                              background: "rgba(255,255,255,.95)",
+                              color: "#2f73e0",
+                              fontSize: 11.5,
+                              fontWeight: 800
+                            },
+                            children: "デベロッパー"
+                          }), (0, r.jsxs)("span", {
+                            style: {
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 4,
+                              padding: "3px 11px",
+                              borderRadius: 999,
+                              background: "rgba(255,255,255,.95)",
+                              color: "#2f73e0",
+                              fontSize: 11.5,
+                              fontWeight: 800
+                            },
+                            children: [(0, r.jsx)("svg", {
+                              width: "12",
+                              height: "12",
+                              viewBox: "0 0 24 24",
+                              fill: "#2f73e0",
+                              children: (0, r.jsx)("path", {
+                                d: "M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 16.6 7.1 18.2l.9-5.5-4-3.9L9.5 8z"
+                              })
+                            }), `Lv.${Bd((E.totalExp ?? y.totalExp ?? u.totalExp) || 0)}`]
+                          })]
+                        })]
+                      })]
                     })]
                   }), (0, r.jsxs)("div", {
-                    className: "rx-stat",
-                    children: [(0, r.jsx)("div", {
-                      className: "v",
-                      children: ne
+                    style: {
+                      padding: "14px 16px"
+                    },
+                    children: [(0, r.jsx)("b", {
+                      style: {
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: "var(--ink-soft)",
+                        display: "block",
+                        marginBottom: 8
+                      },
+                      children: "一言コメント"
                     }), (0, r.jsx)("div", {
-                      className: "l",
-                      children: "クリア数"
+                      style: {
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "var(--ink)",
+                        lineHeight: 1.6
+                      },
+                      children: q || "自己紹介はまだありません。"
+                    })]
+                  }), (E.targetSchool || y.targetSchool || u.targetSchool) && (0, r.jsxs)("div", {
+                    style: {
+                      borderTop: "1px solid var(--line)",
+                      padding: "13px 16px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10
+                    },
+                    children: [(0, r.jsx)("span", {
+                      style: {
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: "var(--ink-soft)"
+                      },
+                      children: "志望校"
+                    }), (0, r.jsx)("span", {
+                      style: {
+                        marginLeft: "auto",
+                        fontSize: 14.5,
+                        fontWeight: 700,
+                        color: "var(--ink)"
+                      },
+                      children: E.targetSchool || y.targetSchool || u.targetSchool
+                    }), (0, r.jsx)("svg", {
+                      width: "16",
+                      height: "16",
+                      viewBox: "0 0 24 24",
+                      fill: "none",
+                      stroke: "var(--ink-soft)",
+                      strokeWidth: "2",
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      children: (0, r.jsx)("path", {
+                        d: "M9 6l6 6-6 6"
+                      })
                     })]
                   }), (0, r.jsxs)("div", {
-                    className: "rx-stat",
-                    children: [(0, r.jsx)("div", {
-                      className: "v",
-                      children: B
-                    }), (0, r.jsx)("div", {
-                      className: "l",
-                      children: "ストリーク"
+                    style: {
+                      borderTop: "1px solid var(--line)",
+                      padding: "14px 16px 16px"
+                    },
+                    children: [(0, r.jsx)("b", {
+                      style: {
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: "var(--ink-soft)",
+                        display: "block",
+                        marginBottom: 14
+                      },
+                      children: "統計"
+                    }), (0, r.jsxs)("div", {
+                      style: {
+                        display: "flex"
+                      },
+                      children: [(0, r.jsxs)("div", {
+                        style: {
+                          flex: 1,
+                          textAlign: "center"
+                        },
+                        children: [(0, r.jsx)("div", {
+                          style: {
+                            display: "flex",
+                            justifyContent: "center",
+                            marginBottom: 7
+                          },
+                          children: (0, r.jsx)("span", {
+                            style: {
+                              width: 44,
+                              height: 44,
+                              borderRadius: 999,
+                              background: "#E6F0FF",
+                              display: "grid",
+                              placeItems: "center"
+                            },
+                            children: (0, r.jsxs)("svg", {
+                              width: "22",
+                              height: "22",
+                              viewBox: "0 0 24 24",
+                              fill: "none",
+                              stroke: "#3F8DFF",
+                              strokeWidth: "2.2",
+                              strokeLinecap: "round",
+                              strokeLinejoin: "round",
+                              children: [(0, r.jsx)("circle", {
+                                cx: "12",
+                                cy: "12",
+                                r: "8"
+                              }), (0, r.jsx)("path", {
+                                d: "M12 8v4l3 2"
+                              })]
+                            })
+                          })
+                        }), (0, r.jsx)("div", {
+                          style: {
+                            fontSize: 22,
+                            fontWeight: 800,
+                            color: "var(--ink)",
+                            lineHeight: 1
+                          },
+                          children: U(ue)
+                        }), (0, r.jsx)("div", {
+                          style: {
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: "var(--ink-soft)",
+                            marginTop: 5
+                          },
+                          children: "総勉強時間"
+                        })]
+                      }), (0, r.jsxs)("div", {
+                        style: {
+                          flex: 1,
+                          textAlign: "center"
+                        },
+                        children: [(0, r.jsx)("div", {
+                          style: {
+                            display: "flex",
+                            justifyContent: "center",
+                            marginBottom: 7
+                          },
+                          children: (0, r.jsx)("span", {
+                            style: {
+                              width: 44,
+                              height: 44,
+                              borderRadius: 999,
+                              background: "#E3F7EC",
+                              display: "grid",
+                              placeItems: "center"
+                            },
+                            children: (0, r.jsxs)("svg", {
+                              width: "22",
+                              height: "22",
+                              viewBox: "0 0 24 24",
+                              fill: "none",
+                              stroke: "#1AA06A",
+                              strokeWidth: "2.3",
+                              strokeLinecap: "round",
+                              strokeLinejoin: "round",
+                              children: [(0, r.jsx)("circle", {
+                                cx: "12",
+                                cy: "12",
+                                r: "9"
+                              }), (0, r.jsx)("path", {
+                                d: "M8 12l3 3 5-6"
+                              })]
+                            })
+                          })
+                        }), (0, r.jsx)("div", {
+                          style: {
+                            fontSize: 22,
+                            fontWeight: 800,
+                            color: "var(--ink)",
+                            lineHeight: 1
+                          },
+                          children: ne
+                        }), (0, r.jsx)("div", {
+                          style: {
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: "var(--ink-soft)",
+                            marginTop: 5
+                          },
+                          children: "クリア数"
+                        })]
+                      }), (0, r.jsxs)("div", {
+                        style: {
+                          flex: 1,
+                          textAlign: "center"
+                        },
+                        children: [(0, r.jsx)("div", {
+                          style: {
+                            display: "flex",
+                            justifyContent: "center",
+                            marginBottom: 7
+                          },
+                          children: (0, r.jsx)("span", {
+                            style: {
+                              width: 44,
+                              height: 44,
+                              borderRadius: 999,
+                              background: "#FFEEE2",
+                              display: "grid",
+                              placeItems: "center"
+                            },
+                            children: (0, r.jsx)("svg", {
+                              width: "22",
+                              height: "22",
+                              viewBox: "0 0 24 24",
+                              fill: "#FF7A3C",
+                              children: (0, r.jsx)("path", {
+                                d: "M13 2c-1 2.5-2.5 3.5-2.5 5.5 0 1 .5 1.8 1.2 2.2.2-.7.1-1.6.5-2.2.8 1.2 2.3 2.3 2.3 5a4.5 4.5 0 0 1-9 0c0-3.2 2.8-5.2 3.5-7.5.3 1 .2 2 .6 2.7C12 8 11.8 5.5 13 2z"
+                              })
+                            })
+                          })
+                        }), (0, r.jsx)("div", {
+                          style: {
+                            fontSize: 22,
+                            fontWeight: 800,
+                            color: "var(--ink)",
+                            lineHeight: 1
+                          },
+                          children: B
+                        }), (0, r.jsx)("div", {
+                          style: {
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: "var(--ink-soft)",
+                            marginTop: 5
+                          },
+                          children: "ストリーク"
+                        })]
+                      })]
                     })]
-                  })]
+                })]
                 }), (0, r.jsxs)("button", {
                   className: "rx-bigedit",
                   onClick: () => {
