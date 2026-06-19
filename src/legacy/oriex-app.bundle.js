@@ -42201,7 +42201,12 @@ function CI() {
           bio: b.bio || "",
           targetSchool: b.targetSchool || "",
           coverImage: b.coverImage || null,
-          streakCount: b.streakCount || 0
+          streakCount: b.streakCount || 0,
+          totalExp: b.totalExp || 0,
+          score: b.totalExp || 0,
+          clearedStages: b.clearedStages || {},
+          clearCount: Object.values(b.clearedStages || {}).reduce((B, G) => B + (Array.isArray(G) ? G.length : typeof G == "number" ? G : 0), 0),
+          stagesCleared: Object.values(b.clearedStages || {}).reduce((B, G) => B + (Array.isArray(G) ? G.length : typeof G == "number" ? G : 0), 0)
         })) : await qn(et(R.db, "artifacts", R.appId, "public", "data", "customApp", C), {
           ...(() => { const { password: _pw, passwordHash: _ph, isTeacher: _it, ...pub } = b; return pub; })(),
           score: b.totalExp,
@@ -50348,7 +50353,7 @@ function CI() {
               "--ink-soft": A.textMuted,
               "--card": S ? "#ffffff" : A.card,
               "--line": A.cardBorder,
-              background: S ? "#FFFFFF" : A.bgColor
+              background: "transparent"
             },
             children: (() => {
               try {
