@@ -22,6 +22,7 @@ import { installSwipeNav } from "../../services/swipeNav.js";
 import { installReadCounter } from "../../services/readCounter.js";
 import { installHamsterSync } from "../../services/hamsterSync.js";
 import { installCustomSeenSync } from "../../services/customSeenSync.js";
+import { installVocabDistDot } from "../../services/vocabDistDot.js";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -174,6 +175,14 @@ export async function handoffToLegacy(user, importLegacy) {
   // customSeen set so the legacy list split can read it (see the pu bundle patch).
   try {
     installCustomSeenSync();
+  } catch {
+    /* non-fatal */
+  }
+
+  // Old (legacy) home: red 赤ぽっち on the 単語帳 quick-tool when a teacher distributes
+  // new vocabulary (same unread source as the new v2 home, so both homes clear together).
+  try {
+    installVocabDistDot();
   } catch {
     /* non-fatal */
   }
