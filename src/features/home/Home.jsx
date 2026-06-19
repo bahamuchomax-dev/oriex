@@ -1,5 +1,5 @@
 import "./home.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
 
 // Real assets (Vite hashes + base-path-rewrites these, so GitHub Pages base works).
@@ -23,7 +23,6 @@ import QuizView from "./views/QuizView.jsx";
 import ExamView from "./views/ExamView.jsx";
 import ListenView from "./views/ListenView.jsx";
 import DiaryView from "./views/DiaryView.jsx";
-import PlansView from "./views/PlansView.jsx";
 import FriendsView from "./views/FriendsView.jsx";
 import FramesView from "./views/FramesView.jsx";
 
@@ -34,6 +33,12 @@ import { getAccount, accountAvatarImg, getRealStudy } from "./realAccount.js";
 import { useTeacherPlan } from "./teacherPlan.js";
 import { useDistributedVocabUnread } from "./distributedVocab.js";
 import { HOME_FLAG, TOGGLE_FLAG, switchToOriginalHome } from "./homeSwitch.js";
+
+// [10] 今週の計画の遅延読み込み — PlansView (週計画 editor, 348 lines + plans.css) is the
+// heaviest in-home view and is only opened on demand, so it's code-split out of the home's
+// initial chunk and loaded when the student opens 週計画. The home's 今週の予定 PREVIEW card
+// stays eager (it reads localStorage oxhPlans, not this component).
+const PlansView = lazy(() => import("./views/PlansView.jsx"));
 
 /* ============================================================
  * Home — Oriex new home (v2: big character).
@@ -441,7 +446,9 @@ export default function Home({ profile, onOpen = () => {}, characterUrl } = {}) 
         createPortal(
           <div className="oxh oxh-portal">
             {VIEWS[view] ? (
-              <FeatureView view={view} onBack={() => setView("home")} onOpen={go} />
+              <Suspense fallback={<ViewLoading title={LABELS[view] || ""} onBack={() => setView("home")} />}>
+                <FeatureView view={view} onBack={() => setView("home")} onOpen={go} />
+              </Suspense>
             ) : (
               <SubView dest={view} onBack={() => setView("home")} />
             )}
@@ -457,6 +464,23 @@ export default function Home({ profile, onOpen = () => {}, characterUrl } = {}) 
 function FeatureView({ view, onBack, onOpen }) {
   const V = VIEWS[view];
   return V ? <V onBack={onBack} onOpen={onOpen} /> : null;
+}
+
+/** Suspense fallback for a lazily-loaded view (e.g. 週計画) — keeps the header + back
+ *  button so the screen doesn't flash blank while the code-split chunk loads. */
+function ViewLoading({ title, onBack }) {
+  return (
+    <div className="oxh-sub">
+      <div className="oxh-sub-head">
+        <button className="oxh-back" onClick={onBack} aria-label="戻る">{Back}</button>
+        <span className="oxh-sub-title">{title}</span>
+      </div>
+      <div className="oxh-sub-body">
+        <div className="oxh-soon-ico">{Sparkle}</div>
+        <div className="oxh-soon-t">読み込み中…</div>
+      </div>
+    </div>
+  );
 }
 
 /** A destination screen: either "準備中" (not built) or "元のアプリで開く" (lives in
