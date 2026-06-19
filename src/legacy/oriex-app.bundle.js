@@ -36739,14 +36739,14 @@ function kI(e) {
       let oe = ge.createGain();
       oe.gain.value = 1e-4;
       let ht = ge.createBiquadFilter();
-      ht.type = "lowpass", ht.frequency.value = 2100, ht.Q.value = .4, ht.connect(oe), oe.connect(ge.destination);
+      ht.type = "lowpass", ht.frequency.value = 3200, ht.Q.value = .4, ht.connect(oe), oe.connect(ge.destination);
       let vt = 60 / 96,
         Gt = vt / 2,
         Pt = 0,
         kn = 0,
         Hr = null,
         mn = !1,
-        Dr = .2,
+        Dr = .34,
         dn = 57,
         Or = [0, 2, 4, 7, 9],
         sr = [0, 5, 7, 5],
