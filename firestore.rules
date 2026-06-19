@@ -365,6 +365,18 @@ service cloud.firestore {
       match /users/{uid}/{document=**} {
         allow read, write: if isSelf(uid);
       }
+      // Mutual friendship: in ADDITION to the owner (above), any signed-in user may
+      // add/remove THEMSELVES to another user's friends list. The doc id AND its `uid`
+      // field must both equal the caller's uid (no impersonation, no arbitrary doc).
+      // This is what makes a friend-add reciprocal — the app dual-writes both
+      // users/{me}/friends/{them} AND users/{them}/friends/{me}; the second write was
+      // permission-denied before, so a friendship only appeared on one side.
+      match /users/{uid}/friends/{friendId} {
+        allow create, update: if signedIn()
+                              && friendId == request.auth.uid
+                              && request.resource.data.uid == request.auth.uid;
+        allow delete: if signedIn() && friendId == request.auth.uid;
+      }
       // shared catalogs / leaderboard: any signed-in user may READ; writes are
       // denied by default (see the own-card exception below).
       match /public/data/{document=**} {
@@ -380,6 +392,20 @@ service cloud.firestore {
       match /public/data/announcements/{id} {
         allow read: if signedIn();
         allow create, update, delete: if isTeacher();
+      }
+      // student weekly-plan progress (legacy live path). Each student writes their OWN
+      // progress doc (id = `${taskId}__${uid}`, data.uid == their uid); their teacher
+      // reads the whole collection to see class progress (the bundle reads
+      // public/data/taskProgress for teachers). Signed-in READ; owner-only WRITE keyed
+      // by uid; delete by the owner, a teacher, or admin. More-specific than the
+      // public/data wildcard (write:false) above — Firestore ORs the allows.
+      match /public/data/taskProgress/{id} {
+        allow read: if signedIn();
+        allow create, update: if signedIn()
+                              && request.resource.data.uid == request.auth.uid
+                              && noAnswerFields();
+        allow delete: if isTeacher() || isAdmin()
+                      || (signedIn() && resource.data.uid == request.auth.uid);
       }
       // global app lock / emergency stop (legacy live path: the bundle writes
       // artifacts/{appId}/public/data/system/appLock = {locked, message, updatedAt}).

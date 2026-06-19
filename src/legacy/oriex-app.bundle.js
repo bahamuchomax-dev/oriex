@@ -40658,7 +40658,7 @@ function CI() {
           E.uid === e?.uid && (y[E.taskId] = E.done || 0)
         }), Hr(y)
       } else {
-        let u = (await rn(oa(bt(R.db, "artifacts", R.appId, "users", e.uid, "taskProgress"), wc("uid", "==", e.uid)))).docs.map(E => ({
+        let u = (await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "taskProgress"), wc("uid", "==", e.uid)))).docs.map(E => ({
           id: E.id,
           ...E.data()
         }));
@@ -40707,7 +40707,7 @@ function CI() {
         ...C,
         [u.id]: b
       })), e && R.enabled) try {
-      await qn(et(R.db, "artifacts", R.appId, "users", e.uid, "taskProgress", `${u.id}__${e.uid}`), {
+      await qn(et(R.db, "artifacts", R.appId, "public", "data", "taskProgress", `${u.id}__${e.uid}`), {
         taskId: u.id,
         uid: e.uid,
         name: i?.name || "",
