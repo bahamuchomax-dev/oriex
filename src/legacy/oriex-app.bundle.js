@@ -40706,7 +40706,7 @@ function CI() {
     mt();
     let y = setInterval(() => {
       document.hidden || mt()
-    }, 2e4);
+    }, 6e4);
     return () => clearInterval(y)
   }, [e?.uid, i?.isTeacher]);
   let [un, st] = (0, P.useState)(0), Wn = () => {
@@ -41080,6 +41080,7 @@ function CI() {
                   totalExp: he.totalExp || 0,
                   score: he.totalExp || 0,
                   streakCount: he.streakCount || 0,
+                  frame: localStorage.getItem("oxhIconFrame") || he.frame || "none",
                   clearCount: Object.values(he.clearedStages || {}).reduce((U, ue) => U + (Array.isArray(ue) ? ue.length : typeof ue == "number" ? ue : 0), 0),
                   stagesCleared: Object.values(he.clearedStages || {}).reduce((U, ue) => U + (Array.isArray(ue) ? ue.length : typeof ue == "number" ? ue : 0), 0)
                 }, {
@@ -42192,6 +42193,7 @@ function CI() {
           coverImage: gs || null,
           color: Gs.bg,
           avatarFrameMin: Number(Ol || 0),
+          frame: localStorage.getItem("oxhIconFrame") || i?.frame || "none",
           totalExp: i?.totalExp || 0,
           unlockedStages: i?.unlockedStages || {},
           streakCount: i?.streakCount || 1,
@@ -42911,7 +42913,7 @@ function CI() {
           id: d.id,
           ...d.data()
         }));
-        mp.size && Na([...mp.values()].sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0)))
+        mp.size && (Na([...mp.values()].sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0))), window.__oxLogsAt = Date.now())
       })()
     }
   }, [e?.uid, R.enabled]), (0, P.useEffect)(() => {
@@ -42942,12 +42944,18 @@ function CI() {
     if (!e || !R.enabled || !["plaza", "announcementsList", "recordsTimeline"].includes(l)) return;
     let u = !0;
     return (async () => {
+      if (Date.now() - (window.__oxLogsAt || 0) < 12000) return;
       try {
         let y = await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80)));
-        u && Na(y.docs.map(E => ({
-          id: E.id,
-          ...E.data()
-        })))
+        if (u) {
+          let mp = new Map();
+          (vr || []).forEach(d => mp.set(d.id || d.createdAt, d));
+          y.docs.forEach(d => mp.set(d.id, {
+            id: d.id,
+            ...d.data()
+          }));
+          Na([...mp.values()].sort((b, C) => (Date.parse(C.createdAt) || 0) - (Date.parse(b.createdAt) || 0))), window.__oxLogsAt = Date.now()
+        }
       } catch {}
     })(), ["plaza", "announcementsList"].includes(l) && (async () => {
       try {
@@ -49997,6 +50005,12 @@ function CI() {
                 })(),
                 he = typeof K == "string" && (K.startsWith("data:") || K.startsWith("http")),
                 pe = Bo[K],
+                _fring = ({
+                  bronze: "0 0 0 3px #b9742f",
+                  silver: "0 0 0 3px #9fb2c8",
+                  gold: "0 0 0 3px #e8b53a, 0 0 12px rgba(232,181,58,.55)",
+                  legend: "0 0 0 3px #e8273c, 0 0 0 6px #ffd36e, 0 0 18px rgba(232,39,46,.65)"
+                })[u.frame || E.frame || y.frame] || "",
                 U = ze => {
                   let ct = Math.floor(ze / 60),
                     jt = ze % 60;
@@ -50073,7 +50087,7 @@ function CI() {
                           placeItems: "center",
                           overflow: "hidden",
                           flex: "none",
-                          boxShadow: "0 6px 16px rgba(0,0,0,.22)"
+                          boxShadow: (_fring ? _fring + ", " : "") + "0 6px 16px rgba(0,0,0,.22)"
                         },
                         children: he ? (0, r.jsx)("img", {
                           src: K,
