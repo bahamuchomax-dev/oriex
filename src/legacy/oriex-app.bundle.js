@@ -40613,9 +40613,9 @@ function CI() {
           let y = await Cl(et(R.db, "artifacts", R.appId, "public", "data", "customApp", u.uid)),
             E = y.exists() ? y.data() : {},
             b = 0;
-          if (!y.exists()) try {
+          try {
             let _ti = await Cl(et(R.db, "artifacts", R.appId, "public", "data", "teacherIndex", u.uid));
-            _ti.exists() && (E = _ti.data())
+            _ti.exists() && (E = { ..._ti.data(), ...E })
           } catch {}
           try {
             b = (await rn(bt(R.db, "artifacts", R.appId, "users", u.uid, "friends"))).size
