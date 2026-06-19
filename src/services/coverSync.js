@@ -19,6 +19,18 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const APP_ID = "gen-ron-kai-app-v1";
 
+const PUBLIC_NUMBER_FIELDS = ["xp", "streak", "level", "totalMinutes", "studyMinutes", "coins"];
+
+function publicProfileFields(src = {}) {
+  const out = {};
+  if (typeof src.comment === "string") out.comment = src.comment;
+  for (const key of PUBLIC_NUMBER_FIELDS) {
+    if (src[key] == null || src[key] === "") continue;
+    if (Number.isFinite(Number(src[key]))) out[key] = Number(src[key]);
+  }
+  return out;
+}
+
 /** The owner's current cover crop as CSS strings (they ARE the local user). */
 function currentCoverSettings() {
   try {
@@ -52,9 +64,15 @@ async function publishCover(uid) {
   try {
     if (!uid) return;
     const snap = await getDoc(doc(db, "artifacts", APP_ID, "users", uid, "profile", "main"));
-    const coverImage = snap && snap.exists() ? snap.data().coverImage || null : null;
-    const patch = { coverImage: coverImage || null, coverSettings: currentCoverSettings(), uid };
-    const shortId = ownShortId(uid);
+    const profile = snap && snap.exists() ? snap.data() || {} : {};
+    const coverImage = profile.coverImage || null;
+    const patch = {
+      ...publicProfileFields(profile),
+      coverImage: coverImage || null,
+      coverSettings: currentCoverSettings(),
+      uid,
+    };
+    const shortId = (typeof profile.shortId === "string" && profile.shortId) || ownShortId(uid);
     if (shortId) patch.shortId = shortId; // only when known — never clobber with ""
     await setDoc(doc(db, "artifacts", APP_ID, "public", "data", "customApp", uid), patch, {
       merge: true,

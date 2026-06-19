@@ -3,12 +3,70 @@ import {
   getDocs,
   setDoc,
   deleteDoc,
+  collection,
+  doc,
   query,
   where,
   limit,
   serverTimestamp,
 } from "firebase/firestore";
+import { db } from "../../firebase/firebase.js";
 import { refs } from "../../firebase/firestorePaths.js";
+
+const LEGACY_APP_ID = "gen-ron-kai-app-v1";
+
+function num(value, fallback = 0) {
+  if (value == null || value === "") return fallback;
+  return Number.isFinite(Number(value)) ? Number(value) : fallback;
+}
+
+function publicCard(uid, d = {}, source = "customApp") {
+  const xp = num(d.xp ?? d.totalMinutes ?? d.studyMinutes, 0);
+  const streak = num(d.streak, 0);
+  return {
+    uid,
+    name: d.name,
+    avatar: d.avatar,
+    color: d.color ?? "",
+    comment: d.comment ?? "",
+    xp,
+    streak,
+    level: num(d.level, Math.floor(xp / 600) + 1),
+    totalMinutes: num(d.totalMinutes ?? d.studyMinutes ?? xp, xp),
+    coins: num(d.coins, 0),
+    shortId: d.shortId ?? "",
+    source,
+  };
+}
+
+function legacyCustomAppCol() {
+  return collection(db, "artifacts", LEGACY_APP_ID, "public", "data", "customApp");
+}
+
+function legacyCustomAppUser(uid) {
+  return doc(db, "artifacts", LEGACY_APP_ID, "public", "data", "customApp", uid);
+}
+
+async function readPublicCardByUid(uid, userRef) {
+  try {
+    const snap = await getDoc(userRef);
+    if (!snap.exists()) return null;
+    return publicCard(uid, snap.data(), "customApp");
+  } catch {
+    return null;
+  }
+}
+
+async function readPublicCardByShortId(colRef, shortIdInput) {
+  try {
+    const snap = await getDocs(query(colRef, where("shortId", "==", shortIdInput), limit(1)));
+    if (snap.empty) return null;
+    const d = snap.docs[0];
+    return publicCard(d.data().uid ?? d.id, d.data(), "customApp");
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Resolve a user's current display card, preferring the public customApp card,
@@ -18,17 +76,37 @@ import { refs } from "../../firebase/firestorePaths.js";
  * Reads: 1 (customApp hit) or 2 (customApp miss -> profile fallback).
  */
 export async function resolveUserCard(uid) {
-  const pubSnap = await getDoc(refs.customAppUser(uid));
-  if (pubSnap.exists()) {
-    const d = pubSnap.data();
-    return { uid, name: d.name, avatar: d.avatar, comment: d.comment ?? "", source: "customApp" };
-  }
+  const legacyCard = await readPublicCardByUid(uid, legacyCustomAppUser(uid));
+  if (legacyCard) return legacyCard;
+
+  const pubCard = await readPublicCardByUid(uid, refs.customAppUser(uid));
+  if (pubCard) return pubCard;
+
   const profSnap = await getDoc(refs.profileMain(uid));
   if (profSnap.exists()) {
-    const d = profSnap.data();
-    return { uid, name: d.name, avatar: d.avatar, comment: d.comment ?? "", source: "profile" };
+    return publicCard(uid, profSnap.data(), "profile");
   }
   return null; // deleted / nonexistent
+}
+
+/**
+ * Screen-open-only public directory read for ranking / friend previews.
+ * Bounded with limit(); no realtime listener and no private profile read.
+ */
+export async function loadPublicCards(max = 50) {
+  const reads = await Promise.allSettled([
+    getDocs(query(legacyCustomAppCol(), limit(max))),
+    getDocs(query(refs.customAppCol(), limit(max))),
+  ]);
+  const byUid = new Map();
+  for (const res of reads) {
+    if (res.status !== "fulfilled") continue;
+    for (const d of res.value.docs) {
+      const card = publicCard(d.data().uid ?? d.id, d.data(), "customApp");
+      if (card.uid && !byUid.has(card.uid)) byUid.set(card.uid, card);
+    }
+  }
+  return Array.from(byUid.values());
 }
 
 /**
@@ -64,6 +142,12 @@ export async function loadFriends(uid) {
       name: card.name ?? e.data.displayName ?? "（名前なし）",
       avatar: card.avatar ?? e.data.avatar ?? "🙂",
       comment: card.comment ?? "",
+      color: card.color ?? "",
+      xp: card.xp ?? 0,
+      streak: card.streak ?? 0,
+      level: card.level ?? 1,
+      totalMinutes: card.totalMinutes ?? 0,
+      coins: card.coins ?? 0,
       // lastMessage only shows if it was denormalized onto the friend doc; we
       // don't fetch messages here (no per-friend listeners at list time).
       lastMessage: e.data.lastMessage ?? null,
@@ -78,15 +162,14 @@ export async function loadFriends(uid) {
  * NOT a full-collection scan.
  */
 export async function findByShortId(shortIdInput) {
-  const q = query(
-    refs.customAppCol(),
-    where("shortId", "==", shortIdInput),
-    limit(1)
-  );
-  const snap = await getDocs(q);
-  if (snap.empty) return null;
-  const d = snap.docs[0];
-  return { uid: d.data().uid ?? d.id, ...d.data() };
+  const reads = await Promise.allSettled([
+    readPublicCardByShortId(legacyCustomAppCol(), shortIdInput),
+    readPublicCardByShortId(refs.customAppCol(), shortIdInput),
+  ]);
+  for (const res of reads) {
+    if (res.status === "fulfilled" && res.value) return res.value;
+  }
+  return null;
 }
 
 /**

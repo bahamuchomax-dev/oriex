@@ -1,6 +1,8 @@
 import "./friends.css";
 import { useState, useEffect } from "react";
 import { useStudy, weekSeries, fmtMinutes } from "../studyStore.js";
+import { getAccount } from "../realAccount.js";
+import { loadPublicCards } from "../../friends/friendsApi.js";
 
 /* ============================================================
  * FriendsView — ひろば (social / leaderboard, demo)
@@ -124,12 +126,22 @@ function readInvite() {
   return code;
 }
 
+function initialFor(name) {
+  return Array.from(String(name || "?"))[0] || "?";
+}
+
+function cardColor(card, index = 0) {
+  return card?.color || RIVALS[index % RIVALS.length]?.color || "var(--blue)";
+}
+
 export default function FriendsView({ onBack }) {
   const st = useStudy();
   const [tab, setTab] = useState(readTab);
   const [inviteOpen, setInviteOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [invite] = useState(readInvite);
+  const [publicCards, setPublicCards] = useState([]);
+  const [cardsLoading, setCardsLoading] = useState(true);
 
   // reset the "copied" confirmation after a moment (clean deps, no plugin refs)
   useEffect(() => {
@@ -137,6 +149,24 @@ export default function FriendsView({ onBack }) {
     const t = setTimeout(() => setCopied(false), 1600);
     return () => clearTimeout(t);
   }, [copied]);
+
+  useEffect(() => {
+    let alive = true;
+    setCardsLoading(true);
+    loadPublicCards(50)
+      .then((cards) => {
+        if (alive) setPublicCards(Array.isArray(cards) ? cards : []);
+      })
+      .catch(() => {
+        if (alive) setPublicCards([]);
+      })
+      .finally(() => {
+        if (alive) setCardsLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const pickTab = (t) => {
     setTab(t);
@@ -154,12 +184,40 @@ export default function FriendsView({ onBack }) {
 
   // live this-week minutes for the user's own row
   const myWeek = weekSeries(st).reduce((a, d) => a + d.minutes, 0);
-  const board = [...RIVALS, { name: "ヒカリ", min: myWeek, color: "var(--blue)", me: true }]
+  const acct = getAccount();
+  const realRows = publicCards.map((card, i) => ({
+    uid: card.uid,
+    name: card.name || card.shortId || "User",
+    min: card.totalMinutes || card.xp || 0,
+    streak: card.streak || 0,
+    level: card.level || Math.floor((card.totalMinutes || card.xp || 0) / 600) + 1,
+    comment: card.comment || "",
+    color: cardColor(card, i),
+    me: !!(acct && card.uid === acct.uid),
+  }));
+  const hasMe = acct && realRows.some((u) => u.uid === acct.uid);
+  const fallbackMe = {
+    uid: acct?.uid || "local",
+    name: acct?.name || "User",
+    min: myWeek,
+    streak: 0,
+    level: 1,
+    comment: "",
+    color: acct?.color || "var(--blue)",
+    me: true,
+  };
+  const boardSource = realRows.length > 0
+    ? (hasMe ? realRows : [...realRows, fallbackMe])
+    : [...RIVALS, fallbackMe];
+  const board = boardSource
     .sort((a, b) => b.min - a.min)
     .map((u, i) => ({ ...u, rank: i + 1 }));
   const me = board.find((u) => u.me) || board[0];
   const top = board[0];
   const gap = top.min - me.min;
+  const publicFriends = realRows.length > 0
+    ? realRows.filter((u) => !(acct && u.uid === acct.uid))
+    : FRIENDS;
 
   return (
     <div className="oxh-sub oxv-fr">
@@ -193,6 +251,8 @@ export default function FriendsView({ onBack }) {
           </button>
         </div>
 
+        {cardsLoading && <p className="oxv-fr-demo">読み込み中...</p>}
+
         {tab === "rank" ? (
           <div className="oxv-fr-panel" key="rank">
             {/* your standing -------------------------------------------------- */}
@@ -223,7 +283,7 @@ export default function FriendsView({ onBack }) {
                   <span className="oxv-fr-rank">
                     {u.rank <= 3 ? <Medal rank={u.rank} /> : <span className="oxv-fr-num">{u.rank}</span>}
                   </span>
-                  <span className="oxv-fr-av" style={{ background: u.color }}>{u.name.slice(0, 1)}</span>
+                  <span className="oxv-fr-av" style={{ background: u.color }}>{initialFor(u.name)}</span>
                   <span className="oxv-fr-name">
                     {u.name}
                     {u.me && <i className="oxv-fr-you">あなた</i>}
@@ -237,7 +297,7 @@ export default function FriendsView({ onBack }) {
           <div className="oxv-fr-panel" key="friends">
             {/* friends header + add ------------------------------------------ */}
             <div className="oxv-fr-fhead">
-              <span className="oxv-fr-fcount">フレンド <b>{FRIENDS.length}</b>人</span>
+              <span className="oxv-fr-fcount">フレンド <b>{publicFriends.length}</b>人</span>
               <button
                 type="button"
                 className="oxv-fr-add"
@@ -271,15 +331,15 @@ export default function FriendsView({ onBack }) {
             )}
 
             <div className="oxv-fr-list">
-              {FRIENDS.map((f) => (
-                <div className="oxv-fr-row" key={f.name}>
+              {publicFriends.map((f) => (
+                <div className="oxv-fr-row" key={f.uid || f.name}>
                   <span className="oxv-fr-av" style={{ background: f.color }}>
-                    {f.name.slice(0, 1)}
+                    {initialFor(f.name)}
                     <i className={`oxv-fr-dot${f.online ? " oxv-fr-dot-on" : ""}`} />
                   </span>
                   <span className="oxv-fr-fmeta">
                     <b>{f.name}</b>
-                    <small>{f.online ? "オンライン" : "オフライン"}</small>
+                    <small>{f.comment || fmtMinutes(f.min || f.totalMinutes || 0)}</small>
                   </span>
                   <span className="oxv-fr-streak">
                     {IcFlame}<b>{f.streak}</b><small>日連続</small>

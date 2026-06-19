@@ -137,7 +137,10 @@ window.__oxBg=(function(){
       'body.oxbg-on [class*="rounded"][style*="rgba(255,255,255,0.08)"],',
       'body.oxbg-on [class*="rounded"][style*="rgba(255, 255, 255, 0.08)"],',
       'body.oxbg-on [class*="rounded"][style*="rgba(0,0,0,0.04)"],',
-      'body.oxbg-on [class*="rounded"][style*="rgba(0, 0, 0, 0.04)"]{background:rgba(255,255,255,.88)!important;background:color-mix(in srgb,var(--card,#fff) 88%,transparent)!important;border-color:rgba(15,23,42,.16)!important;color:var(--ink,#2b2724)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}'
+      'body.oxbg-on [class*="rounded"][style*="rgba(0, 0, 0, 0.04)"]{background:rgba(255,255,255,.88)!important;background:color-mix(in srgb,var(--card,#fff) 88%,transparent)!important;border-color:rgba(15,23,42,.16)!important;color:var(--ink,#2b2724)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}',
+      'html body.oxbg-on .rx-current .rx-circle,',
+      'html body.oxbg-on .rx-avail .rx-circle,',
+      'html body.oxbg-on .rx-locked .rx-circle{background:transparent!important}'
     ].join("");
     document.head.appendChild(st);
   }

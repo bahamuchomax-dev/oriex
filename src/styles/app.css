@@ -310,6 +310,12 @@ body.oxbg-on .ox-plaza-head .rx-topbar{
   border-radius:0 !important;
 }
 
+html body .ox-plaza-section-body{
+  border-radius:0 0 20px 20px !important;
+  border-color:#ECECEC !important;
+  box-shadow:none !important;
+}
+
 /* ── stage / study-mode screen: tighter vertical rhythm ──────────────────────
    The subject stage / mode-selection screen left too much unused vertical space
    and showed too few mode cards in the initial mobile viewport. These rules
@@ -469,6 +475,13 @@ body.oxbg-on .ox-edit-idblock p{ /* profile-edit own name + ID (bare on photo) *
    The 28px-28px tile is unique to this overlay, so it never touches the soft orb
    glows (radial-gradient circles with border-radius:50% / filter:blur). */
 div[style*="radial-gradient"][style*="28px 28px"]{ display:none !important; }
+
+/* Oriex/photo theme: keep the learning stage map transparent. */
+html body.oxbg-on .rx-current .rx-circle,
+html body.oxbg-on .rx-avail .rx-circle,
+html body.oxbg-on .rx-locked .rx-circle{
+  background: transparent !important;
+}
 
 /* ── ひろば「お知らせ」preview: SOLID white on the photo theme ────────────────────
    The plaza announcement-preview button renders inline background:#ffffff on the photo

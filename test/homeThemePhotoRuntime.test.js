@@ -277,6 +277,8 @@ describe("theme photo runtime helper", () => {
     const css = document.getElementById("oxbg-css").textContent;
     expect(css).toContain("body.oxbg-on #root > div{background:transparent!important}");
     expect(css).toContain("body.oxbg-on #root{position:relative!important;z-index:1!important;background:transparent!important}");
+    expect(css).toContain("html body.oxbg-on .rx-current .rx-circle,");
+    expect(css).toContain("html body.oxbg-on .rx-locked .rx-circle{background:transparent!important}");
   });
 
   it("injects CSS that restores readable card surfaces over theme photos", async () => {

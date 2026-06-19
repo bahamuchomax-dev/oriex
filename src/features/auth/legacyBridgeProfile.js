@@ -20,6 +20,18 @@ import { assertSafePayload } from "./modernAuthApi.js";
 // The legacy app's `artifacts/{appId}` namespace (a public, non-secret id).
 export const LEGACY_APP_ID = "gen-ron-kai-app-v1";
 
+const PUBLIC_NUMBER_FIELDS = ["xp", "streak", "level", "totalMinutes", "studyMinutes", "coins"];
+
+function publicProfileFields(src = {}) {
+  const out = {};
+  if (typeof src.comment === "string") out.comment = src.comment;
+  for (const key of PUBLIC_NUMBER_FIELDS) {
+    if (src[key] == null || src[key] === "") continue;
+    if (Number.isFinite(Number(src[key]))) out[key] = Number(src[key]);
+  }
+  return out;
+}
+
 /**
  * Also write the user's OWN legacy DIRECTORY CARD at
  * artifacts/{appId}/public/data/customApp/{uid}. Without it, Friend ID search
@@ -28,11 +40,17 @@ export const LEGACY_APP_ID = "gen-ron-kai-app-v1";
  * public lookup card. Rules allow a self write to this card (isSelf(cardUid)), so
  * no rules change. Non-secret card fields only (no password/authority/answer).
  */
-async function ensureLegacyCard(uid, { shortId, name, avatar, color } = {}) {
+async function ensureLegacyCard(uid, { shortId, name, avatar, color, ...publicFields } = {}) {
   if (!uid || !shortId) return; // no Friend ID yet → nothing to index
   try {
     const cardRef = doc(db, "artifacts", LEGACY_APP_ID, "public", "data", "customApp", uid);
-    const card = { shortId, uid, name: name || shortId, updatedAt: serverTimestamp() };
+    const card = {
+      ...publicProfileFields(publicFields),
+      shortId,
+      uid,
+      name: name || shortId,
+      updatedAt: serverTimestamp(),
+    };
     if (avatar) card.avatar = avatar;
     if (color) card.color = color;
     await setDoc(cardRef, assertSafePayload(card), { merge: true });
@@ -60,6 +78,7 @@ export async function ensureLegacyBridgeProfile(uid) {
     let name = typeof d.name === "string" ? d.name : "";
     let avatar = typeof d.avatar === "string" ? d.avatar : "";
     let color = typeof d.color === "string" ? d.color : "";
+    let publicInfo = publicProfileFields(d);
 
     // SELF-HEAL the legacy-path profile. A doc created by an earlier/minimal bridge
     // can be MISSING the identity fields the legacy app DISPLAYS — and legacy falls
@@ -91,6 +110,7 @@ export async function ensureLegacyBridgeProfile(uid) {
             color = m.color;
             patch.color = color;
           }
+          publicInfo = { ...publicProfileFields(m), ...publicInfo };
           if (Object.keys(patch).length > 0) {
             patch.updatedAt = serverTimestamp();
             await setDoc(legacyRef, assertSafePayload(patch), { merge: true });
@@ -103,7 +123,7 @@ export async function ensureLegacyBridgeProfile(uid) {
 
     // Back-fill the public directory card too (Friend ID search / connections),
     // which earlier bridges never wrote — so existing users become findable.
-    await ensureLegacyCard(uid, { shortId, name, avatar, color });
+    await ensureLegacyCard(uid, { shortId, name, avatar, color, ...publicInfo });
 
     return {
       ok: true,
@@ -124,6 +144,7 @@ export async function ensureLegacyBridgeProfile(uid) {
   let name = "";
   let avatar = "";
   let color = "";
+  let publicInfo = {};
   try {
     const modernSnap = await getDoc(doc(db, "users", uid, "profile", "main"));
     if (modernSnap.exists()) {
@@ -133,6 +154,7 @@ export async function ensureLegacyBridgeProfile(uid) {
       // `avatar` is a character key OR a photo data URL (legacy renders <img src>)
       if (typeof d.avatar === "string") avatar = d.avatar;
       if (typeof d.color === "string") color = d.color;
+      publicInfo = publicProfileFields(d);
     }
   } catch {
     /* ignore — proceed with a minimal profile */
@@ -142,6 +164,7 @@ export async function ensureLegacyBridgeProfile(uid) {
   const base = {
     shortId,
     name: safeName,
+    ...publicInfo,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   };
@@ -154,6 +177,6 @@ export async function ensureLegacyBridgeProfile(uid) {
   await setDoc(legacyRef, profile, { merge: true });
   // Make the new user findable: write their public directory card (Friend ID
   // search + connections/leaderboard) alongside the private profile.
-  await ensureLegacyCard(uid, { shortId, name: safeName, avatar, color });
+  await ensureLegacyCard(uid, { shortId, name: safeName, avatar, color, ...publicInfo });
   return { ok: true, created: true, shortId, name: safeName, avatar, color, isTeacher: false };
 }

@@ -247,6 +247,15 @@
   pointer-events: none;
   background: radial-gradient(120% 90% at 50% -20%, rgba(232, 39, 60, 0.14), transparent 55%);
 }
+body.oxbg-on .oxv-tm .oxv-tm-stage {
+  background: transparent !important;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+body.oxbg-on .oxv-tm .oxv-tm-stage.is-run::after {
+  background: transparent !important;
+}
 .oxv-tm .oxv-tm-stage-top {
   position: relative;
   z-index: 1;

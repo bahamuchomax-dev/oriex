@@ -82,8 +82,12 @@ async function syncCustomApp(uid, p) {
     name: p.name ?? "",
     avatar: p.avatar ?? "",
     color: p.color ?? "",
+    comment: p.comment ?? "",
     xp: p.xp ?? 0,
     streak: p.streak ?? 0,
+    level: p.level ?? Math.floor(((p.xp ?? p.totalMinutes ?? p.studyMinutes ?? 0) || 0) / 600) + 1,
+    totalMinutes: p.totalMinutes ?? p.studyMinutes ?? 0,
+    coins: p.coins ?? 0,
     updatedAt: serverTimestamp(),
   };
   if (p.shortId) publicCard.shortId = p.shortId; // keep/seed; merge preserves otherwise
