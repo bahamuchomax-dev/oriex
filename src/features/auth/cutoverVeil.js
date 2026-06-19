@@ -49,7 +49,7 @@ export function showCutoverVeil() {
     ring.setAttribute("aria-hidden", "true");
     ring.style.cssText =
       "position:absolute;inset:0;border-radius:50%;box-sizing:border-box;" +
-      "border:3px solid rgba(43,39,36,0.12);border-top-color:#ff7a59";
+      "border:3px solid rgba(12,122,68,0.14);border-top-color:#0c7a44";
 
     const icon = document.createElement("img");
     icon.src = ICON_SRC;
