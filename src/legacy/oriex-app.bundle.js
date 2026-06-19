@@ -40120,32 +40120,18 @@ function EI({
           },
           children: i.title
         }) : null]
-      }) : (0, r.jsxs)("span", {
+      }) : (0, r.jsx)("span", {
         style: {
           flex: 1,
           minWidth: 0,
-          display: "flex",
-          alignItems: "baseline",
-          gap: 6
+          fontSize: 13,
+          fontWeight: 800,
+          opacity: .72,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap"
         },
-        children: [(0, r.jsx)("span", {
-          style: {
-            fontSize: 11,
-            fontWeight: 800,
-            opacity: .85,
-            flexShrink: 0
-          },
-          children: "今日の世界のあいさつ"
-        }), (0, r.jsx)("span", {
-          style: {
-            fontSize: 15,
-            fontWeight: 900,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap"
-          },
-          children: o
-        })]
+        children: "予定が設定されていません。"
       }), (0, r.jsx)("span", {
         style: {
           fontSize: 16,
@@ -48021,10 +48007,18 @@ function CI() {
               })
             }), (0, r.jsxs)("div", {
               style: {
+                background: "var(--card)",
+                border: "1px solid var(--line)",
+                borderRadius: 20,
+                padding: 12,
+                marginTop: 6,
+                boxShadow: "0 8px 22px rgba(43,39,36,0.07)"
+              },
+              children: [(0, r.jsxs)("div", {
+              style: {
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
-                gap: 11,
-                marginTop: 6
+                gap: 11
               },
               children: [(0, r.jsxs)("button", {
                 onClick: () => {
@@ -48221,8 +48215,8 @@ function CI() {
                 children: [(0, r.jsx)("span", {
                   className: "ic",
                   style: {
-                    background: `${A.accent}18`,
-                    color: A.accent
+                    background: "#FFF1E0",
+                    color: "#E8923A"
                   },
                   children: (0, r.jsx)(Nh, {
                     size: 22
@@ -48266,8 +48260,8 @@ function CI() {
                 children: [(0, r.jsx)("span", {
                   className: "ic",
                   style: {
-                    background: "#E8F0FF",
-                    color: A.accent
+                    background: "#EFE9FD",
+                    color: "#8B5CF6"
                   },
                   children: (0, r.jsx)(sg, {
                     size: 22
@@ -48276,25 +48270,17 @@ function CI() {
                   children: "記録タイムライン"
                 })]
               })]
-            }), (() => {
+            })]}), (() => {
               let u = e?.uid || "local",
-                y = i?.isTeacher,
-                E = [...(vr || []).filter(b => y ? !Te?.[b.uid]?.isTeacher : b.uid === u).map(b => ({
+                _fset = new Set((Ze || []).map(_f => _f && (_f.uid || _f.id)).filter(Boolean)),
+                E = [...(vr || []).filter(b => b.uid && b.uid !== u && _fset.has(b.uid)).map(b => ({
                   kind: "book",
                   ts: b.createdAt ? Date.parse(b.createdAt) : 0,
-                  title: (y && b.userName ? b.userName + " ・ " : "") + (b.bookTitle || "参考書"),
+                  title: (b.userName ? b.userName + " ・ " : "") + (b.bookTitle || "参考書"),
                   sub: `${b.subject?b.subject+" ・ ":""}${b.minutes||0}分${b.currentPage?` ・ ${b.currentPage}p`:""}`,
                   memo: b.memo || "",
                   id: "b_" + (b.id || b.createdAt),
                   _rid: b.id || b.createdAt
-                })), ...y ? [] : (L || []).map(b => ({
-                  kind: b.isClear ? "clear" : "study",
-                  ts: Number(b.timestamp) || 0,
-                  title: `${b.category?b.category+" ":""}ステージ${b.stage??"-"} ${b.isClear?"クリア":"学習"}`,
-                  sub: `${b.correctCount==null?"":b.correctCount+"語"}${b.correctCount!=null&&b.duration?" ・ ":""}${b.duration?b.duration+"分":""}`,
-                  memo: "",
-                  id: "h_" + (b.id || b.timestamp),
-                  _rid: b.id || b.timestamp
                 }))].filter(b => b.ts > 0).sort((b, C) => C.ts - b.ts).slice(0, 999);
               return (0, r.jsxs)("div", {
                 style: {
@@ -48310,7 +48296,7 @@ function CI() {
                       fontSize: 15,
                       fontWeight: 700
                     },
-                    children: "最近の記録"
+                    children: "フレンドタイムライン"
                   }), (0, r.jsxs)("button", {
                     onClick: () => {
                       m("recordHub"), h("recordsTimeline")
@@ -48333,7 +48319,7 @@ function CI() {
                   })]
                 }), E.length ? (0, r.jsx)("div", {
                   className: "rx-talk",
-                  children: E.slice(0, 3).map((b, C) => (0, r.jsxs)("div", {
+                  children: E.slice(0, 20).map((b, C) => (0, r.jsxs)("div", {
                     className: "rx-trow",
                     style: {
                       borderTop: C ? "1px solid var(--line)" : "none"
@@ -48379,7 +48365,7 @@ function CI() {
                     fontWeight: 600,
                     textAlign: "center"
                   },
-                  children: "まだ記録がありません"
+                  children: "フレンドの記録がまだありません"
                 })]
               })
             })()]
