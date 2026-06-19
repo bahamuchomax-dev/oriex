@@ -40042,18 +40042,19 @@ function EI({
         })]
       }), (0, r.jsx)("div", {
         style: {
-          width: 84,
-          height: 84,
+          width: 96,
+          height: 96,
           borderRadius: 999,
           flex: "none",
+          marginRight: 12,
           display: "grid",
           placeItems: "center",
           background: `conic-gradient(#1fae66 ${j}%, rgba(31,174,102,0.18) 0)`
         },
         children: (0, r.jsxs)("div", {
           style: {
-            width: 66,
-            height: 66,
+            width: 76,
+            height: 76,
             borderRadius: 999,
             background: "#fff",
             color: "#0c7a44",
@@ -40061,7 +40062,7 @@ function EI({
             display: "grid",
             placeItems: "center",
             fontWeight: 900,
-            fontSize: 15
+            fontSize: 17
           },
           children: [j, "%"]
         })
