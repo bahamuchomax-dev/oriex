@@ -40919,7 +40919,11 @@ function CI() {
     currentPage: "",
     totalPages: "",
     memo: ""
-  }), [Ar, gi] = (0, P.useState)(0), [ou, _o] = (0, P.useState)([]), [Hi, ga] = (0, P.useState)(null), [$o, ec] = (0, P.useState)(!1), [t0, Pa] = (0, P.useState)(!1), [lo, Xi] = (0, P.useState)(() => {
+  }), [oxBkTimer, oxBkSet] = (0, P.useState)({
+    running: !1,
+    startTs: 0,
+    acc: 0
+  }), [, oxBkTick] = (0, P.useState)(0), [Ar, gi] = (0, P.useState)(0), [ou, _o] = (0, P.useState)([]), [Hi, ga] = (0, P.useState)(null), [$o, ec] = (0, P.useState)(!1), [t0, Pa] = (0, P.useState)(!1), [lo, Xi] = (0, P.useState)(() => {
     try {
       return JSON.parse(localStorage.getItem("oriex_review_folders") || "[]")
     } catch {
@@ -40993,6 +40997,14 @@ function CI() {
     text: "Oriex",
     color: "rgba(201,168,76,0.18)"
   });
+  (0, P.useEffect)(() => {
+    if (!oxBkTimer.running) return;
+    let _oxiv = setInterval(() => oxBkTick(z => z + 1), 1e3);
+    return () => clearInterval(_oxiv)
+  }, [oxBkTimer.running]);
+  let oxBkMs = oxBkTimer.acc + (oxBkTimer.running ? Date.now() - oxBkTimer.startTs : 0),
+    oxBkMM = Math.floor(oxBkMs / 6e4),
+    oxBkSS = Math.floor(oxBkMs / 1e3) % 60;
   (0, P.useEffect)(() => () => {
     Wc.current && clearTimeout(Wc.current), du.current && clearTimeout(du.current)
   }, []);
@@ -44116,6 +44128,87 @@ function CI() {
                 color: A.text
               },
               children: ne.record
+            }), (0, r.jsxs)("div", {
+              style: {
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "12px 14px",
+                borderRadius: 18,
+                border: "1.2px solid " + pe,
+                background: S ? "rgba(20,184,166,0.10)" : "rgba(20,184,166,0.14)"
+              },
+              children: [(0, r.jsxs)("div", {
+                style: {
+                  flex: 1,
+                  minWidth: 0
+                },
+                children: [(0, r.jsx)("div", {
+                  style: {
+                    fontSize: 11,
+                    color: U,
+                    fontWeight: 750
+                  },
+                  children: "タイマーで計測"
+                }), (0, r.jsx)("div", {
+                  style: {
+                    fontSize: 26,
+                    fontWeight: 850,
+                    color: A.text,
+                    fontVariantNumeric: "tabular-nums",
+                    letterSpacing: "0.02em",
+                    lineHeight: 1.1
+                  },
+                  children: String(oxBkMM).padStart(2, "0") + ":" + String(oxBkSS).padStart(2, "0")
+                })]
+              }), (0, r.jsx)("button", {
+                onClick: () => {
+                  if (oxBkTimer.running) {
+                    let el = oxBkTimer.acc + (Date.now() - oxBkTimer.startTs),
+                      tm = Math.max(1, Math.round(el / 6e4));
+                    Ma(Ke => ({
+                      ...Ke,
+                      hours: String(Math.floor(tm / 60)),
+                      mins: String(tm % 60)
+                    })), oxBkSet({
+                      running: !1,
+                      startTs: 0,
+                      acc: el
+                    })
+                  } else oxBkSet({
+                    ...oxBkTimer,
+                    running: !0,
+                    startTs: Date.now()
+                  })
+                },
+                style: {
+                  borderRadius: 16,
+                  padding: "11px 18px",
+                  fontWeight: 850,
+                  fontSize: 14,
+                  color: "#fff",
+                  border: "none",
+                  background: oxBkTimer.running ? "linear-gradient(135deg,#f59e0b,#d97706)" : "linear-gradient(135deg,#14b8a6,#0f766e)",
+                  boxShadow: "0 8px 20px rgba(20,184,166,0.20)"
+                },
+                children: oxBkTimer.running ? "一時停止" : (oxBkMs > 0 ? "再開" : "計測開始")
+              }), (0, r.jsx)("button", {
+                onClick: () => oxBkSet({
+                  running: !1,
+                  startTs: 0,
+                  acc: 0
+                }),
+                style: {
+                  borderRadius: 16,
+                  padding: "11px 14px",
+                  fontWeight: 800,
+                  fontSize: 13,
+                  color: U,
+                  border: "1.2px solid " + pe,
+                  background: "transparent"
+                },
+                children: "リセット"
+              })]
             }), (0, r.jsxs)("label", {
               style: {
                 display: "flex",
