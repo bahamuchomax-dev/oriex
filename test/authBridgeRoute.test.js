@@ -150,10 +150,17 @@ describe("legacyBridgeProfile — own-uid, no-password, no legacy edit", () => {
     expect(CODE).toMatch(/doc\(db, "artifacts", LEGACY_APP_ID, "users", uid, "profile", "main"\)/);
     expect(CODE).toMatch(/doc\(db, "users", uid, "profile", "main"\)/);
   });
-  it("reads no `.password`, does no plaintext compare, writes no `password:` field", () => {
-    expect(CODE).not.toMatch(/\.password\b/);
-    expect(CODE).not.toMatch(/\.password\s*[!=]==?/);
-    expect(CODE).not.toMatch(/\bpassword\s*:/);
+  it("reads no `.password`, does no plaintext compare, writes no `password:` field (except the backfill-DELETE)", () => {
+    // Allow the documented plaintext-password BACKFILL-DELETE: it checks existence
+    // (`d.password !== undefined`) and removes the field (`password: deleteField()`).
+    // That is a security improvement, not a password read/write — strip it, then
+    // assert no OTHER password handling remains.
+    const C2 = CODE
+      .replace(/\.password(?:Hash)?\s*[!=]==?\s*undefined/g, "")
+      .replace(/password(?:Hash)?\s*:\s*deleteField\(\)/g, "");
+    expect(C2).not.toMatch(/\.password\b/);
+    expect(C2).not.toMatch(/\.password\s*[!=]==?/);
+    expect(C2).not.toMatch(/\bpassword\s*:/);
   });
   it("runs every write through assertSafePayload and logs nothing", () => {
     expect(CODE).toContain("assertSafePayload(");

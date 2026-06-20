@@ -117,7 +117,10 @@ describe("auth recovery — modern src has no client-side plaintext password com
   it("no equality/inequality comparison against a `.password` field outside the legacy bundle", () => {
     const offenders = [];
     for (const f of files) {
-      const src = readFileSync(f, "utf8");
+      // Allow the plaintext-password BACKFILL-DELETE existence check
+      // (`d.password !== undefined` / `d.passwordHash !== undefined` → deleteField()):
+      // it REMOVES legacy plaintext, it is not a plaintext-auth comparison.
+      const src = readFileSync(f, "utf8").replace(/\.password(?:Hash)?\s*[!=]==?\s*undefined/g, "");
       // `x.password === y`, `x.password !== y`, `x.password == y` — plaintext compare
       if (/\.password\s*[!=]==?/.test(src)) offenders.push(f.replace(/\\/g, "/"));
     }

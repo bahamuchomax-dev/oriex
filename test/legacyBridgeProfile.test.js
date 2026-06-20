@@ -5,6 +5,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
  * adopts the session — and never copies/writes a password. */
 
 vi.mock("../src/firebase/firebase.js", () => ({ auth: { __auth: true }, db: { __db: true } }));
+// legacyBridgeProfile imports `db` from db.js (which calls initializeFirestore at
+// load); mock db.js directly so that real init never reaches the firestore mock.
+vi.mock("../src/firebase/db.js", () => ({ db: { __db: true } }));
 vi.mock("firebase/auth", () => ({
   createUserWithEmailAndPassword: vi.fn(),
   signInWithEmailAndPassword: vi.fn(),
@@ -15,6 +18,8 @@ vi.mock("firebase/firestore", () => ({
   getDoc: vi.fn(),
   setDoc: vi.fn(async () => {}),
   serverTimestamp: vi.fn(() => "TS"),
+  // used by the plaintext-password backfill-DELETE in legacyBridgeProfile.js
+  deleteField: vi.fn(() => "DELETE"),
 }));
 
 import * as fs from "firebase/firestore";

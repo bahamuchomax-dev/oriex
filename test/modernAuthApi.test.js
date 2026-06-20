@@ -6,6 +6,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
  * logout calls signOut. */
 
 vi.mock("../src/firebase/firebase.js", () => ({ auth: { __auth: true }, db: { __db: true } }));
+// db.js calls initializeFirestore at load; mock it directly so real init never
+// reaches the firestore mock (the auth API reaches firestore transitively).
+vi.mock("../src/firebase/db.js", () => ({ db: { __db: true } }));
 vi.mock("firebase/auth", () => ({
   createUserWithEmailAndPassword: vi.fn(async () => ({ user: { uid: "UID_NEW" } })),
   signInWithEmailAndPassword: vi.fn(async () => ({ user: { uid: "UID_LOGIN" } })),
