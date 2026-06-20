@@ -91,7 +91,7 @@ const GROUPS = [
     heading: "学習",
     rows: [
       { key: "diary", label: "学習日記", desc: "今日の記録をふり返る", tone: "red", icon: Diary },
-      { key: "plans", label: "週計画", desc: "今週の目標とタスク", tone: "blue", icon: Plans },
+      { key: "plans", label: "週計画", desc: "今週の目標とタスク", tone: "blue", icon: Plans, img: "/weekly-plan.png" },
       { key: "teacher", label: "配信", desc: "先生からの問題", tone: "gold", icon: Teacher },
     ],
   },
@@ -145,7 +145,7 @@ export default function MoreView({ onBack, onOpen }) {
                   onClick={() => open(r.key)}
                 >
                   <span className={"oxv-mr-ic oxv-mr-ic--" + r.tone} aria-hidden="true">
-                    {r.icon}
+                    {r.img ? <img src={r.img} alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }} /> : r.icon}
                   </span>
                   <span className="oxv-mr-txt">
                     <span className="oxv-mr-label">{r.label}</span>

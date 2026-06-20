@@ -14,7 +14,7 @@ const PALETTE = [
   { key: "hamster", label: "育成", icon: "育", grad: "pink" },
   { key: "profile", label: "マイ", icon: "私", grad: "slate" },
   { key: "records", label: "記録ハブ", icon: "録", grad: "cyan" },
-  { key: "plans", label: "週計画", icon: "計", grad: "green" },
+  { key: "plans", label: "週計画", icon: null, img: "/weekly-plan.png", grad: "green" },
   { key: "timer", label: "時間記録", icon: "分", grad: "red" },
 ];
 
@@ -87,7 +87,7 @@ export default function Home({ profile, navigate }) {
               className={`palette-tile grad-${item.grad}`}
               onClick={() => navigate(item.key)}
             >
-              <span className="palette-icon" aria-hidden="true">{item.icon}</span>
+              <span className="palette-icon" aria-hidden="true">{item.img ? <img src={item.img} alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }} /> : item.icon}</span>
               <span>{item.label}</span>
             </button>
           ))}

@@ -332,11 +332,12 @@ body {
   gap: 10px;
 }
 .palette-tile {
-  min-height: 82px;
+  min-height: 70px;
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 7px;
+  gap: 5px;
+  padding: 8px 6px;
   border: none;
   border-radius: 16px;
   color: #fff;

@@ -45883,17 +45883,14 @@ function CI() {
                     borderRadius: 6,
                     boxShadow: wi === u.id ? `0 0 0 2px ${A.text}, 0 2px 6px ${u.sw}66` : "none"
                   },
-                  children: (0, r.jsx)("svg", {
-                    width: 20,
-                    height: 20,
-                    viewBox: "0 0 100 100",
-                    fill: "none",
-                    children: (0, r.jsx)("path", {
-                      d: "M75 22A38 38 0 1 0 75 78",
-                      stroke: u.sw,
-                      strokeWidth: 22,
-                      strokeLinecap: "round"
-                    })
+                  children: (0, r.jsx)("span", {
+                    style: {
+                      display: "block",
+                      width: 20,
+                      height: 20,
+                      borderRadius: "50%",
+                      background: u.sw
+                    }
                   })
                 }, u.id))
               })]

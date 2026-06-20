@@ -28,16 +28,18 @@ function modalOpen() {
   );
 }
 
-function inHorizontalScroller(el) {
+let hScroller = null;
+
+function findHorizontalScroller(el) {
   let n = el;
   while (n && n.nodeType === 1 && n !== document.body) {
     if (n.scrollWidth > n.clientWidth + 8) {
       const ov = getComputedStyle(n).overflowX;
-      if (ov === "auto" || ov === "scroll") return true;
+      if (ov === "auto" || ov === "scroll") return n;
     }
     n = n.parentElement;
   }
-  return false;
+  return null;
 }
 
 /** The bottom nav: the bottom-most wide, short row holding 3–8 buttons, regardless
@@ -131,10 +133,11 @@ function onStart(e) {
   if (
     target &&
     target.closest &&
-    (target.closest("input,textarea,select,[contenteditable=true],canvas,.rx-timer,.rx-profile-edit,[data-no-swipe]") || inHorizontalScroller(target))
+    target.closest("input,textarea,select,[contenteditable=true],canvas,.rx-timer,.rx-profile-edit,[data-no-swipe]")
   ) {
     return;
   }
+  hScroller = findHorizontalScroller(target);
   sx = t.clientX;
   sy = t.clientY;
   tracking = true;
@@ -147,6 +150,11 @@ function onEnd(e) {
   const dx = t.clientX - sx;
   const dy = t.clientY - sy;
   if (Math.abs(dx) < H_MIN || Math.abs(dx) < Math.abs(dy) * H_DOM) return;
+  if (hScroller) {
+    const canScrollLeft = hScroller.scrollLeft > 1;
+    const canScrollRight = hScroller.scrollLeft < hScroller.scrollWidth - hScroller.clientWidth - 1;
+    if ((dx < 0 && canScrollRight) || (dx > 0 && canScrollLeft)) return;
+  }
   const nav = findNav();
   const btns = navButtons(nav);
   if (btns.length < 2) return;

@@ -7,7 +7,8 @@ export default function TeacherHub({ profile, isTeacher, navigate }) {
           title: "週計画を送る",
           label: "Weekly Plan",
           body: "生徒ごとに参考書ベースの計画を送信します。",
-          icon: "計",
+          icon: null,
+          img: "/weekly-plan.png",
           action: () => navigate?.("plans"),
           tone: "blue",
         },
@@ -49,7 +50,8 @@ export default function TeacherHub({ profile, isTeacher, navigate }) {
           title: "週計画",
           label: "Weekly Plan",
           body: "先生から届いた週計画と進捗を確認します。",
-          icon: "計",
+          icon: null,
+          img: "/weekly-plan.png",
           action: () => navigate?.("plans"),
           tone: "blue",
         },
@@ -88,7 +90,7 @@ export default function TeacherHub({ profile, isTeacher, navigate }) {
             onClick={card.action ?? undefined}
             aria-disabled={!card.action}
           >
-            <span className="teacher-hub-icon" aria-hidden="true">{card.icon}</span>
+            <span className="teacher-hub-icon" aria-hidden="true">{card.img ? <img src={card.img} alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }} /> : card.icon}</span>
             <span className="teacher-hub-label">{card.label}</span>
             <strong>{card.title}</strong>
             <span>{card.body}</span>
