@@ -38006,6 +38006,10 @@ function kI(e) {
   })
 }
 let Rh = [{
+  id: "oriex",
+  sw: "#f3c9b6",
+  g: "linear-gradient(160deg,#fff8f4 0%,#fdede6 52%,#f5ddd0 100%)"
+}, {
   id: "red",
   sw: "#ff8585",
   g: "linear-gradient(160deg,#ffdede 0%,#ffb3b3 55%,#ff9a9a 100%)"
@@ -40929,18 +40933,11 @@ function CI() {
     }
   }), [wg, jg] = (0, P.useState)(null), [Kh, z1] = (0, P.useState)(""), [Kl, Gh] = (0, P.useState)(null), [Mc, Hh] = (0, P.useState)("pets"), [Eg, Zo] = (0, P.useState)(""), [Gl, Xh] = (0, P.useState)("all"), [Sg, Ko] = (0, P.useState)("all"), [Yh, Pc] = (0, P.useState)(""), [Kd, Ig] = (0, P.useState)(!1), [Rc, Jh] = (0, P.useState)(""), [Gd, Hd] = (0, P.useState)([]), [Xd, Fa] = (0, P.useState)(!1), [Js, Ua] = (0, P.useState)(!1), [_s, Bc] = (0, P.useState)(!1), [Yd, Jd] = (0, P.useState)({}), [$s, Ui] = (0, P.useState)({
     allowedUids: []
-  }), [xr, Dc] = (0, P.useState)(() => {
+  }), [xr, Dc] = (0, P.useState)(() => "oriex"), [wi, _h] = (0, P.useState)(() => {
     try {
-      let u = JSON.parse(localStorage.getItem("genron_theme")) || "oriex";
-      return Do.some(y => y.id === u) ? u : "oriex"
+      return localStorage.getItem("oriex_profile_bg") || i?.profileBg || "oriex"
     } catch {
-      return "oriex"
-    }
-  }), [wi, _h] = (0, P.useState)(() => {
-    try {
-      return localStorage.getItem("oriex_profile_bg") || i?.profileBg || "red"
-    } catch {
-      return i?.profileBg || "red"
+      return i?.profileBg || "oriex"
     }
   }), [Cr, _d] = (0, P.useState)(() => {
     try {
@@ -42265,7 +42262,7 @@ function CI() {
           bio: b.bio || "",
           targetSchool: b.targetSchool || "",
           coverImage: b.coverImage || null,
-          profileBg: b.profileBg || "red",
+          profileBg: b.profileBg || "oriex",
           streakCount: b.streakCount || 0,
           totalExp: b.totalExp || 0,
           score: b.totalExp || 0,
@@ -45858,14 +45855,14 @@ function CI() {
                 style: {
                   color: S ? "#78350f" : "#94a3b8"
                 },
-                children: "背景の色（写真なしのとき）"
+                children: "背景（写真なしのとき）"
               }), (0, r.jsx)("div", {
                 style: {
                   display: "flex",
                   gap: 6,
                   flexWrap: "wrap"
                 },
-                children: Rh.map(u => (0, r.jsx)("button", {
+                children: Rh.filter(u => u.id === "oriex").map(u => (0, r.jsx)("button", {
                   onClick: () => {
                     _h(u.id);
                     try {
@@ -49402,7 +49399,7 @@ function CI() {
                           display: "flex",
                           gap: 12
                         },
-                        children: Rh.filter(q => ["teal", "blue", "green", "orange", "pink"].includes(q.id)).map(q => (0, r.jsx)("button", {
+                        children: Rh.filter(q => q.id === "oriex").map(q => (0, r.jsx)("button", {
                           onClick: () => {
                             _h(q.id);
                             try {
@@ -53876,7 +53873,7 @@ function CI() {
                 },
                 children: "設定"
               })]
-            }), (0, r.jsxs)("div", {
+            }), false && (0, r.jsxs)("div", {
               className: "rounded-[20px] p-5 mb-4",
               style: {
                 background: S ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.05)",
@@ -54120,28 +54117,34 @@ function CI() {
                 children: "テーマ"
               }), (0, r.jsx)("div", {
                 className: "grid grid-cols-2 gap-2",
-                children: Do.map(u => (0, r.jsxs)("button", {
+                children: [(0, r.jsxs)("button", {
                   onClick: () => {
-                    Dc(u.id), wt("theme", u.id), e && R.enabled && qn(et(R.db, "artifacts", R.appId, "users", e.uid, "profile", "main"), {
-                      themeId: u.id
+                    try { window.__oxBg && window.__oxBg.clearPhoto && window.__oxBg.clearPhoto() } catch {}
+                    Dc("oriex"), wt("theme", "oriex"), e && R.enabled && qn(et(R.db, "artifacts", R.appId, "users", e.uid, "profile", "main"), {
+                      themeId: "oriex"
                     }, {
                       merge: !0
                     }).catch(() => null)
                   },
-                  className: "py-3 px-4 rounded-[12px] flex items-center gap-2 font-black text-sm active:opacity-70 transition-all",
+                  className: "py-3 px-4 rounded-[12px] flex items-center justify-center gap-2 font-black text-sm active:opacity-70 transition-all",
                   style: {
-                    background: xr === u.id ? u.accentGrad : S ? "rgba(30,20,80,0.06)" : "rgba(255,255,255,0.06)",
-                    color: xr === u.id ? "white" : S ? "rgba(30,20,80,0.7)" : "rgba(255,255,255,0.5)",
-                    border: xr === u.id ? "none" : `1px solid ${S?"rgba(30,20,80,0.12)":"rgba(255,255,255,0.1)"}`
+                    background: !(typeof window !== "undefined" && window.__oxBg && window.__oxBg.isOn()) ? A.accentGrad : S ? "rgba(30,20,80,0.06)" : "rgba(255,255,255,0.06)",
+                    color: !(typeof window !== "undefined" && window.__oxBg && window.__oxBg.isOn()) ? "white" : S ? "rgba(30,20,80,0.7)" : "rgba(255,255,255,0.5)",
+                    border: !(typeof window !== "undefined" && window.__oxBg && window.__oxBg.isOn()) ? "none" : `1px solid ${S?"rgba(30,20,80,0.12)":"rgba(255,255,255,0.1)"}`
                   },
-                  children: [u.IconComp ? (0, r.jsx)(u.IconComp, {
-                    size: 16,
-                    color: xr === u.id ? "white" : S ? "rgba(30,20,80,0.7)" : "rgba(255,255,255,0.5)"
-                  }) : null, u.name, xr === u.id && (0, r.jsx)("span", {
-                    className: "ml-auto text-xs",
-                    children: "済"
-                  })]
-                }, u.id))
+                  children: "Oriex"
+                }, "oriex"), (0, r.jsxs)("button", {
+                  onClick: () => {
+                    try { window.__oxBg && window.__oxBg.openSettings && window.__oxBg.openSettings() } catch {}
+                  },
+                  className: "py-3 px-4 rounded-[12px] flex items-center justify-center gap-2 font-black text-sm active:opacity-70 transition-all",
+                  style: {
+                    background: (typeof window !== "undefined" && window.__oxBg && window.__oxBg.isOn()) ? A.accentGrad : S ? "rgba(30,20,80,0.06)" : "rgba(255,255,255,0.06)",
+                    color: (typeof window !== "undefined" && window.__oxBg && window.__oxBg.isOn()) ? "white" : S ? "rgba(30,20,80,0.7)" : "rgba(255,255,255,0.5)",
+                    border: (typeof window !== "undefined" && window.__oxBg && window.__oxBg.isOn()) ? "none" : `1px solid ${S?"rgba(30,20,80,0.12)":"rgba(255,255,255,0.1)"}`
+                  },
+                  children: "写真"
+                }, "photo")]
               })]
             }), (0, r.jsxs)("div", {
               className: "rounded-[20px] p-5 mb-4",

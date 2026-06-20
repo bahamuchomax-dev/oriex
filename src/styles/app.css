@@ -99,6 +99,18 @@ html, body {
 .rx-q .ic { width: 40px !important; height: 40px !important; margin: 0 auto 5px !important; }
 .rx-q .ic svg { width: 22px !important; height: 22px !important; }
 
+/* ── Performance: cap expensive backdrop blur (挙動を軽く) ─────────────────
+   The legacy app sets backdrop-filter: blur(18–30px) inline on the fixed bottom nav
+   and many frosted cards — the single biggest source of scroll/interaction jank on
+   mobile (the fixed nav is re-composited every frame). Cap every inline backdrop blur
+   to a light 8px app-wide: keeps the frosted look but is far cheaper to paint. Matches
+   ONLY elements that already use backdrop-filter (via their inline style), so nothing
+   gains new blur. !important beats the inline value. */
+[style*="backdrop-filter"] {
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
 /* ── developer name badge ──────────────────────────────────────────────────────
    oxUiPatches injects <span class="ox-devbadge">デベロッパー</span> next to the
    signed-in developer's own name (.rx-pname), mirroring the teacher「先生」.rx-tbadge
