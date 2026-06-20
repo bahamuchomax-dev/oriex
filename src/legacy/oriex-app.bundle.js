@@ -41827,14 +41827,6 @@ function CI() {
     if (oxNoticeTab === "announce" && ye.length > 0) {
       let u = ye.map(y => y.id);
       $e(u), localStorage.setItem("genron_readAnnouncements", JSON.stringify(u))
-    } else if (oxNoticeTab === "social") {
-      let ks = oxSocialNotifs().map(_n => _n.key);
-      if (ks.length) {
-        setOxSeenSocial(ks);
-        try {
-          localStorage.setItem("oriex_seen_social", JSON.stringify(ks))
-        } catch {}
-      }
     }
   }, [l, ye, oxNoticeTab]), (0, P.useEffect)(() => {
     try { window.__oxScreen = l; window.__oxGoTab = id => { h(id); el(!1); try { ua.current && (ua.current.scrollTop = 0) } catch {} } } catch {}
@@ -43142,13 +43134,17 @@ function CI() {
     }
   }, [e?.uid, R.enabled]), (0, P.useEffect)(() => {
     if (l !== "announcementsList") return;
-    let _k = oxSocialNotifs().map(_n => _n.key);
-    if (!_k.length) return;
-    let _m = [...new Set([...(Array.isArray(oxSeenSocial) ? oxSeenSocial : []), ..._k])];
-    setOxSeenSocial(_m);
-    try {
-      localStorage.setItem("oriex_seen_social", JSON.stringify(_m))
-    } catch {}
+    // Mark likes/comments as seen on LEAVING the notices screen, so the いいね・コメント
+    // tab keeps showing "NEW" while the user is viewing it and clears on screen change.
+    return () => {
+      let _k = oxSocialNotifs().map(_n => _n.key);
+      if (!_k.length) return;
+      setOxSeenSocial(prev => {
+        let _m = [...new Set([...(Array.isArray(prev) ? prev : []), ..._k])];
+        try { localStorage.setItem("oriex_seen_social", JSON.stringify(_m)) } catch {}
+        return _m
+      })
+    }
   }, [l]), (0, P.useEffect)(() => {
     if (!e || !R.enabled || l !== "plaza") return;
     if (Date.now() - (window.__oxTeacherIdxAt || 0) < 12e4) return;
@@ -51559,14 +51555,18 @@ function CI() {
                   children: [_lb, _dot > 0 && (0, r.jsx)("span", {
                     style: {
                       position: "absolute",
-                      top: 6,
-                      right: 8,
-                      width: 9,
-                      height: 9,
+                      top: 2,
+                      right: 4,
+                      padding: "1px 5px",
                       borderRadius: 999,
                       background: "#ff3b30",
-                      border: "2px solid var(--card,#fff)"
-                    }
+                      color: "#fff",
+                      fontSize: 8,
+                      fontWeight: 900,
+                      letterSpacing: "0.04em",
+                      lineHeight: 1.4
+                    },
+                    children: "NEW"
                   })]
                 }, _k);
               return (0, r.jsxs)("div", {
