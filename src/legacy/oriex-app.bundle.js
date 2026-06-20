@@ -44913,6 +44913,11 @@ function CI() {
                 },
                 children: "リセット"
               })]
+            }), (0, r.jsx)("button", {
+              onClick: () => yu("timer"),
+              className: "active:scale-[0.98] transition-transform",
+              style: { ...je, marginTop: 4, background: oxBkSaveMinutes > 0 ? "linear-gradient(135deg,#14b8a6,#0f766e)" : "linear-gradient(135deg,#9ca3af,#6b7280)" },
+              children: oxBkSaveMinutes > 0 ? `タイマーで記録（${oxBkSaveMinutes}分）` : "タイマーで記録"
             }), (0, r.jsxs)("label", {
               style: {
                 display: "flex",
@@ -45048,15 +45053,10 @@ function CI() {
             }), (0, r.jsxs)("div", {
               style: { display: "flex", flexDirection: "column", gap: 8 },
               children: [(0, r.jsx)("button", {
-                onClick: () => yu("timer"),
-                className: "active:scale-[0.98] transition-transform",
-                style: { ...je, background: oxBkSaveMinutes > 0 ? "linear-gradient(135deg,#14b8a6,#0f766e)" : "linear-gradient(135deg,#9ca3af,#6b7280)" },
-                children: oxBkSaveMinutes > 0 ? `⏱ タイマーで記録（${oxBkSaveMinutes}分）` : "⏱ タイマーで記録"
-              }), (0, r.jsx)("button", {
                 onClick: () => yu("manual"),
                 className: "active:scale-[0.98] transition-transform",
                 style: je,
-                children: "✍ 手動で記録"
+                children: "手動で記録"
               })]
             })]
           })]
@@ -45275,7 +45275,7 @@ function CI() {
           zIndex: 290
         },
         children: "Oriex " + ((typeof window === "undefined" ? null : window.__OX_APP_VERSION) || "v7.36")
-      }), ["start", "stageMap", "review", "wordbook", "customApp", "recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp", "plaza", "chat", "friendsList", "announcementsList", "stats", "factoryApp", "friendProfile", "myPage", "settingsApp", "weeklyTaskAdmin", "weeklyPlan", "recordsTimeline", "teacherCheck"].includes(l) && !(l === "review" && (Bt === "quiz" || Bt === "sentence")) && (0, r.jsx)("div", {
+      }), ["start", "stageMap", "review", "wordbook", "customApp", "recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp", "plaza", "chat", "friendsList", "announcementsList", "stats", "factoryApp", "friendProfile", "myPage", "settingsApp", "weeklyTaskAdmin", "weeklyPlan", "recordsTimeline", "teacherCheck", "recordCheck"].includes(l) && !(l === "review" && (Bt === "quiz" || Bt === "sentence")) && (0, r.jsx)("div", {
         className: "shrink-0 ox-bottom-nav",
         style: {
           paddingBottom: 7,
@@ -45332,7 +45332,7 @@ function CI() {
             }, {
               id: "recordHub",
               label: "記録",
-              match: ["recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp", "recordsTimeline"]
+              match: ["recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp", "recordsTimeline", "recordCheck"]
             }, {
               id: "myPage",
               label: "マイページ",
@@ -45620,8 +45620,23 @@ function CI() {
             },
             children: "×"
           }), (0, r.jsx)("div", {
-            style: { fontSize: 34, textAlign: "center", marginBottom: 6 },
-            children: "📢"
+            style: { textAlign: "center", marginBottom: 6 },
+            children: (0, r.jsxs)("svg", {
+              width: "32",
+              height: "32",
+              viewBox: "0 0 24 24",
+              fill: "none",
+              stroke: A.accent,
+              strokeWidth: "1.8",
+              strokeLinecap: "round",
+              strokeLinejoin: "round",
+              style: { display: "inline-block" },
+              children: [(0, r.jsx)("path", {
+                d: "M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"
+              }), (0, r.jsx)("path", {
+                d: "M13.7 21a2 2 0 0 1-3.4 0"
+              })]
+            })
           }), (0, r.jsx)("div", {
             style: { fontSize: 18, fontWeight: 900, color: A.text, textAlign: "center", marginBottom: 12, fontFamily: '"Zen Maru Gothic",sans-serif' },
             children: "アップデートのお知らせ"
@@ -47352,7 +47367,7 @@ function CI() {
                         c: "#8B5CF6",
                         bg: "#EFE9FD",
                         go: () => {
-                          setOxTLF(!1), pe("recordHub")
+                          setOxTLF(!1), pe("recordCheck")
                         },
                         ic: ze((0, r.jsxs)(r.Fragment, {
                           children: [(0, r.jsx)("path", {
@@ -48978,6 +48993,66 @@ function CI() {
                 }, u.id)
               })
             })]
+          }), l === "recordCheck" && (0, r.jsxs)("div", {
+            className: "rx-home",
+            style: {
+              display: "block",
+              minHeight: "auto",
+              height: "auto",
+              "--accent": A.accent,
+              "--accent-soft": `${A.accent}22`,
+              "--ink": A.text,
+              "--ink-soft": A.textMuted,
+              "--card": S ? "#ffffff" : A.card,
+              "--line": A.cardBorder
+            },
+            children: [(0, r.jsxs)("div", {
+              className: "rx-topbar",
+              style: { display: "flex", alignItems: "center", gap: 10 },
+              children: [(0, r.jsx)("button", {
+                className: "rx-back",
+                onClick: () => h(p && p !== l ? p : "start"),
+                "aria-label": "戻る",
+                children: (0, r.jsx)(la, {})
+              }), (0, r.jsxs)("div", {
+                children: [(0, r.jsx)("div", { className: "rx-greet", children: "これまでの" }), (0, r.jsx)("div", { className: "rx-title", children: "記録確認" })]
+              })]
+            }), (() => {
+              let _me = e?.uid || "local",
+                _logs = (vr || []).filter(b => b && b.uid === _me && (b.createdAt || b.id)),
+                _total = _logs.reduce((s, b) => s + Math.max(0, Number(b.minutes) || 0), 0),
+                _wkStart = ts => { let d = ls(ts), dy = (d.getUTCDay() + 6) % 7; return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - dy) },
+                _byWeek = {};
+              _logs.forEach(b => { let ts = Date.parse(b.createdAt) || Number(b.id) || 0; if (!ts) return; let wk = _wkStart(ts); _byWeek[wk] = (_byWeek[wk] || 0) + Math.max(0, Number(b.minutes) || 0) });
+              let _today = Pl(Date.now()),
+                _todayMin = _logs.filter(b => Pl(Date.parse(b.createdAt) || Number(b.id) || 0) === _today).reduce((s, b) => s + Math.max(0, Number(b.minutes) || 0), 0),
+                _curWk = _wkStart(Date.now()),
+                _weeks = [];
+              for (let i = 11; i >= 0; i--) { let wk = _curWk - i * 6048e5, d = new Date(wk); _weeks.push({ m: _byWeek[wk] || 0, lb: (d.getUTCMonth() + 1) + "/" + d.getUTCDate() }) }
+              let _max = Math.max(60, ..._weeks.map(w => w.m)),
+                _fmt = u => u <= 0 ? "0分" : u >= 60 ? Math.floor(u / 60) + "時間" + (u % 60 ? u % 60 + "分" : "") : u + "分";
+              return (0, r.jsxs)(r.Fragment, {
+                children: [(0, r.jsxs)("div", {
+                  style: { display: "flex", gap: 10, marginBottom: 14 },
+                  children: [(0, r.jsxs)("div", {
+                    style: { flex: 1, background: "var(--card)", borderRadius: 16, border: "1px solid var(--line)", padding: "14px 16px" },
+                    children: [(0, r.jsx)("div", { style: { fontSize: 11.5, fontWeight: 800, color: "var(--ink-soft)", marginBottom: 5 }, children: "累計時間" }), (0, r.jsx)("div", { style: { fontSize: 21, fontWeight: 900, color: "var(--accent)" }, children: _fmt(_total) })]
+                  }), (0, r.jsxs)("div", {
+                    style: { flex: 1, background: "var(--card)", borderRadius: 16, border: "1px solid var(--line)", padding: "14px 16px" },
+                    children: [(0, r.jsx)("div", { style: { fontSize: 11.5, fontWeight: 800, color: "var(--ink-soft)", marginBottom: 5 }, children: "今日の記録" }), (0, r.jsx)("div", { style: { fontSize: 21, fontWeight: 900, color: "var(--accent)" }, children: _fmt(_todayMin) })]
+                  })]
+                }), (0, r.jsxs)("div", {
+                  style: { background: "var(--card)", borderRadius: 18, border: "1px solid var(--line)", padding: "14px 12px 12px" },
+                  children: [(0, r.jsx)("div", { style: { fontSize: 12.5, fontWeight: 900, color: "var(--ink)", marginBottom: 12 }, children: "週ごとの勉強時間（12週）" }), (0, r.jsx)("div", {
+                    style: { display: "flex", alignItems: "flex-end", gap: 5, height: 130 },
+                    children: _weeks.map((w, wi) => (0, r.jsxs)("div", {
+                      style: { flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", gap: 4, height: "100%" },
+                      children: [(0, r.jsx)("div", { style: { fontSize: 8, fontWeight: 800, color: "var(--ink-soft)" }, children: w.m > 0 ? Math.round(w.m / 6) / 10 + "h" : "" }), (0, r.jsx)("div", { style: { width: "100%", borderRadius: "5px 5px 0 0", background: "linear-gradient(180deg,#52d6b1,#3aa88a)", minHeight: 2, height: Math.round(w.m / _max * 88) + "%" } }), (0, r.jsx)("div", { style: { fontSize: 8, fontWeight: 700, color: "var(--ink-soft)", whiteSpace: "nowrap" }, children: w.lb })]
+                    }, wi))
+                  })]
+                }), _logs.length === 0 && (0, r.jsx)("p", { style: { textAlign: "center", color: "var(--ink-soft)", fontWeight: 700, padding: "24px 0" }, children: "まだ記録がありません" })]
+              })
+            })()]
           }), l === "recordHub" && (0, r.jsxs)("div", {
             className: "rx-home",
             style: {
@@ -51694,7 +51769,7 @@ function CI() {
               children: [(0, r.jsx)("p", {
                 className: "font-black text-base mb-3",
                 style: { color: A.text },
-                children: "📢 アップデート告知（ホームにポップアップ）"
+                children: "アップデート告知（ホームにポップアップ）"
               }), (0, r.jsx)("textarea", {
                 value: oxUpMsg,
                 onChange: u => setOxUpMsg(u.target.value),

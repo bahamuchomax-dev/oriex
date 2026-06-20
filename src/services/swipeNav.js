@@ -158,7 +158,7 @@ const TAB_MATCH = [
   ["plaza", "chat", "dm", "friendsList", "announcementsList", "stats", "factoryApp", "friendProfile"],
   ["stageMap", "review", "wordbook", "customApp", "play", "result", "modeSelect"],
   ["start", "weeklyPlan", "teacherCheck"],
-  ["recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp", "recordsTimeline"],
+  ["recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp", "recordsTimeline", "recordCheck"],
   ["myPage", "profileEdit", "settingsApp", "weeklyTaskAdmin"],
 ];
 // Screen id per tab index (mirrors the bundle's nav button order) — used to drive
