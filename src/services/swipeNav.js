@@ -149,14 +149,33 @@ function detectActiveByBg(btns) {
   return -1;
 }
 
+// The 5 bottom-nav tabs and the screen ids each one owns (mirrors the bundle's
+// nav `match` arrays). The bundle publishes the current screen as window.__oxScreen,
+// so we can map screen → tab index DETERMINISTICALLY — far more reliable than the
+// DOM heuristics, which fail on 記録 (the raised ホーム orb's white icon makes the
+// colour/bg heuristics ambiguous). This is the real fix for "can't swipe from 記録".
+const TAB_MATCH = [
+  ["plaza", "chat", "dm", "friendsList", "announcementsList", "stats", "factoryApp", "friendProfile"],
+  ["stageMap", "review", "wordbook", "customApp", "play", "result", "modeSelect"],
+  ["start", "weeklyPlan", "teacherCheck"],
+  ["recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp", "recordsTimeline"],
+  ["myPage", "profileEdit", "settingsApp", "weeklyTaskAdmin"],
+];
+function detectActiveByScreen(btns) {
+  const s = (typeof window !== "undefined" && window.__oxScreen) || "";
+  if (!s) return -1;
+  for (let i = 0; i < TAB_MATCH.length; i++) {
+    if (TAB_MATCH[i].indexOf(s) >= 0) return i < btns.length ? i : btns.length - 1;
+  }
+  return -1;
+}
+
 function activeIndex(btns) {
-  // DETECT the active tab from the nav every time so the swipe target is correct even
-  // when the screen was reached WITHOUT tapping the nav — e.g. the 記録 / 勉強時間記録
-  // screen opened from a home quick-action, which never updates the tracked tap index
-  // (the root cause of "can't swipe from 記録" while every other tab works). Background
-  // fill is primary (reliable for non-home tabs); marker/colour catch the ホーム tab;
-  // the tracked tap index is only a last resort.
-  let i = detectActiveByBg(btns);
+  // PRIMARY: map the bundle's current screen (window.__oxScreen) to a tab index —
+  // deterministic and immune to the DOM-heuristic ambiguity on 記録. Fall back to the
+  // visual heuristics (bg/marker/colour) and finally the tracked tap index.
+  let i = detectActiveByScreen(btns);
+  if (i < 0) i = detectActiveByBg(btns);
   if (i < 0) i = detectActiveByMarker(btns);
   if (i < 0) i = detectActiveByColor(btns);
   if (i >= 0) {

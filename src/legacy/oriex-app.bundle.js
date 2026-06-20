@@ -41826,6 +41826,7 @@ function CI() {
       }
     }
   }, [l, ye, oxNoticeTab]), (0, P.useEffect)(() => {
+    try { window.__oxScreen = l } catch {}
     if (l !== "bookLogApp" && (oxBkTimer.running || oxBkTimer.acc > 0)) oxBkSet({ running: !1, startTs: 0, acc: 0 })
   }, [l]), (0, P.useEffect)(() => {
     !e || !R.enabled || !i?.isTeacher || (async () => {
@@ -43154,7 +43155,7 @@ function CI() {
       u = !1
     }
   }, [l, e?.uid]), (0, P.useEffect)(() => {
-    if (!e || !R.enabled || !["plaza", "announcementsList", "recordsTimeline"].includes(l)) return;
+    if (!e || !R.enabled || !["plaza", "announcementsList", "recordsTimeline", "start"].includes(l)) return;
     let u = !0;
     return (async () => {
       if (Date.now() - (window.__oxLogsAt || 0) < 6e4) return;
