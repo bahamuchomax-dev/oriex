@@ -45861,7 +45861,7 @@ function CI() {
               }), (0, r.jsx)("div", {
                 style: {
                   display: "flex",
-                  gap: 9,
+                  gap: 7,
                   flexWrap: "wrap"
                 },
                 children: Rh.map(u => (0, r.jsx)("button", {
@@ -45873,14 +45873,14 @@ function CI() {
                   },
                   "aria-label": u.id,
                   style: {
-                    width: 30,
-                    height: 30,
+                    width: 24,
+                    height: 24,
                     borderRadius: 999,
                     cursor: "pointer",
                     padding: 0,
                     background: u.sw,
-                    border: wi === u.id ? `3px solid ${A.text}` : `2px solid ${A.cardBorder}`,
-                    boxShadow: wi === u.id ? `0 2px 8px ${u.sw}88` : "none"
+                    border: wi === u.id ? `2.5px solid ${A.text}` : `1.5px solid ${A.cardBorder}`,
+                    boxShadow: wi === u.id ? `0 1px 6px ${u.sw}88` : "none"
                   }
                 }, u.id))
               })]
