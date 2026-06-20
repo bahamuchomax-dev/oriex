@@ -13,8 +13,8 @@
  * active index stays correct across the bundle's re-renders. Frozen bundle untouched.
  * ============================================================ */
 
-const H_MIN = 55; // min horizontal travel (px)
-const H_DOM = 1.6; // horizontal must dominate vertical by this factor
+const H_MIN = 80; // min horizontal travel (px) — deliberate swipe, not accidental
+const H_DOM = 2.0; // horizontal must dominate vertical by this factor
 const NAV_SEL = "button,a[role=button],[role=tab]";
 
 let sx = 0;
@@ -131,9 +131,9 @@ function onStart(e) {
   if (
     target &&
     target.closest &&
-    (target.closest("input,textarea,select,[contenteditable=true],canvas") || inHorizontalScroller(target))
+    (target.closest("input,textarea,select,[contenteditable=true],canvas,.rx-timer,.rx-profile-edit,[data-no-swipe]") || inHorizontalScroller(target))
   ) {
-    return; // canvas = a 3D scene (hamster room) that owns its own drag/rotate gestures
+    return;
   }
   sx = t.clientX;
   sy = t.clientY;

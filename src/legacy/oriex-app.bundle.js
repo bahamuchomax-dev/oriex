@@ -36538,9 +36538,10 @@ function kI(e) {
     M = (0, P.useRef)(null),
     L = (0, P.useRef)((() => {
       try {
-        return localStorage.getItem("oriex_speak_on1") === "1"
+        let _v = localStorage.getItem("oriex_speak_on1");
+        return _v === null ? !0 : _v === "1"
       } catch {
-        return !1
+        return !0
       }
     })()),
     [ve, de] = (0, P.useState)("setup"),
@@ -36562,9 +36563,10 @@ function kI(e) {
     }),
     [nt, yt] = (0, P.useState)(() => {
       try {
-        return localStorage.getItem("oriex_speak_on1") === "1"
+        let _v = localStorage.getItem("oriex_speak_on1");
+        return _v === null ? !0 : _v === "1"
       } catch {
-        return !1
+        return !0
       }
     }),
     [an, O] = (0, P.useState)(() => {
@@ -40289,9 +40291,9 @@ function II({
     try {
       localStorage.setItem("oriex_timer", JSON.stringify(Pe))
     } catch {}
-  }, _bl = (_bks || []).filter(Pe => !p.subject || Pe.subject === p.subject || p.subject === "その他"),
-  _ba = (_bks || []).filter(Pe => Pe.subject === p.subject),
-  _allB = _ba.length ? _ba : _bl,
+  }, _allB = (_bks || []),
+  _hasBooks = _allB.length > 0,
+  _subjectMode = !_hasBooks || p._subjectMode,
   ye = p.acc + (p.running ? Date.now() - p.startTs : 0), Je = Math.floor(ye / 6e4), We = Math.floor(ye / 1e3) % 60, $e = Pe => (Pe < 10 ? "0" : "") + Pe, Ze = {
     background: "var(--card)",
     border: "1px solid var(--line)",
@@ -40349,7 +40351,32 @@ function II({
         },
         children: "時間記録"
       })]
-    }), (0, r.jsx)("div", {
+    }), _hasBooks && !_subjectMode ? (0, r.jsxs)("div", {
+      style: { marginBottom: 14 },
+      children: [(0, r.jsx)("div", {
+        style: { display: "flex", gap: 6, flexWrap: "wrap" },
+        children: [..._allB.map(Pe => (0, r.jsx)("button", {
+          onClick: () => fe({ ...p, bookTitle: Pe.title, subject: Pe.subject || p.subject, _subjectMode: false }),
+          style: {
+            padding: "7px 12px", borderRadius: 999, fontSize: 12, fontWeight: 800, cursor: "pointer",
+            border: p.bookTitle === Pe.title ? "none" : "1px solid var(--line)",
+            background: p.bookTitle === Pe.title ? e.accentGrad : "var(--card)",
+            color: p.bookTitle === Pe.title ? "#fff" : "var(--ink-soft)",
+            maxWidth: 150, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"
+          },
+          children: Pe.title
+        }, Pe.id || Pe.title)), (0, r.jsx)("button", {
+          onClick: () => fe({ ...p, bookTitle: "", _subjectMode: true }),
+          style: {
+            padding: "7px 12px", borderRadius: 999, fontSize: 12, fontWeight: 800, cursor: "pointer",
+            border: "1px solid var(--line)",
+            background: _subjectMode ? "var(--accent-soft)" : "var(--card)",
+            color: _subjectMode ? "var(--accent)" : "var(--ink-soft)"
+          },
+          children: "教科で選ぶ"
+        }, "_subj")]
+      })]
+    }) : (0, r.jsx)("div", {
       style: {
         display: "flex",
         gap: 7,
@@ -40360,7 +40387,8 @@ function II({
         onClick: () => fe({
           ...p,
           subject: Pe,
-          bookTitle: ""
+          bookTitle: "",
+          _subjectMode: _hasBooks ? true : undefined
         }),
         style: {
           padding: "8px 13px",
@@ -40368,40 +40396,12 @@ function II({
           fontSize: 12.5,
           fontWeight: 800,
           cursor: "pointer",
-          border: p.subject === Pe ? "none" : "1px solid var(--line)",
-          background: p.subject === Pe ? e.accentGrad : "var(--card)",
-          color: p.subject === Pe ? "#fff" : "var(--ink-soft)"
+          border: p.subject === Pe && !p.bookTitle ? "none" : "1px solid var(--line)",
+          background: p.subject === Pe && !p.bookTitle ? e.accentGrad : "var(--card)",
+          color: p.subject === Pe && !p.bookTitle ? "#fff" : "var(--ink-soft)"
         },
         children: Pe
       }, Pe))
-    }), _allB.length > 0 && (0, r.jsxs)("div", {
-      style: { marginBottom: 14 },
-      children: [(0, r.jsx)("div", {
-        style: { fontSize: 11, fontWeight: 800, color: "var(--ink-soft)", marginBottom: 6 },
-        children: "参考書"
-      }), (0, r.jsx)("div", {
-        style: { display: "flex", gap: 6, flexWrap: "wrap" },
-        children: [(0, r.jsx)("button", {
-          onClick: () => fe({ ...p, bookTitle: "" }),
-          style: {
-            padding: "6px 12px", borderRadius: 999, fontSize: 11.5, fontWeight: 800, cursor: "pointer",
-            border: !p.bookTitle ? "none" : "1px solid var(--line)",
-            background: !p.bookTitle ? "var(--accent-soft)" : "var(--card)",
-            color: !p.bookTitle ? "var(--accent)" : "var(--ink-soft)"
-          },
-          children: "指定なし"
-        }, "_none"), ..._allB.map(Pe => (0, r.jsx)("button", {
-          onClick: () => fe({ ...p, bookTitle: Pe.title, subject: Pe.subject || p.subject }),
-          style: {
-            padding: "6px 12px", borderRadius: 999, fontSize: 11.5, fontWeight: 800, cursor: "pointer",
-            border: p.bookTitle === Pe.title ? "none" : "1px solid var(--line)",
-            background: p.bookTitle === Pe.title ? "var(--accent-soft)" : "var(--card)",
-            color: p.bookTitle === Pe.title ? "var(--accent)" : "var(--ink-soft)",
-            maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"
-          },
-          children: Pe.title
-        }, Pe.id || Pe.title))]
-      })]
     }), (0, r.jsxs)("div", {
       style: {
         ...Ze,
@@ -45861,7 +45861,7 @@ function CI() {
               }), (0, r.jsx)("div", {
                 style: {
                   display: "flex",
-                  gap: 7,
+                  gap: 6,
                   flexWrap: "wrap"
                 },
                 children: Rh.map(u => (0, r.jsx)("button", {
@@ -45873,14 +45873,14 @@ function CI() {
                   },
                   "aria-label": u.id,
                   style: {
-                    width: 24,
-                    height: 24,
+                    width: 20,
+                    height: 20,
                     borderRadius: 999,
                     cursor: "pointer",
                     padding: 0,
                     background: u.sw,
-                    border: wi === u.id ? `2.5px solid ${A.text}` : `1.5px solid ${A.cardBorder}`,
-                    boxShadow: wi === u.id ? `0 1px 6px ${u.sw}88` : "none"
+                    border: wi === u.id ? `2px solid ${A.text}` : `1.5px solid ${A.cardBorder}`,
+                    boxShadow: wi === u.id ? `0 1px 4px ${u.sw}88` : "none"
                   }
                 }, u.id))
               })]
