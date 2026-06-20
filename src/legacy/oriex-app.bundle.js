@@ -45242,7 +45242,7 @@ function CI() {
         },
         children: "Oriex " + ((typeof window === "undefined" ? null : window.__OX_APP_VERSION) || "v7.36")
       }), ["start", "stageMap", "review", "wordbook", "customApp", "recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp", "plaza", "chat", "friendsList", "announcementsList", "stats", "factoryApp", "friendProfile", "myPage", "settingsApp", "weeklyTaskAdmin", "weeklyPlan", "recordsTimeline", "teacherCheck"].includes(l) && !(l === "review" && (Bt === "quiz" || Bt === "sentence")) && (0, r.jsx)("div", {
-        className: "shrink-0",
+        className: "shrink-0 ox-bottom-nav",
         style: {
           paddingBottom: 7,
           position: "fixed",
@@ -45301,7 +45301,7 @@ function CI() {
               match: ["recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp"]
             }, {
               id: "myPage",
-              label: "マイ",
+              label: "マイページ",
               match: ["myPage", "profileEdit", "settingsApp", "weeklyTaskAdmin"]
             }].map(b => {
               let C = (b.match || [b.id]).includes(l),
@@ -45324,7 +45324,12 @@ function CI() {
                   justifyContent: "flex-end",
                   gap: 2,
                   paddingBottom: 5,
-                  position: "relative"
+                  position: "relative",
+                  WebkitTapHighlightColor: "transparent",
+                  WebkitTouchCallout: "none",
+                  userSelect: "none",
+                  outline: "none",
+                  appearance: "none"
                 },
                 children: [(0, r.jsx)("div", {
                   style: {
@@ -45337,8 +45342,8 @@ function CI() {
                     placeItems: "center",
                     boxShadow: "0 14px 28px rgba(20,184,166,0.25), 0 0 0 8px rgba(255,255,255,0.78), inset 0 1px 0 rgba(255,255,255,0.62)",
                     border: "1px solid rgba(255,255,255,0.82)",
-                    transform: C ? "translateY(-1px) scale(1.06)" : "translateY(0) scale(1)",
-                    transition: "transform .18s"
+                    transform: "translateY(0) scale(1)",
+                    transition: "none"
                   },
                   children: (0, r.jsx)(B, {
                     active: !0,
@@ -45349,7 +45354,7 @@ function CI() {
                     fontSize: 9,
                     fontWeight: 900,
                     letterSpacing: ".04em",
-                    color: C ? "#0f766e" : "rgba(65,86,82,0.54)"
+                    color: "#0f766e"
                   },
                   children: b.label
                 })]
@@ -45368,20 +45373,25 @@ function CI() {
                   paddingBottom: 6,
                   borderRadius: "20px 20px 16px 16px",
                   color: C ? "#0f766e" : "rgba(65,86,82,0.54)",
-                  background: C ? "linear-gradient(180deg,rgba(217,247,236,0.92),rgba(255,255,255,0.58))" : "transparent",
+                  background: "transparent",
                   border: "none",
                   boxShadow: "none",
                   cursor: "pointer",
-                  transform: C ? "translateY(-3px)" : "translateY(0)",
-                  transition: "all 0.18s cubic-bezier(0.25,0.8,0.25,1)"
+                  transform: "translateY(0)",
+                  transition: "none",
+                  WebkitTapHighlightColor: "transparent",
+                  WebkitTouchCallout: "none",
+                  userSelect: "none",
+                  outline: "none",
+                  appearance: "none"
                 },
                 children: [C && (0, r.jsx)("div", {
                   style: {
                     position: "absolute",
                     inset: 3,
                     borderRadius: "17px 17px 14px 14px",
-                    background: "linear-gradient(135deg,rgba(255,255,255,0.76),rgba(206,244,232,0.78))",
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.92), 0 8px 16px rgba(20,184,166,0.10)",
+                    background: "transparent",
+                    boxShadow: "none",
                     pointerEvents: "none"
                   }
                 }), (0, r.jsx)("div", {
@@ -45403,7 +45413,7 @@ function CI() {
                     position: "relative",
                     zIndex: 1,
                     marginBottom: 2,
-                    textTransform: C ? "uppercase" : "none"
+                    textTransform: "none"
                   },
                   children: b.label
                 }), q > 0 && (0, r.jsx)("span", {
@@ -51288,9 +51298,9 @@ function CI() {
               }, u.id))
             })]
           }), l === "announcementsList" && (0, r.jsxs)("div", {
-            className: "space-y-6 animate-in fade-in text-left",
+            className: "space-y-6 animate-in fade-in text-left ox-notices-page",
             children: [(0, r.jsxs)("div", {
-              className: "flex items-center gap-4",
+              className: "flex items-center gap-4 ox-notice-header",
               children: [(0, r.jsx)("button", {
                 onClick: () => h(p && p !== l ? p : "plaza"),
                 className: "p-2 rounded-[12px] active:opacity-70 transition-all",
@@ -51305,7 +51315,7 @@ function CI() {
                 style: {
                   color: S ? "rgba(20,10,60,0.9)" : "white"
                 },
-                children: ["お知らせ", (() => {
+                children: ["通知", (() => {
                   let u = ye.filter(y => !We.includes(y.id)).length;
                   return u > 0 ? (0, r.jsx)("span", {
                     className: "ml-2 inline-flex items-center justify-center text-white font-black rounded-full",
@@ -51333,63 +51343,75 @@ function CI() {
               })]
             }), (() => {
               let _n = oxSocialNotifs();
-              return _n.length ? (0, r.jsx)("div", {
-                style: {
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8
-                },
-                children: _n.slice(0, 50).map(_x => (0, r.jsxs)("div", {
+              return (0, r.jsxs)("section", {
+                className: "ox-notice-section ox-social-section",
+                children: [(0, r.jsx)("h3", {
+                  children: "いいね・コメント"
+                }), _n.length ? (0, r.jsx)("div", {
                   style: {
                     display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    background: S ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.07)",
-                    border: "1px solid " + A.cardBorder,
-                    borderRadius: 16,
-                    padding: "11px 13px"
+                    flexDirection: "column",
+                    gap: 8
                   },
-                  children: [(0, r.jsx)("span", {
+                  children: _n.slice(0, 50).map(_x => (0, r.jsxs)("div", {
+                    className: "ox-social-notice",
                     style: {
-                      width: 32,
-                      height: 32,
-                      borderRadius: 999,
-                      flexShrink: 0,
-                      display: "grid",
-                      placeItems: "center",
-                      fontSize: 16,
-                      color: _x.type === "like" ? "#f43f5e" : "#14b8a6",
-                      background: _x.type === "like" ? "rgba(244,63,94,0.15)" : "rgba(20,184,166,0.15)"
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      background: S ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.07)",
+                      border: "1px solid " + A.cardBorder,
+                      borderRadius: 16,
+                      padding: "11px 13px"
                     },
-                    children: _x.type === "like" ? "♥" : "💬"
-                  }), (0, r.jsxs)("div", {
-                    style: {
-                      flex: 1,
-                      minWidth: 0
-                    },
-                    children: [(0, r.jsx)("div", {
+                    children: [(0, r.jsx)("span", {
                       style: {
-                        fontSize: 13,
-                        fontWeight: 800,
-                        color: S ? "rgba(20,10,60,0.9)" : "#fff"
+                        width: 32,
+                        height: 32,
+                        borderRadius: 999,
+                        flexShrink: 0,
+                        display: "grid",
+                        placeItems: "center",
+                        fontSize: 16,
+                        color: _x.type === "like" ? "#f43f5e" : "#14b8a6",
+                        background: _x.type === "like" ? "rgba(244,63,94,0.15)" : "rgba(20,184,166,0.15)"
                       },
-                      children: _x.type === "like" ? `${_x.who}さんがいいね！しました！` : `${_x.who}さんがあなたの記録にコメントしました！`
+                      children: _x.type === "like" ? "♥" : "💬"
                     }), (0, r.jsxs)("div", {
                       style: {
-                        fontSize: 11,
-                        fontWeight: 600,
-                        color: S ? "rgba(20,10,60,0.5)" : "rgba(255,255,255,0.6)",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap"
+                        flex: 1,
+                        minWidth: 0
                       },
-                      children: [_x.book, _x.text ? "「" + _x.text + "」" : ""]
+                      children: [(0, r.jsx)("div", {
+                        style: {
+                          fontSize: 13,
+                          fontWeight: 800,
+                          color: S ? "rgba(20,10,60,0.9)" : "#fff"
+                        },
+                        children: _x.type === "like" ? `${_x.who}さんがいいね！しました！` : `${_x.who}さんがあなたの記録にコメントしました！`
+                      }), (0, r.jsxs)("div", {
+                        style: {
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: S ? "rgba(20,10,60,0.5)" : "rgba(255,255,255,0.6)",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap"
+                        },
+                        children: [_x.book, _x.text ? "「" + _x.text + "」" : ""]
+                      })]
                     })]
-                  })]
-                }, _x.key))
-              }) : null
+                  }, _x.key))
+                }) : (0, r.jsx)("p", {
+                  className: "text-center font-bold py-5",
+                  style: {
+                    color: A.textMuted
+                  },
+                  children: "いいね・コメントはまだありません"
+                })]
+              })
             })(), (i?.isTeacher || Vi) && (0, r.jsxs)("div", {
-              className: "rounded-[20px] p-5 text-left",
+              className: "rounded-[20px] p-5 text-left ox-announcement-post",
               style: {
                 background: S ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.05)",
                 border: `1px solid ${A.cardBorder}`
@@ -51428,9 +51450,11 @@ function CI() {
                 },
                 children: "投稿する"
               })]
-            }), (0, r.jsxs)("div", {
-              className: "space-y-4",
-              children: [ye.length === 0 && (0, r.jsx)("p", {
+            }), (0, r.jsxs)("section", {
+              className: "space-y-4 ox-notice-section ox-announcement-section",
+              children: [(0, r.jsx)("h3", {
+                children: "お知らせ"
+              }), ye.length === 0 && (0, r.jsx)("p", {
                 className: "text-center font-bold py-8",
                 style: {
                   color: A.textMuted

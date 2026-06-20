@@ -1107,6 +1107,109 @@ html body .ox-plaza-page .ox-plaza-announce{
   }
 }
 
+.ox-bottom-nav,
+.ox-bottom-nav *{
+  -webkit-tap-highlight-color:transparent !important;
+  -webkit-touch-callout:none !important;
+}
+.ox-bottom-nav button{
+  appearance:none !important;
+  -webkit-appearance:none !important;
+  outline:none !important;
+}
+.ox-bottom-nav button:active{
+  filter:none !important;
+  opacity:1 !important;
+}
+.ox-bottom-nav button span{
+  text-transform:none !important;
+}
+.ox-bottom-nav,
+.ox-bottom-nav *,
+.ox-bottom-nav button,
+.ox-bottom-nav button *{
+  transition:none !important;
+  animation:none !important;
+  filter:none !important;
+  mix-blend-mode:normal !important;
+}
+.ox-bottom-nav button:focus,
+.ox-bottom-nav button:focus-visible,
+.ox-bottom-nav button:active{
+  outline:none !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+.ox-bottom-nav button:active *{
+  filter:none !important;
+}
+.ox-bottom-nav button:nth-child(3),
+.ox-bottom-nav button:nth-child(3):active,
+.ox-bottom-nav button:nth-child(3):focus{
+  color:#0f766e !important;
+  background:transparent !important;
+}
+.ox-bottom-nav button:nth-child(3) > div:first-child,
+.ox-bottom-nav button:nth-child(3):active > div:first-child,
+.ox-bottom-nav button:nth-child(3):focus > div:first-child{
+  background:linear-gradient(145deg,#52d6b1,#8dd6f7) !important;
+  transform:translateY(0) scale(1) !important;
+  filter:none !important;
+  opacity:1 !important;
+}
+.ox-bottom-nav button:nth-child(3) svg,
+.ox-bottom-nav button:nth-child(3) svg *,
+.ox-bottom-nav button:nth-child(3):active svg,
+.ox-bottom-nav button:nth-child(3):active svg *,
+.ox-bottom-nav button:nth-child(3):focus svg,
+.ox-bottom-nav button:nth-child(3):focus svg *{
+  color:#fff !important;
+  fill:#fff !important;
+  stroke:#fff !important;
+  filter:none !important;
+  opacity:1 !important;
+}
+.ox-bottom-nav button:nth-child(3) span,
+.ox-bottom-nav button:nth-child(3):active span,
+.ox-bottom-nav button:nth-child(3):focus span{
+  color:#0f766e !important;
+}
+.ox-notice-section{
+  background:rgba(255,255,255,.78);
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:20px;
+  padding:14px;
+  box-shadow:0 8px 22px rgba(43,39,36,.06);
+}
+.ox-notice-section h3{
+  margin:0 0 10px;
+  color:rgba(20,10,60,.88);
+  font-size:15px;
+  font-weight:900;
+}
+.ox-social-section{
+  border-left:1px solid rgba(15,23,42,.08);
+}
+.ox-announcement-section{
+  border-left:1px solid rgba(15,23,42,.08);
+}
+.ox-notices-page{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.ox-notices-page > *{
+  margin-top:0 !important;
+}
+.ox-notices-page > .ox-notice-header{ order:1 !important; }
+.ox-notices-page > .ox-announcement-section{ order:2 !important; }
+.ox-notices-page > .ox-social-section{
+  order:3 !important;
+  max-height:190px;
+  overflow-y:auto;
+}
+.ox-notices-page > .ox-announcement-post{ order:4 !important; }
+
 /* ひろば is a utility hub: surface talk + notices first, not vanity counts. */
 .ox-plaza-page{
   display:flex !important;
