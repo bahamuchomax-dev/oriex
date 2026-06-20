@@ -40331,6 +40331,7 @@ function II({
   _tmSecs = Math.floor(ye / 1e3),
   _tmSaveMinutes = Math.max(1, Math.round(ye / 6e4)),
   _tmNextMinutePct = Math.min(100, Math.round((_tmSecs % 60) / 60 * 100)),
+  _tmRingPct = Math.max(1, _tmNextMinutePct),
   _tmTarget = p.bookTitle || p.subject || "",
   _tmCanSave = ye >= 3e4 && !ve,
   Je = Math.floor(ye / 6e4), We = Math.floor(ye / 1e3) % 60, $e = Pe => (Pe < 10 ? "0" : "") + Pe, Ze = {
@@ -40535,8 +40536,10 @@ function II({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "radial-gradient(circle at center,#fff 0 64%,rgba(255,255,255,0) 65%), conic-gradient(from 0deg,#14b8a6 " + _tmNextMinutePct + "%,rgba(15,23,42,0.08) 0)",
-          boxShadow: "0 14px 28px rgba(15,118,110,0.12), inset 0 0 0 7px rgba(255,255,255,0.72)"
+          border: "1px solid rgba(255,255,255,0.78)",
+          background: "radial-gradient(circle at 50% 45%,rgba(255,255,255,0.98) 0 57%,rgba(255,255,255,0.72) 58%,rgba(255,255,255,0) 62%), repeating-conic-gradient(from 0deg,rgba(255,255,255,0.82) 0deg 2deg,rgba(255,255,255,0) 2deg 12deg), conic-gradient(from 0deg,#14b8a6 0%,#22d3ee " + _tmRingPct + "%,rgba(15,23,42,0.08) 0)",
+          boxShadow: "0 16px 30px rgba(15,118,110,0.16), 0 0 0 7px rgba(20,184,166,0.08), inset 0 10px 20px rgba(255,255,255,0.72), inset 0 -10px 18px rgba(15,118,110,0.08)",
+          textShadow: "0 1px 0 rgba(255,255,255,0.95)"
         },
         children: [$e(Je), ":", $e(We)]
       }), (0, r.jsxs)("div", {
