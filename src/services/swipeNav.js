@@ -161,13 +161,21 @@ const TAB_MATCH = [
   ["recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp", "recordsTimeline"],
   ["myPage", "profileEdit", "settingsApp", "weeklyTaskAdmin"],
 ];
-function detectActiveByScreen(btns) {
+// Screen id per tab index (mirrors the bundle's nav button order) — used to drive
+// window.__oxGoTab(id) directly.
+const TAB_SCREENS = ["plaza", "stageMap", "start", "recordHub", "myPage"];
+function screenIndex() {
   const s = (typeof window !== "undefined" && window.__oxScreen) || "";
   if (!s) return -1;
   for (let i = 0; i < TAB_MATCH.length; i++) {
-    if (TAB_MATCH[i].indexOf(s) >= 0) return i < btns.length ? i : btns.length - 1;
+    if (TAB_MATCH[i].indexOf(s) >= 0) return i;
   }
   return -1;
+}
+function detectActiveByScreen(btns) {
+  const i = screenIndex();
+  if (i < 0) return -1;
+  return i < btns.length ? i : btns.length - 1;
 }
 
 function activeIndex(btns) {
@@ -225,6 +233,22 @@ function onEnd(e) {
       const canScrollLeft = hScroller.scrollLeft > 1;
       const canScrollRight = hScroller.scrollLeft < hScroller.scrollWidth - hScroller.clientWidth - 1;
       if ((dx < 0 && canScrollRight) || (dx > 0 && canScrollLeft)) return;
+    }
+  }
+  // PRIMARY: deterministic navigation via the bundle's exposed tab switcher. No
+  // findNav / synthetic click — which fail on 記録 when the friend-timeline preview's
+  // own button row is mistaken for the bottom nav. idx comes from the current screen.
+  const sIdx = screenIndex();
+  if (sIdx >= 0 && typeof window !== "undefined" && typeof window.__oxGoTab === "function") {
+    const snx = dx < 0 ? sIdx + 1 : sIdx - 1;
+    if (snx < 0 || snx >= TAB_SCREENS.length) return;
+    activeIdx = snx;
+    try {
+      window.__oxGoTab(TAB_SCREENS[snx]);
+      slideIn(dx < 0 ? "l" : "r");
+      return;
+    } catch (_) {
+      /* fall through to the DOM-based path */
     }
   }
   const nav = findNav();

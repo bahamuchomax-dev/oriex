@@ -41837,7 +41837,7 @@ function CI() {
       }
     }
   }, [l, ye, oxNoticeTab]), (0, P.useEffect)(() => {
-    try { window.__oxScreen = l } catch {}
+    try { window.__oxScreen = l; window.__oxGoTab = id => { h(id); el(!1); try { ua.current && (ua.current.scrollTop = 0) } catch {} } } catch {}
     if (l !== "bookLogApp" && (oxBkTimer.running || oxBkTimer.acc > 0)) oxBkSet({ running: !1, startTs: 0, acc: 0 })
   }, [l]), (0, P.useEffect)(() => {
     !e || !R.enabled || !i?.isTeacher || (async () => {
@@ -45051,16 +45051,16 @@ function CI() {
               })]
             }), (0, r.jsxs)("div", {
               style: { display: "flex", flexDirection: "column", gap: 8 },
-              children: [oxBkSaveMinutes > 0 && (0, r.jsxs)("button", {
+              children: [(0, r.jsx)("button", {
                 onClick: () => yu("timer"),
                 className: "active:scale-[0.98] transition-transform",
-                style: { ...je, background: "linear-gradient(135deg,#14b8a6,#0f766e)" },
-                children: ["⏱ タイマーで記録（", oxBkSaveMinutes, "分）"]
+                style: { ...je, background: oxBkSaveMinutes > 0 ? "linear-gradient(135deg,#14b8a6,#0f766e)" : "linear-gradient(135deg,#9ca3af,#6b7280)" },
+                children: oxBkSaveMinutes > 0 ? `⏱ タイマーで記録（${oxBkSaveMinutes}分）` : "⏱ タイマーで記録"
               }), (0, r.jsx)("button", {
                 onClick: () => yu("manual"),
                 className: "active:scale-[0.98] transition-transform",
                 style: je,
-                children: oxBkSaveMinutes > 0 ? "手動で記録" : ne.save
+                children: "✍ 手動で記録"
               })]
             })]
           })]
@@ -47213,6 +47213,45 @@ function CI() {
                       fontWeight: 900
                     },
                     children: Pe.locked ? "ON" : "OFF"
+                  })]
+                }), i?.isTeacher && (0, r.jsxs)("button", {
+                  className: "rx-planbtn ghost",
+                  onClick: async () => {
+                    let _m = window.prompt("アップデート告知の内容（ホームに全画面ポップアップで全生徒に表示。空でキャンセル）", oxUpMsg || "");
+                    if (!_m || !_m.trim()) return;
+                    if (!R.enabled || !R.db) return Qe("オンライン接続が必要です", "error");
+                    try {
+                      await qn(et(R.db, "artifacts", R.appId, "public", "data", "system", "appUpdate"), { message: _m.trim(), ts: Date.now(), postedBy: i?.name || "先生" }, { merge: !0 });
+                      Qe("アップデート告知を送信しました！")
+                    } catch {
+                      Qe("送信に失敗しました", "error")
+                    }
+                  },
+                  children: [(0, r.jsx)("span", {
+                    className: "ic",
+                    children: (0, r.jsx)("svg", {
+                      width: "22",
+                      height: "22",
+                      viewBox: "0 0 24 24",
+                      fill: "none",
+                      stroke: "currentColor",
+                      strokeWidth: "1.8",
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      children: (0, r.jsx)("path", {
+                        d: "M3 11l18-7-4 14-7-3-3 5-1-6z"
+                      })
+                    })
+                  }), (0, r.jsxs)("span", {
+                    className: "t",
+                    children: [(0, r.jsx)("b", {
+                      children: "アップデート告知"
+                    }), (0, r.jsx)("small", {
+                      children: "ホームにポップアップで全生徒へ通知"
+                    })]
+                  }), (0, r.jsx)("span", {
+                    className: "rx-tm",
+                    children: "›"
                   })]
                 }), (0, r.jsxs)("div", {
                   style: {
