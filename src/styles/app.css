@@ -351,6 +351,13 @@ body.oxbg-on .ox-plaza-head .rx-topbar{
   backdrop-filter:none !important;
   border-radius:0 !important;
 }
+/* 写真テーマでも「ひろば」見出し＋説明文を確実に読めるよう、白文字＋影で固定
+   （ヘッダーは teal グラデのバナーなので白が映える）。 */
+html body .ox-plaza-page .ox-plaza-head .rx-title,
+html body .ox-plaza-page .ox-plaza-head .rx-goal-s{
+  color:#ffffff !important;
+  text-shadow:0 1px 4px rgba(0,0,0,.4), 0 0 2px rgba(0,0,0,.25) !important;
+}
 
 html body .ox-plaza-section-body{
   border-radius:0 0 20px 20px !important;
