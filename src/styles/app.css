@@ -688,3 +688,132 @@ body.oxbg-on .ox-bl-text{
     0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff,
     0 0 4px rgba(255,255,255,.95), 0 0 9px rgba(255,255,255,.8) !important;
 }
+
+/* ── 記録ページ: action hub + friend timeline polish --------------------------
+   The live record screen is rendered by the legacy bundle with mostly inline styles,
+   so these rules are intentionally scoped by the record-only quick menu marker
+   (.rx-rec3). This keeps the rest of .rx-home untouched. */
+.rx-home:has(.rx-rec3){
+  padding-inline:16px;
+}
+.rx-home:has(.rx-rec3) .rx-topbar{
+  padding:10px 2px 16px;
+}
+.rx-home:has(.rx-rec3) .rx-title{
+  font-size:23px;
+  letter-spacing:0;
+  text-shadow:
+    1px 1px 0 rgba(255,255,255,.92),
+    -1px 1px 0 rgba(255,255,255,.92),
+    1px -1px 0 rgba(255,255,255,.92),
+    -1px -1px 0 rgba(255,255,255,.92),
+    0 3px 12px rgba(255,255,255,.72);
+}
+.rx-home:has(.rx-rec3) > .rx-topbar + div{
+  margin-top:2px !important;
+  padding:14px !important;
+  border:1px solid rgba(255,255,255,.72) !important;
+  border-radius:24px !important;
+  background:rgba(255,255,255,.78) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.15);
+  backdrop-filter:blur(18px) saturate(1.15);
+  box-shadow:0 16px 34px rgba(43,39,36,.12) !important;
+}
+.rx-home:has(.rx-rec3) > .rx-topbar + div > div:first-child{
+  gap:10px !important;
+}
+.rx-home:has(.rx-rec3) > .rx-topbar + div > div:first-child > button{
+  min-height:126px !important;
+  padding:15px 14px !important;
+  border-radius:20px !important;
+  border:1px solid rgba(24,24,27,.12) !important;
+  background:
+    linear-gradient(160deg, rgba(255,255,255,.96), rgba(255,255,255,.82)),
+    var(--card) !important;
+  box-shadow:0 7px 18px rgba(43,39,36,.08) !important;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.rx-home:has(.rx-rec3) > .rx-topbar + div > div:first-child > button:active{
+  transform:scale(.985);
+}
+.rx-home:has(.rx-rec3) > .rx-topbar + div > div:first-child > button span:first-child{
+  width:40px !important;
+  height:40px !important;
+  border-radius:14px !important;
+  background:rgba(24,24,27,.075) !important;
+}
+.rx-home:has(.rx-rec3) > .rx-topbar + div > div:first-child > button b{
+  font-size:14px !important;
+  line-height:1.35 !important;
+}
+.rx-home:has(.rx-rec3) > .rx-topbar + div > div:first-child > button small{
+  color:rgba(24,24,27,.48) !important;
+  font-weight:700 !important;
+}
+.rx-home:has(.rx-rec3) > .rx-topbar + div > div:first-child > button > span:last-child{
+  right:13px !important;
+  bottom:13px !important;
+  color:rgba(24,24,27,.32) !important;
+}
+.rx-home:has(.rx-rec3) .rx-sec{
+  margin-inline:2px !important;
+}
+.rx-home:has(.rx-rec3) .rx-sec b{
+  color:rgba(24,24,27,.88);
+  font-family:"Zen Maru Gothic",sans-serif;
+  font-size:15px !important;
+}
+.rx-home:has(.rx-rec3) .rx-rec3{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+  margin-top:9px;
+}
+.rx-home:has(.rx-rec3) .rx-rec-s{
+  min-width:0;
+  min-height:76px;
+  padding:10px 6px 9px;
+  border:1px solid rgba(24,24,27,.10);
+  border-radius:18px;
+  background:rgba(255,255,255,.82);
+  box-shadow:0 6px 16px rgba(43,39,36,.07);
+}
+.rx-home:has(.rx-rec3) .rx-rec-s .ic{
+  width:35px;
+  height:35px;
+  margin-bottom:7px;
+  border-radius:13px;
+}
+.rx-home:has(.rx-rec3) .rx-rec-s b{
+  display:block;
+  max-width:100%;
+  color:rgba(24,24,27,.82);
+  font-size:11px;
+  line-height:1.25;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.rx-home:has(.rx-rec3) > div:nth-of-type(3){
+  margin-top:18px !important;
+}
+.rx-home:has(.rx-rec3) > div:nth-of-type(3) > div:nth-child(2){
+  gap:10px !important;
+}
+.rx-home:has(.rx-rec3) > div:nth-of-type(3) > div:nth-child(2) > div{
+  padding:12px 13px !important;
+  border:1px solid rgba(255,255,255,.76) !important;
+  border-radius:18px !important;
+  background:rgba(255,255,255,.88) !important;
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+  box-shadow:0 8px 22px rgba(43,39,36,.09);
+}
+@media (max-width:340px){
+  .rx-home:has(.rx-rec3) > .rx-topbar + div > div:first-child{
+    grid-template-columns:1fr !important;
+  }
+  .rx-home:has(.rx-rec3) > .rx-topbar + div > div:first-child > button{
+    min-height:96px !important;
+  }
+}
