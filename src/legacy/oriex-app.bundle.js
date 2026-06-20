@@ -41070,7 +41070,7 @@ function CI() {
       Ft && localStorage.setItem("genron_lastCategory", Ft)
     } catch {}
   }, [Ft]);
-  let [In, Jr] = (0, P.useState)([]), [or, ds] = (0, P.useState)(0), [us, hs] = (0, P.useState)(0), [Fs, Ai] = (0, P.useState)(3), [Us, ka] = (0, P.useState)(0), [Qo, Oa] = (0, P.useState)([]), [wa, ja] = (0, P.useState)(null), [Vs, qs] = (0, P.useState)(null), [Di, Ea] = (0, P.useState)(!1), [La, Oi] = (0, P.useState)(!1), [xn, da] = (0, P.useState)(!1), [Dl, Li] = (0, P.useState)(0), [zc, Wi] = (0, P.useState)(0), [Qi, Sa] = (0, P.useState)(0), gr = P.useRef(null), ui = P.useRef(null), ua = P.useRef(null), [Wa, Zs] = (0, P.useState)(""), [Qa, fs] = (0, P.useState)(d1[0]), [Wr, hi] = (0, P.useState)(null), [gs, Fi] = (0, P.useState)(null), [Ks, Fo] = (0, P.useState)(""), [Gs, Hs] = (0, P.useState)(f1[0]), [Ol, Xs] = (0, P.useState)(0), [Uo, Ll] = (0, P.useState)(""), [_r, Wl] = (0, P.useState)(null), [Ql, Fl] = (0, P.useState)(!1), [Ul, Ys] = (0, P.useState)(!1), [pr, Vo] = (0, P.useState)(""), [ki, Ia] = (0, P.useState)(""), [d, x] = (0, P.useState)(!1), [w, N] = (0, P.useState)(null), [ee, le] = (0, P.useState)(1), [Me, kt] = (0, P.useState)(""), [On, bn] = (0, P.useState)(""), [Qn, er] = (0, P.useState)(""), [mr, yr] = (0, P.useState)(!1), [Ut, ha] = (0, P.useState)(""), [ps, Uh] = (0, P.useState)(""), [Vl, ql] = (0, P.useState)(""), [Nc, Vh] = (0, P.useState)(() => {
+  let [In, Jr] = (0, P.useState)([]), [or, ds] = (0, P.useState)(0), [us, hs] = (0, P.useState)(0), [Fs, Ai] = (0, P.useState)(3), [Us, ka] = (0, P.useState)(0), [Qo, Oa] = (0, P.useState)([]), [wa, ja] = (0, P.useState)(null), [Vs, qs] = (0, P.useState)(null), [Di, Ea] = (0, P.useState)(!1), [La, Oi] = (0, P.useState)(!1), [xn, da] = (0, P.useState)(!1), [Dl, Li] = (0, P.useState)(0), [zc, Wi] = (0, P.useState)(0), [Qi, Sa] = (0, P.useState)(0), gr = P.useRef(null), ui = P.useRef(null), ua = P.useRef(null), [Wa, Zs] = (0, P.useState)(""), [Qa, fs] = (0, P.useState)(d1[0]), [Wr, hi] = (0, P.useState)(null), [gs, Fi] = (0, P.useState)(null), [Ks, Fo] = (0, P.useState)(""), [Gs, Hs] = (0, P.useState)(f1[0]), [Ol, Xs] = (0, P.useState)(0), [Uo, Ll] = (0, P.useState)(""), [_r, Wl] = (0, P.useState)(null), [Ql, Fl] = (0, P.useState)(!1), [Ul, Ys] = (0, P.useState)(!1), [pr, Vo] = (0, P.useState)(""), [oxUpdate, setOxUpdate] = (0, P.useState)({ message: "", ts: 0 }), [oxUpMsg, setOxUpMsg] = (0, P.useState)(""), [ki, Ia] = (0, P.useState)(""), [d, x] = (0, P.useState)(!1), [w, N] = (0, P.useState)(null), [ee, le] = (0, P.useState)(1), [Me, kt] = (0, P.useState)(""), [On, bn] = (0, P.useState)(""), [Qn, er] = (0, P.useState)(""), [mr, yr] = (0, P.useState)(!1), [Ut, ha] = (0, P.useState)(""), [ps, Uh] = (0, P.useState)(""), [Vl, ql] = (0, P.useState)(""), [Nc, Vh] = (0, P.useState)(() => {
     try {
       return JSON.parse(localStorage.getItem("oritan_notes") || "[]")
     } catch {
@@ -41407,6 +41407,17 @@ function CI() {
       Z({
         locked: !1
       })
+    }
+  }, [R.enabled]);
+  (0, P.useEffect)(() => {
+    if (!(!R.enabled || !R.db)) try {
+      let u = Ec(et(R.db, "artifacts", R.appId, "public", "data", "system", "appUpdate"), y => {
+        let E = y.exists() ? y.data() : null;
+        setOxUpdate(E && E.message ? { message: String(E.message), ts: Number(E.ts) || 0 } : { message: "", ts: 0 })
+      }, () => setOxUpdate({ message: "", ts: 0 }));
+      return () => u()
+    } catch {
+      setOxUpdate({ message: "", ts: 0 })
     }
   }, [R.enabled]);
   let rc = async (u, y = "") => {
@@ -45564,6 +45575,59 @@ function CI() {
           size: 14,
           color: "currentColor"
         }), " ", ea.msg]
+      }), l === "start" && oxUpdate.message && oxUpdate.ts > Number(localStorage.getItem("oxSeenUpdateTs") || "0") && (0, r.jsx)("div", {
+        style: {
+          position: "fixed",
+          inset: 0,
+          zIndex: 99990,
+          background: "rgba(8,10,18,0.78)",
+          backdropFilter: "blur(6px)",
+          WebkitBackdropFilter: "blur(6px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "28px"
+        },
+        children: (0, r.jsxs)("div", {
+          style: {
+            position: "relative",
+            width: "100%",
+            maxWidth: 360,
+            background: S ? "#ffffff" : "#16181f",
+            borderRadius: 22,
+            padding: "26px 22px 22px",
+            boxShadow: "0 24px 60px rgba(0,0,0,0.4)"
+          },
+          children: [(0, r.jsx)("button", {
+            onClick: () => {
+              try { localStorage.setItem("oxSeenUpdateTs", String(oxUpdate.ts)) } catch {}
+              setOxUpdate({ message: "", ts: 0 })
+            },
+            "aria-label": "閉じる",
+            style: {
+              position: "absolute",
+              top: 8,
+              right: 10,
+              border: "none",
+              background: "transparent",
+              color: A.textMuted,
+              fontSize: 24,
+              fontWeight: 900,
+              cursor: "pointer",
+              lineHeight: 1
+            },
+            children: "×"
+          }), (0, r.jsx)("div", {
+            style: { fontSize: 34, textAlign: "center", marginBottom: 6 },
+            children: "📢"
+          }), (0, r.jsx)("div", {
+            style: { fontSize: 18, fontWeight: 900, color: A.text, textAlign: "center", marginBottom: 12, fontFamily: '"Zen Maru Gothic",sans-serif' },
+            children: "アップデートのお知らせ"
+          }), (0, r.jsx)("div", {
+            style: { fontSize: 14, fontWeight: 600, color: A.text, lineHeight: 1.7, whiteSpace: "pre-wrap" },
+            children: oxUpdate.message
+          })]
+        })
       }), Pe.locked && i && !i.isTeacher && !Vi && !(typeof window !== "undefined" && window.__oxIsDeveloper) && (0, r.jsxs)("div", {
         style: {
           position: "fixed",
@@ -51579,6 +51643,41 @@ function CI() {
                   background: A.accentGrad
                 },
                 children: "投稿する"
+              })]
+            }), oxNoticeTab === "announce" && (i?.isTeacher || Vi) && (0, r.jsxs)("div", {
+              className: "rounded-[20px] p-5 text-left",
+              style: {
+                background: S ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.05)",
+                border: `1px solid ${A.cardBorder}`
+              },
+              children: [(0, r.jsx)("p", {
+                className: "font-black text-base mb-3",
+                style: { color: A.text },
+                children: "📢 アップデート告知（ホームにポップアップ）"
+              }), (0, r.jsx)("textarea", {
+                value: oxUpMsg,
+                onChange: u => setOxUpMsg(u.target.value),
+                placeholder: "更新内容を入力...",
+                className: "w-full p-4 rounded-[16px] text-base outline-none transition-all min-h-[80px] text-left mb-3",
+                style: {
+                  background: S ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.08)",
+                  border: `1px solid ${A.cardBorder}`,
+                  color: A.text
+                }
+              }), (0, r.jsx)("button", {
+                onClick: async () => {
+                  if (!oxUpMsg.trim()) return;
+                  if (!R.enabled || !R.db) return Qe("オンライン接続が必要です", "error");
+                  try {
+                    await qn(et(R.db, "artifacts", R.appId, "public", "data", "system", "appUpdate"), { message: oxUpMsg.trim(), ts: Date.now(), postedBy: i?.name || "先生" }, { merge: !0 });
+                    setOxUpMsg(""), Qe("アップデート告知を送信しました！")
+                  } catch {
+                    Qe("送信に失敗しました", "error")
+                  }
+                },
+                className: "w-full py-3 rounded-[14px] font-black text-base active:opacity-80 transition-all text-center text-white",
+                style: { background: A.accentGrad },
+                children: "告知を送信"
               })]
             }), oxNoticeTab === "announce" && (0, r.jsxs)("section", {
               className: "space-y-4 ox-notice-section ox-announcement-section",
