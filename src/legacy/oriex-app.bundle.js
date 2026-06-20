@@ -47265,6 +47265,39 @@ function CI() {
                     className: "rx-tm",
                     children: "›"
                   })]
+                }), i?.isTeacher && oxUpdates.length > 0 && (0, r.jsxs)("div", {
+                  style: { width: "100%", background: S ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.05)", border: `1px solid ${A.cardBorder}`, borderRadius: 16, padding: "12px 14px" },
+                  children: [(0, r.jsx)("p", {
+                    style: { fontSize: 12, fontWeight: 800, color: A.textMuted, marginBottom: 8 },
+                    children: "送信済みのアップデート告知"
+                  }), (0, r.jsx)("div", {
+                    style: { display: "flex", flexDirection: "column", gap: 8, maxHeight: 260, overflowY: "auto" },
+                    children: oxUpdates.map(_u => (0, r.jsxs)("div", {
+                      style: { display: "flex", alignItems: "flex-start", gap: 8, padding: "8px 10px", borderRadius: 12, background: S ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.05)", border: `1px solid ${A.cardBorder}` },
+                      children: [(0, r.jsxs)("div", {
+                        style: { flex: 1, minWidth: 0 },
+                        children: [(0, r.jsx)("div", {
+                          style: { fontSize: 13, fontWeight: 700, color: A.text, whiteSpace: "pre-wrap", wordBreak: "break-word" },
+                          children: _u.message
+                        }), (0, r.jsx)("div", {
+                          style: { fontSize: 10.5, fontWeight: 600, color: A.textMuted, marginTop: 3 },
+                          children: _u.ts ? new Date(Number(_u.ts)).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }) : ""
+                        })]
+                      }), (0, r.jsx)("button", {
+                        onClick: async () => {
+                          if (!window.confirm("この告知を削除しますか？")) return;
+                          try {
+                            await qn(et(R.db, "artifacts", R.appId, "public", "data", "system", "appUpdate"), { list: oxUpdates.filter(x => x.id !== _u.id) }, { merge: !0 }), Qe("削除しました")
+                          } catch {
+                            Qe("削除に失敗しました", "error")
+                          }
+                        },
+                        "aria-label": "削除",
+                        style: { flexShrink: 0, border: "none", background: "transparent", color: "#ef4444", fontSize: 18, fontWeight: 900, cursor: "pointer", lineHeight: 1, padding: "0 4px" },
+                        children: "×"
+                      })]
+                    }, _u.id))
+                  })]
                 }), (0, r.jsxs)("div", {
                   style: {
                     width: "100%"
