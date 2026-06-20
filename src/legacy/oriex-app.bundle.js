@@ -39947,17 +39947,18 @@ function EI({
           style: {
             display: "flex",
             flexDirection: "row",
-            alignItems: "center",
-            flexWrap: "wrap",
+            alignItems: "stretch",
             gap: 8,
             marginTop: 8
           },
           children: [(0, r.jsxs)("label", {
             style: {
-              display: "inline-flex",
+              display: "flex",
+              flex: 1,
+              justifyContent: "center",
               alignItems: "center",
               gap: 5,
-              padding: "6px 10px 6px 12px",
+              padding: "6px 12px",
               borderRadius: 999,
               background: "rgba(31,174,102,0.08)",
               border: "1px solid rgba(31,174,102,0.45)",
@@ -40000,7 +40001,9 @@ function EI({
           }), (0, r.jsxs)("button", {
             onClick: t,
             style: {
-              display: "inline-flex",
+              display: "flex",
+              flex: 1,
+              justifyContent: "center",
               alignItems: "center",
               gap: 6,
               padding: "6px 14px",
@@ -45153,13 +45156,13 @@ function CI() {
                 style: {
                   width: 52,
                   height: 52,
-                  border: "1px solid rgba(0,0,0,0.2)",
+                  border: `2.5px solid ${C}`,
                   borderRadius: 16,
-                  background: `linear-gradient(145deg,${C},${K})`,
+                  background: `${C}26`,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  boxShadow: `0 4px 16px ${b.shadow}55, inset 0 1px 0 rgba(255,255,255,0.25)`,
+                  boxShadow: "none",
                   position: "relative",
                   overflow: "hidden"
                 },
@@ -45175,7 +45178,7 @@ function CI() {
                   }
                 }), (0, r.jsx)(q, {
                   size: 24,
-                  color: "rgba(255,255,255,0.97)"
+                  color: C
                 })]
               }), (0, r.jsx)("p", {
                 style: {

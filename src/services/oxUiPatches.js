@@ -131,6 +131,9 @@ function outlineMenuIconsOnce() {
     for (let i = 0; i < tiles.length; i++) {
       const tile = tiles[i];
       if (tile.offsetWidth > 80) continue; // menu tiles are 52px; skip big gradients
+      // The floating home orb (.ox-home-nav-orb) is also a small 145deg-gradient
+      // div — never outline/whiten it or any bottom-nav element.
+      if (tile.closest && tile.closest(".ox-bottom-nav")) continue;
       const color = firstGradientColor(tile.style.background || tile.style.backgroundImage || "");
       if (!color) continue;
       // light tint instead of a solid fill, with a clear colored border — so each

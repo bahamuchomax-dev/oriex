@@ -834,7 +834,7 @@ body.oxbg-on .ox-bl-text{
 
 html body .ox-plaza-page .ox-plaza-head{
   position:relative;
-  margin:2px 0 16px !important;
+  margin:2px 0 12px !important;
   overflow:hidden;
   border:0 !important;
   border-radius:30px 30px 18px 18px !important;
@@ -964,7 +964,7 @@ html body .ox-plaza-page .ox-plaza-action-grid{
   display:grid !important;
   grid-template-columns:1fr !important;
   gap:11px !important;
-  margin:0 0 17px !important;
+  margin:0 0 12px !important;
   padding:0 !important;
   border:0 !important;
   border-radius:0 !important;
@@ -1029,7 +1029,7 @@ html body .ox-plaza-page .ox-plaza-action-grid{
 }
 
 html body .ox-plaza-page .ox-plaza-section-body{
-  margin-bottom:17px !important;
+  margin-bottom:12px !important;
   border:0 !important;
   border-radius:0 !important;
   background:transparent !important;
@@ -1073,7 +1073,7 @@ html body .ox-plaza-page .ox-plaza-section-body{
 
 html body .ox-plaza-page .ox-plaza-announce{
   min-height:72px;
-  margin:0 0 8px !important;
+  margin:0 0 12px !important;
   padding:14px 15px !important;
   border:1px solid rgba(24,24,27,.08) !important;
   border-radius:24px !important;
@@ -1292,14 +1292,17 @@ button, a, [role="button"]{ -webkit-tap-highlight-color:transparent; }
 .ox-notices-page > *{
   margin-top:0 !important;
 }
-.ox-notices-page > .ox-notice-header{ order:1 !important; }
-.ox-notices-page > .ox-announcement-section{ order:2 !important; }
-.ox-notices-page > .ox-social-section{
-  order:3 !important;
-  max-height:190px;
-  overflow-y:auto;
+/* Tabbed notices: render in DOM order (header → tabs → active section); no
+   `order` juggling and no height cap, so the いいね・コメント list extends to
+   the bottom (was: .ox-social-section max-height:190px). */
+.ox-notices-page .ox-notice-section,
+.ox-notices-page .ox-notice-section *,
+.ox-notices-page .ox-social-notice,
+.ox-notices-page .ox-announcement-section{
+  transition:none !important;
 }
-.ox-notices-page > .ox-announcement-post{ order:4 !important; }
+.ox-notices-page *:focus,
+.ox-notices-page *:focus-visible{ outline:none !important; }
 
 /* ひろば is a utility hub: surface talk + notices first, not vanity counts. */
 .ox-plaza-page{
