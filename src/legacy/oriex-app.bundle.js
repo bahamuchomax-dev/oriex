@@ -51925,53 +51925,7 @@ function CI() {
                             minWidth: 0,
                             overflow: "hidden"
                           },
-                          children: [(0, r.jsxs)("div", {
-                            style: {
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 9,
-                              marginBottom: 8
-                            },
-                            children: [(0, r.jsx)("button", {
-                              onClick: () => h(p && p !== l ? p : "start"),
-                              "aria-label": "ホーム",
-                              style: {
-                                flex: "none",
-                                width: 40,
-                                height: 40,
-                                borderRadius: 13,
-                                background: he,
-                                border: `1px solid ${ne}`,
-                                boxShadow: "0 1px 4px rgba(34,27,21,0.06)",
-                                display: "grid",
-                                placeItems: "center",
-                                cursor: "pointer",
-                                padding: 0
-                              },
-                              children: (0, r.jsx)("svg", {
-                                width: "19",
-                                height: "19",
-                                viewBox: "0 0 24 24",
-                                fill: "none",
-                                stroke: B,
-                                strokeWidth: "2.4",
-                                strokeLinecap: "round",
-                                strokeLinejoin: "round",
-                                children: (0, r.jsx)("path", {
-                                  d: "M15 6l-6 6 6 6"
-                                })
-                              })
-                            }), (0, r.jsx)("span", {
-                              style: {
-                                fontSize: 13.5,
-                                fontWeight: 800,
-                                color: q,
-                                fontFamily: '"Zen Maru Gothic",sans-serif',
-                                letterSpacing: ".04em"
-                              },
-                              children: "ホーム"
-                            })]
-                          }), (0, r.jsx)("div", {
+                          children: [(0, r.jsx)("div", {
                             className: "ox-subj-title",
                             style: {
                               fontSize: 34,
