@@ -43358,7 +43358,8 @@ function CI() {
     } finally {
       window.__oxFlushing = !1
     }
-  }, yu = async () => {
+  }, yu = async (recordType = "manual") => {
+    if (recordType === "timer" && !(oxBkSaveMinutes > 0)) return Qe("30秒以上計測してから保存してください", "error");
     let u = Ya.bookTitle.trim();
     if (!u) return Qe("参考書名を入力してください", "error");
     let y = (xs || []).find(b => b.uid === (e?.uid || "local") && b.title === u),
@@ -43371,7 +43372,8 @@ function CI() {
         bookTitle: u,
         bookIcon: y?.icon || "bk0",
         subject: Ya.subject || "未分類",
-        minutes: Math.min(1200, Math.max(0, (Number(Ya.hours) || 0) * 60 + (Number(Ya.mins) || 0))),
+        minutes: recordType === "timer" ? Math.min(1200, oxBkSaveMinutes) : Math.min(1200, Math.max(0, (Number(Ya.hours) || 0) * 60 + (Number(Ya.mins) || 0))),
+        recordType: recordType,
         currentPage: Math.max(0, Number(Ya.currentPage) || 0),
         totalPages: Math.max(0, Number(Ya.totalPages) || 0),
         memo: Ya.memo.trim(),
@@ -43411,6 +43413,7 @@ function CI() {
         currentPage: "",
         memo: ""
       }));
+      if (recordType === "timer") oxBkSet({ running: !1, startTs: 0, acc: 0 });
       let b = E.minutes,
         C = Math.floor(b / 60),
         K = C > 0 ? `${C}時間${b%60>0?b%60+"分":""}` : `${b}分`;
@@ -44874,13 +44877,8 @@ function CI() {
               }), (0, r.jsx)("button", {
                 onClick: () => {
                   if (oxBkTimer.running) {
-                    let el = oxBkTimer.acc + (Date.now() - oxBkTimer.startTs),
-                      tm = Math.max(1, Math.round(el / 6e4));
-                    Ma(Ke => ({
-                      ...Ke,
-                      hours: String(Math.floor(tm / 60)),
-                      mins: String(tm % 60)
-                    })), oxBkSet({
+                    let el = oxBkTimer.acc + (Date.now() - oxBkTimer.startTs);
+                    oxBkSet({
                       running: !1,
                       startTs: 0,
                       acc: el
@@ -45051,11 +45049,19 @@ function CI() {
                   fontSize: 15
                 }
               })]
-            }), (0, r.jsx)("button", {
-              onClick: yu,
-              className: "active:scale-[0.98] transition-transform",
-              style: je,
-              children: ne.save
+            }), (0, r.jsxs)("div", {
+              style: { display: "flex", flexDirection: "column", gap: 8 },
+              children: [oxBkSaveMinutes > 0 && (0, r.jsxs)("button", {
+                onClick: () => yu("timer"),
+                className: "active:scale-[0.98] transition-transform",
+                style: { ...je, background: "linear-gradient(135deg,#14b8a6,#0f766e)" },
+                children: ["⏱ タイマーで記録（", oxBkSaveMinutes, "分）"]
+              }), (0, r.jsx)("button", {
+                onClick: () => yu("manual"),
+                className: "active:scale-[0.98] transition-transform",
+                style: je,
+                children: oxBkSaveMinutes > 0 ? "手動で記録" : ne.save
+              })]
             })]
           })]
         })
