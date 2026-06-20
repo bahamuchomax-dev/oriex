@@ -40427,7 +40427,25 @@ function II({
         flexWrap: "wrap",
         marginBottom: 6
       },
-      children: i.map(Pe => (0, r.jsx)("button", {
+      children: [_hasBooks ? (0, r.jsx)("button", {
+        disabled: _timerLocked,
+        onClick: () => !_timerLocked && fe({
+          ...p,
+          _subjectMode: false
+        }),
+        style: {
+          padding: "6px 10px",
+          borderRadius: 999,
+          fontSize: 11.5,
+          fontWeight: 800,
+          cursor: _timerLocked ? "default" : "pointer",
+          border: "1px solid var(--line)",
+          background: "var(--card)",
+          color: "var(--ink-soft)",
+          opacity: _timerLocked ? .48 : 1
+        },
+        children: "参考書で選ぶ"
+      }, "_books") : null, ...i.map(Pe => (0, r.jsx)("button", {
         disabled: _timerLocked,
         onClick: () => !_timerLocked && fe({
           ...p,
@@ -40447,7 +40465,7 @@ function II({
           opacity: _timerLocked && !(p.subject === Pe && !p.bookTitle) ? .48 : 1
         },
         children: Pe
-      }, Pe))
+      }, Pe))]
     }), (0, r.jsx)("div", {
       style: {
         display: "none",
