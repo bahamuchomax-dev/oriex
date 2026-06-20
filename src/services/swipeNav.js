@@ -131,11 +131,40 @@ function detectActiveByColor(btns) {
   return -1;
 }
 
+/** Active tab by BACKGROUND fill: the legacy bottom nav gives the active tab a
+ *  translucent pill background while the others are transparent. This is the most
+ *  reliable signal here because the raised ホーム button's icon is ALWAYS white, which
+ *  breaks the colour heuristic for every non-home tab (two "white" icons → ambiguous).
+ *  The active non-home tab is the one whose own background is not fully transparent. */
+function detectActiveByBg(btns) {
+  for (let i = 0; i < btns.length; i++) {
+    try {
+      const bg = getComputedStyle(btns[i]).backgroundColor;
+      // transparent computes to rgba(0,0,0,0); any non-zero alpha = the active pill.
+      if (bg && bg !== "transparent" && !/,\s*0\)\s*$/.test(bg) && bg !== "rgba(0, 0, 0, 0)") return i;
+    } catch {
+      /* ignore */
+    }
+  }
+  return -1;
+}
+
 function activeIndex(btns) {
-  if (activeIdx >= 0 && activeIdx < btns.length) return activeIdx;
-  let i = detectActiveByMarker(btns);
+  // DETECT the active tab from the nav every time so the swipe target is correct even
+  // when the screen was reached WITHOUT tapping the nav — e.g. the 記録 / 勉強時間記録
+  // screen opened from a home quick-action, which never updates the tracked tap index
+  // (the root cause of "can't swipe from 記録" while every other tab works). Background
+  // fill is primary (reliable for non-home tabs); marker/colour catch the ホーム tab;
+  // the tracked tap index is only a last resort.
+  let i = detectActiveByBg(btns);
+  if (i < 0) i = detectActiveByMarker(btns);
   if (i < 0) i = detectActiveByColor(btns);
-  return i;
+  if (i >= 0) {
+    activeIdx = i; // keep the tracked index in sync with reality
+    return i;
+  }
+  if (activeIdx >= 0 && activeIdx < btns.length) return activeIdx;
+  return -1;
 }
 
 function onStart(e) {
