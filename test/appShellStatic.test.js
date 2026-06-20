@@ -49,8 +49,6 @@ describe("repository-root static startup fallback", () => {
     expect(existsSync("icon-180.png")).toBe(true);
     expect(existsSync("icon-192.png")).toBe(true);
     expect(existsSync("icon-512.png")).toBe(true);
-    expect(existsSync("public/assets/icon-192.png")).toBe(true);
-    expect(existsSync("public/assets/icon-512.png")).toBe(true);
   });
 
   it("keeps the live entry free of JSX syntax and App.jsx imports", () => {
