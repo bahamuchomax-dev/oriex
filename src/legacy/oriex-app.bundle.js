@@ -50336,6 +50336,7 @@ function CI() {
                 _rawF = (vr || []).filter(U => U.uid && U.createdAt && (y ? !Te?.[U.uid]?.isTeacher : U.uid === u || _fset.has(U.uid))).sort((a, c) => (Date.parse(c.createdAt) || 0) - (Date.parse(a.createdAt) || 0)).slice(0, 200),
                 E = [...(vr || []).filter(U => y ? !Te?.[U.uid]?.isTeacher : _fr ? U.uid && (U.uid === u || _fset.has(U.uid)) : U.uid === u).map(U => ({
                   kind: "book",
+                  bookIcon: U.bookIcon,
                   ts: U.createdAt ? Date.parse(U.createdAt) : 0,
                   title: ((y || _fr) && U.userName ? U.userName + " ・ " : "") + (U.bookTitle || "参考書"),
                   sub: `${U.subject?U.subject+" ・ ":""}${U.minutes||0}分${U.currentPage?` ・ ${U.currentPage}p`:""}`,
@@ -50556,10 +50557,15 @@ function CI() {
                       className: "rx-av",
                       style: {
                         flexShrink: 0,
+                        overflow: "hidden",
                         background: U.kind === "book" ? "#E6F5EC" : U.kind === "clear" ? "#FDF2D8" : "#E4ECFD",
                         color: U.kind === "book" ? "#1AA06A" : U.kind === "clear" ? "#D99A18" : "#3A5BD0"
                       },
-                      children: U.kind === "book" ? (0, r.jsx)(l1, {
+                      children: U.kind === "book" && (String(U.bookIcon || "").startsWith("data:") || String(U.bookIcon || "").startsWith("http")) ? (0, r.jsx)("img", {
+                        src: U.bookIcon,
+                        alt: "",
+                        style: { width: "100%", height: "100%", objectFit: "cover" }
+                      }) : U.kind === "book" ? (0, r.jsx)(l1, {
                         size: 20,
                         color: "currentColor"
                       }) : U.kind === "clear" ? (0, r.jsx)(zl, {
