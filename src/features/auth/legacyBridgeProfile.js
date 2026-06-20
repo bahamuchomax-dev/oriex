@@ -14,7 +14,7 @@
 // NO password, compares no password, logs nothing.
 
 import { db } from "../../firebase/db.js";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, setDoc, serverTimestamp, deleteField } from "firebase/firestore";
 import { assertSafePayload } from "./modernAuthApi.js";
 
 // The legacy app's `artifacts/{appId}` namespace (a public, non-secret id).
@@ -77,6 +77,25 @@ export async function ensureLegacyBridgeProfile(uid) {
   const legacySnap = await getDoc(legacyRef);
   if (legacySnap.exists()) {
     const d = legacySnap.data() || {};
+
+    // PRODUCTION SECURITY backfill: older builds wrote a plaintext `password` (and/or
+    // `passwordHash`) into this doc. Login is Firebase Auth and that field is never read,
+    // so strip any residue on sight. Self-write (isSelf — rules already allow it), data-safe,
+    // and one-shot per user (it only writes when the field is still present, so it stops once
+    // cleaned). Done directly, NOT via assertSafePayload (which forbids the key), because we
+    // are REMOVING the credential, not writing one.
+    if (d.password !== undefined || d.passwordHash !== undefined) {
+      try {
+        await setDoc(
+          legacyRef,
+          { password: deleteField(), passwordHash: deleteField(), updatedAt: serverTimestamp() },
+          { merge: true },
+        );
+      } catch {
+        /* non-fatal: stripping is best-effort */
+      }
+    }
+
     let shortId = typeof d.shortId === "string" ? d.shortId : "";
     let name = typeof d.name === "string" ? d.name : "";
     let avatar = typeof d.avatar === "string" ? d.avatar : "";
