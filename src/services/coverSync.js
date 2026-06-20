@@ -14,7 +14,8 @@
  * open the app, no manual re-save needed — and (b) on each profile 保存する. Owner
  * writes only; no password/authority fields. Frozen bundle untouched.
  * ============================================================ */
-import { auth, db } from "../firebase/firebase.js";
+import { auth } from "../firebase/firebase.js";
+import { db } from "../firebase/db.js";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const APP_ID = "gen-ron-kai-app-v1";

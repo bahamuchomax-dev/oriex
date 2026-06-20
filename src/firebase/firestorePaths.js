@@ -13,7 +13,7 @@ import {
   doc,
   collection,
 } from "firebase/firestore";
-import { db } from "./firebase.js";
+import { db } from "./db.js";
 
 /* ------------------------------------------------------------------ *
  * Raw path strings (single source of truth)

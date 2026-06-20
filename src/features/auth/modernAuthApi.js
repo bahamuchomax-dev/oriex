@@ -11,7 +11,7 @@
 //     run through assertSafePayload(), which rejects any credential / authority /
 //     answer field — so no plaintext credential can ever be written.
 
-import { auth, db } from "../../firebase/firebase.js";
+import { auth } from "../../firebase/firebase.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -20,7 +20,6 @@ import {
   reauthenticateWithCredential,
   updatePassword,
 } from "firebase/auth";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import {
   normalizeFriendId,
   validateFriendIdFormat,
@@ -63,10 +62,12 @@ function withIconFields(base, { avatar, color } = {}) {
 // Write the authenticated user's OWN profile + public directory card. No
 // password, no authority, no answers — guarded by assertSafePayload.
 async function writeOwnProfile(uid, { shortId, name, avatar, color, targetSchool }) {
+  const [{ db }, { doc, setDoc, serverTimestamp }] = await Promise.all([
+    import("../../firebase/db.js"),
+    import("firebase/firestore"),
+  ]);
   const safeName = typeof name === "string" && name.trim() ? name.trim() : shortId;
   const icon = { avatar, color };
-  // 志望校 (target school) — optional, non-secret display field. assertSafePayload
-  // permits it (not a credential/authority/answer field).
   const ts = typeof targetSchool === "string" && targetSchool.trim() ? targetSchool.trim() : "";
 
   const profileBase = withIconFields({ shortId, name: safeName, updatedAt: serverTimestamp() }, icon);
@@ -74,7 +75,6 @@ async function writeOwnProfile(uid, { shortId, name, avatar, color, targetSchool
   const profile = assertSafePayload(profileBase);
   await setDoc(doc(db, "users", uid, "profile", "main"), profile, { merge: true });
 
-  // Public, non-secret lookup/display card (friend search / leaderboard).
   const cardBase = withIconFields({ shortId, uid, name: safeName, updatedAt: serverTimestamp() }, icon);
   if (ts) cardBase.targetSchool = ts;
   const card = assertSafePayload(cardBase);

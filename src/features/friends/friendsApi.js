@@ -10,7 +10,7 @@ import {
   limit,
   serverTimestamp,
 } from "firebase/firestore";
-import { db } from "../../firebase/firebase.js";
+import { db } from "../../firebase/db.js";
 import { refs } from "../../firebase/firestorePaths.js";
 
 const LEGACY_APP_ID = "gen-ron-kai-app-v1";

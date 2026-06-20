@@ -10,7 +10,8 @@
  * shows the same everywhere. Photo avatars only (character keys are untouched).
  * Writes happen AFTER the legacy save (short delay) so they are not overwritten.
  * ============================================================ */
-import { auth, db } from "../firebase/firebase.js";
+import { auth } from "../firebase/firebase.js";
+import { db } from "../firebase/db.js";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 const APP_ID = "gen-ron-kai-app-v1";

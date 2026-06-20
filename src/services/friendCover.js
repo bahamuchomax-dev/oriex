@@ -11,7 +11,7 @@
  * mis-positioned background bug). If they have no published cover, the default
  * gradient is left untouched. Cosmetic; the frozen bundle is untouched.
  * ============================================================ */
-import { db } from "../firebase/firebase.js";
+import { db } from "../firebase/db.js";
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
 
 const APP_ID = "gen-ron-kai-app-v1";

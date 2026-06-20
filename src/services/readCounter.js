@@ -20,7 +20,8 @@
  * The directory read uses the modern SDK (not the legacy __oxFsHook), so it is NOT
  * self-counted.
  * ============================================================ */
-import { auth, db } from "../firebase/firebase.js";
+import { auth } from "../firebase/firebase.js";
+import { db } from "../firebase/db.js";
 import { collection, getDocs } from "firebase/firestore";
 
 const APP_ID = "gen-ron-kai-app-v1";

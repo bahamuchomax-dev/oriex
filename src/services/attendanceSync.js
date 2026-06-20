@@ -29,7 +29,8 @@
  * restore covers the empty-local case so the common path is correct). A future
  * React migration of this screen removes that one-render lag.
  * ============================================================ */
-import { auth, db } from "../firebase/firebase.js";
+import { auth } from "../firebase/firebase.js";
+import { db } from "../firebase/db.js";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const APP_ID = "gen-ron-kai-app-v1";

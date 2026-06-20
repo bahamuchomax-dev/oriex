@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { subscribeAuth, currentAuthUser } from "./modernAuthState.js";
-import { handoffToLegacy } from "./legacyHandoff.js";
 import { clearLegacyLocalSession } from "./legacyLocalSession.js";
 import {
   consumeCutoverReloadMarker,
@@ -116,7 +115,8 @@ export default function ModernCutoverBridge() {
     // where handedOffOnceRef is false again and the normal import path reaches home.
     if (handedOffOnceRef.current && reloadForCutoverRelogin()) return;
 
-    handoffToLegacy(u)
+    import("./legacyHandoff.js")
+      .then(({ handoffToLegacy }) => handoffToLegacy(u))
       .then(() => {
         handedOffOnceRef.current = true;
         // Don't reveal the instant the import resolves — the legacy app has not

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { auth, db } from "../../firebase/firebase.js";
+import { auth } from "../../firebase/firebase.js";
+import { db } from "../../firebase/db.js";
 import { addDoc, collection, deleteDoc, doc, getDocs, limit, query, setDoc, where } from "firebase/firestore";
 import { parseSheetCsvUrl, parseCsv, rowsToVocab } from "./sheetImport.js";
 import { normalizeFriendId, validateFriendIdFormat } from "../auth/friendIdAuth.js";

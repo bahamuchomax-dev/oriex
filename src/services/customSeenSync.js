@@ -12,7 +12,8 @@
  * id to the set the moment the bundle writes its customSeen doc (via the existing
  * window.__oxFsHook). One scoped own-subtree read per session; no shared-doc write.
  * ============================================================ */
-import { auth, db } from "../firebase/firebase.js";
+import { auth } from "../firebase/firebase.js";
+import { db } from "../firebase/db.js";
 import { collection, getDocs } from "firebase/firestore";
 
 const APP_ID = "gen-ron-kai-app-v1";

@@ -17,7 +17,8 @@
  *    placement are saved online.
  * Frozen bundle untouched; browser-only.
  * ============================================================ */
-import { auth, db } from "../firebase/firebase.js";
+import { auth } from "../firebase/firebase.js";
+import { db } from "../firebase/db.js";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 
 const APP_ID = "gen-ron-kai-app-v1";

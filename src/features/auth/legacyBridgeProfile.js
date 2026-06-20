@@ -13,7 +13,7 @@
 // change). Writes NO password / authority / answer field (assertSafePayload), reads
 // NO password, compares no password, logs nothing.
 
-import { db } from "../../firebase/firebase.js";
+import { db } from "../../firebase/db.js";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { assertSafePayload } from "./modernAuthApi.js";
 
