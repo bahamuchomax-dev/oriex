@@ -38042,6 +38042,34 @@ let Rh = [{
   sw: "#2bd4c4",
   g: "linear-gradient(160deg,#d4f7f3 0%,#a3eee5 55%,#86e6db 100%)"
 }, {
+  id: "cyan",
+  sw: "#3bc9db",
+  g: "linear-gradient(160deg,#d6f6fc 0%,#a5e8f3 55%,#88ddef 100%)"
+}, {
+  id: "indigo",
+  sw: "#748ffc",
+  g: "linear-gradient(160deg,#e2e6ff 0%,#b6c0ff 55%,#9aa8ff 100%)"
+}, {
+  id: "lime",
+  sw: "#94d82d",
+  g: "linear-gradient(160deg,#eef8d6 0%,#d7efa6 55%,#c6e988 100%)"
+}, {
+  id: "rose",
+  sw: "#ff6b9d",
+  g: "linear-gradient(160deg,#ffe2ec 0%,#ffbad4 55%,#ffa3c6 100%)"
+}, {
+  id: "amber",
+  sw: "#ffc078",
+  g: "linear-gradient(160deg,#fff1dd 0%,#ffdbab 55%,#ffcb89 100%)"
+}, {
+  id: "lavender",
+  sw: "#b197fc",
+  g: "linear-gradient(160deg,#efe7ff 0%,#d8c6ff 55%,#c8b0ff 100%)"
+}, {
+  id: "slate",
+  sw: "#748399",
+  g: "linear-gradient(160deg,#e8ecf1 0%,#c5cfda 55%,#b0becd 100%)"
+}, {
   id: "mono",
   sw: "#e9ecef",
   g: "var(--card)"
@@ -42122,7 +42150,7 @@ function CI() {
           let y = await rn(bt(R.db, "artifacts", R.appId, "users", u, "friends")).catch(() => ({
             docs: []
           }));
-          await Promise.allSettled(y.docs.map(E => Sr(et(R.db, "artifacts", R.appId, "users", E.id, "friends", u)).catch(() => null)))
+          await Promise.allSettled(y.docs.map(E => Sr(et(R.db, "artifacts", R.appId, "users", E.id, "friends", u)).catch(() => null))), typeof window !== "undefined" && window.__oxDeleteAuthUser && await window.__oxDeleteAuthUser()
         } ["profile", "history", "uid", "lastReadChat"].forEach(y => localStorage.removeItem(`genron_${y}`)), Object.keys(localStorage).filter(y => y.startsWith("genron_lastReadDm_")).forEach(y => localStorage.removeItem(y)), o(null), t(null), ve([]), rt([]), F([]), hr([]), ji(!1), R.enabled && $p(R.auth).catch(() => null), Qe("アカウントを削除しました"), h("login")
       } catch (u) {
         console.error("アカウント削除エラー:", u), Qe("削除エラー: " + (u.message || "再度お試しください"), "error")
@@ -45861,7 +45889,7 @@ function CI() {
                   gap: 6,
                   flexWrap: "wrap"
                 },
-                children: Rh.filter(u => u.id === "oriex").map(u => (0, r.jsx)("button", {
+                children: Rh.map(u => (0, r.jsx)("button", {
                   onClick: () => {
                     _h(u.id);
                     try {
@@ -49396,9 +49424,10 @@ function CI() {
                       }), (0, r.jsx)("div", {
                         style: {
                           display: "flex",
-                          gap: 12
+                          gap: 12,
+                          flexWrap: "wrap"
                         },
-                        children: Rh.filter(q => q.id === "oriex").map(q => (0, r.jsx)("button", {
+                        children: Rh.map(q => (0, r.jsx)("button", {
                           onClick: () => {
                             _h(q.id);
                             try {

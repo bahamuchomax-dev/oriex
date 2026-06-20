@@ -23,6 +23,7 @@ import { installReadCounter } from "../../services/readCounter.js";
 import { installHamsterSync } from "../../services/hamsterSync.js";
 import { installCustomSeenSync } from "../../services/customSeenSync.js";
 import { installVocabDistDot } from "../../services/vocabDistDot.js";
+import { installAccountDeletion } from "../../services/accountDeletion.js";
 
 const defaultImportLegacy = () => import("../../legacy/oriex-app.bundle.js");
 
@@ -205,6 +206,16 @@ export async function handoffToLegacy(user, importLegacy) {
   // new vocabulary (same unread source as the new v2 home, so both homes clear together).
   try {
     installVocabDistDot();
+  } catch {
+    /* non-fatal */
+  }
+
+  // Make the legacy 「アカウントを削除する」 actually delete the Firebase Auth account, not
+  // just the Firestore data + sign-out (otherwise the student could log back in and the
+  // account effectively still existed). Exposes window.__oxDeleteAuthUser; the legacy delete
+  // handler awaits it before signing out.
+  try {
+    installAccountDeletion();
   } catch {
     /* non-fatal */
   }
