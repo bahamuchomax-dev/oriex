@@ -46737,34 +46737,15 @@ function CI() {
                     }
                   }), (0, r.jsx)("span", {
                     className: "ic",
-                    children: (0, r.jsxs)("svg", {
+                    children: (0, r.jsx)("img", {
+                      src: "./weekly-plan.png",
                       width: "22",
                       height: "22",
-                      viewBox: "0 0 512 512",
-                      fill: "none",
-                      children: [(0, r.jsx)("path", {
-                        d: "M378 110A190 190 0 1 0 100 365",
-                        fill: "none",
-                        stroke: "#4a3728",
-                        strokeWidth: "72",
-                        strokeLinecap: "round"
-                      }), (0, r.jsx)("path", {
-                        d: "M100 365A190 190 0 0 0 378 402",
-                        fill: "none",
-                        stroke: "#e8836a",
-                        strokeWidth: "72",
-                        strokeLinecap: "round"
-                      }), (0, r.jsx)("circle", {
-                        cx: "280",
-                        cy: "200",
-                        r: "22",
-                        fill: "#e8836a"
-                      }), (0, r.jsx)("circle", {
-                        cx: "350",
-                        cy: "200",
-                        r: "22",
-                        fill: "#e8836a"
-                      })]
+                      alt: "",
+                      style: {
+                        display: "block",
+                        objectFit: "contain"
+                      }
                     })
                   }), (0, r.jsxs)("span", {
                     className: "t",
@@ -57160,7 +57141,7 @@ function CI() {
                     })
                   })]
                 }), Xl.length > 0 && Xl.map(u => (0, r.jsxs)("a", {
-                  href: u.url,
+                  href: /^https?:\/\//i.test((u.url || "").trim()) ? u.url : void 0,
                   target: "_blank",
                   rel: "noopener noreferrer",
                   className: "active:scale-[0.97] transition-transform duration-150",

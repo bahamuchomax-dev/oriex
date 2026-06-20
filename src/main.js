@@ -55,12 +55,31 @@ try {
 }
 
 // Opt-in Firestore READ METER (diagnostic). No-op unless ?oxReadMeter=1 /
-// #ox-read-meter / localStorage.oxReadMeter==="1". Installed here — BEFORE the
-// legacy bundle or modern shell loads — so it observes every Firestore response
-// from the very first read. When off it wraps nothing and adds no overhead.
-// Console: __oxReads.table() / .snapshot() / .reset().
-import { installReadMeter } from "./services/diagnostics/readMeter.js";
-installReadMeter();
+// #ox-read-meter / localStorage.oxReadMeter==="1". The ~10KB module is kept OFF the
+// entry/login critical path: we check the flag SYNCHRONOUSLY (so a flagged dev
+// session still installs the wrapper before the first Firestore read, which happens
+// later in the lazy cutover/firebase chunk) and only THEN dynamic-import it. When
+// off, nothing is downloaded. Console: __oxReads.table() / .snapshot() / .reset().
+try {
+  let meterOn = false;
+  try {
+    const s = String((window.location && window.location.search) || "");
+    const h = String((window.location && window.location.hash) || "");
+    meterOn =
+      /[?&]oxReadMeter=1(?:&|$)/.test(s) ||
+      h === "#ox-read-meter" ||
+      !!(window.localStorage && window.localStorage.getItem("oxReadMeter") === "1");
+  } catch {
+    /* ignore */
+  }
+  if (meterOn) {
+    import("./services/diagnostics/readMeter.js")
+      .then((m) => m.installReadMeter({ force: true }))
+      .catch(() => {});
+  }
+} catch {
+  /* ignore */
+}
 
 function staticSourceAssetBaseUrl() {
   if (typeof document !== "undefined") {
@@ -77,15 +96,16 @@ function staticSourceAssetBaseUrl() {
 // GitHub Pages serves source files without Vite transforms, and raw CSS module
 // imports would stop startup before the legacy app mounts.
 
-// Globals the app relies on (now editable modules).
-import "./features/hamster/oriexHamu3D.js"; // -> window.OriexHamu3D
-import "./services/oxHelpers.js"; // -> window.__oxBg / __oxPbg / __oxAv / __oxStudy
-
-// Durable runtime relabels over the frozen legacy bundle's DOM (e.g. nav
-// "マイ" → "マイページ"). Self-defers until the DOM exists and re-applies on
-// re-render, like oxHelpers. No-op outside the browser.
-import { installUiPatches } from "./services/oxUiPatches.js";
-installUiPatches();
+// Legacy globals + DOM relabels the bundle relies on (window.__oxBg/__oxPbg/__oxAv/
+// __oxStudy, window.OriexHamu3D, nav "マイ"→"マイページ" relabels). These are
+// POST-LOGIN-ONLY — the signed-out login screen never uses them — so they are NO
+// LONGER static-imported into the entry chunk. That used to put ~120KB of source
+// plus 5 setIntervals and 2 document-wide MutationObservers on the LOGIN paint path
+// for nothing. They are now loaded right before the legacy bundle in BOTH boot
+// funnels: startLegacyApp() below (fallback paths) and features/auth/legacyHandoff.js
+// (the default post-auth handoff). Order matters — the bundle calls
+// window.__oxStudy()/OriexHamu3D (some sites unguarded), so the globals must exist
+// before it self-mounts; both funnels guarantee that.
 
 // Hidden diagnostic route. The embedded-AI device probe is NOT part of the
 // normal app: it opens ONLY when the URL explicitly asks for it
@@ -121,9 +141,19 @@ import { showCutoverVeil } from "./features/auth/cutoverVeil.js";
 // React app into <div id="root"> when loaded; the globals above are installed
 // first (static imports), so load order is preserved.
 function startLegacyApp() {
-  return import("./legacy/oriex-app.bundle.js").catch((err) =>
-    console.warn("[oriex] legacy app failed to load", err),
-  );
+  // Establish the legacy globals + DOM relabels BEFORE the bundle self-mounts (these
+  // used to be eager entry-chunk imports; moved here to keep the login paint lean).
+  // Awaited so window.__oxStudy/__oxBg/__oxAv/OriexHamu3D and the nav relabels exist
+  // before the bundle — some bundle call sites are unguarded. Warming a global is
+  // best-effort; a failure there must not stop the app from loading.
+  return Promise.all([
+    import("./services/oxHelpers.js"),
+    import("./features/hamster/oriexHamu3D.js"),
+    import("./services/oxUiPatches.js").then((m) => m.installUiPatches()),
+  ])
+    .catch(() => {})
+    .then(() => import("./legacy/oriex-app.bundle.js"))
+    .catch((err) => console.warn("[oriex] legacy app failed to load", err));
 }
 
 // DEFAULT login path: modern Firebase Auth cutover — login/signup, ensure the

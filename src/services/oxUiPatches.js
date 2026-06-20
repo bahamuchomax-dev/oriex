@@ -642,6 +642,12 @@ function injectDevBadgeOnce() {
 export function installUiPatches(map = RELABELS) {
   try {
     if (typeof document === "undefined") return;
+    // Idempotent: now called from two boot funnels (legacyHandoff + startLegacyApp).
+    // A second call would add a duplicate MutationObserver + 700ms interval.
+    if (typeof window !== "undefined") {
+      if (window.__oxUiPatched) return;
+      window.__oxUiPatched = true;
+    }
     // Preload the hamster image so the icon swap is INSTANT (no async-load size
     // pop / flicker when the swapped <img> first appears).
     try {

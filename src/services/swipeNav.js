@@ -15,12 +15,25 @@
 
 const H_MIN = 80; // min horizontal travel (px) — deliberate swipe, not accidental
 const H_DOM = 2.0; // horizontal must dominate vertical by this factor
+// Over a horizontal scroller (e.g. the 記録 weekly table, minWidth 752px), a fast
+// FLICK switches tabs while a slow DRAG scrolls the table. This lets the records
+// page swipe between tabs without removing the table's own horizontal scroll.
+const V_FLICK = 0.35; // px/ms — at/above this a horizontal swipe is a tab-switch flick
 const NAV_SEL = "button,a[role=button],[role=tab]";
 
 let sx = 0;
 let sy = 0;
+let st = 0; // gesture start time (ms) for flick-velocity detection
 let tracking = false;
 let activeIdx = -1; // tracked active tab (survives re-renders by position)
+
+function nowMs() {
+  try {
+    return typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
+  } catch {
+    return Date.now();
+  }
+}
 
 function modalOpen() {
   return !!document.querySelector(
@@ -140,6 +153,7 @@ function onStart(e) {
   hScroller = findHorizontalScroller(target);
   sx = t.clientX;
   sy = t.clientY;
+  st = nowMs();
   tracking = true;
 }
 
@@ -151,9 +165,15 @@ function onEnd(e) {
   const dy = t.clientY - sy;
   if (Math.abs(dx) < H_MIN || Math.abs(dx) < Math.abs(dy) * H_DOM) return;
   if (hScroller) {
-    const canScrollLeft = hScroller.scrollLeft > 1;
-    const canScrollRight = hScroller.scrollLeft < hScroller.scrollWidth - hScroller.clientWidth - 1;
-    if ((dx < 0 && canScrollRight) || (dx > 0 && canScrollLeft)) return;
+    // Fast flick → tab switch; slow drag → let the table scroll (if it still can
+    // in this direction). At the table's edge a drag also falls through to a switch.
+    const dt = Math.max(1, nowMs() - st);
+    const isFlick = Math.abs(dx) / dt >= V_FLICK;
+    if (!isFlick) {
+      const canScrollLeft = hScroller.scrollLeft > 1;
+      const canScrollRight = hScroller.scrollLeft < hScroller.scrollWidth - hScroller.clientWidth - 1;
+      if ((dx < 0 && canScrollRight) || (dx > 0 && canScrollLeft)) return;
+    }
   }
   const nav = findNav();
   const btns = navButtons(nav);

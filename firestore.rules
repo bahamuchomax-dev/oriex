@@ -362,6 +362,13 @@ service cloud.firestore {
     match /artifacts/{appId} {
       // per-user private data: owner only (profile/main, friends, studyDiary,
       // history, review, userVocab, ...). Fixes the failing friends onSnapshot.
+      //
+      // SECURITY LANDMINE — keep this STRICTLY isSelf(uid). A plaintext `password`
+      // field still lives at users/{uid}/profile/main (legacy registration / password-
+      // change writes). It is safe ONLY because this read is owner-only. NEVER add a
+      // teaches()/admin/pre-auth read exception under users/{uid}/** while that field
+      // exists — that would expose every student's plaintext password. The durable fix
+      // is to stop writing the field + backfill-delete it (tracked, frozen-bundle work).
       match /users/{uid}/{document=**} {
         allow read, write: if isSelf(uid);
       }
@@ -401,8 +408,15 @@ service cloud.firestore {
       // public/data wildcard (write:false) above — Firestore ORs the allows.
       match /public/data/taskProgress/{id} {
         allow read: if signedIn();
+        // The doc id is bound to the caller: the live bundle always writes
+        // id = `${taskId}__${uid}` with uid == the signed-in user (oriex-app.bundle.js
+        // :40776). Without the id binding, a student could setDoc `${taskId}__${victimUid}`
+        // with uid=self and CLOBBER another student's progress (full overwrite, no merge),
+        // making the victim's `where uid==self` query miss it. weeklyTasks ids are
+        // Firestore auto-ids and Auth uids are both '__'-free, so every legit write passes.
         allow create, update: if signedIn()
                               && request.resource.data.uid == request.auth.uid
+                              && id == request.resource.data.taskId + '__' + request.auth.uid
                               && noAnswerFields();
         allow delete: if isTeacher() || isAdmin()
                       || (signedIn() && resource.data.uid == request.auth.uid);

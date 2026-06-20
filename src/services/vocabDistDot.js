@@ -24,6 +24,9 @@ let loaded = false;
 
 /** (Re)load the distributed words and recompute the unread count, then repaint. */
 function refreshCount() {
+  // Skip the network read while the tab is hidden (PWA backgrounded). A cosmetic dot
+  // never needs to poll Firestore in the background — the loader runs again on focus.
+  if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
   loadDistributedVocab()
     .then((ws) => {
       if (!Array.isArray(ws)) return; // read failed → keep the last known state
@@ -109,9 +112,12 @@ export function installVocabDistDot() {
       });
     }
     // Backstop repaint (re-applies the dot if React re-rendered the tile away) and a
-    // slower re-read to pick up freshly distributed words within a session.
+    // slower re-read to pick up freshly distributed words within a session. The read
+    // poll is 5min (the shared loader keeps its own ~60s cache, so a tick is a cache
+    // hit unless genuinely stale) and is visibility-gated in refreshCount — a teacher
+    // rarely distributes new words mid-session, so this is ample and far cheaper.
     setInterval(paint, 1500);
-    setInterval(refreshCount, 60000);
+    setInterval(refreshCount, 300000);
   } catch {
     /* ignore */
   }

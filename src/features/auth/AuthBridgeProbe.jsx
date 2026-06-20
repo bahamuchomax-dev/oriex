@@ -78,6 +78,13 @@ export default function AuthBridgeProbe() {
 
       setPhase("mounting");
       try {
+        // Establish the legacy globals (moved off the entry chunk) before the bundle
+        // self-mounts, so window.__oxStudy/__oxBg/__oxAv/OriexHamu3D exist — the bundle
+        // calls some unguarded. Mirrors startLegacyApp() / legacyHandoff.
+        await Promise.all([
+          import("../../services/oxHelpers.js"),
+          import("../hamster/oriexHamu3D.js"),
+        ]).catch(() => {});
         // Import (not edit) the legacy bundle; it self-mounts into #root.
         await import("../../legacy/oriex-app.bundle.js");
       } catch {

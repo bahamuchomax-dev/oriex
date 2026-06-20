@@ -124,11 +124,57 @@ function preloadDefaultLoginChunks() {
   };
 }
 
+// Warm the ~352KB Firestore SDK chunk (index.esm-*.js) in the BACKGROUND while the
+// user is on the login screen. The post-auth handoff (legacyHandoff -> legacyBridge
+// Profile) statically imports firebase/firestore, so this exact chunk is needed the
+// instant login succeeds — but today it is only fetched AFTER the ログイン press,
+// stalling the first authenticated read on a cold network. rel=prefetch is low
+// priority, so it never competes with the firebase-auth modulepreload already in the
+// login set; on repeat visits it just hits the SW cache. Found durably from the
+// Rollup bundle (db.js's imported chunk, or the index.esm-* filename) — never a
+// hardcoded hash. Pure HTML hint; no runtime/code change.
+function prefetchFirestoreChunk() {
+  return {
+    name: "oriex-prefetch-firestore-chunk",
+    apply: "build",
+    transformIndexHtml(html, ctx) {
+      try {
+        if (!ctx || !ctx.bundle) return html;
+        const bundle = ctx.bundle;
+        // Prefer the big Firestore chunk that our src/firebase/db.js entry pulls in.
+        let dbChunk = null;
+        for (const chunk of Object.values(bundle)) {
+          if (chunk.type !== "chunk") continue;
+          const fid = (chunk.facadeModuleId || "").replace(/\\/g, "/");
+          if (fid.endsWith("src/firebase/db.js")) {
+            dbChunk = chunk;
+            break;
+          }
+        }
+        let target = null;
+        if (dbChunk) {
+          target = (dbChunk.imports || []).find((f) => /index\.esm-[^/]*\.js$/.test(f)) || null;
+        }
+        if (!target) {
+          target = Object.keys(bundle).find((f) => /(^|\/)index\.esm-[^/]*\.js$/.test(f)) || null;
+        }
+        if (!target) return html;
+        return {
+          html,
+          tags: [{ tag: "link", attrs: { rel: "prefetch", as: "script", crossorigin: "", href: "./" + target }, injectTo: "head" }],
+        };
+      } catch {
+        return html;
+      }
+    },
+  };
+}
+
 // `base: "./"` keeps asset URLs relative so the build also works when
 // served from a GitHub Pages project subpath (matches manifest/sw "./").
 export default defineConfig({
   base: "./",
-  plugins: [react(), stampServiceWorkerVersion(), prefetchLegacyBundle(), preloadDefaultLoginChunks()],
+  plugins: [react(), stampServiceWorkerVersion(), prefetchLegacyBundle(), preloadDefaultLoginChunks(), prefetchFirestoreChunk()],
   build: {
     target: "es2019",
     // The legacy app bundle is intentionally large until screens are

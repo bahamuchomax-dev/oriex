@@ -86,6 +86,28 @@ export async function handoffToLegacy(user, importLegacy) {
     })());
   }
 
+  // Load the legacy globals + DOM relabels that USED to sit in the entry chunk on
+  // every visit (incl. the login screen, which never uses them). Loaded here — off
+  // the login paint path — but BEFORE the bundle self-mounts: it calls
+  // window.__oxStudy()/OriexHamu3D (some sites unguarded). Dynamic imports (not
+  // static) so this module stays importable in a non-browser/test context; the
+  // try/catch keeps a warm-up failure non-fatal. installUiPatches is idempotent
+  // (window.__oxUiPatched) so it is safe alongside the startLegacyApp() call site.
+  try {
+    await Promise.all([
+      import("../../services/oxHelpers.js"),
+      import("../hamster/oriexHamu3D.js"),
+    ]);
+  } catch {
+    /* non-fatal: globals are best-effort */
+  }
+  try {
+    const uiPatches = await import("../../services/oxUiPatches.js");
+    uiPatches.installUiPatches();
+  } catch {
+    /* non-fatal: cosmetic relabels only */
+  }
+
   await (importLegacy || defaultImportLegacy)();
 
   // Server-persist the legacy 登校スタンプ (attendance stamps), which the bundle
