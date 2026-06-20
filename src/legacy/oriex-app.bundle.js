@@ -42242,8 +42242,7 @@ function CI() {
           activePet: i?.activePet || null,
           activeAccessories: i?.activeAccessories || [],
           registeredAt: i?.registeredAt || Date.now(),
-          isTeacher: y,
-          password: E
+          isTeacher: y
         };
       if (y && ji(!0), o(b), wt("profile", b), R.db && R.auth) try {
         let C;
@@ -54084,12 +54083,11 @@ function CI() {
                     return
                   }
                   let u = {
-                    ...i,
-                    password: Ut.trim()
+                    ...i
                   };
                   if (o(u), wt("profile", u), e && R.enabled) try {
                     await qn(et(R.db, "artifacts", R.appId, "users", e.uid, "profile", "main"), {
-                      password: Ut.trim()
+                      passwordUpdatedAt: Date.now()
                     }, {
                       merge: !0
                     })
