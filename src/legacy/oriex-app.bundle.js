@@ -45309,6 +45309,7 @@ function CI() {
                 q = b.id === "plaza" ? Object.values(Go || {}).reduce((tn, ze) => tn + (Number(ze) || 0), 0) : 0,
                 B = f0[b.id];
               return b.id === "start" ? (0, r.jsxs)("button", {
+                className: "ox-home-nav-button",
                 onClick: () => {
                   h(b.id), el(!1), ua.current && (ua.current.scrollTop = 0)
                 },
@@ -45332,6 +45333,7 @@ function CI() {
                   appearance: "none"
                 },
                 children: [(0, r.jsx)("div", {
+                  className: "ox-home-nav-orb",
                   style: {
                     width: 58,
                     height: 58,
@@ -45350,6 +45352,7 @@ function CI() {
                     color: "#fff"
                   })
                 }), (0, r.jsx)("span", {
+                  className: "ox-home-nav-label",
                   style: {
                     fontSize: 9,
                     fontWeight: 900,

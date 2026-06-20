@@ -1174,6 +1174,41 @@ html body .ox-plaza-page .ox-plaza-announce{
 .ox-bottom-nav button:nth-child(3):focus span{
   color:#0f766e !important;
 }
+.ox-bottom-nav .ox-home-nav-button,
+.ox-bottom-nav .ox-home-nav-button:hover,
+.ox-bottom-nav .ox-home-nav-button:active,
+.ox-bottom-nav .ox-home-nav-button:focus,
+.ox-bottom-nav .ox-home-nav-button:focus-visible{
+  background:transparent !important;
+  transform:none !important;
+  scale:1 !important;
+  filter:none !important;
+  opacity:1 !important;
+}
+.ox-bottom-nav .ox-home-nav-orb,
+.ox-bottom-nav .ox-home-nav-button:hover .ox-home-nav-orb,
+.ox-bottom-nav .ox-home-nav-button:active .ox-home-nav-orb,
+.ox-bottom-nav .ox-home-nav-button:focus .ox-home-nav-orb,
+.ox-bottom-nav .ox-home-nav-button:focus-visible .ox-home-nav-orb{
+  width:58px !important;
+  min-width:58px !important;
+  max-width:58px !important;
+  height:58px !important;
+  min-height:58px !important;
+  max-height:58px !important;
+  border-radius:999px !important;
+  background:linear-gradient(145deg,#52d6b1,#8dd6f7) !important;
+  box-shadow:0 14px 28px rgba(20,184,166,.25), 0 0 0 8px rgba(255,255,255,.78), inset 0 1px 0 rgba(255,255,255,.62) !important;
+  transform:none !important;
+  scale:1 !important;
+  filter:none !important;
+  opacity:1 !important;
+}
+.ox-bottom-nav .ox-home-nav-label{
+  color:#0f766e !important;
+  transform:none !important;
+  filter:none !important;
+}
 .ox-notice-section{
   background:rgba(255,255,255,.78);
   border:1px solid rgba(15,23,42,.08);
