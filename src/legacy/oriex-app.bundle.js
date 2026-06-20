@@ -40344,9 +40344,9 @@ function II({
     justifyContent: "center",
     gap: 8,
     flex: 1,
-    minHeight: 52,
-    padding: "14px 10px",
-    borderRadius: 18,
+    minHeight: 46,
+    padding: "12px 10px",
+    borderRadius: 16,
     fontWeight: 900,
     fontSize: 14.5,
     border: "none",
@@ -40392,14 +40392,14 @@ function II({
         children: "時間記録"
       })]
     }), _hasBooks && !_subjectMode ? (0, r.jsxs)("div", {
-      style: { marginBottom: 14 },
+      style: { marginBottom: 6 },
       children: [(0, r.jsx)("div", {
-        style: { display: "flex", gap: 6, flexWrap: "wrap" },
+        style: { display: "flex", gap: 5, flexWrap: "wrap" },
         children: [..._allB.map(Pe => (0, r.jsx)("button", {
           disabled: _timerLocked,
           onClick: () => !_timerLocked && fe({ ...p, bookTitle: Pe.title, subject: Pe.subject || p.subject, _subjectMode: false }),
           style: {
-            padding: "7px 12px", borderRadius: 999, fontSize: 12, fontWeight: 800, cursor: _timerLocked ? "default" : "pointer",
+            padding: "6px 10px", borderRadius: 999, fontSize: 11.5, fontWeight: 800, cursor: _timerLocked ? "default" : "pointer",
             border: p.bookTitle === Pe.title ? "none" : "1px solid var(--line)",
             background: p.bookTitle === Pe.title ? e.accentGrad : "var(--card)",
             color: p.bookTitle === Pe.title ? "#fff" : "var(--ink-soft)",
@@ -40411,7 +40411,7 @@ function II({
           disabled: _timerLocked,
           onClick: () => !_timerLocked && fe({ ...p, bookTitle: "", _subjectMode: true }),
           style: {
-            padding: "7px 12px", borderRadius: 999, fontSize: 12, fontWeight: 800, cursor: _timerLocked ? "default" : "pointer",
+            padding: "6px 10px", borderRadius: 999, fontSize: 11.5, fontWeight: 800, cursor: _timerLocked ? "default" : "pointer",
             border: "1px solid var(--line)",
             background: _subjectMode ? "var(--accent-soft)" : "var(--card)",
             color: _subjectMode ? "var(--accent)" : "var(--ink-soft)",
@@ -40423,9 +40423,9 @@ function II({
     }) : (0, r.jsx)("div", {
       style: {
         display: "flex",
-        gap: 7,
+        gap: 5,
         flexWrap: "wrap",
-        marginBottom: 10
+        marginBottom: 6
       },
       children: i.map(Pe => (0, r.jsx)("button", {
         disabled: _timerLocked,
@@ -40436,9 +40436,9 @@ function II({
           _subjectMode: _hasBooks ? true : undefined
         }),
         style: {
-          padding: "8px 13px",
+          padding: "6px 10px",
           borderRadius: 999,
-          fontSize: 12.5,
+          fontSize: 11.5,
           fontWeight: 800,
           cursor: _timerLocked ? "default" : "pointer",
           border: p.subject === Pe && !p.bookTitle ? "none" : "1px solid var(--line)",
@@ -40450,10 +40450,11 @@ function II({
       }, Pe))
     }), (0, r.jsx)("div", {
       style: {
-        minHeight: 26,
-        margin: "0 0 14px",
-        padding: _timerLocked ? "9px 13px" : "0 2px",
-        borderRadius: 18,
+        display: "none",
+        minHeight: 0,
+        margin: 0,
+        padding: 0,
+        borderRadius: 16,
         background: _timerLocked ? (t ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.08)") : "transparent",
         border: _timerLocked ? "1px solid rgba(20,20,35,0.08)" : "none",
         boxShadow: _timerLocked ? "0 8px 20px rgba(15,23,42,0.06)" : "none",
@@ -40466,9 +40467,9 @@ function II({
     }), (0, r.jsxs)("div", {
       style: {
         ...Ze,
-        padding: "20px 16px 18px",
+        padding: "12px 12px",
         textAlign: "center",
-        marginBottom: 16,
+        marginBottom: 10,
         background: t ? "linear-gradient(180deg,rgba(255,255,255,0.98) 0%,rgba(242,251,248,0.94) 100%)" : "rgba(255,255,255,0.08)",
         border: "1px solid rgba(20,20,35,0.08)",
         boxShadow: "0 18px 42px rgba(15,23,42,0.10)"
@@ -40479,21 +40480,22 @@ function II({
           alignItems: "center",
           justifyContent: "center",
           maxWidth: "100%",
-          padding: "8px 13px",
+          padding: "6px 11px",
           borderRadius: 999,
           background: "linear-gradient(135deg,rgba(20,184,166,0.13),rgba(59,130,246,0.09))",
           color: "#0f766e",
-          fontSize: 12,
+          fontSize: 11.5,
           fontWeight: 950,
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
-          marginBottom: 12
+          marginBottom: 5
         },
         children: [_tmTarget ? (p.bookTitle ? "参考書：" : "教科：") : "未選択", _tmTarget || "選択してください"]
       }), (0, r.jsx)("div", {
         style: {
-          fontSize: 11.5,
+          display: "none",
+          fontSize: 10.5,
           fontWeight: 900,
           color: "var(--ink-soft)",
           letterSpacing: "0.14em"
@@ -40501,51 +40503,49 @@ function II({
         children: p.running ? "計測中" : "タイマー"
       }), (0, r.jsxs)("div", {
         style: {
-          fontSize: 58,
+          fontSize: 47,
           fontWeight: 900,
-          margin: "5px 0 15px",
+          margin: "2px auto 8px",
           fontVariantNumeric: "tabular-nums",
           fontFamily: '"Zen Maru Gothic", sans-serif',
           color: "var(--ink)",
-          width: 190,
-          height: 190,
-          maxWidth: "74vw",
-          maxHeight: "74vw",
-          marginLeft: "auto",
-          marginRight: "auto",
+          width: 146,
+          height: 146,
+          maxWidth: "54vw",
+          maxHeight: "54vw",
           borderRadius: "50%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "radial-gradient(circle at center,#fff 0 63%,rgba(255,255,255,0) 64%), conic-gradient(from 225deg,#14b8a6 " + _tmNextMinutePct + "%,rgba(15,23,42,0.08) 0)",
-          boxShadow: "0 18px 34px rgba(15,118,110,0.14), inset 0 0 0 8px rgba(255,255,255,0.72)"
+          background: "radial-gradient(circle at center,#fff 0 64%,rgba(255,255,255,0) 65%), conic-gradient(from 0deg,#14b8a6 " + _tmNextMinutePct + "%,rgba(15,23,42,0.08) 0)",
+          boxShadow: "0 14px 28px rgba(15,118,110,0.12), inset 0 0 0 7px rgba(255,255,255,0.72)"
         },
         children: [$e(Je), ":", $e(We)]
       }), (0, r.jsxs)("div", {
         style: {
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 8,
-          margin: "0 0 12px"
+          gridTemplateColumns: "1fr",
+          gap: 0,
+          margin: "0 0 7px"
         },
         children: [(0, r.jsxs)("div", {
           style: {
-            borderRadius: 16,
-            padding: "11px 8px",
+            borderRadius: 14,
+            padding: "7px 8px",
             background: "rgba(255,255,255,0.78)",
             border: "1px solid rgba(20,20,35,0.07)",
             boxShadow: "inset 0 1px 0 rgba(255,255,255,0.65)"
           },
           children: [(0, r.jsx)("div", {
             style: {
-              fontSize: 10.5,
+              fontSize: 10,
               fontWeight: 900,
               color: "var(--ink-soft)"
             },
             children: "保存予定"
           }), (0, r.jsxs)("div", {
             style: {
-              fontSize: 20,
+              fontSize: 17,
               fontWeight: 950,
               color: "var(--ink)"
             },
@@ -40553,22 +40553,23 @@ function II({
           })]
         }), (0, r.jsxs)("div", {
           style: {
-            borderRadius: 16,
-            padding: "11px 8px",
+            display: "none",
+            borderRadius: 14,
+            padding: "8px 8px",
             background: "rgba(255,255,255,0.78)",
             border: "1px solid rgba(20,20,35,0.07)",
             boxShadow: "inset 0 1px 0 rgba(255,255,255,0.65)"
           },
           children: [(0, r.jsx)("div", {
             style: {
-              fontSize: 10.5,
+              fontSize: 10,
               fontWeight: 900,
               color: "var(--ink-soft)"
             },
             children: "保存できる条件"
           }), (0, r.jsx)("div", {
             style: {
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: 950,
               color: _tmCanSave ? "#0f766e" : "var(--ink-soft)"
             },
@@ -40577,11 +40578,12 @@ function II({
         })]
       }), (0, r.jsx)("div", {
         style: {
-          height: 8,
+          display: "none",
+          height: 0,
           borderRadius: 99,
           background: "rgba(15,23,42,0.08)",
           overflow: "hidden",
-          margin: "0 4px 16px"
+          margin: 0
         },
         children: (0, r.jsx)("div", {
           style: {
@@ -40594,7 +40596,7 @@ function II({
       }), (0, r.jsxs)("div", {
         style: {
           display: "flex",
-          gap: 10
+          gap: 8
         },
         children: [(0, r.jsx)("button", {
           onClick: () => {
@@ -40650,8 +40652,8 @@ function II({
           })
         },
         style: {
-          marginTop: 13,
-          fontSize: 12,
+          marginTop: 9,
+          fontSize: 11.5,
           fontWeight: 900,
           color: "var(--ink-soft)",
           background: "none",
