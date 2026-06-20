@@ -74,8 +74,16 @@ export function seedLegacyLocalSession(uid, profile) {
         existing.color = p.color;
         changed = true;
       }
-      if (typeof p.isTeacher === "boolean" && existing.isTeacher !== p.isTeacher) {
-        existing.isTeacher = p.isTeacher;
+      if (typeof p.isTeacher === "boolean") {
+        if (existing.isTeacher !== p.isTeacher) {
+          existing.isTeacher = p.isTeacher;
+          changed = true;
+        }
+      } else if (existing.isTeacher) {
+        // No authoritative value provided (e.g. an upstream fetch error) but the
+        // cache still flags teacher — clear it defensively so a demoted teacher
+        // doesn't keep seeing teacher UI from a stale fast-start cache.
+        delete existing.isTeacher;
         changed = true;
       }
       if (changed) window.localStorage.setItem(profileKey, JSON.stringify(existing));

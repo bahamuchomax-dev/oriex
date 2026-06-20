@@ -46,7 +46,13 @@ export async function handoffToLegacy(user, importLegacy) {
   let name = "";
   let avatar = "";
   let color = "";
-  let isTeacher;
+  // Fail-closed default: if the profile probe throws (network error) or returns no
+  // authoritative flag, seed the cache as NON-teacher rather than leaving it
+  // undefined (which preserves a now-stale cached isTeacher:true for a demoted
+  // teacher). A real teacher gets true on the success path below, and the legacy
+  // bundle re-reads the authoritative profile on boot, so this never hides admin
+  // from an actual teacher beyond the transient error case.
+  let isTeacher = false;
   try {
     const r = await ensureLegacyBridgeProfile(uid);
     ensured = r && r.ok ? (r.created ? "created" : "existed") : "failed";

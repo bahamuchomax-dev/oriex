@@ -38128,11 +38128,7 @@ function jI({
 }) {
   let p = te => Math.max(0, Math.min(100, te)),
     [m, j] = (0, P.useState)(() => {
-      try {
-        let te = JSON.parse(localStorage.getItem("oriex_hamu_" + (window.__oxUid || "local")) || "null");
-        if (te && typeof te == "object" && te.name) return te
-      } catch {}
-      return {
+      let _def = {
         name: "ハムちゃん",
         food: 70,
         happy: 70,
@@ -38147,7 +38143,14 @@ function jI({
         last: Date.now(),
         spent: 0,
         petAt: 0
-      }
+      };
+      try {
+        let te = JSON.parse(localStorage.getItem("oriex_hamu_" + (window.__oxUid || "local")) || "null");
+        // Merge OVER the defaults so a stale/partial cached pet (missing own / food /
+        // happy / clean) can't yield undefined→NaN gauges or crash on m.own.*.
+        if (te && typeof te == "object" && te.name) return { ..._def, ...te }
+      } catch {}
+      return _def
     }),
     [, v] = (0, P.useState)(0),
     [I, M] = (0, P.useState)(""),
@@ -38211,7 +38214,14 @@ function jI({
       };
       At.food = p(te.food - 4 * ut), At.happy = p(te.happy - 3 * ut * (te.own && te.own.bed ? .8 : 1)), At.clean = p(te.clean - 2 * ut);
       let sn = Math.floor((Be - (te.poopT || Be)) / 144e5);
-      return sn > 0 && (At.poops = Math.min(3, (te.poops || 0) + sn), At.poopT = (te.poopT || Be) + sn * 144e5, At.clean = p(At.clean - sn * 10)), At.last = Be, At
+      if (sn > 0) {
+        let _op = te.poops || 0, _np = Math.min(3, _op + sn);
+        // Decrement cleanliness by the ACTUAL poop increment, not by every elapsed
+        // 4h period — once poops is capped at 3, further periods must not keep
+        // draining clean.
+        At.poops = _np, At.poopT = (te.poopT || Be) + sn * 144e5, At.clean = p(At.clean - (_np - _op) * 10)
+      }
+      return At.last = Be, At
     },
     W = Math.max(0, Math.floor(o || 0) - (m.spent || 0)),
     zt = m.grow || 0,
@@ -38291,7 +38301,7 @@ function jI({
       }), We.current.clean = performance.now()
     },
     ae = () => {
-      if (!m.own.wheel) {
+      if (!(m.own && m.own.wheel)) {
         l && l("ショップで「かいぐるま」を買うとあそべます"), M("shop");
         return
       }
@@ -41660,7 +41670,8 @@ function CI() {
   }, [O, e?.uid]), (0, P.useEffect)(() => {
     if (l === "chat") {
       let u = Pn.length > 0 ? Pn[Pn.length - 1].timestamp : Date.now();
-      localStorage.setItem("genron_lastReadChat", JSON.stringify(u)), Hl(0)
+      try { localStorage.setItem("genron_lastReadChat", JSON.stringify(u)) } catch {}
+      Hl(0)
     } else {
       let u = (() => {
         try {
@@ -43320,9 +43331,13 @@ function CI() {
       cap = cap.slice(1)
     }
     if (oxWriteBookQ(cap)) return !0;
-    // The single newest entry is itself too big (large base64 cover/avatar):
-    // retry without the heavy denormalized fields so the record still saves.
+    // The single newest entry is itself too big (large base64 cover/avatar).
+    // Stage 1: drop ONLY the denormalized avatar, KEEPING the book cover photo, so
+    // "specific books" with a photo cover still show it in the friend timeline.
     let d = cap[0] && cap[0].data || {};
+    if (oxWriteBookQ([{ ...cap[0], data: { ...d, userAvatar: "" } }])) return !0;
+    // Stage 2: the cover itself is too big to fit — strip it too so the record
+    // still saves (record integrity beats keeping the photo).
     return oxWriteBookQ([{ ...cap[0], data: { ...d, userAvatar: "", bookIcon: typeof d.bookIcon === "string" && d.bookIcon.length > 100 ? "bk0" : d.bookIcon } }])
   }, oxDequeueBookLog = cid => {
     let q = oxReadBookQ();
@@ -43344,9 +43359,13 @@ function CI() {
         let sent = new Set();
         for (let it of q) {
           if (!it || !it.cid || !it.data) continue;
-          if (!oxReadBookQ().some(x => x && x.cid === it.cid)) continue;
+          // Re-read the LIVE queue entry right before sending: likes/comments added
+          // DURING this flush (oxPatchBookQ) update the queued copy, so sending the
+          // stale snapshot would setDoc-overwrite them. Skip if it already left the queue.
+          let _live = oxReadBookQ().find(x => x && x.cid === it.cid);
+          if (!_live || !_live.data) continue;
           try {
-            await qn(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", it.cid), it.data), sent.add(it.cid)
+            await qn(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", it.cid), _live.data), sent.add(it.cid)
           } catch {}
         }
         if (sent.size) oxWriteBookQ(oxReadBookQ().filter(x => !x || !sent.has(x.cid)))
@@ -43432,7 +43451,7 @@ function CI() {
       })
     } catch {
       try { localStorage.setItem("oritan_book_logs", JSON.stringify(E)) } catch {}
-    } else localStorage.setItem("oritan_book_logs", JSON.stringify(E))
+    } else try { localStorage.setItem("oritan_book_logs", JSON.stringify(E)) } catch {}
   }, p0 = async u => {
     let y = window.prompt("コメントを入力");
     if (!y || !y.trim()) return;
@@ -43451,7 +43470,7 @@ function CI() {
       await Ch(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", u.id), {
         comments: Dv(E)
       })
-    } catch {} else localStorage.setItem("oritan_book_logs", JSON.stringify(b))
+    } catch {} else try { localStorage.setItem("oritan_book_logs", JSON.stringify(b)) } catch {}
   }, m0 = async (u, y) => {
     if (!(!i?.isTeacher || !u.id))
       if (R.enabled) {
@@ -48667,7 +48686,7 @@ function CI() {
                 })]
               })
             })()]
-          }), l === "weeklyTaskAdmin" && (0, r.jsxs)("div", {
+          }), l === "weeklyTaskAdmin" && i?.isTeacher && (0, r.jsxs)("div", {
             className: "rx-mp",
             style: {
               display: "block",
@@ -53878,7 +53897,7 @@ function CI() {
             inkMuted: A.textMuted,
             line: A.cardBorder,
             isLight: S
-          }), l === "admin" && (Kd || l0(), null), l === "admin" && (0, r.jsxs)("div", {
+          }), l === "admin" && i?.isTeacher && (Kd || l0(), null), l === "admin" && i?.isTeacher && (0, r.jsxs)("div", {
             className: "space-y-5 animate-in fade-in text-left",
             style: {
               background: "linear-gradient(180deg,#2a2152,#1c123f)",
