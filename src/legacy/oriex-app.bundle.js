@@ -47313,25 +47313,21 @@ function CI() {
                         }))
                       }, {
                         k: "recordsTimeline",
-                        l: "フレンド",
+                        l: "記録確認",
                         c: "#8B5CF6",
                         bg: "#EFE9FD",
                         go: () => {
-                          setOxTLF(!1), pe("recordsTimeline")
+                          setOxTLF(!1), pe("recordHub")
                         },
                         ic: ze((0, r.jsxs)(r.Fragment, {
                           children: [(0, r.jsx)("path", {
-                            d: "M6 4v16"
-                          }), (0, r.jsx)("circle", {
-                            cx: "6",
-                            cy: "8",
-                            r: "1.6"
-                          }), (0, r.jsx)("circle", {
-                            cx: "6",
-                            cy: "16",
-                            r: "1.6"
+                            d: "M4 20h16"
                           }), (0, r.jsx)("path", {
-                            d: "M10 8h9M10 16h6"
+                            d: "M7 20v-5"
+                          }), (0, r.jsx)("path", {
+                            d: "M12 20v-9"
+                          }), (0, r.jsx)("path", {
+                            d: "M17 20v-3"
                           })]
                         }))
                       }, {
