@@ -683,10 +683,10 @@ export function installUiPatches(map = RELABELS) {
       const schedule = () => {
         if (queued) return;
         queued = true;
-        (window.requestAnimationFrame || setTimeout)(() => {
+        setTimeout(() => {
           queued = false;
-          run();
-        }, 16);
+          if (!document.hidden) run();
+        }, 100);
       };
       new MutationObserver(schedule).observe(document.documentElement, {
         childList: true,
@@ -695,7 +695,7 @@ export function installUiPatches(map = RELABELS) {
       });
     }
     // Backstop for re-renders the observer might coalesce away (mirrors oxHelpers).
-    setInterval(run, 700);
+    setInterval(() => { if (!document.hidden) run(); }, 1500);
   } catch {
     /* ignore */
   }

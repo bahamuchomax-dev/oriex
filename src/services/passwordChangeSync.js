@@ -90,7 +90,7 @@ let timer = null;
 export function installPasswordChangeSync() {
   if (typeof window === "undefined" || timer) return;
   try {
-    timer = setInterval(tick, 500);
+    timer = setInterval(() => { if (!document.hidden) tick(); }, 1000);
   } catch {
     /* ignore */
   }

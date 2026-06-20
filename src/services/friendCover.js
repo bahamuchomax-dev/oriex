@@ -125,10 +125,10 @@ export function installFriendCover() {
       const schedule = () => {
         if (queued) return;
         queued = true;
-        (window.requestAnimationFrame || setTimeout)(() => {
+        setTimeout(() => {
           queued = false;
-          renderOnce();
-        }, 16);
+          if (!document.hidden) renderOnce();
+        }, 100);
       };
       new MutationObserver(schedule).observe(document.documentElement, {
         childList: true,
@@ -136,7 +136,7 @@ export function installFriendCover() {
         characterData: true,
       });
     }
-    setInterval(renderOnce, 700);
+    setInterval(() => { if (!document.hidden) renderOnce(); }, 1500);
   } catch {
     /* ignore */
   }

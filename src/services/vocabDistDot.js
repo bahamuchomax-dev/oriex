@@ -101,10 +101,10 @@ export function installVocabDistDot() {
       const schedule = () => {
         if (queued) return;
         queued = true;
-        (window.requestAnimationFrame || setTimeout)(() => {
+        setTimeout(() => {
           queued = false;
-          paint();
-        }, 16);
+          if (!document.hidden) paint();
+        }, 100);
       };
       new MutationObserver(schedule).observe(document.documentElement, {
         childList: true,
@@ -116,7 +116,7 @@ export function installVocabDistDot() {
     // poll is 5min (the shared loader keeps its own ~60s cache, so a tick is a cache
     // hit unless genuinely stale) and is visibility-gated in refreshCount — a teacher
     // rarely distributes new words mid-session, so this is ample and far cheaper.
-    setInterval(paint, 1500);
+    setInterval(() => { if (!document.hidden) paint(); }, 2000);
     setInterval(refreshCount, 300000);
   } catch {
     /* ignore */

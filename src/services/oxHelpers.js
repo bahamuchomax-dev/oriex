@@ -182,7 +182,7 @@ window.__oxBg=(function(){
   function apply(){applyRoot();applyPreview();}
   function loadFor(u){cur.uid=u;cur.settings=loadSettings(u);return idbGet(u).then(function(v){releaseObjUrl();cur.photo=v||null;apply();});}
   function refresh(){var u=uid();if(u!==cur.uid){loadFor(u);}}
-  try{setInterval(refresh,800);}catch(e){}
+  try{setInterval(function(){if(!document.hidden)refresh();},800);}catch(e){}
   try{if(document.readyState!=="loading")setTimeout(function(){loadFor(uid());},0);else document.addEventListener("DOMContentLoaded",function(){loadFor(uid());});}catch(e){}
   function cssApplied(){var root=document.documentElement;var layer=document.getElementById(PHOTO_LAYER_ID);return !!(cur.photo&&document.body&&document.body.classList&&document.body.classList.contains("oxbg-on")&&root.style.getPropertyValue("--oriex-home-photo-url")&&layer&&layer.style&&layer.style.backgroundImage&&layer.style.zIndex!=="-1");}
   function setPhotoDetailed(blob){
@@ -282,7 +282,7 @@ window.__oxPbg=(function(){
   var pv,pvUrl;
   function applyPreview(){if(!pv)return;if(pvUrl){pv.style.backgroundImage="url('"+pvUrl+"')";pv.style.backgroundSize=sizeStr();pv.style.backgroundPosition=posStr();pv.textContent="";}else{pv.style.backgroundImage="none";pv.textContent="\u5199\u771F\u306A\u3057";}}
   function refresh(){var u=uid();if(u!==cur.uid){cur.uid=u;cur.settings=load(u);}applyEls();}
-  try{setInterval(refresh,800);}catch(e){}
+  try{setInterval(function(){if(!document.hidden)refresh();},800);}catch(e){}
   try{setTimeout(function(){cur.uid=uid();cur.settings=load(cur.uid);applyEls();},0);}catch(e){}
   function setSettings(part){cur.settings=Object.assign({},cur.settings,part||{});save(uid(),cur.settings);applyEls();applyPreview();}
   function resetDefault(){cur.settings={scale:1,x:50,y:50};save(uid(),cur.settings);applyEls();applyPreview();}
@@ -335,7 +335,7 @@ window.__oxAv=(function(){
   // method drew a different crop, so preview != actual).
   function applyPreview(){if(!pv)return;if(pvUrl){pv.style.backgroundImage="none";pv.style.overflow="hidden";var im=pv.querySelector("img.oxav-pv");if(!im){pv.textContent="";im=document.createElement("img");im.className="oxav-pv";im.style.cssText="width:100%;height:100%;object-fit:cover;display:block";pv.appendChild(im);}im.src=pvUrl;im.style.objectPosition=posStr();im.style.transform=scaleStr();im.style.transformOrigin=posStr();}else{var ex=pv.querySelector("img.oxav-pv");if(ex&&ex.parentNode)ex.parentNode.removeChild(ex);pv.style.backgroundImage="none";pv.textContent="\u5199\u771F\u306A\u3057";}}
   function refresh(){var u=uid();if(u!==cur.uid){cur.uid=u;cur.settings=load(u);}applyEls();}
-  try{setInterval(refresh,800);}catch(e){}
+  try{setInterval(function(){if(!document.hidden)refresh();},800);}catch(e){}
   try{setTimeout(function(){cur.uid=uid();cur.settings=load(cur.uid);applyEls();},0);}catch(e){}
   function setSettings(part){cur.settings=Object.assign({},cur.settings,part||{});save(uid(),cur.settings);applyEls();applyPreview();}
   function resetDefault(){cur.settings={scale:1,x:50,y:50};save(uid(),cur.settings);applyEls();applyPreview();}
@@ -422,7 +422,7 @@ window.__oxSubjectCards=(function(){
   function schedule(){
     if(queued)return;
     queued=true;
-    (window.requestAnimationFrame||setTimeout)(function(){queued=false;annotate();},16);
+    setTimeout(function(){queued=false;if(!document.hidden)annotate();},100);
   }
   try{
     if(document.readyState!=="loading")setTimeout(annotate,0);
@@ -430,7 +430,7 @@ window.__oxSubjectCards=(function(){
     if(window.MutationObserver){
       new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["style","class"]});
     }
-    setInterval(annotate,700);
+    setInterval(function(){if(!document.hidden)annotate();},1500);
   }catch(e){}
   return {refresh:annotate,labels:function(){return SUBJECT_CARD_LABELS.slice();}};
 })();

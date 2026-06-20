@@ -109,6 +109,7 @@ export function installHamsterSync() {
 
     // WRITE on change: poll the local state and mirror own/layout when it changes.
     setInterval(() => {
+      if (document.hidden) return;
       const u = uid();
       if (u) saveToCloud(u);
     }, 4000);
