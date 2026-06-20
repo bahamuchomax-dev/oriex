@@ -39390,7 +39390,7 @@ function NI({
       I = 0,
       M = 0,
       L = 0,
-      ve = Math.min(2, window.devicePixelRatio || 1),
+      ve = Math.min(1.5, window.devicePixelRatio || 1),
       de = !0;
     try {
       document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(() => {})
@@ -39706,8 +39706,7 @@ function NI({
                 col: nt[dt]
               })
             }), Kr.sort((dt, Kt) => dt.p.z - Kt.p.z), Kr.forEach(dt => {
-              let Kt = v.createRadialGradient(dt.p.x - dt.w * .3, dt.p.y - dt.h * .36, dt.w * .1, dt.p.x, dt.p.y, Math.max(dt.w, dt.h) * 1.16);
-              Kt.addColorStop(0, we(dt.col, .26)), Kt.addColorStop(.55, dt.col), Kt.addColorStop(1, we(dt.col, -.2)), v.fillStyle = Kt, v.beginPath(), v.ellipse(dt.p.x, dt.p.y, dt.w, Math.max(.6, dt.h), 0, 0, 7), v.fill()
+              v.fillStyle = dt.col, v.beginPath(), v.ellipse(dt.p.x, dt.p.y, dt.w, Math.max(.6, dt.h), 0, 0, 7), v.fill()
             }), v.strokeStyle = "rgba(70,52,38,0.5)", v.lineWidth = 1;
             for (let dt = -1; dt <= 1; dt += 2)
               for (let Kt = 0; Kt < 2; Kt++) {
@@ -39765,12 +39764,11 @@ function NI({
         padding: "9px 16px",
         borderRadius: 14,
         border: "none",
-        background: "rgba(0,0,0,0.45)",
+        background: "rgba(0,0,0,0.55)",
         color: "#fff",
         fontWeight: 900,
         fontSize: 13,
-        cursor: "pointer",
-        backdropFilter: "blur(8px)"
+        cursor: "pointer"
       },
       children: "‹ もどる"
     }), (0, r.jsxs)("div", {
@@ -39780,11 +39778,10 @@ function NI({
         right: "max(12px, env(safe-area-inset-right, 0px))",
         padding: "9px 14px",
         borderRadius: 14,
-        background: "rgba(0,0,0,0.45)",
+        background: "rgba(0,0,0,0.55)",
         color: "#fff",
         fontWeight: 900,
-        fontSize: 13,
-        backdropFilter: "blur(8px)"
+        fontSize: 13
       },
       children: ["たね ", h.current ? h.current.seedN : 0, " / 8"]
     }), (0, r.jsx)("div", {
@@ -39898,14 +39895,14 @@ function EI({
       return 60
     }
   }), m = [60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720, 780, 840, 900], j = Math.min(100, Math.round(e / h * 100)), v = {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: 900
   };
   return (0, r.jsxs)("div", {
     style: {
       position: "relative",
       borderRadius: 0,
-      padding: "18px 18px 15px",
+      padding: "14px 16px 10px",
       color: "#0c7a44",
       background: "transparent",
       border: "none",
@@ -39925,7 +39922,7 @@ function EI({
         },
         children: [(0, r.jsx)("div", {
           style: {
-            fontSize: 11.5,
+            fontSize: 11,
             fontWeight: 900,
             letterSpacing: "0.12em",
             opacity: .85
@@ -39933,7 +39930,7 @@ function EI({
           children: "今日の勉強"
         }), (0, r.jsx)("div", {
           style: {
-            fontSize: 50,
+            fontSize: 42,
             fontWeight: 900,
             lineHeight: 1.05,
             fontFamily: '"Zen Maru Gothic", sans-serif'
@@ -40044,8 +40041,8 @@ function EI({
       }), (0, r.jsxs)("div", {
         style: {
           position: "relative",
-          width: 124,
-          height: 124,
+          width: 100,
+          height: 100,
           flex: "none",
           marginRight: 2,
           alignSelf: "center",
@@ -40053,37 +40050,37 @@ function EI({
           placeItems: "center"
         },
         children: [(0, r.jsxs)("svg", {
-          width: 124,
-          height: 124,
-          viewBox: "0 0 124 124",
+          width: 100,
+          height: 100,
+          viewBox: "0 0 100 100",
           style: {
             position: "absolute",
             inset: 0,
             transform: "rotate(-90deg)"
           },
           children: [(0, r.jsx)("circle", {
-            cx: 62,
-            cy: 62,
-            r: 54,
+            cx: 50,
+            cy: 50,
+            r: 42,
             fill: "none",
             stroke: "rgba(31,174,102,0.15)",
-            strokeWidth: 13
+            strokeWidth: 11
           }), (0, r.jsx)("circle", {
-            cx: 62,
-            cy: 62,
-            r: 54,
+            cx: 50,
+            cy: 50,
+            r: 42,
             fill: "none",
             stroke: "#1fae66",
-            strokeWidth: 13,
+            strokeWidth: 11,
             strokeLinecap: "round",
-            strokeDasharray: 2 * Math.PI * 54,
-            strokeDashoffset: 2 * Math.PI * 54 * (1 - Math.min(100, Math.max(0, j)) / 100)
+            strokeDasharray: 2 * Math.PI * 42,
+            strokeDashoffset: 2 * Math.PI * 42 * (1 - Math.min(100, Math.max(0, j)) / 100)
           })]
         }), (0, r.jsxs)("div", {
           style: {
             position: "relative",
             fontWeight: 900,
-            fontSize: 27,
+            fontSize: 22,
             color: "#0c7a44",
             lineHeight: 1,
             fontFamily: '"Zen Maru Gothic", sans-serif'
@@ -40103,8 +40100,8 @@ function EI({
         alignItems: "center",
         gap: 8,
         width: "100%",
-        marginTop: 12,
-        padding: "11px 2px 4px",
+        marginTop: 8,
+        padding: "8px 2px 4px",
         background: "none",
         border: "none",
         borderTop: "1px solid rgba(31,174,102,0.24)",
@@ -40191,7 +40188,7 @@ function SI({
       borderTop: "1px solid rgba(31,174,102,0.24)",
       borderRadius: 0,
       boxShadow: "none",
-      padding: "14px 16px 12px",
+      padding: "10px 16px 8px",
       marginBottom: 0
     },
     children: [(0, r.jsxs)("div", {
@@ -40221,7 +40218,7 @@ function SI({
         display: "flex",
         alignItems: "flex-end",
         gap: 6,
-        height: 54
+        height: 44
       },
       children: p.map(v => (0, r.jsxs)("div", {
         style: {
@@ -40261,7 +40258,8 @@ function II({
   subjects: i,
   onSave: o,
   onBack: l,
-  warn: h
+  warn: h,
+  books: _bks
 }) {
   let [p, m] = (0, P.useState)(() => {
     try {
@@ -40270,14 +40268,16 @@ function II({
         running: !!Pe.running,
         startTs: Number(Pe.startTs) || 0,
         acc: Number(Pe.acc) || 0,
-        subject: Pe.subject || "英語"
+        subject: Pe.subject || "英語",
+        bookTitle: Pe.bookTitle || ""
       }
     } catch {}
     return {
       running: !1,
       startTs: 0,
       acc: 0,
-      subject: "英語"
+      subject: "英語",
+      bookTitle: ""
     }
   }), [, j] = (0, P.useState)(0);
   (0, P.useEffect)(() => {
@@ -40289,7 +40289,10 @@ function II({
     try {
       localStorage.setItem("oriex_timer", JSON.stringify(Pe))
     } catch {}
-  }, ye = p.acc + (p.running ? Date.now() - p.startTs : 0), Je = Math.floor(ye / 6e4), We = Math.floor(ye / 1e3) % 60, $e = Pe => (Pe < 10 ? "0" : "") + Pe, Ze = {
+  }, _bl = (_bks || []).filter(Pe => !p.subject || Pe.subject === p.subject || p.subject === "その他"),
+  _ba = (_bks || []).filter(Pe => Pe.subject === p.subject),
+  _allB = _ba.length ? _ba : _bl,
+  ye = p.acc + (p.running ? Date.now() - p.startTs : 0), Je = Math.floor(ye / 6e4), We = Math.floor(ye / 1e3) % 60, $e = Pe => (Pe < 10 ? "0" : "") + Pe, Ze = {
     background: "var(--card)",
     border: "1px solid var(--line)",
     borderRadius: 20,
@@ -40351,12 +40354,13 @@ function II({
         display: "flex",
         gap: 7,
         flexWrap: "wrap",
-        marginBottom: 14
+        marginBottom: 10
       },
       children: i.map(Pe => (0, r.jsx)("button", {
         onClick: () => fe({
           ...p,
-          subject: Pe
+          subject: Pe,
+          bookTitle: ""
         }),
         style: {
           padding: "8px 13px",
@@ -40370,6 +40374,34 @@ function II({
         },
         children: Pe
       }, Pe))
+    }), _allB.length > 0 && (0, r.jsxs)("div", {
+      style: { marginBottom: 14 },
+      children: [(0, r.jsx)("div", {
+        style: { fontSize: 11, fontWeight: 800, color: "var(--ink-soft)", marginBottom: 6 },
+        children: "参考書"
+      }), (0, r.jsx)("div", {
+        style: { display: "flex", gap: 6, flexWrap: "wrap" },
+        children: [(0, r.jsx)("button", {
+          onClick: () => fe({ ...p, bookTitle: "" }),
+          style: {
+            padding: "6px 12px", borderRadius: 999, fontSize: 11.5, fontWeight: 800, cursor: "pointer",
+            border: !p.bookTitle ? "none" : "1px solid var(--line)",
+            background: !p.bookTitle ? "var(--accent-soft)" : "var(--card)",
+            color: !p.bookTitle ? "var(--accent)" : "var(--ink-soft)"
+          },
+          children: "指定なし"
+        }, "_none"), ..._allB.map(Pe => (0, r.jsx)("button", {
+          onClick: () => fe({ ...p, bookTitle: Pe.title, subject: Pe.subject || p.subject }),
+          style: {
+            padding: "6px 12px", borderRadius: 999, fontSize: 11.5, fontWeight: 800, cursor: "pointer",
+            border: p.bookTitle === Pe.title ? "none" : "1px solid var(--line)",
+            background: p.bookTitle === Pe.title ? "var(--accent-soft)" : "var(--card)",
+            color: p.bookTitle === Pe.title ? "var(--accent)" : "var(--ink-soft)",
+            maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"
+          },
+          children: Pe.title
+        }, Pe.id || Pe.title))]
+      })]
     }), (0, r.jsxs)("div", {
       style: {
         ...Ze,
@@ -40423,12 +40455,14 @@ function II({
           disabled: ye < 3e4 || ve,
           onClick: async () => {
             let Pe = Math.max(1, Math.round(ye / 6e4));
+            let _bk = p.bookTitle && _allB.find(Z => Z.title === p.bookTitle);
             de(!0), fe({
               running: !1,
               startTs: 0,
               acc: 0,
-              subject: p.subject
-            }), await o(Pe, p.subject, ""), de(!1)
+              subject: p.subject,
+              bookTitle: ""
+            }), await o(Pe, p.subject, "", _bk ? _bk.title : "", _bk ? _bk.icon || "bk0" : ""), de(!1)
           },
           style: {
             ...rt,
@@ -40904,9 +40938,9 @@ function CI() {
     }
   }), [wi, _h] = (0, P.useState)(() => {
     try {
-      return localStorage.getItem("oriex_profile_bg") || "red"
+      return localStorage.getItem("oriex_profile_bg") || i?.profileBg || "red"
     } catch {
-      return "red"
+      return i?.profileBg || "red"
     }
   }), [Cr, _d] = (0, P.useState)(() => {
     try {
@@ -42191,6 +42225,7 @@ function CI() {
           targetSchool: ((typeof document !== "undefined" && document.getElementById("ox-tgt-school") ? document.getElementById("ox-tgt-school").value : "") || i?.targetSchool || "").trim(),
           avatar: Wr || Qa.char,
           coverImage: gs || null,
+          profileBg: wi,
           color: Gs.bg,
           avatarFrameMin: Number(Ol || 0),
           frame: localStorage.getItem("oxhIconFrame") || i?.frame || "none",
@@ -42230,6 +42265,7 @@ function CI() {
           bio: b.bio || "",
           targetSchool: b.targetSchool || "",
           coverImage: b.coverImage || null,
+          profileBg: b.profileBg || "red",
           streakCount: b.streakCount || 0,
           totalExp: b.totalExp || 0,
           score: b.totalExp || 0,
@@ -42903,8 +42939,11 @@ function CI() {
         return
       }
       return void(async () => {
-        let mp = new Map(),
-          [g, o2] = await Promise.all([rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80))).catch(() => null), rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), wc("uid", "==", e.uid), li(100))).catch(() => null)]);
+        let mp = new Map();
+        oxReadBookQ().forEach(it => {
+          it && it.cid && it.data && mp.set(it.cid, { id: it.cid, ...it.data })
+        });
+        let [g, o2] = await Promise.all([rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80))).catch(() => null), rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), wc("uid", "==", e.uid), li(100))).catch(() => null)]);
         g && g.docs.forEach(d => mp.set(d.id, {
           id: d.id,
           ...d.data()
@@ -42915,6 +42954,19 @@ function CI() {
         }));
         mp.size && (Na([...mp.values()].sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0))), window.__oxLogsAt = Date.now())
       })()
+    }
+  }, [e?.uid, R.enabled]), (0, P.useEffect)(() => {
+    if (!e || !R.enabled) return;
+    try {
+      let old = JSON.parse(localStorage.getItem("oritan_book_log_queue") || "[]");
+      if (Array.isArray(old) && old.length) {
+        let cur = oxReadBookQ();
+        oxWriteBookQ([...cur, ...old].slice(-200)), localStorage.removeItem("oritan_book_log_queue")
+      }
+    } catch {}
+    let f = () => oxFlushBookQueue(), g = () => { document.visibilityState === "visible" && f() };
+    return f(), window.addEventListener("online", f), window.addEventListener("pageshow", f), document.addEventListener("visibilitychange", g), () => {
+      window.removeEventListener("online", f), window.removeEventListener("pageshow", f), document.removeEventListener("visibilitychange", g)
     }
   }, [e?.uid, R.enabled]), (0, P.useEffect)(() => {
     if (l !== "announcementsList") return;
@@ -43064,6 +43116,53 @@ function CI() {
       subject: u.subject || y.subject,
       totalPages: String(u.totalPages || "")
     }))
+  }, oxBookQKey = () => "oritan_book_log_queue_" + (e?.uid || "local"), oxReadBookQ = () => {
+    try {
+      let q = JSON.parse(localStorage.getItem(oxBookQKey()) || "[]");
+      return Array.isArray(q) ? q : []
+    } catch {
+      return []
+    }
+  }, oxWriteBookQ = q => {
+    try {
+      return localStorage.setItem(oxBookQKey(), JSON.stringify(q)), !0
+    } catch {
+      return !1
+    }
+  }, oxQueueBookLog = it => {
+    let q = oxReadBookQ();
+    q.push(it);
+    return oxWriteBookQ(q.slice(-200))
+  }, oxDequeueBookLog = cid => {
+    let q = oxReadBookQ();
+    oxWriteBookQ(q.filter(x => x.cid !== cid))
+  }, oxPatchBookQ = (cid, fn) => {
+    try {
+      let q = oxReadBookQ(), hit = !1;
+      q = q.map(x => x && x.cid === cid ? (hit = !0, { ...x, data: fn(x.data) }) : x);
+      hit && oxWriteBookQ(q)
+    } catch {}
+  }, oxFlushBookQueue = async () => {
+    if (!R.enabled || navigator.onLine === !1 || window.__oxFlushing) return;
+    window.__oxFlushing = !0;
+    try {
+      do {
+        window.__oxFlushRerun = !1;
+        let q = oxReadBookQ();
+        if (!q.length) break;
+        let sent = new Set();
+        for (let it of q) {
+          if (!it || !it.cid || !it.data) continue;
+          if (!oxReadBookQ().some(x => x && x.cid === it.cid)) continue;
+          try {
+            await qn(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", it.cid), it.data), sent.add(it.cid)
+          } catch {}
+        }
+        if (sent.size) oxWriteBookQ(oxReadBookQ().filter(x => !x || !sent.has(x.cid)))
+      } while (window.__oxFlushRerun && navigator.onLine !== !1)
+    } finally {
+      window.__oxFlushing = !1
+    }
   }, yu = async () => {
     let u = Ya.bookTitle.trim();
     if (!u) return Qe("参考書名を入力してください", "error");
@@ -43085,12 +43184,16 @@ function CI() {
         likedBy: [],
         createdAt: Da()
       };
+    let _cid = "bl_" + Date.now().toString(36) + "_" + (e?.uid || "local");
     try {
-      if (e && R.enabled) Na(q => [{
-        id: "local_" + Date.now(),
-        ...E
-      }, ...q || []].slice(0, 80)), await Ds(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), E);
-      else {
+      if (e && R.enabled) {
+        Na(q => [{
+          id: _cid,
+          ...E
+        }, ...(q || []).filter(x => (x.id) !== _cid)].slice(0, 80));
+        if (!oxQueueBookLog({ cid: _cid, data: E })) return Qe("記録の保存に失敗しました。端末のストレージがいっぱいです", "error");
+        window.__oxFlushRerun = !0, oxFlushBookQueue()
+      } else {
         let q = [{
           id: Date.now().toString(),
           ...E
@@ -43119,6 +43222,7 @@ function CI() {
       likedBy: [...b.likedBy || [], y]
     } : b);
     Na(E);
+    oxPatchBookQ(u.id, d => ({ ...d, likedBy: [...d.likedBy || [], y] }));
     if (R.enabled && u.id) try {
       await Ch(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", u.id), {
         likedBy: Dv(y)
@@ -43137,6 +43241,7 @@ function CI() {
       comments: [...C.comments || [], E]
     } : C);
     Na(b);
+    oxPatchBookQ(u.id, d => ({ ...d, comments: [...d.comments || [], E] }));
     if (R.enabled && u.id) try {
       await Ch(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", u.id), {
         comments: Dv(E)
@@ -43144,12 +43249,24 @@ function CI() {
     } catch {} else localStorage.setItem("oritan_book_logs", JSON.stringify(b))
   }, m0 = async (u, y) => {
     if (!(!i?.isTeacher || !u.id))
-      if (R.enabled) await Ch(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", u.id), {
-        teacherComment: y,
-        teacherName: i?.name || "先生",
-        checkedAt: Da()
-      });
-      else {
+      if (R.enabled) {
+        let E = vr.map(b => (b.id || b.createdAt) === (u.id || u.createdAt) ? {
+          ...b,
+          teacherComment: y,
+          teacherName: i?.name || "先生"
+        } : b);
+        Na(E);
+        oxPatchBookQ(u.id, d => ({ ...d, teacherComment: y, teacherName: i?.name || "先生", checkedAt: Da() }));
+        try {
+          await Ch(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", u.id), {
+            teacherComment: y,
+            teacherName: i?.name || "先生",
+            checkedAt: Da()
+          })
+        } catch {
+          Qe("コメントの保存に失敗しました", "error")
+        }
+      } else {
         let E = vr.map(b => b.id === u.id ? {
           ...b,
           teacherComment: y,
@@ -43419,6 +43536,7 @@ function CI() {
             if (!window.confirm("この記録を削除しますか？")) return;
             let _id = b.id || b.createdAt,
               _e = (vr || []).filter(x => String(x.id || x.createdAt) !== String(_id));
+            oxDequeueBookLog(String(_id));
             if (R.enabled && b.id) try {
               await Sr(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", String(_id)))
             } catch {}
@@ -43905,15 +44023,38 @@ function CI() {
               textTransform: "uppercase"
             },
             children: "Study Log"
-          }), (0, r.jsx)("h2", {
+          }), (0, r.jsxs)("div", {
             style: {
-              fontSize: 28,
-              fontWeight: 950,
-              lineHeight: 1.1,
-              color: A.text,
-              wordBreak: "break-word"
+              display: "flex",
+              alignItems: "baseline",
+              gap: 8,
+              flexWrap: "wrap"
             },
-            children: G ? G.title : ne.title
+            children: [(0, r.jsx)("h2", {
+              style: {
+                fontSize: 28,
+                fontWeight: 950,
+                lineHeight: 1.1,
+                color: A.text,
+                wordBreak: "break-word"
+              },
+              children: G ? G.title : ne.title
+            }), !G && !i?.isTeacher && Xa === "log" && (0, r.jsxs)("span", {
+              style: {
+                display: "inline-flex",
+                gap: 6,
+                fontSize: 11,
+                fontWeight: 800,
+                color: U,
+                whiteSpace: "nowrap",
+                flexShrink: 0
+              },
+              children: [(0, r.jsxs)("span", {
+                children: [ne.today, " ", (0, r.jsx)("span", { style: { color: A.accent, fontWeight: 900 }, children: ze >= 60 ? Math.floor(ze / 60) + "h" + (ze % 60 ? ze % 60 + "m" : "") : ze + "m" })]
+              }), (0, r.jsxs)("span", {
+                children: [ne.total, " ", (0, r.jsx)("span", { style: { color: A.accent, fontWeight: 900 }, children: ct >= 60 ? Math.floor(ct / 60) + "h" + (ct % 60 ? ct % 60 + "m" : "") : ct + "m" })]
+              })]
+            })]
           })]
         })]
       }), !G && !i?.isTeacher && (0, r.jsx)("div", {
@@ -43944,54 +44085,6 @@ function CI() {
           },
           children: Ne.t
         }, Ne.k))
-      }), !G && !oo && Xa === "log" && (0, r.jsx)("div", {
-        style: {
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 10
-        },
-        children: [{
-          label: ne.today,
-          value: ze
-        }, {
-          label: ne.total,
-          value: ct
-        }].map(Ne => (0, r.jsxs)("div", {
-          style: {
-            borderRadius: 20,
-            padding: 16,
-            background: he,
-            border: "1.5px solid rgba(15,23,42,0.18)"
-          },
-          children: [(0, r.jsx)("p", {
-            style: {
-              fontSize: 11,
-              color: U,
-              fontWeight: 700,
-              letterSpacing: ".06em"
-            },
-            children: Ne.label
-          }), (0, r.jsxs)("p", {
-            style: {
-              fontSize: 26,
-              fontWeight: 800,
-              color: A.text,
-              marginTop: 4,
-              fontFamily: '"Zen Maru Gothic",sans-serif'
-            },
-            children: [(0, r.jsx)("span", {
-              style: {
-                color: A.accent
-              },
-              children: Math.floor(Ne.value / 60)
-            }), "時間", (0, r.jsx)("span", {
-              style: {
-                color: A.accent
-              },
-              children: Ne.value % 60
-            }), "分"]
-          })]
-        }, Ne.label))
       }), !G && !i?.isTeacher && !oo && Xa === "shelf" && (0, r.jsx)("div", {
         style: {
           display: "flex",
@@ -44007,18 +44100,19 @@ function CI() {
           },
           style: {
             borderRadius: 999,
-            padding: "13px 18px",
-            background: S ? "linear-gradient(135deg,#101827,#0f766e)" : "rgba(255,255,255,0.92)",
-            color: S ? "white" : "#101827",
-            fontWeight: 950,
+            padding: "8px 14px",
+            background: "none",
+            color: A.accent,
+            fontWeight: 800,
             display: "inline-flex",
             alignItems: "center",
-            gap: 8,
-            boxShadow: S ? "0 12px 28px rgba(15,118,110,0.22)" : "none"
+            gap: 5,
+            fontSize: 12.5,
+            border: "1.2px solid " + pe
           },
           children: [(0, r.jsx)(Rd, {
-            size: 18
-          }), ne.createBook]
+            size: 14
+          }), ne.addBook]
         })
       }), !G && !i?.isTeacher && oo && (0, r.jsxs)("section", {
         style: {
@@ -44255,8 +44349,8 @@ function CI() {
               }), (0, r.jsx)("div", {
                 style: {
                   display: "grid",
-                  gridTemplateColumns: "repeat(4,1fr)",
-                  gap: "14px 7px",
+                  gridTemplateColumns: "repeat(5,1fr)",
+                  gap: "10px 5px",
                   alignItems: "start"
                 },
                 children: Ne[rr].map(Mt => {
@@ -49644,19 +49738,20 @@ function CI() {
             N: A,
             P: S,
             subjects: ["英語", "数学", "国語", "理科", "社会", "小論文", "その他"],
+            books: (xs || []).filter(y => y.uid === (e?.uid || "local")),
             warn: Qe,
             onBack: () => {
               m("start"), h("start")
             },
-            onSave: async (u, y, E) => {
+            onSave: async (u, y, E, _bt, _bi) => {
               let b = {
                 uid: e?.uid || "local",
                 userName: i?.name || "User",
                 userAvatar: i?.avatar || "",
                 userColor: i?.color || "bg-amber-500",
                 isTeacher: !!i?.isTeacher,
-                bookTitle: "タイマー記録",
-                bookIcon: "bk1",
+                bookTitle: _bt || "タイマー記録",
+                bookIcon: _bi || "bk1",
                 subject: y || "未分類",
                 minutes: Math.max(1, Math.round(u)),
                 currentPage: 0,
@@ -49666,12 +49761,16 @@ function CI() {
                 likedBy: [],
                 createdAt: Da()
               };
+              let _cid = "bl_" + Date.now().toString(36) + "_t_" + (e?.uid || "local");
               try {
-                if (e && R.enabled) Na(C => [{
-                  id: "local_" + Date.now(),
-                  ...b
-                }, ...C || []].slice(0, 80)), await Ds(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), b);
-                else {
+                if (e && R.enabled) {
+                  Na(C => [{
+                    id: _cid,
+                    ...b
+                  }, ...(C || []).filter(x => (x.id) !== _cid)].slice(0, 80));
+                  if (!oxQueueBookLog({ cid: _cid, data: b })) return Qe("記録の保存に失敗しました。端末のストレージがいっぱいです", "error");
+                  window.__oxFlushRerun = !0, oxFlushBookQueue()
+                } else {
                   let C = [{
                     id: Date.now().toString(),
                     ...b
@@ -50002,6 +50101,7 @@ function CI() {
                         if (!window.confirm("この記録を削除しますか？")) return;
                         const ue = U._rid;
                         if (U.kind === "book") {
+                          oxDequeueBookLog(String(ue));
                           try {
                             R.enabled && await Sr(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", String(ue)))
                           } catch {}
@@ -50127,11 +50227,12 @@ function CI() {
                       alignItems: "center",
                       padding: "22px 18px",
                       backgroundImage: E.coverImage ? `url("${E.coverImage}")` : void 0,
+                      background: !E.coverImage && E.profileBg ? (Rh.find(q => q.id === E.profileBg) || Rh[0]).g : void 0,
                       backgroundSize: (E.coverSettings && E.coverSettings.size) || "cover",
                       backgroundPosition: (E.coverSettings && E.coverSettings.pos) || "center",
                       backgroundRepeat: "no-repeat"
                     },
-                    children: [!E.coverImage && (0, r.jsx)("div", {
+                    children: [!E.coverImage && !E.profileBg && (0, r.jsx)("div", {
                       className: "pat"
                     }), (0, r.jsxs)("div", {
                       style: {

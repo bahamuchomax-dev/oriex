@@ -45,7 +45,7 @@ function prefetchLegacyBundle() {
           // crossorigin matches the later `import("./legacy/oriex-app.bundle.js")` (a CORS
           // module fetch, since the entry <script type=module> is crossorigin) so the
           // prefetched bytes land in the SAME cache partition and are reused, not re-fetched.
-          tags: [{ tag: "link", attrs: { rel: "prefetch", as: "script", crossorigin: "", href: "./" + file }, injectTo: "head" }],
+          tags: [{ tag: "link", attrs: { rel: "modulepreload", crossorigin: "", href: "./" + file }, injectTo: "head" }],
         };
       } catch {
         return html;

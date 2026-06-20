@@ -145,11 +145,11 @@ export default function ModernCutoverBridge() {
     if (w && typeof w.requestAnimationFrame === "function") {
       raf1 = w.requestAnimationFrame(() => {
         raf2 = w.requestAnimationFrame(() => {
-          timer = w.setTimeout(reveal, 500);
+          timer = w.setTimeout(reveal, 150);
         });
       });
     } else {
-      timer = setTimeout(reveal, 500);
+      timer = setTimeout(reveal, 150);
     }
     return () => {
       if (w && typeof w.cancelAnimationFrame === "function") {
@@ -286,11 +286,11 @@ export default function ModernCutoverBridge() {
       if (w && typeof w.requestAnimationFrame === "function") {
         raf1 = w.requestAnimationFrame(() => {
           raf2 = w.requestAnimationFrame(() => {
-            timer = w.setTimeout(hideCutoverVeil, 300);
+            timer = w.setTimeout(hideCutoverVeil, 100);
           });
         });
       } else {
-        timer = setTimeout(hideCutoverVeil, 300);
+        timer = setTimeout(hideCutoverVeil, 100);
       }
     } else if (phase === "signin") {
       hideCutoverVeil();
