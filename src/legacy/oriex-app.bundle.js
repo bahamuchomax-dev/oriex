@@ -53704,7 +53704,7 @@ function CI() {
                         },
                         children: Array.isArray(ye) && ye.length && ye[0] && ye[0].text ? String(ye[0].text).slice(0, 34) : "お知らせはまだありません"
                       })]
-                    }), he > 0 && (0, r.jsx)("span", {
+                    }), (he > 0 || oxSocialNotifs().filter(_z => !(Array.isArray(oxSeenSocial) ? oxSeenSocial : []).includes(_z.key)).length > 0) && (0, r.jsx)("span", {
                       style: {
                         width: 9,
                         height: 9,
@@ -56467,8 +56467,8 @@ function CI() {
                       return (0, r.jsxs)("div", {
                         className: "flex items-center gap-3 p-3 rounded-[20px] transition-colors rx-soft",
                         style: {
-                          background: pe ? "rgba(74,222,128,0.08)" : S ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.05)",
-                          border: pe ? "1px solid rgba(74,222,128,0.3)" : S ? "1px solid rgba(0,0,0,0.1)" : "1px solid rgba(255,255,255,0.08)"
+                          background: pe ? "rgba(74,222,128,0.10)" : S ? "#ffffff" : "rgba(255,255,255,0.05)",
+                          border: pe ? "1px solid rgba(74,222,128,0.3)" : S ? "1px solid rgba(15,23,42,0.12)" : "1px solid rgba(255,255,255,0.08)"
                         },
                         children: [(0, r.jsxs)("div", {
                           className: "flex-1 min-w-0",
@@ -56532,8 +56532,8 @@ function CI() {
                     return (0, r.jsxs)("div", {
                       className: "flex items-center gap-3 p-3 rounded-[20px] transition-colors rx-soft",
                       style: {
-                        background: G ? "rgba(74,222,128,0.08)" : S ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.05)",
-                        border: G ? "1px solid rgba(74,222,128,0.3)" : S ? "1px solid rgba(0,0,0,0.1)" : "1px solid rgba(255,255,255,0.08)"
+                        background: G ? "rgba(74,222,128,0.10)" : S ? "#ffffff" : "rgba(255,255,255,0.05)",
+                        border: G ? "1px solid rgba(74,222,128,0.3)" : S ? "1px solid rgba(15,23,42,0.12)" : "1px solid rgba(255,255,255,0.08)"
                       },
                       children: [(0, r.jsxs)("div", {
                         className: "flex-1 min-w-0",

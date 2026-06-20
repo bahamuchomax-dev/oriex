@@ -19,7 +19,7 @@ const H_DOM = 2.0; // horizontal must dominate vertical by this factor
 // a deliberate long swipe switches tabs; only a SHORT, SLOW drag scrolls the table.
 // This biases hard toward tab-switching (what the user wants) without removing the
 // table's own horizontal scroll. Kept lenient so a normal-speed swipe still switches.
-const V_FLICK = 0.2; // px/ms — at/above this a horizontal swipe is a tab-switch flick
+const V_FLICK = 0.12; // px/ms — at/above this a horizontal swipe is a tab-switch flick
 const NAV_SEL = "button,a[role=button],[role=tab]";
 
 let sx = 0;
@@ -220,7 +220,7 @@ function onEnd(e) {
     const dt = Math.max(1, nowMs() - st);
     const vx = Math.abs(dx) / dt; // px/ms
     const vw = window.innerWidth || document.documentElement.clientWidth || 360;
-    const longSwipe = Math.abs(dx) >= Math.min(120, vw * 0.22);
+    const longSwipe = Math.abs(dx) >= Math.min(90, vw * 0.16);
     if (vx < V_FLICK && !longSwipe) {
       const canScrollLeft = hScroller.scrollLeft > 1;
       const canScrollRight = hScroller.scrollLeft < hScroller.scrollWidth - hScroller.clientWidth - 1;
