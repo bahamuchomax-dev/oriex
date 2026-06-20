@@ -619,12 +619,12 @@ html body.oxbg-on .ox-review-head{
   gap:11px !important;
   margin-bottom:14px !important;
   padding:9px 13px 9px 9px !important;
-  background:rgba(255,255,255,.86) !important;
-  -webkit-backdrop-filter:blur(16px) saturate(1.3);
-  backdrop-filter:blur(16px) saturate(1.3);
-  border:1px solid rgba(255,255,255,.65) !important;
+  background:transparent !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+  border:0 !important;
   border-radius:18px !important;
-  box-shadow:0 10px 26px rgba(43,39,36,.13) !important;
+  box-shadow:none !important;
 }
 /* 戻る: 控えめな丸いタップ領域 */
 html body.oxbg-on .ox-review-head .rx-back{

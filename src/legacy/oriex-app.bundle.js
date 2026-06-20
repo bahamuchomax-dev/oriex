@@ -40216,7 +40216,7 @@ function SI({
         display: "flex",
         alignItems: "flex-end",
         gap: 6,
-        height: 40
+        height: 54
       },
       children: p.map(v => (0, r.jsxs)("div", {
         style: {
@@ -43371,6 +43371,14 @@ function CI() {
         }, ...vr].slice(0, 80);
         Na(q), localStorage.setItem("oritan_book_logs", JSON.stringify(q))
       }
+      let _gx = Math.round((E.minutes || 0) / 60 * 150);
+      if (_gx > 0) {
+        let _cp = ti.current || i || {},
+          _np = { ..._cp, totalExp: (_cp.totalExp || 0) + _gx };
+        o(_np);
+        try { wt("profile", _np) } catch {}
+        if (e && R.enabled) qn(et(R.db, "artifacts", R.appId, "users", e.uid, "profile", "main"), { totalExp: _np.totalExp }, { merge: !0 }).catch(() => {})
+      }
       Ma(q => ({
         ...q,
         hours: "1",
@@ -43381,7 +43389,7 @@ function CI() {
       let b = E.minutes,
         C = Math.floor(b / 60),
         K = C > 0 ? `${C}時間${b%60>0?b%60+"分":""}` : `${b}分`;
-      As?.("correct"), Qe("記録しました。"), Ii(null), Gi("log"), Ta(!1), m("start"), h("bookLogApp")
+      As?.("correct"), Qe(_gx > 0 ? `記録しました。${_gx}EXPを獲得しました！` : "記録しました。"), Ii(null), Gi("log"), Ta(!1), m("start"), h("bookLogApp")
     } catch {
       Qe("記録に失敗しました。通信環境を確認してもう一度お試しください", "error")
     }
@@ -43715,6 +43723,16 @@ function CI() {
             try {
               localStorage.setItem("oritan_book_logs", JSON.stringify(_e))
             } catch {}
+            if (b.bookTitle !== "ステージ学習") {
+              let _rx = Math.round((Number(b.minutes) || 0) / 60 * 150);
+              if (_rx > 0) {
+                let _cp = ti.current || i || {},
+                  _np = { ..._cp, totalExp: (_cp.totalExp || 0) - _rx };
+                o(_np);
+                try { wt("profile", _np) } catch {}
+                if (e && R.enabled) qn(et(R.db, "artifacts", R.appId, "users", e.uid, "profile", "main"), { totalExp: _np.totalExp }, { merge: !0 }).catch(() => {})
+              }
+            }
           },
           title: "削除",
           style: {
@@ -50395,6 +50413,7 @@ function CI() {
                         if (!window.confirm("この記録を削除しますか？")) return;
                         const ue = U._rid;
                         if (U.kind === "book") {
+                          let _orig = (vr || []).find(je => String(je.id || je.createdAt) === String(ue));
                           oxDequeueBookLog(String(ue));
                           try {
                             R.enabled && await Sr(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", String(ue)))
@@ -50403,6 +50422,16 @@ function CI() {
                             const Ce = (vr || []).filter(je => String(je.id || je.createdAt) !== String(ue));
                             Na(Ce), localStorage.setItem("oritan_book_logs", JSON.stringify(Ce))
                           } catch {}
+                          if (_orig && _orig.bookTitle !== "ステージ学習") {
+                            let _rx = Math.round((Number(_orig.minutes) || 0) / 60 * 150);
+                            if (_rx > 0) {
+                              let _cp = ti.current || i || {},
+                                _np = { ..._cp, totalExp: (_cp.totalExp || 0) - _rx };
+                              o(_np);
+                              try { wt("profile", _np) } catch {}
+                              if (e && R.enabled) qn(et(R.db, "artifacts", R.appId, "users", e.uid, "profile", "main"), { totalExp: _np.totalExp }, { merge: !0 }).catch(() => {})
+                            }
+                          }
                         } else {
                           try {
                             R.enabled && await Sr(et(R.db, "artifacts", R.appId, "users", String(u), "history", String(ue)))
@@ -55263,7 +55292,7 @@ function CI() {
                   top: 0,
                   zIndex: 6,
                   "--accent": A.accent,
-                  background: S ? A.bgColor || "#f5f5f7" : A.bgColor || "#121214",
+                  background: "transparent",
                   paddingTop: 4,
                   paddingBottom: 8
                 },
