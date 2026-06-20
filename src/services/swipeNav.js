@@ -15,10 +15,11 @@
 
 const H_MIN = 80; // min horizontal travel (px) — deliberate swipe, not accidental
 const H_DOM = 2.0; // horizontal must dominate vertical by this factor
-// Over a horizontal scroller (e.g. the 記録 weekly table, minWidth 752px), a fast
-// FLICK switches tabs while a slow DRAG scrolls the table. This lets the records
-// page swipe between tabs without removing the table's own horizontal scroll.
-const V_FLICK = 0.35; // px/ms — at/above this a horizontal swipe is a tab-switch flick
+// Over a horizontal scroller (e.g. the 記録 weekly table, minWidth 752px) a flick OR
+// a deliberate long swipe switches tabs; only a SHORT, SLOW drag scrolls the table.
+// This biases hard toward tab-switching (what the user wants) without removing the
+// table's own horizontal scroll. Kept lenient so a normal-speed swipe still switches.
+const V_FLICK = 0.2; // px/ms — at/above this a horizontal swipe is a tab-switch flick
 const NAV_SEL = "button,a[role=button],[role=tab]";
 
 let sx = 0;
@@ -165,11 +166,14 @@ function onEnd(e) {
   const dy = t.clientY - sy;
   if (Math.abs(dx) < H_MIN || Math.abs(dx) < Math.abs(dy) * H_DOM) return;
   if (hScroller) {
-    // Fast flick → tab switch; slow drag → let the table scroll (if it still can
-    // in this direction). At the table's edge a drag also falls through to a switch.
+    // Bias HARD toward switching tabs (what the user wants on 記録): a flick OR a
+    // deliberate long swipe switches tabs. Only a SHORT, SLOW drag that the table can
+    // still absorb is treated as a horizontal table scroll.
     const dt = Math.max(1, nowMs() - st);
-    const isFlick = Math.abs(dx) / dt >= V_FLICK;
-    if (!isFlick) {
+    const vx = Math.abs(dx) / dt; // px/ms
+    const vw = window.innerWidth || document.documentElement.clientWidth || 360;
+    const longSwipe = Math.abs(dx) >= Math.min(120, vw * 0.22);
+    if (vx < V_FLICK && !longSwipe) {
       const canScrollLeft = hScroller.scrollLeft > 1;
       const canScrollRight = hScroller.scrollLeft < hScroller.scrollWidth - hScroller.clientWidth - 1;
       if ((dx < 0 && canScrollRight) || (dx > 0 && canScrollLeft)) return;
@@ -227,8 +231,13 @@ export function installSwipeNav() {
   if (typeof document === "undefined" || document.__oxSwipeNav) return;
   try {
     document.__oxSwipeNav = true;
-    document.addEventListener("touchstart", onStart, { passive: true });
-    document.addEventListener("touchend", onEnd, { passive: true });
+    // CAPTURE phase: observe the gesture BEFORE inner components (e.g. the friend-
+    // timeline preview / any swipeable carousel) can stopPropagation a touch event and
+    // "absorb" the swipe. Passive (we never preventDefault), so native scrolling inside
+    // those elements still works for a short slow drag; a flick/long swipe still
+    // switches tabs (see onEnd).
+    document.addEventListener("touchstart", onStart, { passive: true, capture: true });
+    document.addEventListener("touchend", onEnd, { passive: true, capture: true });
     document.addEventListener("click", onNavTap, true);
   } catch {
     /* ignore */

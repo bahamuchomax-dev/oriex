@@ -69,6 +69,36 @@ body.oxbg-on button[data-ox-subject-card][data-ox-subject-selected="true"]{
   background:rgba(255,255,255,.96)!important;
 }
 
+/* ── iPhone / iOS PWA hardening (ADDITIVE — no layout change) ──────────────
+   The app already handles safe-area (notch + home indicator), zoom lock
+   (user-scalable=no), tap-highlight, text-size-adjust, touch-callout, and
+   overscroll-behavior:contain on the scroll containers. These two rules add the
+   remaining native-feel touches WITHOUT shifting any layout, so they are safe on
+   top of the existing tuning:
+   - touch-action:manipulation removes the iOS ~300ms double-tap delay and the
+     double-tap-zoom on tap targets (snappier taps). It still allows panning, so
+     scrolling and the 記録 table swipe are unaffected; scroll containers and the
+     wide table are intentionally NOT included so their pan stays default.
+   - overscroll-behavior:none on html/body kills document-level rubber-band /
+     pull-to-refresh. body is already overflow:hidden, so this only reinforces the
+     no-bounce feel and changes no layout. */
+button, a, [role="button"], input, select, textarea, label {
+  touch-action: manipulation;
+}
+html, body {
+  overscroll-behavior: none;
+}
+
+/* ── OLD-home palette (rx-quick / rx-q) — compact vertical sizing ──────────
+   Shrink the OLD/legacy home's quick-tool "palette" tiles (oritan_palette_items)
+   vertically so the grid is more compact, per request. Smaller icon box + tighter
+   inner gap/padding + tighter row gap; the 4-column layout and labels are kept.
+   Appended last + !important so it wins over the base/skin rx-q rules above. */
+.rx-quick { gap: 7px 8px !important; margin-bottom: 14px !important; }
+.rx-q { padding: 8px 4px 7px !important; gap: 4px !important; }
+.rx-q .ic { width: 40px !important; height: 40px !important; margin: 0 auto 5px !important; }
+.rx-q .ic svg { width: 22px !important; height: 22px !important; }
+
 /* ── developer name badge ──────────────────────────────────────────────────────
    oxUiPatches injects <span class="ox-devbadge">デベロッパー</span> next to the
    signed-in developer's own name (.rx-pname), mirroring the teacher「先生」.rx-tbadge

@@ -46739,12 +46739,13 @@ function CI() {
                     className: "ic",
                     children: (0, r.jsx)("img", {
                       src: "./weekly-plan.png",
-                      width: "22",
-                      height: "22",
                       alt: "",
                       style: {
                         display: "block",
-                        objectFit: "contain"
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        borderRadius: "14px"
                       }
                     })
                   }), (0, r.jsxs)("span", {
