@@ -45,10 +45,17 @@ function currentUid() {
 function docRef(u) {
   return doc(db, "artifacts", APP_ID, "users", u, "meta", "attendanceStamps");
 }
+// The frozen bundle stores stamps as an OBJECT keyed by date: { "YYYY-MM-DD": ts }.
+// Normalize to an array of {id, ts} for merge/sync, and write back as the object
+// format the bundle reads. (Older builds expected an array — still handled.)
 function readLocal() {
   try {
-    const v = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
-    return Array.isArray(v) ? v : [];
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return [];
+    const v = JSON.parse(raw);
+    if (Array.isArray(v)) return v;
+    if (v && typeof v === "object") return Object.keys(v).map((k) => ({ id: k, ts: v[k] }));
+    return [];
   } catch {
     return [];
   }
@@ -57,7 +64,11 @@ function writeLocal(arr) {
   // use the ORIGINAL setItem so restoring from the server does not re-trigger an
   // upload (the wrapped setItem schedules a push on the LS_KEY).
   try {
-    (origSetItem || localStorage.setItem.bind(localStorage))(LS_KEY, JSON.stringify(arr));
+    const obj = {};
+    for (const s of Array.isArray(arr) ? arr : []) {
+      if (s && s.id != null) obj[String(s.id)] = s.ts != null ? s.ts : s.timestamp != null ? s.timestamp : Date.now();
+    }
+    (origSetItem || localStorage.setItem.bind(localStorage))(LS_KEY, JSON.stringify(obj));
   } catch {
     /* ignore */
   }

@@ -41006,7 +41006,8 @@ function CI() {
     return Number.isFinite(y) ? (y -= Date.now(), y <= 0 ? "今日です！" : `あと${Math.max(0,Math.ceil(y/864e5))}日`) : "予定はまだありません"
   }, di = u => u ? u.message || "予定の日まで表示します" : "予定が入るとここに日数を表示します", Xr = u => {
     let y = [...Array.isArray(u) ? u : []].filter(E => Number.isFinite(hn(E?.startAt))).sort((E, b) => hn(E.startAt) - hn(b.startAt));
-    vt(y), localStorage.setItem(ge, JSON.stringify(y))
+    vt(y);
+    try { localStorage.setItem(ge, JSON.stringify(y)) } catch { Qe("予定の保存に失敗しました。端末のストレージがいっぱいです", "error") }
   }, $n = () => {
     let u = Ee.title.trim();
     if (!u || !Ee.date) {
@@ -41037,7 +41038,8 @@ function CI() {
   }, Nn = u => {
     !u || !window.confirm(`「${u.title}」を削除しますか？`) || Xr(ht.filter(y => y.id !== u.id))
   }, Ml = u => {
-    Pt(u), localStorage.setItem(oe, JSON.stringify(u))
+    Pt(u);
+    try { localStorage.setItem(oe, JSON.stringify(u)) } catch { Qe("出席スタンプの保存に失敗しました。端末のストレージがいっぱいです", "error") }
   }, ls = u => {
     let y = hn(u);
     Number.isFinite(y) || (y = Date.now());
@@ -42620,7 +42622,7 @@ function CI() {
           bookTitle: "ステージ学習",
           bookIcon: "bk2",
           subject: String(Xt || "学習"),
-          minutes: b,
+          minutes: Math.min(1200, Math.max(0, b)),
           currentPage: 0,
           totalPages: 0,
           memo: "",
@@ -43098,9 +43100,6 @@ function CI() {
       }
       return void(async () => {
         let mp = new Map();
-        oxReadBookQ().forEach(it => {
-          it && it.cid && it.data && mp.set(it.cid, { id: it.cid, ...it.data })
-        });
         let [g, o2] = await Promise.all([rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80))).catch(() => null), rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), wc("uid", "==", e.uid), li(100))).catch(() => null)]);
         g && g.docs.forEach(d => mp.set(d.id, {
           id: d.id,
@@ -43110,7 +43109,10 @@ function CI() {
           id: d.id,
           ...d.data()
         }));
-        mp.size && (Na([...mp.values()].sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0))), window.__oxLogsAt = Date.now())
+        oxReadBookQ().forEach(it => {
+          it && it.cid && it.data && !mp.has(it.cid) && mp.set(it.cid, { id: it.cid, ...it.data })
+        });
+        mp.size && (Na([...mp.values()].sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0)).slice(0, 80)), window.__oxLogsAt = Date.now())
       })()
     }
   }, [e?.uid, R.enabled]), (0, P.useEffect)(() => {
@@ -43157,15 +43159,22 @@ function CI() {
     return (async () => {
       if (Date.now() - (window.__oxLogsAt || 0) < 6e4) return;
       try {
-        let y = await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80)));
+        let [y, o2] = await Promise.all([rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80))).catch(() => null), rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), wc("uid", "==", e.uid), li(100))).catch(() => null)]);
         if (u) {
           let mp = new Map();
           (vr || []).forEach(d => mp.set(d.id || d.createdAt, d));
-          y.docs.forEach(d => mp.set(d.id, {
+          y && y.docs.forEach(d => mp.set(d.id, {
             id: d.id,
             ...d.data()
           }));
-          Na([...mp.values()].sort((b, C) => (Date.parse(C.createdAt) || 0) - (Date.parse(b.createdAt) || 0))), window.__oxLogsAt = Date.now()
+          o2 && o2.docs.forEach(d => mp.set(d.id, {
+            id: d.id,
+            ...d.data()
+          }));
+          oxReadBookQ().forEach(it => {
+            it && it.cid && it.data && !mp.has(it.cid) && mp.set(it.cid, { id: it.cid, ...it.data })
+          });
+          Na([...mp.values()].sort((b, C) => (Date.parse(C.createdAt) || 0) - (Date.parse(b.createdAt) || 0)).slice(0, 80)), window.__oxLogsAt = Date.now()
         }
       } catch {}
     })(), ["plaza", "announcementsList"].includes(l) && (async () => {
@@ -43291,6 +43300,9 @@ function CI() {
   }, oxQueueBookLog = it => {
     let q = oxReadBookQ();
     q.push(it);
+    // Persist the FULL queue first; only evict oldest entries if the write
+    // actually fails (quota exceeded) — never drop unsynced records pre-emptively.
+    if (oxWriteBookQ(q)) return !0;
     let cap = q.slice(-200);
     // Evict oldest queued entries until the write fits, so a near-full queue
     // (each entry can carry a large base64 avatar/cover) can't permanently block
@@ -43369,7 +43381,8 @@ function CI() {
           id: Date.now().toString(),
           ...E
         }, ...vr].slice(0, 80);
-        Na(q), localStorage.setItem("oritan_book_logs", JSON.stringify(q))
+        Na(q);
+        try { localStorage.setItem("oritan_book_logs", JSON.stringify(q)) } catch { Qe("記録の保存に失敗しました。端末のストレージがいっぱいです", "error") }
       }
       let _gx = Math.round((E.minutes || 0) / 60 * 150);
       if (_gx > 0) {
@@ -43406,7 +43419,9 @@ function CI() {
       await Ch(et(R.db, "artifacts", R.appId, "public", "data", "bookLogs", u.id), {
         likedBy: Dv(y)
       })
-    } catch {} else localStorage.setItem("oritan_book_logs", JSON.stringify(E))
+    } catch {
+      try { localStorage.setItem("oritan_book_logs", JSON.stringify(E)) } catch {}
+    } else localStorage.setItem("oritan_book_logs", JSON.stringify(E))
   }, p0 = async u => {
     let y = window.prompt("コメントを入力");
     if (!y || !y.trim()) return;
@@ -45291,7 +45306,7 @@ function CI() {
             children: [{
               id: "plaza",
               label: "ひろば",
-              match: ["plaza", "chat", "dm", "friendsList", "announcementsList", "stats", "factoryApp", "friendProfile", "recordsTimeline"]
+              match: ["plaza", "chat", "dm", "friendsList", "announcementsList", "stats", "factoryApp", "friendProfile"]
             }, {
               id: "stageMap",
               label: "学習",
@@ -45303,7 +45318,7 @@ function CI() {
             }, {
               id: "recordHub",
               label: "記録",
-              match: ["recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp"]
+              match: ["recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp", "recordsTimeline"]
             }, {
               id: "myPage",
               label: "マイページ",
@@ -47408,7 +47423,7 @@ function CI() {
                     return null;
                     let me = e?.uid || "local",
                       _fs = new Set((Ze || []).map(f => f && (f.uid || f.id)).filter(Boolean)),
-                      L10 = (vr || []).filter(b => b.uid && (b.uid === me || _fs.has(b.uid)) && b.createdAt).sort((a, c) => (Date.parse(c.createdAt) || 0) - (Date.parse(a.createdAt) || 0)).slice(0, 10);
+                      L10 = (vr || []).filter(b => b.uid && (b.uid === me || _fs.has(b.uid)) && (b.createdAt || b.id)).sort((a, c) => (Date.parse(c.createdAt) || 0) - (Date.parse(a.createdAt) || 0)).slice(0, 10);
                     return (0, r.jsxs)("div", {
                       style: {
                         marginTop: 18
@@ -49150,7 +49165,7 @@ function CI() {
             })]}), (() => {
               let _me = e?.uid || "local",
                 _fs2 = new Set((Ze || []).map(f => f && (f.uid || f.id)).filter(Boolean)),
-                _L10 = (vr || []).filter(b => b.uid && (b.uid === _me || _fs2.has(b.uid)) && b.createdAt).sort((a, c) => (Date.parse(c.createdAt) || 0) - (Date.parse(a.createdAt) || 0)).slice(0, 10);
+                _L10 = (vr || []).filter(b => b.uid && (b.uid === _me || _fs2.has(b.uid)) && (b.createdAt || b.id)).sort((a, c) => (Date.parse(c.createdAt) || 0) - (Date.parse(a.createdAt) || 0)).slice(0, 10);
               return (0, r.jsxs)("div", {
                 style: {
                   marginTop: 16
@@ -49191,7 +49206,7 @@ function CI() {
                   let s = String(ms || "");
                   return s ? s.slice(5, 16).replace("T", " ") : ""
                 },
-                E = (vr || []).filter(b => b.uid && (b.uid === u || _fset.has(b.uid)) && b.createdAt).sort((b, C) => (Date.parse(C.createdAt) || 0) - (Date.parse(b.createdAt) || 0)).slice(0, 30);
+                E = (vr || []).filter(b => b.uid && (b.uid === u || _fset.has(b.uid)) && (b.createdAt || b.id)).sort((b, C) => (Date.parse(C.createdAt) || 0) - (Date.parse(b.createdAt) || 0)).slice(0, 30);
               return (0, r.jsxs)("div", {
                 style: {
                   marginTop: 20
@@ -50065,7 +50080,7 @@ function CI() {
                 bookTitle: _bt || "タイマー記録",
                 bookIcon: _bi || "bk1",
                 subject: y || "未分類",
-                minutes: Math.max(1, Math.round(u)),
+                minutes: Math.min(1200, Math.max(1, Math.round(u))),
                 currentPage: 0,
                 totalPages: 0,
                 memo: (E || "").trim(),
@@ -54996,7 +55011,7 @@ function CI() {
               y = () => {
                 if (!qo.trim()) return;
                 let B = {
-                  id: Date.now().toString(),
+                  id: Date.now().toString() + "_" + Math.random().toString(36).slice(2, 9),
                   text: qo.trim(),
                   createdAt: Da(),
                   pinned: !1
