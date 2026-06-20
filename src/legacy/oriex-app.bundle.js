@@ -35341,8 +35341,8 @@ var cg = {
       className: "p-5 rounded-[20px] relative overflow-hidden text-left",
       style: {
         background: m ? p ? "rgba(255,255,255,0.98)" : "rgba(255,255,255,0.08)" : p ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.05)",
-        border: m ? p ? "2px solid rgba(99,102,241,0.35)" : "1px solid rgba(99,102,241,0.35)" : p ? "2px solid rgba(0,0,0,0.18)" : "1px solid rgba(255,255,255,0.1)",
-        boxShadow: m ? p ? "0 2px 16px rgba(99,102,241,0.12)" : "0 0 0 1px rgba(99,102,241,0.15)" : p ? "0 2px 12px rgba(0,0,0,0.08)" : "none"
+        border: p ? "2px solid rgba(0,0,0,0.18)" : "1px solid rgba(255,255,255,0.1)",
+        boxShadow: p ? "0 2px 12px rgba(0,0,0,0.08)" : "none"
       },
       children: [m && (0, r.jsx)("span", {
         style: {
@@ -35358,7 +35358,7 @@ var cg = {
       }), (0, r.jsx)("div", {
         className: "absolute top-0 left-0 w-1 h-full",
         style: {
-          background: "linear-gradient(180deg, #6366f1, #8b5cf6)"
+          background: "transparent"
         }
       }), (0, r.jsxs)("div", {
         className: "flex items-start justify-between gap-3",
@@ -39947,23 +39947,23 @@ function EI({
           style: {
             display: "flex",
             flexDirection: "row",
-            alignItems: "stretch",
+            alignItems: "center",
             gap: 8,
             marginTop: 8
           },
           children: [(0, r.jsxs)("label", {
             style: {
-              display: "flex",
-              flex: 1,
-              justifyContent: "center",
+              display: "inline-flex",
+              flexShrink: 0,
               alignItems: "center",
-              gap: 5,
-              padding: "6px 12px",
+              whiteSpace: "nowrap",
+              gap: 4,
+              padding: "5px 11px",
               borderRadius: 999,
               background: "rgba(31,174,102,0.08)",
               border: "1px solid rgba(31,174,102,0.45)",
               color: "#0c7a44",
-              fontSize: 11.5,
+              fontSize: 10.5,
               fontWeight: 900,
               cursor: "pointer",
               fontFamily: "inherit"
@@ -39983,7 +39983,7 @@ function EI({
                 background: "transparent",
                 border: "none",
                 color: "#0c7a44",
-                fontSize: 11.5,
+                fontSize: 10.5,
                 fontWeight: 900,
                 fontFamily: "inherit",
                 cursor: "pointer",
@@ -40001,17 +40001,17 @@ function EI({
           }), (0, r.jsxs)("button", {
             onClick: t,
             style: {
-              display: "flex",
-              flex: 1,
-              justifyContent: "center",
+              display: "inline-flex",
+              flexShrink: 0,
               alignItems: "center",
-              gap: 6,
-              padding: "6px 14px",
+              whiteSpace: "nowrap",
+              gap: 5,
+              padding: "5px 12px",
               borderRadius: 999,
               background: "#ffffff",
               border: "none",
               color: "#0c7a44",
-              fontSize: 11.5,
+              fontSize: 10.5,
               fontWeight: 900,
               cursor: "pointer",
               boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
@@ -41824,6 +41824,8 @@ function CI() {
       }
     }
   }, [l, ye, oxNoticeTab]), (0, P.useEffect)(() => {
+    if (l !== "bookLogApp" && (oxBkTimer.running || oxBkTimer.acc > 0)) oxBkSet({ running: !1, startTs: 0, acc: 0 })
+  }, [l]), (0, P.useEffect)(() => {
     !e || !R.enabled || !i?.isTeacher || (async () => {
       try {
         let u = bt(R.db, "artifacts", R.appId, "public", "data", "customVocabulary"),
@@ -42569,7 +42571,7 @@ function CI() {
       h("result");
       let b = Math.max(1, Math.round((Date.now() - (Vs || Date.now())) / 6e4)),
         C = ti.current,
-        K = E + (u ? 30 : 0),
+        K = E * 10 + (u ? 30 : 0),
         q = Bd(C?.totalExp),
         B = (C?.totalExp || 0) + K;
       Bd(B) > q && Oi(!0);
@@ -43289,7 +43291,19 @@ function CI() {
   }, oxQueueBookLog = it => {
     let q = oxReadBookQ();
     q.push(it);
-    return oxWriteBookQ(q.slice(-200))
+    let cap = q.slice(-200);
+    // Evict oldest queued entries until the write fits, so a near-full queue
+    // (each entry can carry a large base64 avatar/cover) can't permanently block
+    // saving a record for a particular book.
+    while (cap.length > 1) {
+      if (oxWriteBookQ(cap)) return !0;
+      cap = cap.slice(1)
+    }
+    if (oxWriteBookQ(cap)) return !0;
+    // The single newest entry is itself too big (large base64 cover/avatar):
+    // retry without the heavy denormalized fields so the record still saves.
+    let d = cap[0] && cap[0].data || {};
+    return oxWriteBookQ([{ ...cap[0], data: { ...d, userAvatar: "", bookIcon: typeof d.bookIcon === "string" && d.bookIcon.length > 100 ? "bk0" : d.bookIcon } }])
   }, oxDequeueBookLog = cid => {
     let q = oxReadBookQ();
     oxWriteBookQ(q.filter(x => x.cid !== cid))
@@ -43333,7 +43347,7 @@ function CI() {
         bookTitle: u,
         bookIcon: y?.icon || "bk0",
         subject: Ya.subject || "未分類",
-        minutes: Math.max(0, (Number(Ya.hours) || 0) * 60 + (Number(Ya.mins) || 0)),
+        minutes: Math.min(1200, Math.max(0, (Number(Ya.hours) || 0) * 60 + (Number(Ya.mins) || 0))),
         currentPage: Math.max(0, Number(Ya.currentPage) || 0),
         totalPages: Math.max(0, Number(Ya.totalPages) || 0),
         memo: Ya.memo.trim(),
