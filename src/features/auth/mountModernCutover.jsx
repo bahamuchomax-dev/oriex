@@ -4,10 +4,10 @@ import ModernCutoverBridge from "./ModernCutoverBridge.jsx";
 import { showCutoverVeil } from "./cutoverVeil.js";
 
 /* ============================================================
- * mountModernCutover — lazy entry for the opt-in cutover bridge
+ * mountModernCutover — lazy entry for the default cutover bridge
  * ------------------------------------------------------------
- * Loaded ONLY by src/main.js when ?oriexModernCutover=1 is set (see
- * cutoverRoute.js). The bridge UI renders into a SEPARATE host
+ * Loaded by src/main.js as the default login (the ?oriexModernCutover=1 flag is
+ * a no-op alias). The bridge UI renders into a SEPARATE host
  * (#oriex-modern-cutover), leaving #root free for the legacy app to self-mount
  * into during the handoff. Once handed off, the bridge renders nothing, so only
  * the real legacy app is visible. Dynamic import keeps React + the bridge out of

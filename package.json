@@ -1,7 +1,7 @@
 {
   "name": "oriex",
   "private": true,
-  "version": "8.1.15",
+  "version": "8.1.16",
   "type": "module",
   "description": "Oriex study app — staged React/Vite restructure of the original monolithic build.",
   "scripts": {
@@ -15,7 +15,6 @@
     "security:scan": "node scripts/securityScan.mjs"
   },
   "dependencies": {
-    "pdfjs-dist": "^6.0.227",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
@@ -28,6 +27,7 @@
     "firebase": "^12.14.0",
     "firebase-tools": "^15.20.0",
     "globals": "15.11.0",
+    "pdfjs-dist": "^6.0.227",
     "vite": "^8.0.16",
     "vitest": "^4.1.8"
   },

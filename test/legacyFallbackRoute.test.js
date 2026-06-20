@@ -5,7 +5,6 @@ import {
   isLegacyFallbackEnabled,
   LEGACY_FALLBACK_FLAG,
 } from "../src/features/auth/legacyFallbackRoute.js";
-import { isModernCutoverUrl } from "../src/features/auth/cutoverRoute.js";
 import { isAuthBridgeUrl } from "../src/features/auth/authBridgeRoute.js";
 import { isModernAuthUrl } from "../src/features/auth/modernAuthRoute.js";
 
@@ -52,8 +51,8 @@ describe("default cutover routing — no-flag is modern cutover; legacy is emerg
   });
   it("?oriexModernCutover=1 still routes to the cutover (it is the default branch)", () => {
     const cut = loc({ search: "?oriexModernCutover=1" });
-    expect(isModernCutoverUrl(cut)).toBe(true);
-    // it matches no OTHER (pre-default) gate, so it falls through to the cutover default
+    // ?oriexModernCutover=1 matches no pre-default gate, so it falls through to
+    // the cutover default branch (the explicit flag is now a no-op alias).
     expect(isLegacyFallbackUrl(cut)).toBe(false);
     expect(isAuthBridgeUrl(cut)).toBe(false);
     expect(isModernAuthUrl(cut)).toBe(false);

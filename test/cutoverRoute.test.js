@@ -1,53 +1,7 @@
-import { describe, it, expect, afterEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
-import {
-  isModernCutoverUrl,
-  isModernCutoverEnabled,
-  MODERN_CUTOVER_FLAG,
-} from "../src/features/auth/cutoverRoute.js";
 
 const MAIN = readFileSync("src/main.js", "utf8");
-const loc = (over = {}) => ({ search: "", hash: "", ...over });
-
-describe("isModernCutoverUrl — opt-in cutover route matcher", () => {
-  it("is false for a normal visit and other flags", () => {
-    expect(isModernCutoverUrl(loc())).toBe(false);
-    expect(isModernCutoverUrl(loc({ search: "?oriexAuthBridge=1" }))).toBe(false);
-    expect(isModernCutoverUrl(loc({ search: "?oriexModernAuth=1" }))).toBe(false);
-  });
-  it("matches ?oriexModernCutover=1 and #modern-cutover", () => {
-    expect(isModernCutoverUrl(loc({ search: "?oriexModernCutover=1" }))).toBe(true);
-    expect(isModernCutoverUrl(loc({ search: "?a=1&oriexModernCutover=1" }))).toBe(true);
-    expect(isModernCutoverUrl(loc({ hash: "#modern-cutover" }))).toBe(true);
-  });
-  it("never throws on odd input", () => {
-    for (const bad of [null, undefined, {}, { search: 1, hash: {} }]) {
-      expect(isModernCutoverUrl(bad)).toBe(false);
-    }
-  });
-});
-
-describe("isModernCutoverEnabled — URL or localStorage opt-in", () => {
-  const realWindow = globalThis.window;
-  afterEach(() => {
-    globalThis.window = realWindow;
-  });
-  it("true via URL, true via localStorage, false by default, never throws", () => {
-    expect(isModernCutoverEnabled(loc({ search: "?oriexModernCutover=1" }))).toBe(true);
-    globalThis.window = { localStorage: { getItem: (k) => (k === MODERN_CUTOVER_FLAG ? "1" : null) } };
-    expect(isModernCutoverEnabled(loc())).toBe(true);
-    globalThis.window = { localStorage: { getItem: () => null } };
-    expect(isModernCutoverEnabled(loc())).toBe(false);
-    globalThis.window = {
-      localStorage: {
-        getItem: () => {
-          throw new Error("blocked");
-        },
-      },
-    };
-    expect(isModernCutoverEnabled(loc())).toBe(false);
-  });
-});
 
 describe("main.js wiring — modern cutover is the DEFAULT; legacy is emergency-only", () => {
   it("mounts the modern cutover by default (final else → startModernCutover)", () => {
@@ -73,7 +27,6 @@ describe("main.js wiring — modern cutover is the DEFAULT; legacy is emergency-
 
 /* ---- security guards over the cutover's OWN files (not the legacy bundle) ---- */
 const CUTOVER_FILES = [
-  "src/features/auth/cutoverRoute.js",
   "src/features/auth/ModernCutoverBridge.jsx",
   "src/features/auth/mountModernCutover.jsx",
   "src/features/auth/legacyHandoff.js",

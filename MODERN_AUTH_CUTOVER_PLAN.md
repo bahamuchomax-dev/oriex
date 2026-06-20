@@ -130,7 +130,7 @@ debug overlay:
   (set `window.__oxUid`, ensure the user's own legacy-path profile, import the
   legacy bundle) → the real Oriex app, **no old login/register gate, no debug
   overlay**.
-- **Files:** `cutoverRoute.js` (gate), `ModernCutoverBridge.jsx` (clean bridge,
+- **Files:** `ModernCutoverBridge.jsx` (clean bridge,
   renders null once legacy owns `#root`), `mountModernCutover.jsx`,
   `legacyHandoff.js` (shared handoff). The debug probe `?oriexAuthBridge=1` stays
   available for diagnosis.

@@ -120,8 +120,8 @@ import { isModernAuthEnabled } from "./features/auth/modernAuthRoute.js";
 // Opt-in developer probe for the modern-auth → legacy handoff (NOT a feature,
 // NOT the default login). Tiny pure matcher; off unless explicitly requested.
 import { isAuthBridgeEnabled } from "./features/auth/authBridgeRoute.js";
-// The modern Firebase Auth cutover is now the DEFAULT login (see cutoverRoute.js
-// for the still-supported explicit ?oriexModernCutover=1 flag).
+// The modern Firebase Auth cutover is now the DEFAULT login. The explicit
+// ?oriexModernCutover=1 flag is a no-op alias that falls through to this default.
 // Emergency admin/dev fallback to the OLD legacy app (unsafe plaintext login) —
 // reachable ONLY via this explicit flag. Tiny pure matcher; off unless requested.
 import { isLegacyFallbackEnabled } from "./features/auth/legacyFallbackRoute.js";

@@ -17,10 +17,10 @@ import { APP_VERSION_LABEL } from "../../appVersion.js";
 import "./authScreen.css";
 
 /* ============================================================
- * ModernCutoverBridge — opt-in cutover: modern Firebase Auth → real legacy app
+ * ModernCutoverBridge — the cutover: modern Firebase Auth → real legacy app
  * ------------------------------------------------------------
- * Mounted ONLY behind ?oriexModernCutover=1 (see cutoverRoute.js). NOT the default
- * login. It WAITS for Firebase Auth state to restore; signed-out it shows the
+ * Mounted as the DEFAULT login (the explicit ?oriexModernCutover=1 flag is now a
+ * no-op alias). It WAITS for Firebase Auth state to restore; signed-out it shows the
  * modern login/signup; once a user exists it hands off into the legacy app
  * (handoffToLegacy: set window.__oxUid, ensure the user's OWN legacy-path profile,
  * import the legacy bundle) and then renders nothing so the legacy app owns #root —
