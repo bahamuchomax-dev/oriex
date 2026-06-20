@@ -45244,22 +45244,22 @@ function CI() {
       }), ["start", "stageMap", "review", "wordbook", "customApp", "recordHub", "attendanceStamp", "scheduleCalendar", "bookLogApp", "studyDiaryApp", "noteApp", "plaza", "chat", "friendsList", "announcementsList", "stats", "factoryApp", "friendProfile", "myPage", "settingsApp", "weeklyTaskAdmin", "weeklyPlan", "recordsTimeline", "teacherCheck"].includes(l) && !(l === "review" && (Bt === "quiz" || Bt === "sentence")) && (0, r.jsx)("div", {
         className: "shrink-0",
         style: {
-          paddingBottom: 8,
+          paddingBottom: 7,
           position: "fixed",
-          bottom: "18px",
-          left: 12,
-          right: 12,
-          width: "calc(100% - 24px)",
-          maxWidth: "552px",
+          bottom: "calc(env(safe-area-inset-bottom, 0px) + 11px)",
+          left: 24,
+          right: 24,
+          width: "calc(100% - 48px)",
+          maxWidth: "420px",
           margin: "0 auto",
           zIndex: 300,
-          borderRadius: 999,
+          borderRadius: "18px 18px 30px 30px",
           transform: "translateY(0)",
-          background: S ? "rgba(255,255,255,0.88)" : "rgba(8,10,18,0.84)",
-          backdropFilter: "blur(30px) saturate(1.35)",
-          WebkitBackdropFilter: "blur(30px) saturate(1.35)",
-          border: S ? "1.5px solid rgba(15,23,42,0.32)" : "1.5px solid rgba(255,255,255,0.16)",
-          boxShadow: S ? "0 18px 44px rgba(15,23,42,0.16)" : "0 18px 44px rgba(0,0,0,0.48)",
+          background: "linear-gradient(180deg,rgba(255,255,255,0.90),rgba(226,247,240,0.82))",
+          backdropFilter: "blur(24px) saturate(1.32)",
+          WebkitBackdropFilter: "blur(24px) saturate(1.32)",
+          border: "1px solid rgba(255,255,255,0.88)",
+          boxShadow: "0 14px 28px rgba(30,92,74,0.14), 0 0 0 1px rgba(20,184,166,0.10) inset, inset 0 1px 0 rgba(255,255,255,0.96)",
           opacity: +!!j,
           pointerEvents: j ? "auto" : "none",
           transition: "opacity 0.15s ease"
@@ -45269,7 +45269,7 @@ function CI() {
             display: "flex",
             alignItems: "stretch",
             paddingInline: 8,
-            paddingTop: 8,
+            paddingTop: 7,
             paddingBottom: 0,
             maxWidth: 560,
             width: "100%",
@@ -45280,7 +45280,8 @@ function CI() {
             style: {
               display: "flex",
               flex: 1,
-              overflow: "visible"
+              overflow: "visible",
+              gap: 0
             },
             children: [{
               id: "plaza",
@@ -45313,7 +45314,7 @@ function CI() {
                 },
                 style: {
                   flex: 1,
-                  minHeight: 48,
+                  minHeight: 50,
                   border: "none",
                   background: "transparent",
                   cursor: "pointer",
@@ -45327,16 +45328,16 @@ function CI() {
                 },
                 children: [(0, r.jsx)("div", {
                   style: {
-                    width: 50,
-                    height: 50,
-                    borderRadius: 17,
-                    marginTop: -18,
-                    background: A.accentGrad,
+                    width: 58,
+                    height: 58,
+                    borderRadius: 999,
+                    marginTop: -24,
+                    background: "linear-gradient(145deg,#52d6b1,#8dd6f7)",
                     display: "grid",
                     placeItems: "center",
-                    boxShadow: `0 8px 20px ${A.accent}66`,
-                    border: `2.5px solid ${S?"#ffffff":"rgba(255,255,255,0.25)"}`,
-                    transform: C ? "scale(1.07)" : "none",
+                    boxShadow: "0 14px 28px rgba(20,184,166,0.25), 0 0 0 8px rgba(255,255,255,0.78), inset 0 1px 0 rgba(255,255,255,0.62)",
+                    border: "1px solid rgba(255,255,255,0.82)",
+                    transform: C ? "translateY(-1px) scale(1.06)" : "translateY(0) scale(1)",
                     transition: "transform .18s"
                   },
                   children: (0, r.jsx)(B, {
@@ -45348,7 +45349,7 @@ function CI() {
                     fontSize: 9,
                     fontWeight: 900,
                     letterSpacing: ".04em",
-                    color: C ? A.accent : A.textMuted
+                    color: C ? "#0f766e" : "rgba(65,86,82,0.54)"
                   },
                   children: b.label
                 })]
@@ -45361,24 +45362,26 @@ function CI() {
                 className: "relative flex flex-col items-center justify-center transition-all",
                 style: {
                   flex: 1,
-                  minHeight: 48,
+                  minHeight: 50,
                   gap: 2,
                   paddingTop: 7,
                   paddingBottom: 6,
-                  borderRadius: 999,
-                  color: C ? A.accent : S ? "rgba(20,10,60,0.35)" : "rgba(255,255,255,0.30)",
-                  background: C ? S ? "rgba(15,23,42,0.08)" : "rgba(255,255,255,0.10)" : "transparent",
+                  borderRadius: "20px 20px 16px 16px",
+                  color: C ? "#0f766e" : "rgba(65,86,82,0.54)",
+                  background: C ? "linear-gradient(180deg,rgba(217,247,236,0.92),rgba(255,255,255,0.58))" : "transparent",
                   border: "none",
+                  boxShadow: "none",
                   cursor: "pointer",
-                  transform: C ? "translateY(-1px)" : "translateY(0)",
+                  transform: C ? "translateY(-3px)" : "translateY(0)",
                   transition: "all 0.18s cubic-bezier(0.25,0.8,0.25,1)"
                 },
                 children: [C && (0, r.jsx)("div", {
                   style: {
                     position: "absolute",
                     inset: 3,
-                    borderRadius: 999,
-                    background: S ? `linear-gradient(135deg, ${A.accent}18, rgba(255,255,255,0.55))` : `linear-gradient(135deg, ${A.accent}28, rgba(255,255,255,0.08))`,
+                    borderRadius: "17px 17px 14px 14px",
+                    background: "linear-gradient(135deg,rgba(255,255,255,0.76),rgba(206,244,232,0.78))",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.92), 0 8px 16px rgba(20,184,166,0.10)",
                     pointerEvents: "none"
                   }
                 }), (0, r.jsx)("div", {
@@ -45388,15 +45391,15 @@ function CI() {
                   },
                   children: (0, r.jsx)(B, {
                     active: C,
-                    color: C ? S ? "#050505" : "#ffffff" : A.accent
+                    color: C ? "#0f766e" : "rgba(65,86,82,0.62)"
                   })
                 }), (0, r.jsx)("span", {
                   style: {
                     fontSize: "9px",
                     fontWeight: C ? 700 : 500,
                     letterSpacing: C ? "0.06em" : "0.02em",
-                    color: C ? S ? "#050505" : "#ffffff" : "inherit",
-                    opacity: C ? 1 : .62,
+                    color: C ? "#0f766e" : "rgba(65,86,82,0.58)",
+                    opacity: 1,
                     position: "relative",
                     zIndex: 1,
                     marginBottom: 2,
@@ -52928,7 +52931,7 @@ function CI() {
               })]
             })]
           }), l === "plaza" && (0, r.jsx)("div", {
-            className: "rx-home",
+            className: "rx-home ox-plaza-page",
             style: {
               display: "block",
               minHeight: "auto",
@@ -52999,6 +53002,7 @@ function CI() {
                     children: je
                   }),
                   U = je => (0, r.jsx)("div", {
+                    className: "ox-plaza-section-title",
                     style: {
                       ...plazaSectionStyle,
                       borderBottom: "none",
@@ -53083,7 +53087,7 @@ function CI() {
                         children: "ひろば"
                       }), (0, r.jsx)("div", {
                         className: "rx-goal-s",
-                        children: "先生・友だちとつながる"
+                        children: "トークとお知らせをすぐ確認"
                       })]
                     }), (0, r.jsx)("button", {
                       className: "rx-streak",
@@ -53091,6 +53095,7 @@ function CI() {
                       children: "＋ フレンド追加"
                     })]
                   }), (0, r.jsxs)("div", {
+                    className: "ox-plaza-action-grid",
                     style: {
                       display: "flex",
                       alignItems: "stretch",
@@ -53126,6 +53131,7 @@ function CI() {
                     })), "#E8923A", "未読", he, "件")]
                   })]
                   }), (0, r.jsx)("div", {
+                    className: "ox-plaza-section-title",
                     style: {
                       ...plazaSectionStyle,
                       borderBottom: "none",
@@ -53141,9 +53147,10 @@ function CI() {
                         fontFamily: '"Zen Maru Gothic",sans-serif',
                         margin: 0
                       },
-                      children: "プレイリスト"
+                      children: "ミニゲーム"
                     })
                   }), (0, r.jsxs)("div", {
+                    className: "ox-plaza-action-grid",
                     style: {
                       ...plazaSectionStyle,
                       display: "grid",
@@ -53155,6 +53162,7 @@ function CI() {
                       marginBottom: 18
                     },
                     children: [(0, r.jsxs)("button", {
+                      className: "ox-plaza-action ox-plaza-hamu",
                       onClick: () => u("hamuApp"),
                       style: {
                         display: "flex",
@@ -53214,6 +53222,7 @@ function CI() {
                         children: "›"
                       })]
                     }), (0, r.jsxs)("button", {
+                      className: "ox-plaza-action ox-plaza-run",
                       onClick: () => u("runGame"),
                       style: {
                         display: "flex",
