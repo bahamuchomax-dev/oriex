@@ -41253,7 +41253,6 @@ function CI() {
   let oxBkMs = oxBkTimer.acc + (oxBkTimer.running ? Date.now() - oxBkTimer.startTs : 0),
     oxBkMM = Math.floor(oxBkMs / 6e4),
     oxBkSS = Math.floor(oxBkMs / 1e3) % 60,
-    oxBkSaveMinutes = oxBkMs >= 3e4 ? Math.max(1, Math.round(oxBkMs / 6e4)) : 0,
     oxBkNextMinutePct = Math.min(100, Math.round((Math.floor(oxBkMs / 1e3) % 60) / 60 * 100));
   (0, P.useEffect)(() => () => {
     Wc.current && clearTimeout(Wc.current), du.current && clearTimeout(du.current)
@@ -44793,8 +44792,8 @@ function CI() {
                   children: String(oxBkMM).padStart(2, "0") + ":" + String(oxBkSS).padStart(2, "0")
                 }), (0, r.jsxs)("div", {
                   style: {
+                    display: "none",
                     marginTop: 8,
-                    display: "grid",
                     gridTemplateColumns: "1fr 1fr",
                     gap: 7,
                     maxWidth: 260
