@@ -40714,7 +40714,7 @@ function CI() {
           id: u.id,
           ...u.data()
         })).sort((u, y) => (y.createdAt || 0) - (u.createdAt || 0))), i?.isTeacher) {
-        let u = (await rn(bt(R.db, "artifacts", R.appId, "public", "data", "taskProgress"))).docs.map(E => ({
+        let u = (await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "taskProgress"), li(200)))).docs.map(E => ({
           id: E.id,
           ...E.data()
         }));
@@ -40740,7 +40740,7 @@ function CI() {
     mt();
     let y = setInterval(() => {
       document.hidden || mt()
-    }, 6e4);
+    }, 3e5);
     return () => clearInterval(y)
   }, [e?.uid, i?.isTeacher]);
   let [un, st] = (0, P.useState)(0), Wn = () => {
@@ -41359,7 +41359,7 @@ function CI() {
         })
       }).catch(() => {}), () => {}),
       b = (rn(bt(R.db, "artifacts", R.appId, "public", "data", "teacherIndex")).then(he => {
-        $t(he.docs.map(pe => ({
+        window.__oxTeacherIdxAt = Date.now(), $t(he.docs.map(pe => ({
           id: pe.id,
           uid: pe.id,
           ...pe.data()
@@ -42979,15 +42979,16 @@ function CI() {
     } catch {}
   }, [l]), (0, P.useEffect)(() => {
     if (!e || !R.enabled || l !== "plaza") return;
+    if (Date.now() - (window.__oxTeacherIdxAt || 0) < 12e4) return;
     let u = !0;
     return (async () => {
       try {
         let y = await rn(bt(R.db, "artifacts", R.appId, "public", "data", "teacherIndex"));
-        u && W(y.docs.map(E => ({
+        u && (window.__oxTeacherIdxAt = Date.now(), W(y.docs.map(E => ({
           id: E.id,
           ...E.data(),
           isTeacher: !0
-        })))
+        }))))
       } catch {}
     })(), () => {
       u = !1
@@ -42996,7 +42997,7 @@ function CI() {
     if (!e || !R.enabled || !["plaza", "announcementsList", "recordsTimeline"].includes(l)) return;
     let u = !0;
     return (async () => {
-      if (Date.now() - (window.__oxLogsAt || 0) < 12000) return;
+      if (Date.now() - (window.__oxLogsAt || 0) < 6e4) return;
       try {
         let y = await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "bookLogs"), jc("createdAt", "desc"), li(80)));
         if (u) {
@@ -45873,15 +45874,27 @@ function CI() {
                   },
                   "aria-label": u.id,
                   style: {
+                    width: 24,
+                    height: 24,
+                    cursor: "pointer",
+                    padding: 2,
+                    background: "none",
+                    border: "none",
+                    borderRadius: 6,
+                    boxShadow: wi === u.id ? `0 0 0 2px ${A.text}, 0 2px 6px ${u.sw}66` : "none"
+                  },
+                  children: (0, r.jsx)("svg", {
                     width: 20,
                     height: 20,
-                    borderRadius: 999,
-                    cursor: "pointer",
-                    padding: 0,
-                    background: u.sw,
-                    border: wi === u.id ? `2px solid ${A.text}` : `1.5px solid ${A.cardBorder}`,
-                    boxShadow: wi === u.id ? `0 1px 4px ${u.sw}88` : "none"
-                  }
+                    viewBox: "0 0 100 100",
+                    fill: "none",
+                    children: (0, r.jsx)("path", {
+                      d: "M75 22A38 38 0 1 0 75 78",
+                      stroke: u.sw,
+                      strokeWidth: 22,
+                      strokeLinecap: "round"
+                    })
+                  })
                 }, u.id))
               })]
             })]
@@ -46730,20 +46743,30 @@ function CI() {
                     children: (0, r.jsxs)("svg", {
                       width: "22",
                       height: "22",
-                      viewBox: "0 0 24 24",
+                      viewBox: "0 0 512 512",
                       fill: "none",
-                      stroke: "currentColor",
-                      strokeWidth: "1.8",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      children: [(0, r.jsx)("rect", {
-                        x: "3",
-                        y: "5",
-                        width: "18",
-                        height: "16",
-                        rx: "3"
+                      children: [(0, r.jsx)("path", {
+                        d: "M378 110A190 190 0 1 0 100 365",
+                        fill: "none",
+                        stroke: "#4a3728",
+                        strokeWidth: "72",
+                        strokeLinecap: "round"
                       }), (0, r.jsx)("path", {
-                        d: "M3 9h18M8 3v4M16 3v4"
+                        d: "M100 365A190 190 0 0 0 378 402",
+                        fill: "none",
+                        stroke: "#e8836a",
+                        strokeWidth: "72",
+                        strokeLinecap: "round"
+                      }), (0, r.jsx)("circle", {
+                        cx: "280",
+                        cy: "200",
+                        r: "22",
+                        fill: "#e8836a"
+                      }), (0, r.jsx)("circle", {
+                        cx: "350",
+                        cy: "200",
+                        r: "22",
+                        fill: "#e8836a"
                       })]
                     })
                   }), (0, r.jsxs)("span", {
