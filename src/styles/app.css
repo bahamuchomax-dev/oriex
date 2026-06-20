@@ -1128,6 +1128,10 @@ html body .ox-plaza-page .ox-plaza-announce{
 .ox-bottom-nav *,
 .ox-bottom-nav button,
 .ox-bottom-nav button *{
+  --tw-scale-x:1 !important;
+  --tw-scale-y:1 !important;
+  --tw-translate-x:0px !important;
+  --tw-translate-y:0px !important;
   transition:none !important;
   animation:none !important;
   filter:none !important;
@@ -1190,6 +1194,11 @@ html body .ox-plaza-page .ox-plaza-announce{
 .ox-bottom-nav .ox-home-nav-button:active .ox-home-nav-orb,
 .ox-bottom-nav .ox-home-nav-button:focus .ox-home-nav-orb,
 .ox-bottom-nav .ox-home-nav-button:focus-visible .ox-home-nav-orb{
+  position:absolute !important;
+  top:-24px !important;
+  left:50% !important;
+  margin-left:-29px !important;
+  margin-top:0 !important;
   width:58px !important;
   min-width:58px !important;
   max-width:58px !important;
@@ -1208,7 +1217,54 @@ html body .ox-plaza-page .ox-plaza-announce{
   color:#0f766e !important;
   transform:none !important;
   filter:none !important;
+  margin-top:36px !important;
 }
+.ox-bottom-nav{
+  height:72px !important;
+  min-height:72px !important;
+  max-height:72px !important;
+  transform:none !important;
+}
+.ox-bottom-nav button{
+  flex:1 1 20% !important;
+  width:20% !important;
+  min-width:0 !important;
+  max-width:20% !important;
+  height:58px !important;
+  min-height:58px !important;
+  max-height:58px !important;
+  transform:none !important;
+}
+.ox-bottom-nav .ox-home-nav-button{
+  height:58px !important;
+  min-height:58px !important;
+  max-height:58px !important;
+  padding-bottom:5px !important;
+}
+/* ── Photo-theme home-orb lock ──────────────────────────────────────────
+   On a photo background (body.oxbg-on) oxHelpers injects runtime CSS that can
+   wash the floating home orb to white. `html body.oxbg-on …` raises specificity
+   above that runtime rule and pins the orb's teal→blue gradient + white house
+   icon in every interaction state (fixes: home button turning white on photo
+   theme / during page switches). */
+html body.oxbg-on .ox-bottom-nav .ox-home-nav-orb,
+html body.oxbg-on .ox-bottom-nav button:nth-child(3) > div:first-child,
+html body.oxbg-on .ox-bottom-nav .ox-home-nav-button:active .ox-home-nav-orb,
+html body.oxbg-on .ox-bottom-nav .ox-home-nav-button:focus .ox-home-nav-orb{
+  background:linear-gradient(145deg,#52d6b1,#8dd6f7) !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+}
+html body.oxbg-on .ox-bottom-nav .ox-home-nav-orb svg,
+html body.oxbg-on .ox-bottom-nav .ox-home-nav-orb svg *,
+html body.oxbg-on .ox-bottom-nav button:nth-child(3) svg,
+html body.oxbg-on .ox-bottom-nav button:nth-child(3) svg *{
+  fill:#fff !important;
+  stroke:#fff !important;
+  color:#fff !important;
+}
+/* Kill the iOS gray tap-flash on every tappable control (押下時に一瞬色がつく対策). */
+button, a, [role="button"]{ -webkit-tap-highlight-color:transparent; }
 .ox-notice-section{
   background:rgba(255,255,255,.78);
   border:1px solid rgba(15,23,42,.08);
@@ -1260,8 +1316,17 @@ html body .ox-plaza-page .ox-plaza-announce{
 .ox-plaza-page > .ox-plaza-section-title:nth-of-type(1){ order:6; }
 .ox-plaza-page > .ox-plaza-action-grid{ order:7; }
 
+/* Even, slightly tighter spacing between the three plaza section cards
+   (つながり / お知らせ / ミニゲーム). Each card's gap to the next lives on its
+   body / announce / action-grid element — pin them all equal (12px). */
+.ox-plaza-page > .ox-plaza-section-body,
+.ox-plaza-page > .ox-plaza-announce,
+.ox-plaza-page > .ox-plaza-action-grid{
+  margin-bottom:12px !important;
+}
+
 .ox-plaza-page .ox-plaza-head{
-  margin-bottom:18px !important;
+  margin-bottom:12px !important;
   border-radius:24px !important;
 }
 
