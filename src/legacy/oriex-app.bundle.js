@@ -41070,7 +41070,7 @@ function CI() {
       Ft && localStorage.setItem("genron_lastCategory", Ft)
     } catch {}
   }, [Ft]);
-  let [In, Jr] = (0, P.useState)([]), [or, ds] = (0, P.useState)(0), [us, hs] = (0, P.useState)(0), [Fs, Ai] = (0, P.useState)(3), [Us, ka] = (0, P.useState)(0), [Qo, Oa] = (0, P.useState)([]), [wa, ja] = (0, P.useState)(null), [Vs, qs] = (0, P.useState)(null), [Di, Ea] = (0, P.useState)(!1), [La, Oi] = (0, P.useState)(!1), [xn, da] = (0, P.useState)(!1), [Dl, Li] = (0, P.useState)(0), [zc, Wi] = (0, P.useState)(0), [Qi, Sa] = (0, P.useState)(0), gr = P.useRef(null), ui = P.useRef(null), ua = P.useRef(null), [Wa, Zs] = (0, P.useState)(""), [Qa, fs] = (0, P.useState)(d1[0]), [Wr, hi] = (0, P.useState)(null), [gs, Fi] = (0, P.useState)(null), [Ks, Fo] = (0, P.useState)(""), [Gs, Hs] = (0, P.useState)(f1[0]), [Ol, Xs] = (0, P.useState)(0), [Uo, Ll] = (0, P.useState)(""), [_r, Wl] = (0, P.useState)(null), [Ql, Fl] = (0, P.useState)(!1), [Ul, Ys] = (0, P.useState)(!1), [pr, Vo] = (0, P.useState)(""), [oxUpdate, setOxUpdate] = (0, P.useState)({ message: "", ts: 0 }), [oxUpMsg, setOxUpMsg] = (0, P.useState)(""), [ki, Ia] = (0, P.useState)(""), [d, x] = (0, P.useState)(!1), [w, N] = (0, P.useState)(null), [ee, le] = (0, P.useState)(1), [Me, kt] = (0, P.useState)(""), [On, bn] = (0, P.useState)(""), [Qn, er] = (0, P.useState)(""), [mr, yr] = (0, P.useState)(!1), [Ut, ha] = (0, P.useState)(""), [ps, Uh] = (0, P.useState)(""), [Vl, ql] = (0, P.useState)(""), [Nc, Vh] = (0, P.useState)(() => {
+  let [In, Jr] = (0, P.useState)([]), [or, ds] = (0, P.useState)(0), [us, hs] = (0, P.useState)(0), [Fs, Ai] = (0, P.useState)(3), [Us, ka] = (0, P.useState)(0), [Qo, Oa] = (0, P.useState)([]), [wa, ja] = (0, P.useState)(null), [Vs, qs] = (0, P.useState)(null), [Di, Ea] = (0, P.useState)(!1), [La, Oi] = (0, P.useState)(!1), [xn, da] = (0, P.useState)(!1), [Dl, Li] = (0, P.useState)(0), [zc, Wi] = (0, P.useState)(0), [Qi, Sa] = (0, P.useState)(0), gr = P.useRef(null), ui = P.useRef(null), ua = P.useRef(null), [Wa, Zs] = (0, P.useState)(""), [Qa, fs] = (0, P.useState)(d1[0]), [Wr, hi] = (0, P.useState)(null), [gs, Fi] = (0, P.useState)(null), [Ks, Fo] = (0, P.useState)(""), [Gs, Hs] = (0, P.useState)(f1[0]), [Ol, Xs] = (0, P.useState)(0), [Uo, Ll] = (0, P.useState)(""), [_r, Wl] = (0, P.useState)(null), [Ql, Fl] = (0, P.useState)(!1), [Ul, Ys] = (0, P.useState)(!1), [pr, Vo] = (0, P.useState)(""), [oxUpdates, setOxUpdates] = (0, P.useState)([]), [oxUpdSeen, setOxUpdSeen] = (0, P.useState)(() => { try { return Number(localStorage.getItem("oxSeenUpdateTs") || "0") } catch { return 0 } }), [oxUpMsg, setOxUpMsg] = (0, P.useState)(""), [ki, Ia] = (0, P.useState)(""), [d, x] = (0, P.useState)(!1), [w, N] = (0, P.useState)(null), [ee, le] = (0, P.useState)(1), [Me, kt] = (0, P.useState)(""), [On, bn] = (0, P.useState)(""), [Qn, er] = (0, P.useState)(""), [mr, yr] = (0, P.useState)(!1), [Ut, ha] = (0, P.useState)(""), [ps, Uh] = (0, P.useState)(""), [Vl, ql] = (0, P.useState)(""), [Nc, Vh] = (0, P.useState)(() => {
     try {
       return JSON.parse(localStorage.getItem("oritan_notes") || "[]")
     } catch {
@@ -41412,12 +41412,12 @@ function CI() {
   (0, P.useEffect)(() => {
     if (!(!R.enabled || !R.db)) try {
       let u = Ec(et(R.db, "artifacts", R.appId, "public", "data", "system", "appUpdate"), y => {
-        let E = y.exists() ? y.data() : null;
-        setOxUpdate(E && E.message ? { message: String(E.message), ts: Number(E.ts) || 0 } : { message: "", ts: 0 })
-      }, () => setOxUpdate({ message: "", ts: 0 }));
+        let _l = y.exists() && Array.isArray(y.data().list) ? y.data().list : [];
+        setOxUpdates(_l.slice().sort((a, b) => (Number(b.ts) || 0) - (Number(a.ts) || 0)))
+      }, () => setOxUpdates([]));
       return () => u()
     } catch {
-      setOxUpdate({ message: "", ts: 0 })
+      setOxUpdates([])
     }
   }, [R.enabled]);
   let rc = async (u, y = "") => {
@@ -45577,7 +45577,7 @@ function CI() {
           size: 14,
           color: "currentColor"
         }), " ", ea.msg]
-      }), l === "start" && oxUpdate.message && oxUpdate.ts > Number(localStorage.getItem("oxSeenUpdateTs") || "0") && (0, r.jsx)("div", {
+      }), l === "start" && oxUpdates[0] && oxUpdates[0].message && (Number(oxUpdates[0].ts) || 0) > oxUpdSeen && (0, r.jsx)("div", {
         style: {
           position: "fixed",
           inset: 0,
@@ -45602,8 +45602,9 @@ function CI() {
           },
           children: [(0, r.jsx)("button", {
             onClick: () => {
-              try { localStorage.setItem("oxSeenUpdateTs", String(oxUpdate.ts)) } catch {}
-              setOxUpdate({ message: "", ts: 0 })
+              let _t = Number(oxUpdates[0] && oxUpdates[0].ts) || 0;
+              try { localStorage.setItem("oxSeenUpdateTs", String(_t)) } catch {}
+              setOxUpdSeen(_t)
             },
             "aria-label": "閉じる",
             style: {
@@ -45642,7 +45643,7 @@ function CI() {
             children: "アップデートのお知らせ"
           }), (0, r.jsx)("div", {
             style: { fontSize: 14, fontWeight: 600, color: A.text, lineHeight: 1.7, whiteSpace: "pre-wrap" },
-            children: oxUpdate.message
+            children: oxUpdates[0] ? oxUpdates[0].message : ""
           })]
         })
       }), Pe.locked && i && !i.isTeacher && !Vi && !(typeof window !== "undefined" && window.__oxIsDeveloper) && (0, r.jsxs)("div", {
@@ -47232,7 +47233,7 @@ function CI() {
                     if (!_m || !_m.trim()) return;
                     if (!R.enabled || !R.db) return Qe("オンライン接続が必要です", "error");
                     try {
-                      await qn(et(R.db, "artifacts", R.appId, "public", "data", "system", "appUpdate"), { message: _m.trim(), ts: Date.now(), postedBy: i?.name || "先生" }, { merge: !0 });
+                      await qn(et(R.db, "artifacts", R.appId, "public", "data", "system", "appUpdate"), { list: [{ id: String(Date.now()), message: _m.trim(), ts: Date.now(), postedBy: i?.name || "先生" }, ...oxUpdates].slice(0, 30) }, { merge: !0 });
                       Qe("アップデート告知を送信しました！")
                     } catch {
                       Qe("送信に失敗しました", "error")
@@ -51791,7 +51792,7 @@ function CI() {
                   if (!oxUpMsg.trim()) return;
                   if (!R.enabled || !R.db) return Qe("オンライン接続が必要です", "error");
                   try {
-                    await qn(et(R.db, "artifacts", R.appId, "public", "data", "system", "appUpdate"), { message: oxUpMsg.trim(), ts: Date.now(), postedBy: i?.name || "先生" }, { merge: !0 });
+                    await qn(et(R.db, "artifacts", R.appId, "public", "data", "system", "appUpdate"), { list: [{ id: String(Date.now()), message: oxUpMsg.trim(), ts: Date.now(), postedBy: i?.name || "先生" }, ...oxUpdates].slice(0, 30) }, { merge: !0 });
                     setOxUpMsg(""), Qe("アップデート告知を送信しました！")
                   } catch {
                     Qe("送信に失敗しました", "error")
@@ -51800,6 +51801,39 @@ function CI() {
                 className: "w-full py-3 rounded-[14px] font-black text-base active:opacity-80 transition-all text-center text-white",
                 style: { background: A.accentGrad },
                 children: "告知を送信"
+              }), oxUpdates.length > 0 && (0, r.jsxs)("div", {
+                style: { marginTop: 14, borderTop: `1px solid ${A.cardBorder}`, paddingTop: 12 },
+                children: [(0, r.jsx)("p", {
+                  style: { fontSize: 12, fontWeight: 800, color: A.textMuted, marginBottom: 8 },
+                  children: "送信済みの告知"
+                }), (0, r.jsx)("div", {
+                  style: { display: "flex", flexDirection: "column", gap: 8, maxHeight: 240, overflowY: "auto" },
+                  children: oxUpdates.map(_u => (0, r.jsxs)("div", {
+                    style: { display: "flex", alignItems: "flex-start", gap: 8, padding: "8px 10px", borderRadius: 12, background: S ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.05)", border: `1px solid ${A.cardBorder}` },
+                    children: [(0, r.jsxs)("div", {
+                      style: { flex: 1, minWidth: 0 },
+                      children: [(0, r.jsx)("div", {
+                        style: { fontSize: 13, fontWeight: 700, color: A.text, whiteSpace: "pre-wrap", wordBreak: "break-word" },
+                        children: _u.message
+                      }), (0, r.jsx)("div", {
+                        style: { fontSize: 10.5, fontWeight: 600, color: A.textMuted, marginTop: 3 },
+                        children: _u.ts ? new Date(Number(_u.ts)).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }) : ""
+                      })]
+                    }), (0, r.jsx)("button", {
+                      onClick: async () => {
+                        if (!window.confirm("この告知を削除しますか？")) return;
+                        try {
+                          await qn(et(R.db, "artifacts", R.appId, "public", "data", "system", "appUpdate"), { list: oxUpdates.filter(x => x.id !== _u.id) }, { merge: !0 }), Qe("削除しました")
+                        } catch {
+                          Qe("削除に失敗しました", "error")
+                        }
+                      },
+                      "aria-label": "削除",
+                      style: { flexShrink: 0, border: "none", background: "transparent", color: "#ef4444", fontSize: 18, fontWeight: 900, cursor: "pointer", lineHeight: 1, padding: "0 4px" },
+                      children: "×"
+                    })]
+                  }, _u.id))
+                })]
               })]
             }), oxNoticeTab === "announce" && (0, r.jsxs)("section", {
               className: "space-y-4 ox-notice-section ox-announcement-section",
