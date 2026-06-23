@@ -19,6 +19,8 @@ import { db } from "../firebase/db.js";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const APP_ID = "gen-ron-kai-app-v1";
+const BOOT_PUBLISH_MS = 24 * 60 * 60_000;
+const BOOT_PUBLISH_PREFIX = "oxCoverBootPublishAt:";
 
 const PUBLIC_NUMBER_FIELDS = ["xp", "streak", "level", "totalMinutes", "studyMinutes", "coins"];
 
@@ -94,8 +96,23 @@ async function publishCover(uid) {
     await setDoc(doc(db, "artifacts", APP_ID, "public", "data", "customApp", uid), patch, {
       merge: true,
     });
+    try {
+      localStorage.setItem(BOOT_PUBLISH_PREFIX + uid, String(Date.now()));
+    } catch {
+      /* ignore */
+    }
   } catch {
     /* non-fatal: the owner still sees their own cover locally */
+  }
+}
+
+function shouldBootPublish(uid) {
+  if (!uid) return false;
+  try {
+    const last = Number(localStorage.getItem(BOOT_PUBLISH_PREFIX + uid) || 0);
+    return !Number.isFinite(last) || Date.now() - last > BOOT_PUBLISH_MS;
+  } catch {
+    return true;
   }
 }
 
@@ -107,7 +124,10 @@ export function installCoverSync() {
 
     // (a) Boot backfill — give the legacy app time to restore auth + __oxPbg, then
     // publish once so existing covers reach the public card automatically.
-    setTimeout(() => publishCover(uidNow()), 3500);
+    setTimeout(() => {
+      const uid = uidNow();
+      if (shouldBootPublish(uid)) publishCover(uid);
+    }, 3500);
 
     // (b) On profile save — re-publish AFTER the legacy write lands. Scope to the
     // profile-edit screen (a cover element is present) so unrelated 保存する buttons

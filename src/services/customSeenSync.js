@@ -17,18 +17,52 @@ import { db } from "../firebase/db.js";
 import { collection, getDocs } from "firebase/firestore";
 
 const APP_ID = "gen-ron-kai-app-v1";
+const CACHE_PREFIX = "oxLegacyCustomSeenCache:";
+const CACHE_MS = 10 * 60_000;
 
 function uid() {
   if (auth && auth.currentUser && auth.currentUser.uid) return auth.currentUser.uid;
   return (typeof window !== "undefined" && window.__oxUid) || null;
 }
 
+function cacheKey(u) {
+  return CACHE_PREFIX + u;
+}
+
+function readCache(u) {
+  try {
+    const raw = localStorage.getItem(cacheKey(u));
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    if (!parsed || !Array.isArray(parsed.ids) || Date.now() - Number(parsed.at || 0) >= CACHE_MS) {
+      return false;
+    }
+    parsed.ids.forEach((id) => window.__oxCustomSeen.add(id));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function writeCache(u) {
+  try {
+    localStorage.setItem(
+      cacheKey(u),
+      JSON.stringify({ at: Date.now(), ids: Array.from(window.__oxCustomSeen || []) }),
+    );
+  } catch {
+    /* ignore */
+  }
+}
+
 async function loadSeen(u) {
+  if (readCache(u)) return;
   try {
     const snap = await getDocs(collection(db, "artifacts", APP_ID, "users", u, "customSeen"));
     snap.forEach((d) => {
       if ((d.data() || {}).seen) window.__oxCustomSeen.add(d.id);
     });
+    writeCache(u);
   } catch {
     /* non-fatal: the list just shows everything as new until it loads */
   }
@@ -54,7 +88,11 @@ export function installCustomSeenSync() {
       try {
         if (op === "setDoc" && ref && typeof ref.path === "string") {
           const m = ref.path.match(/\/customSeen\/([^/]+)$/);
-          if (m) window.__oxCustomSeen.add(m[1]);
+          if (m) {
+            window.__oxCustomSeen.add(m[1]);
+            const u = uid();
+            if (u) writeCache(u);
+          }
         }
       } catch {
         /* ignore */

@@ -14,6 +14,27 @@ import { db } from "../../firebase/db.js";
 import { refs } from "../../firebase/firestorePaths.js";
 
 const LEGACY_APP_ID = "gen-ron-kai-app-v1";
+const CARD_CACHE_MS = 5 * 60_000;
+const LIST_CACHE_MS = 2 * 60_000;
+
+const cardCache = new Map(); // uid -> { at, value }
+const shortIdCache = new Map(); // shortId -> { at, value }
+const publicCardsCache = new Map(); // max -> { at, value }
+const friendsCache = new Map(); // uid -> { at, value }
+
+function fresh(entry, ttl) {
+  return entry && Date.now() - entry.at < ttl;
+}
+
+function remember(map, key, value) {
+  map.set(key, { at: Date.now(), value });
+  return value;
+}
+
+function invalidateFriendReads(uid) {
+  friendsCache.delete(uid);
+  publicCardsCache.clear();
+}
 
 function num(value, fallback = 0) {
   if (value == null || value === "") return fallback;
@@ -76,17 +97,20 @@ async function readPublicCardByShortId(colRef, shortIdInput) {
  * Reads: 1 (customApp hit) or 2 (customApp miss -> profile fallback).
  */
 export async function resolveUserCard(uid) {
+  const cached = cardCache.get(uid);
+  if (fresh(cached, CARD_CACHE_MS)) return cached.value;
+
   const legacyCard = await readPublicCardByUid(uid, legacyCustomAppUser(uid));
-  if (legacyCard) return legacyCard;
+  if (legacyCard) return remember(cardCache, uid, legacyCard);
 
   const pubCard = await readPublicCardByUid(uid, refs.customAppUser(uid));
-  if (pubCard) return pubCard;
+  if (pubCard) return remember(cardCache, uid, pubCard);
 
   const profSnap = await getDoc(refs.profileMain(uid));
   if (profSnap.exists()) {
-    return publicCard(uid, profSnap.data(), "profile");
+    return remember(cardCache, uid, publicCard(uid, profSnap.data(), "profile"));
   }
-  return null; // deleted / nonexistent
+  return remember(cardCache, uid, null); // deleted / nonexistent
 }
 
 /**
@@ -94,6 +118,9 @@ export async function resolveUserCard(uid) {
  * Bounded with limit(); no realtime listener and no private profile read.
  */
 export async function loadPublicCards(max = 50) {
+  const cached = publicCardsCache.get(max);
+  if (fresh(cached, CARD_CACHE_MS)) return cached.value;
+
   const reads = await Promise.allSettled([
     getDocs(query(legacyCustomAppCol(), limit(max))),
     getDocs(query(refs.customAppCol(), limit(max))),
@@ -106,7 +133,7 @@ export async function loadPublicCards(max = 50) {
       if (card.uid && !byUid.has(card.uid)) byUid.set(card.uid, card);
     }
   }
-  return Array.from(byUid.values());
+  return remember(publicCardsCache, max, Array.from(byUid.values()));
 }
 
 /**
@@ -121,6 +148,9 @@ export async function loadPublicCards(max = 50) {
  * @returns { friends: [...], orphanUids: [...] }
  */
 export async function loadFriends(uid) {
+  const cached = friendsCache.get(uid);
+  if (fresh(cached, LIST_CACHE_MS)) return cached.value;
+
   const snap = await getDocs(refs.friendsCol(uid));
   const friends = [];
   const orphanUids = [];
@@ -154,7 +184,7 @@ export async function loadFriends(uid) {
     });
   });
 
-  return { friends, orphanUids };
+  return remember(friendsCache, uid, { friends, orphanUids });
 }
 
 /**
@@ -162,14 +192,18 @@ export async function loadFriends(uid) {
  * NOT a full-collection scan.
  */
 export async function findByShortId(shortIdInput) {
+  const key = String(shortIdInput || "").trim().toUpperCase();
+  const cached = shortIdCache.get(key);
+  if (fresh(cached, CARD_CACHE_MS)) return cached.value;
+
   const reads = await Promise.allSettled([
-    readPublicCardByShortId(legacyCustomAppCol(), shortIdInput),
-    readPublicCardByShortId(refs.customAppCol(), shortIdInput),
+    readPublicCardByShortId(legacyCustomAppCol(), key),
+    readPublicCardByShortId(refs.customAppCol(), key),
   ]);
   for (const res of reads) {
-    if (res.status === "fulfilled" && res.value) return res.value;
+    if (res.status === "fulfilled" && res.value) return remember(shortIdCache, key, res.value);
   }
-  return null;
+  return remember(shortIdCache, key, null);
 }
 
 /**
@@ -221,6 +255,9 @@ export async function addFriend(myUid, myCard, input) {
     avatar: myCard?.avatar ?? "",
   });
 
+  invalidateFriendReads(myUid);
+  invalidateFriendReads(targetUid);
+
   return targetUid;
 }
 
@@ -233,6 +270,7 @@ export async function cleanupOrphans(uid, orphanUids) {
   for (const fUid of orphanUids) {
     await deleteDoc(refs.friendDoc(uid, fUid));
   }
+  invalidateFriendReads(uid);
   return orphanUids.length;
 }
 

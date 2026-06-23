@@ -33,15 +33,29 @@ function defaultProfile(uid) {
   };
 }
 
+const PROFILE_CACHE_MS = 5 * 60_000;
+const profileCache = new Map();
+
+function fresh(entry) {
+  return entry && Date.now() - entry.at < PROFILE_CACHE_MS;
+}
+
+function remember(uid, profile) {
+  profileCache.set(uid, { at: Date.now(), profile });
+  return profile;
+}
+
 /**
  * Read the profile. If it doesn't exist, create an initial one and return it.
  * Reads: 1 (getDoc). Writes: 0 if it exists, 1 if it had to be created.
  */
 export async function loadOrCreateProfile(uid) {
+  const cached = profileCache.get(uid);
+  if (fresh(cached)) return cached.profile;
   const ref = refs.profileMain(uid);
   const snap = await getDoc(ref);
   if (snap.exists()) {
-    return { id: snap.id, ...snap.data() };
+    return remember(uid, { id: snap.id, ...snap.data() });
   }
   const initial = defaultProfile(uid);
   await setDoc(ref, {
@@ -51,7 +65,7 @@ export async function loadOrCreateProfile(uid) {
   });
   // Also seed the public card so the user is searchable/rankable from the start.
   await syncCustomApp(uid, initial);
-  return initial;
+  return remember(uid, initial);
 }
 
 /**
@@ -68,7 +82,7 @@ export async function saveProfile(uid, patch, current) {
 
   const merged = { ...current, ...patch };
   await syncCustomApp(uid, merged);
-  return merged;
+  return remember(uid, merged);
 }
 
 /**

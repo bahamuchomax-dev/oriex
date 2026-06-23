@@ -10,6 +10,34 @@ import {
 } from "firebase/firestore";
 import { refs } from "../../firebase/firestorePaths.js";
 
+const SHELF_CACHE_MS = 10 * 60_000;
+const LOG_CACHE_MS = 2 * 60_000;
+
+let shelfCache = { at: 0, value: null };
+const bookLogsCache = new Map();
+
+function fresh(entry, ttl) {
+  return entry && Date.now() - entry.at < ttl;
+}
+
+function rememberShelf(value) {
+  shelfCache = { at: Date.now(), value };
+  return value;
+}
+
+function rememberLog(key, value) {
+  bookLogsCache.set(key, { at: Date.now(), value });
+  return value;
+}
+
+function invalidateShelf() {
+  shelfCache = { at: 0, value: null };
+}
+
+function invalidateLogs() {
+  bookLogsCache.clear();
+}
+
 /* ------------------------------------------------------------------ *
  * Reads (only called when the books screen is open — never at login)
  * ------------------------------------------------------------------ */
@@ -19,8 +47,9 @@ import { refs } from "../../firebase/firestorePaths.js";
  * @returns array of { id, title, subject, level, ownerUid, ownerName, ... }
  */
 export async function loadBookShelf() {
+  if (fresh(shelfCache, SHELF_CACHE_MS)) return shelfCache.value;
   const snap = await getDocs(refs.bookShelfCol());
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  return rememberShelf(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
 }
 
 /**
@@ -44,12 +73,15 @@ export async function loadBookOptions() {
  * Reads: up to 100.
  */
 export async function loadBookLogsForBook(bookId) {
+  const cacheKey = `book:${bookId}`;
+  const cached = bookLogsCache.get(cacheKey);
+  if (fresh(cached, LOG_CACHE_MS)) return cached.value;
   const q = query(refs.bookLogsCol(), where("bookId", "==", bookId), limit(100));
   const snap = await getDocs(q);
   const logs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
   // newest first by studiedAt (string) then createdAt
   logs.sort((a, b) => String(b.studiedAt ?? "").localeCompare(String(a.studiedAt ?? "")));
-  return logs;
+  return rememberLog(cacheKey, logs);
 }
 
 /**
@@ -61,6 +93,9 @@ export async function loadBookLogsForBook(bookId) {
  */
 export async function loadBookLogs({ uid, limitCount = 50 } = {}) {
   const safeLimit = Math.min(Math.max(Number(limitCount) || 50, 1), 200);
+  const cacheKey = `recent:${uid || "all"}:${safeLimit}`;
+  const cached = bookLogsCache.get(cacheKey);
+  if (fresh(cached, LOG_CACHE_MS)) return cached.value;
   const fetchLimit = Math.min(Math.max(safeLimit * 3, safeLimit), 200);
   const q = uid
     ? query(refs.bookLogsCol(), where("uid", "==", uid), limit(fetchLimit))
@@ -68,7 +103,7 @@ export async function loadBookLogs({ uid, limitCount = 50 } = {}) {
   const snap = await getDocs(q);
   const logs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
   logs.sort((a, b) => bookLogDateMs(b) - bookLogDateMs(a));
-  return logs.slice(0, safeLimit);
+  return rememberLog(cacheKey, logs.slice(0, safeLimit));
 }
 
 /* ------------------------------------------------------------------ *
@@ -94,6 +129,7 @@ export async function addBook(data, owner) {
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
+  invalidateShelf();
   return bookId;
 }
 
@@ -116,6 +152,7 @@ export async function addBookLog(data, user) {
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
+  invalidateLogs();
 }
 
 /**
