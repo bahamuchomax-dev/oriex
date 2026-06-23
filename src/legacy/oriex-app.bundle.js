@@ -34363,967 +34363,3795 @@ var cg = {
     stage: 20,
     category: "化学"
   }],
-  fI = [{
-    en: "あはれ",
-    ja: "しみじみとした感動・情趣",
-    sentence: "春の花を見てあはれを感じた。",
-    stage: 1,
-    category: "古文"
-  }, {
-    en: "をかし",
-    ja: "趣深い・興味深い",
-    sentence: "この景色はをかしとぞ思ふ。",
-    stage: 1,
-    category: "古文"
-  }, {
-    en: "いみじ",
-    ja: "非常に・甚だしい・すごい",
-    sentence: "いみじく美しき人なり。",
-    stage: 1,
-    category: "古文"
-  }, {
-    en: "めでたし",
-    ja: "すばらしい・立派だ",
-    sentence: "めでたき歌を詠みたまへり。",
-    stage: 1,
-    category: "古文"
-  }, {
-    en: "あながち",
-    ja: "むりやり・強引に",
-    sentence: "あながちに頼みたまふ。",
-    stage: 1,
-    category: "古文"
-  }, {
-    en: "おぼし",
-    ja: "思われる（尊敬語）",
-    sentence: "帝はいかにおぼしめすか。",
-    stage: 1,
-    category: "古文"
-  }, {
-    en: "たまふ",
-    ja: "〜なさる（尊敬）／〜ください（謙譲）",
-    sentence: "早く来たまへ。",
-    stage: 1,
-    category: "古文"
-  }, {
-    en: "さぶらふ",
-    ja: "おそば近くに仕える・「ある」の丁寧語",
-    sentence: "御前にさぶらふ女房たち。",
-    stage: 1,
-    category: "古文"
-  }, {
-    en: "なほ",
-    ja: "やはり・相変わらず",
-    sentence: "なほ昔の恋しさは消えず。",
-    stage: 2,
-    category: "古文"
-  }, {
-    en: "やがて",
-    ja: "すぐに・そのまま",
-    sentence: "やがて立ち去りぬ。",
-    stage: 2,
-    category: "古文"
-  }, {
-    en: "かたじけなし",
-    ja: "恐れ多い・もったいない",
-    sentence: "かたじけなき御言葉なり。",
-    stage: 2,
-    category: "古文"
-  }, {
-    en: "あさまし",
-    ja: "驚きあきれる・嘆かわしい",
-    sentence: "あさましきことを聞きたり。",
-    stage: 2,
-    category: "古文"
-  }, {
-    en: "つきづきし",
-    ja: "似つかわしい・ふさわしい",
-    sentence: "つきづきしき装束にて参れ。",
-    stage: 2,
-    category: "古文"
-  }, {
-    en: "ゆかし",
-    ja: "見たい・聞きたい・知りたい",
-    sentence: "その歌のゆかしく思はる。",
-    stage: 2,
-    category: "古文"
-  }, {
-    en: "こころもとなし",
-    ja: "待ち遠しい・不安だ",
-    sentence: "返事のなきがこころもとなし。",
-    stage: 2,
-    category: "古文"
-  }, {
-    en: "むつかし",
-    ja: "気味が悪い・やっかいだ",
-    sentence: "むつかしき病を得たり。",
-    stage: 2,
-    category: "古文"
-  }, {
-    en: "つれなし",
-    ja: "平然としている・冷淡だ",
-    sentence: "つれなく返事をしたまふ。",
-    stage: 3,
-    category: "古文"
-  }, {
-    en: "ねんごろ",
-    ja: "丁寧・親切・熱心",
-    sentence: "ねんごろに教へたまへり。",
-    stage: 3,
-    category: "古文"
-  }, {
-    en: "ありがたし",
-    ja: "めったにない・珍しい",
-    sentence: "ありがたき幸ひなり。",
-    stage: 3,
-    category: "古文"
-  }, {
-    en: "あいなし",
-    ja: "つまらない・気にくわない",
-    sentence: "あいなきことを言ひける。",
-    stage: 3,
-    category: "古文"
-  }, {
-    en: "なまめかし",
-    ja: "優雅だ・上品だ",
-    sentence: "なまめかしき姿にて現れぬ。",
-    stage: 3,
-    category: "古文"
-  }, {
-    en: "けしき",
-    ja: "様子・表情・気配",
-    sentence: "彼のけしきを見て驚きたり。",
-    stage: 3,
-    category: "古文"
-  }, {
-    en: "はかなし",
-    ja: "はかない・頼りない・つまらない",
-    sentence: "はかなき命を嘆きつ。",
-    stage: 3,
-    category: "古文"
-  }, {
-    en: "まめやか",
-    ja: "誠実・真剣・真心のある",
-    sentence: "まめやかに仕へたまふ。",
-    stage: 3,
-    category: "古文"
-  }, {
-    en: "おろかなり",
-    ja: "いい加減だ・なおざりだ",
-    sentence: "おろかにも思ひたまはず。",
-    stage: 4,
-    category: "古文"
-  }, {
-    en: "すさまじ",
-    ja: "興ざめだ・ひどい",
-    sentence: "すさまじきありさまなり。",
-    stage: 4,
-    category: "古文"
-  }, {
-    en: "さながら",
-    ja: "そのまま・すべて",
-    sentence: "さながら夢のごとし。",
-    stage: 4,
-    category: "古文"
-  }, {
-    en: "あだなり",
-    ja: "浮気だ・誠実でない・はかない",
-    sentence: "あだなる人の心かな。",
-    stage: 4,
-    category: "古文"
-  }, {
-    en: "いかで",
-    ja: "どうにかして・なぜ・どうして",
-    sentence: "いかでこの山を越えむ。",
-    stage: 4,
-    category: "古文"
-  }, {
-    en: "かしこし",
-    ja: "賢い・恐れ多い・ありがたい",
-    sentence: "かしこき御心なり。",
-    stage: 4,
-    category: "古文"
-  }, {
-    en: "らうたし",
-    ja: "かわいい・いとおしい",
-    sentence: "らうたき子の顔を見る。",
-    stage: 4,
-    category: "古文"
-  }, {
-    en: "みそかなり",
-    ja: "ひそかに・こっそり",
-    sentence: "みそかに文を送りけり。",
-    stage: 4,
-    category: "古文"
-  }, {
-    en: "あぢきなし",
-    ja: "つまらない・どうにもならない",
-    sentence: "あぢきなき世を嘆きたまふ。",
-    stage: 5,
-    category: "古文"
-  }, {
-    en: "おぼろけ",
-    ja: "並々ではない・普通でない",
-    sentence: "おぼろけの仲にはあらず。",
-    stage: 5,
-    category: "古文"
-  }, {
-    en: "いとほし",
-    ja: "かわいそう・気の毒・いとしい",
-    sentence: "いとほしき御様なり。",
-    stage: 5,
-    category: "古文"
-  }, {
-    en: "やをら",
-    ja: "静かに・そっと・ゆっくり",
-    sentence: "やをら立ちて出でぬ。",
-    stage: 5,
-    category: "古文"
-  }, {
-    en: "をりふし",
-    ja: "折々・ちょうどその時",
-    sentence: "をりふし風の吹きける。",
-    stage: 5,
-    category: "古文"
-  }, {
-    en: "おどろく",
-    ja: "目が覚める・気づく・驚く",
-    sentence: "暁におどろきて歌を詠む。",
-    stage: 5,
-    category: "古文"
-  }, {
-    en: "やんごとなし",
-    ja: "高貴だ・並並でない・捨てておけない",
-    sentence: "やんごとなき御方なり。",
-    stage: 5,
-    category: "古文"
-  }, {
-    en: "さすがに",
-    ja: "そうはいってもやはり",
-    sentence: "さすがに捨てがたく思ふ。",
-    stage: 5,
-    category: "古文"
-  }, {
-    en: "あながち",
-    ja: "強引に・むやみに・必ずしも",
-    sentence: "あながち無理とは言へぬ。",
-    stage: 6,
-    category: "古文"
-  }, {
-    en: "いとど",
-    ja: "いっそう・ますます",
-    sentence: "いとど悲しみが増した。",
-    stage: 6,
-    category: "古文"
-  }, {
-    en: "うたて",
-    ja: "情けない・嘆かわしい・不快だ",
-    sentence: "うたてある様子に心が痛む。",
-    stage: 6,
-    category: "古文"
-  }, {
-    en: "おぼつかなし",
-    ja: "はっきりしない・気がかりだ",
-    sentence: "消息がなくておぼつかなし。",
-    stage: 6,
-    category: "古文"
-  }, {
-    en: "かたはらいたし",
-    ja: "見苦しい・気の毒だ・そばにいて辛い",
-    sentence: "その振る舞いはかたはらいたし。",
-    stage: 6,
-    category: "古文"
-  }, {
-    en: "くちをし",
-    ja: "残念だ・情けない",
-    sentence: "叶はぬ恋をくちをしと嘆く。",
-    stage: 6,
-    category: "古文"
-  }, {
-    en: "こころもとなし",
-    ja: "待ち遠しい・不安だ・頼りない",
-    sentence: "返事が来ぬままこころもとなし。",
-    stage: 6,
-    category: "古文"
-  }, {
-    en: "さうざうし",
-    ja: "物足りない・寂しい",
-    sentence: "彼が去ってさうざうしき夜だ。",
-    stage: 6,
-    category: "古文"
-  }, {
-    en: "すさまじ",
-    ja: "興ざめだ・殺風景だ・凄まじい",
-    sentence: "雪の朝のすさまじき景色よ。",
-    stage: 7,
-    category: "古文"
-  }, {
-    en: "つれなし",
-    ja: "冷淡だ・平然としている",
-    sentence: "つれなき顔で去っていった。",
-    stage: 7,
-    category: "古文"
-  }, {
-    en: "ながむ",
-    ja: "物思いにふけりながら眺める",
-    sentence: "秋の空をながめて涙した。",
-    stage: 7,
-    category: "古文"
-  }, {
-    en: "なまめかし",
-    ja: "優雅だ・色気がある・みずみずしい",
-    sentence: "なまめかしき姿の姫君だ。",
-    stage: 7,
-    category: "古文"
-  }, {
-    en: "にほふ",
-    ja: "美しく輝く・香る・映える",
-    sentence: "桜がにほひわたる春の朝。",
-    stage: 7,
-    category: "古文"
-  }, {
-    en: "ねんごろ",
-    ja: "丁寧だ・親切だ・熱心だ",
-    sentence: "ねんごろに世話をしてくれた。",
-    stage: 7,
-    category: "古文"
-  }, {
-    en: "はかなし",
-    ja: "頼りない・あっけない・無常だ",
-    sentence: "はかなき夢のごとき一生だ。",
-    stage: 7,
-    category: "古文"
-  }, {
-    en: "ひがひがし",
-    ja: "偏っている・道理に反する",
-    sentence: "ひがひがしき意見に従えない。",
-    stage: 7,
-    category: "古文"
-  }, {
-    en: "まめなり",
-    ja: "誠実だ・真面目だ・実用的だ",
-    sentence: "まめなる人を夫に選んだ。",
-    stage: 8,
-    category: "古文"
-  }, {
-    en: "むつかし",
-    ja: "うっとうしい・気難しい・複雑だ",
-    sentence: "むつかしき御心の君なり。",
-    stage: 8,
-    category: "古文"
-  }, {
-    en: "ゆかし",
-    ja: "見たい・聞きたい・知りたい",
-    sentence: "奥の部屋がゆかしく思はれた。",
-    stage: 8,
-    category: "古文"
-  }, {
-    en: "らうたし",
-    ja: "かわいらしい・いとしい",
-    sentence: "らうたき子の寝顔を眺めた。",
-    stage: 8,
-    category: "古文"
-  }, {
-    en: "わびし",
-    ja: "つらい・貧しい・落ちぶれた",
-    sentence: "わびしき身の上を嘆いた。",
-    stage: 8,
-    category: "古文"
-  }, {
-    en: "いかで",
-    ja: "どうして・なんとかして",
-    sentence: "いかで会ひたき思ひが募る。",
-    stage: 8,
-    category: "古文"
-  }, {
-    en: "いかに",
-    ja: "どのように・どれほど",
-    sentence: "いかにかなしきことぞと思ふ。",
-    stage: 8,
-    category: "古文"
-  }, {
-    en: "いさ",
-    ja: "さあどうだろう・知らない（打消の応答）",
-    sentence: "いさ、知らずとぞ答へける。",
-    stage: 8,
-    category: "古文"
-  }, {
-    en: "いみじくも",
-    ja: "非常にうまく・的確に",
-    sentence: "いみじくも言ひ当てたり。",
-    stage: 9,
-    category: "古文"
-  }, {
-    en: "かく",
-    ja: "このように・こうして",
-    sentence: "かくのごとき世の中なり。",
-    stage: 9,
-    category: "古文"
-  }, {
-    en: "かたち",
-    ja: "容貌・姿・形",
-    sentence: "かたちよき人は心もよしと言ふ。",
-    stage: 9,
-    category: "古文"
-  }, {
-    en: "きはめて",
-    ja: "非常に・極めて",
-    sentence: "きはめて優れた歌人なり。",
-    stage: 9,
-    category: "古文"
-  }, {
-    en: "げに",
-    ja: "なるほど・本当に・いかにも",
-    sentence: "げに美しき月夜かな。",
-    stage: 9,
-    category: "古文"
-  }, {
-    en: "こそ",
-    ja: "〜は（強調の係助詞）〜已然形で結ぶ",
-    sentence: "命こそ惜しけれ、名をば惜しまじ。",
-    stage: 9,
-    category: "古文"
-  }, {
-    en: "さ",
-    ja: "そのように・そう・その程度",
-    sentence: "さばかりの人もなし。",
-    stage: 9,
-    category: "古文"
-  }, {
-    en: "しか",
-    ja: "そのように・そうだ（過去の確認）",
-    sentence: "しかありけりと語り伝へた。",
-    stage: 9,
-    category: "古文"
-  }, {
-    en: "すなはち",
-    ja: "すぐに・そのまま・つまり",
-    sentence: "すなはちその場を去りにけり。",
-    stage: 10,
-    category: "古文"
-  }, {
-    en: "たまふ",
-    ja: "〜なさる・〜くださる（尊敬の補助動詞）",
-    sentence: "大君かくのたまひけり。",
-    stage: 10,
-    category: "古文"
-  }, {
-    en: "つゆ",
-    ja: "少しも〜ない（下に打消を伴う）",
-    sentence: "つゆ疑ひもなく信じた。",
-    stage: 10,
-    category: "古文"
-  }, {
-    en: "なほ",
-    ja: "やはり・なおも・さらに",
-    sentence: "なほ山里に住みたいと思ふ。",
-    stage: 10,
-    category: "古文"
-  }, {
-    en: "のたまふ",
-    ja: "おっしゃる（言ふの尊敬語）",
-    sentence: "帝かくのたまひけり。",
-    stage: 10,
-    category: "古文"
-  }, {
-    en: "はた",
-    ja: "また・やはり・そのうえ",
-    sentence: "はたかかる事もありけりと思ふ。",
-    stage: 10,
-    category: "古文"
-  }, {
-    en: "ほど",
-    ja: "程度・時間・距離・〜の間に",
-    sentence: "しばしのほどに事が変はりぬ。",
-    stage: 10,
-    category: "古文"
-  }, {
-    en: "まさに",
-    ja: "今まさに・ちょうど・正しく",
-    sentence: "まさに出でんとするところなり。",
-    stage: 10,
-    category: "古文"
-  }, {
-    en: "まし",
-    ja: "〜だろうに（反実仮想の助動詞）",
-    sentence: "知らずともあらましものを。",
-    stage: 11,
-    category: "古文"
-  }, {
-    en: "めり",
-    ja: "〜のようだ・〜らしい（視覚的推量）",
-    sentence: "あの方は悲しめりと見えた。",
-    stage: 11,
-    category: "古文"
-  }, {
-    en: "やうやう",
-    ja: "だんだんと・しだいに",
-    sentence: "夜やうやう明けてゆく空よ。",
-    stage: 11,
-    category: "古文"
-  }, {
-    en: "やがて",
-    ja: "すぐに・そのまま・ほどなく",
-    sentence: "やがて都に帰りにけり。",
-    stage: 11,
-    category: "古文"
-  }, {
-    en: "よし",
-    ja: "由来・手段・方法・知らせ・よい",
-    sentence: "そのよし申し上げたり。",
-    stage: 11,
-    category: "古文"
-  }, {
-    en: "らむ",
-    ja: "〜ているだろう（現在推量の助動詞）",
-    sentence: "今ごろ何をしてゐるらむ。",
-    stage: 11,
-    category: "古文"
-  }, {
-    en: "をり",
-    ja: "〜している（存在・継続の補助動詞）",
-    sentence: "ものを思ひをりける夜半に。",
-    stage: 11,
-    category: "古文"
-  }, {
-    en: "あはれなり",
-    ja: "しみじみとした情趣がある・かわいそうだ",
-    sentence: "夕暮れの空のあはれなる色よ。",
-    stage: 11,
-    category: "古文"
-  }, {
-    en: "けり",
-    ja: "〜た・〜けり（過去・詠嘆の助動詞）",
-    sentence: "見れば夢にてありけり。",
-    stage: 12,
-    category: "古文"
-  }, {
-    en: "ぬ",
-    ja: "〜た・〜てしまった（完了の助動詞）",
-    sentence: "花はすでに散りぬ。",
-    stage: 12,
-    category: "古文"
-  }, {
-    en: "べし",
-    ja: "〜はずだ・〜すべきだ（推量・義務）",
-    sentence: "かくあるべき定めなり。",
-    stage: 12,
-    category: "古文"
-  }, {
-    en: "む",
-    ja: "〜だろう・〜しよう（推量・意志）",
-    sentence: "明日は出で立たむとぞ思ふ。",
-    stage: 12,
-    category: "古文"
-  }, {
-    en: "き",
-    ja: "〜た（過去の直接経験・助動詞）",
-    sentence: "昔かくありきと語り伝へた。",
-    stage: 12,
-    category: "古文"
-  }, {
-    en: "なり（断定）",
-    ja: "〜だ・〜である（断定の助動詞）",
-    sentence: "これは夢なりけりと思ひぬ。",
-    stage: 12,
-    category: "古文"
-  }, {
-    en: "なり（推量）",
-    ja: "〜のようだ・〜らしい（伝聞・推量）",
-    sentence: "遠くにて鐘の音するなり。",
-    stage: 12,
-    category: "古文"
-  }, {
-    en: "たり",
-    ja: "〜ている・〜た（完了・存続の助動詞）",
-    sentence: "鎧を着たる武者が立てり。",
-    stage: 12,
-    category: "古文"
-  }, {
-    en: "係り結びの法則",
-    ja: "ぞ・なむ・や・かは連体形、こそは已然形で結ぶ",
-    sentence: "花ぞ咲きける（ぞ→連体形「ける」で結ぶ）。",
-    stage: 13,
-    category: "古文"
-  }, {
-    en: "敬語（尊敬）",
-    ja: "動作をする人を高める敬語",
-    sentence: "大臣のたまひけり（たまふ＝尊敬の補助動詞）。",
-    stage: 13,
-    category: "古文"
-  }, {
-    en: "敬語（謙譲）",
-    ja: "動作を受ける人を高める敬語",
-    sentence: "御前に参りはべりぬ（参る・はべり＝謙譲語）。",
-    stage: 13,
-    category: "古文"
-  }, {
-    en: "敬語（丁寧）",
-    ja: "聞き手を敬う敬語（はべり・候）",
-    sentence: "かくなむはべりと申しける。",
-    stage: 13,
-    category: "古文"
-  }, {
-    en: "二方向の敬語",
-    ja: "尊敬と謙譲を同時に使う表現",
-    sentence: "殿が姫に申したまひけり（謙譲＋尊敬）。",
-    stage: 13,
-    category: "古文"
-  }, {
-    en: "和歌の枕詞",
-    ja: "特定の語に付く五音の修飾語",
-    sentence: "「あしびきの」は山にかかる枕詞なり。",
-    stage: 13,
-    category: "古文"
-  }, {
-    en: "掛詞",
-    ja: "一語に二つの意味を持たせる修辞法",
-    sentence: "「松」に「待つ」を掛けた歌なり。",
-    stage: 13,
-    category: "古文"
-  }, {
-    en: "縁語",
-    ja: "歌中で意味的に関連する語を使う修辞",
-    sentence: "「海」「波」「浜」は縁語として用ゐらる。",
-    stage: 13,
-    category: "古文"
-  }, {
-    en: "本歌取り",
-    ja: "有名な歌の語句を取り込む技法",
-    sentence: "本歌取りにより古歌の趣を新たな歌に活かした。",
-    stage: 14,
-    category: "古文"
-  }, {
-    en: "体言止め",
-    ja: "和歌の末尾を名詞で止める技法",
-    sentence: "余情を残すために体言止めを用ゐた歌だ。",
-    stage: 14,
-    category: "古文"
-  }, {
-    en: "序詞",
-    ja: "特定の語を導くための長い枕詞的表現",
-    sentence: "「あしびきの山鳥の尾の」は序詞として「ながし」を導く。",
-    stage: 14,
-    category: "古文"
-  }, {
-    en: "見立て",
-    ja: "あるものを別のものに見なす修辞",
-    sentence: "雪を白梅に見立てた歌が美しい。",
-    stage: 14,
-    category: "古文"
-  }, {
-    en: "物語文学",
-    ja: "平安時代の散文文学（源氏物語等）",
-    sentence: "源氏物語は世界最古の長編物語文学といはれる。",
-    stage: 14,
-    category: "古文"
-  }, {
-    en: "日記文学",
-    ja: "平安女流文学の日記形式作品群",
-    sentence: "土佐日記は日本最古の日記文学とされる。",
-    stage: 14,
-    category: "古文"
-  }, {
-    en: "随筆文学",
-    ja: "枕草子・徒然草等の随想的文学",
-    sentence: "枕草子は清少納言の鋭い感性による随筆文学の傑作だ。",
-    stage: 14,
-    category: "古文"
-  }, {
-    en: "説話文学",
-    ja: "今昔物語集等の説話を集めた作品",
-    sentence: "今昔物語集は千余りの説話を集めた説話文学の大作だ。",
-    stage: 14,
-    category: "古文"
-  }, {
-    en: "歌物語",
-    ja: "和歌を中心とした物語（伊勢物語等）",
-    sentence: "伊勢物語は在原業平を思はせる男の歌物語だ。",
-    stage: 15,
-    category: "古文"
-  }, {
-    en: "軍記物語",
-    ja: "戦争を題材にした物語（平家物語等）",
-    sentence: "平家物語は琵琶法師が語り広めた軍記物語だ。",
-    stage: 15,
-    category: "古文"
-  }, {
-    en: "歌論",
-    ja: "和歌の理念・技法を論じた書",
-    sentence: "古今集の仮名序は最初期の歌論として名高い。",
-    stage: 15,
-    category: "古文"
-  }, {
-    en: "勅撰和歌集",
-    ja: "天皇・上皇の命で編纂された和歌集",
-    sentence: "古今和歌集は最初の勅撰和歌集として重要だ。",
-    stage: 15,
-    category: "古文"
-  }, {
-    en: "八代集",
-    ja: "古今集から新古今集までの8つの勅撰集",
-    sentence: "八代集はいづれも王朝文学の精粋を示す。",
-    stage: 15,
-    category: "古文"
-  }, {
-    en: "万葉集",
-    ja: "現存最古の和歌集（4500首余り）",
-    sentence: "万葉集には天皇から庶民まで多様な歌が収められる。",
-    stage: 15,
-    category: "古文"
-  }, {
-    en: "連歌",
-    ja: "複数人が句を連ねていく文学形式",
-    sentence: "連歌は室町時代に最盛期を迎えた共同詩の形式だ。",
-    stage: 15,
-    category: "古文"
-  }, {
-    en: "俳諧",
-    ja: "連歌から派生した短詩文学（俳句の前身）",
-    sentence: "松尾芭蕉は俳諧を文学の域まで高めた俳聖とされる。",
-    stage: 15,
-    category: "古文"
-  }, {
-    en: "無常観",
-    ja: "すべては移ろいゆくという仏教的世界観",
-    sentence: "方丈記は無常観を基調とした鴨長明の名作だ。",
-    stage: 16,
-    category: "古文"
-  }, {
-    en: "もののあはれ",
-    ja: "物事に触れて感じるしみじみとした情感",
-    sentence: "源氏物語の根底には「もののあはれ」が流れる。",
-    stage: 16,
-    category: "古文"
-  }, {
-    en: "をかし",
-    ja: "知性的・清少納言的美意識（趣深い）",
-    sentence: "枕草子には「をかし」の美意識が随所に現れる。",
-    stage: 16,
-    category: "古文"
-  }, {
-    en: "幽玄",
-    ja: "能・連歌に見られる深遠な美的理念",
-    sentence: "世阿弥は能の理念として幽玄を重視した。",
-    stage: 16,
-    category: "古文"
-  }, {
-    en: "侘び・寂び",
-    ja: "茶道・俳諧における枯淡の美意識",
-    sentence: "松尾芭蕉の俳句には侘び・寂びの精神が宿る。",
-    stage: 16,
-    category: "古文"
-  }, {
-    en: "仮名遣い",
-    ja: "歴史的仮名遣いと現代仮名遣いの対応",
-    sentence: "「ゐ」「ゑ」「を」は歴史的仮名遣いで現代語に直して読む。",
-    stage: 16,
-    category: "古文"
-  }, {
-    en: "活用の種類",
-    ja: "動詞の語形変化のパターン（四段・二段等）",
-    sentence: "「書く」は四段活用、「起く」は上二段活用だ。",
-    stage: 16,
-    category: "古文"
-  }, {
-    en: "助動詞の識別",
-    ja: "同形の助動詞を文脈から区別する読解技法",
-    sentence: "「なり」が断定か推量かを文脈と接続で識別する。",
-    stage: 16,
-    category: "古文"
-  }, {
-    en: "竹取物語",
-    ja: "かぐや姫の物語・最古の仮名物語",
-    sentence: "竹取物語はかぐや姫が月に帰る日本最古の仮名物語だ。",
-    stage: 17,
-    category: "古文"
-  }, {
-    en: "源氏物語",
-    ja: "紫式部作・世界最古の長編小説",
-    sentence: "源氏物語は光源氏の生涯を描く紫式部の大長編だ。",
-    stage: 17,
-    category: "古文"
-  }, {
-    en: "枕草子",
-    ja: "清少納言による随筆・をかしの文学",
-    sentence: "「春はあけぼの」で始まる枕草子は平安の名随筆だ。",
-    stage: 17,
-    category: "古文"
-  }, {
-    en: "方丈記",
-    ja: "鴨長明作・無常を主題とした随筆",
-    sentence: "「ゆく河の流れは絶えずして」で始まる方丈記は名文だ。",
-    stage: 17,
-    category: "古文"
-  }, {
-    en: "徒然草",
-    ja: "兼好法師作・無常観の随筆",
-    sentence: "「つれづれなるままに」で始まる徒然草は中世随筆の代表作だ。",
-    stage: 17,
-    category: "古文"
-  }, {
-    en: "平家物語",
-    ja: "平氏の盛衰を描く軍記物語",
-    sentence: "「祇園精舎の鐘の声」で始まる平家物語は有名な軍記物語だ。",
-    stage: 17,
-    category: "古文"
-  }, {
-    en: "奥の細道",
-    ja: "松尾芭蕉の俳諧紀行文",
-    sentence: "「月日は百代の過客にして」で始まる奥の細道は紀行文学の傑作だ。",
-    stage: 17,
-    category: "古文"
-  }, {
-    en: "古今和歌集",
-    ja: "紀貫之ら撰の最初の勅撰和歌集",
-    sentence: "古今和歌集の仮名序は紀貫之が書いた歌論の名文だ。",
-    stage: 17,
-    category: "古文"
-  }, {
-    en: "土佐日記",
-    ja: "紀貫之が女性に仮託した最古の日記文学",
-    sentence: "土佐日記は男性が女性のふりをして書いた最古の日記だ。",
-    stage: 18,
-    category: "古文"
-  }, {
-    en: "蜻蛉日記",
-    ja: "藤原道綱母による最初の女流日記",
-    sentence: "蜻蛉日記は夫の不実を嘆く女性の心情を描く。",
-    stage: 18,
-    category: "古文"
-  }, {
-    en: "紫式部日記",
-    ja: "源氏物語作者による宮廷生活の記録",
-    sentence: "紫式部日記には宮廷の様子と作者の内省が記される。",
-    stage: 18,
-    category: "古文"
-  }, {
-    en: "更級日記",
-    ja: "菅原孝標女の回想的日記",
-    sentence: "更級日記には源氏物語への憧れが生き生きと描かれる。",
-    stage: 18,
-    category: "古文"
-  }, {
-    en: "伊勢物語",
-    ja: "在原業平を思わせる男の歌物語",
-    sentence: "伊勢物語は百二十五段からなる最初の歌物語だ。",
-    stage: 18,
-    category: "古文"
-  }, {
-    en: "大和物語",
-    ja: "平安中期の短編歌物語集",
-    sentence: "大和物語には様々な人物の恋と別れが描かれる。",
-    stage: 18,
-    category: "古文"
-  }, {
-    en: "宇治拾遺物語",
-    ja: "鎌倉時代の説話集",
-    sentence: "宇治拾遺物語には笑える話から感動的な話まで収録される。",
-    stage: 18,
-    category: "古文"
-  }, {
-    en: "今昔物語集",
-    ja: "平安末期の大説話集",
-    sentence: "今昔物語集は「今は昔」で始まる千余りの説話を集める。",
-    stage: 18,
-    category: "古文"
-  }, {
-    en: "能",
-    ja: "世阿弥が大成した仮面音楽劇",
-    sentence: "能は幽玄の美を体現する日本の伝統芸能だ。",
-    stage: 19,
-    category: "古文"
-  }, {
-    en: "狂言",
-    ja: "能と交互に演じられる喜劇的芸能",
-    sentence: "狂言は日常の出来事を笑いで描く庶民的な芸能だ。",
-    stage: 19,
-    category: "古文"
-  }, {
-    en: "歌舞伎",
-    ja: "江戸時代に発達した総合芸能",
-    sentence: "歌舞伎は女形や見得など独特の様式美を持つ。",
-    stage: 19,
-    category: "古文"
-  }, {
-    en: "近松門左衛門",
-    ja: "元禄期の浄瑠璃・歌舞伎作者",
-    sentence: "近松門左衛門は「曽根崎心中」など情話で名高い。",
-    stage: 19,
-    category: "古文"
-  }, {
-    en: "井原西鶴",
-    ja: "元禄期の浮世草子・俳諧師",
-    sentence: "井原西鶴は好色一代男など浮世草子で名を馳せた。",
-    stage: 19,
-    category: "古文"
-  }, {
-    en: "松尾芭蕉",
-    ja: "江戸前期・俳諧の芸術的完成者",
-    sentence: "松尾芭蕉は「古池や蛙飛び込む水の音」で有名な俳聖だ。",
-    stage: 19,
-    category: "古文"
-  }, {
-    en: "与謝蕪村",
-    ja: "江戸中期の俳人・画家",
-    sentence: "与謝蕪村は絵画的で情景豊かな俳句を多く詠んだ。",
-    stage: 19,
-    category: "古文"
-  }, {
-    en: "小林一茶",
-    ja: "江戸後期・庶民的情感の俳人",
-    sentence: "小林一茶の俳句は弱いものへの愛情にあふれている。",
-    stage: 19,
-    category: "古文"
-  }, {
-    en: "本居宣長",
-    ja: "江戸期の国学者・もののあはれ論",
-    sentence: "本居宣長は源氏物語の本質を「もののあはれ」と論じた。",
-    stage: 20,
-    category: "古文"
-  }, {
-    en: "契沖",
-    ja: "万葉集研究の先駆けとなった僧侶",
-    sentence: "契沖は万葉代匠記で万葉集の注釈に大きな業績を残した。",
-    stage: 20,
-    category: "古文"
-  }, {
-    en: "賀茂真淵",
-    ja: "万葉集・古道を研究した国学者",
-    sentence: "賀茂真淵は万葉集の雄大な精神を称え研究した。",
-    stage: 20,
-    category: "古文"
-  }, {
-    en: "平田篤胤",
-    ja: "復古神道を唱えた後期国学者",
-    sentence: "平田篤胤は古代日本の神道精神を復興しようとした。",
-    stage: 20,
-    category: "古文"
-  }, {
-    en: "古事記",
-    ja: "現存最古の歴史書・神話集",
-    sentence: "古事記は太安万侶が撰録した日本最古の歴史書だ。",
-    stage: 20,
-    category: "古文"
-  }, {
-    en: "日本書紀",
-    ja: "養老4年成立の国家的正史",
-    sentence: "日本書紀は漢文体で書かれた日本初の勅撰正史だ。",
-    stage: 20,
-    category: "古文"
-  }, {
-    en: "風土記",
-    ja: "諸国の地誌・説話を記した地方誌",
-    sentence: "出雲風土記は現存する数少ない完本の風土記だ。",
-    stage: 20,
-    category: "古文"
-  }, {
-    en: "万葉仮名",
-    ja: "漢字の音訓を借りて日本語を書く表記法",
-    sentence: "万葉集は万葉仮名で書かれ後の仮名文字の基礎となった。",
-    stage: 20,
-    category: "古文"
-  }],
+  fI = [
+    {
+      "en": "あいなし",
+      "ja": "あいなし",
+      "sentence": "",
+      "stage": 1,
+      "category": "古文"
+    },
+    {
+      "en": "あからさまなり",
+      "ja": "あからさまなり",
+      "sentence": "",
+      "stage": 1,
+      "category": "古文"
+    },
+    {
+      "en": "あさまし",
+      "ja": "あさまし",
+      "sentence": "",
+      "stage": 1,
+      "category": "古文"
+    },
+    {
+      "en": "あした",
+      "ja": "あした",
+      "sentence": "",
+      "stage": 1,
+      "category": "古文"
+    },
+    {
+      "en": "あだなり",
+      "ja": "あだなり",
+      "sentence": "",
+      "stage": 1,
+      "category": "古文"
+    },
+    {
+      "en": "あぢきなし",
+      "ja": "あぢきなし",
+      "sentence": "",
+      "stage": 1,
+      "category": "古文"
+    },
+    {
+      "en": "あてなり",
+      "ja": "あてなり",
+      "sentence": "",
+      "stage": 1,
+      "category": "古文"
+    },
+    {
+      "en": "あながちなり",
+      "ja": "あながちなり",
+      "sentence": "",
+      "stage": 1,
+      "category": "古文"
+    },
+    {
+      "en": "あはれなり",
+      "ja": "あはれなり",
+      "sentence": "",
+      "stage": 2,
+      "category": "古文"
+    },
+    {
+      "en": "あまた",
+      "ja": "あまた",
+      "sentence": "",
+      "stage": 2,
+      "category": "古文"
+    },
+    {
+      "en": "あやし",
+      "ja": "あやし",
+      "sentence": "",
+      "stage": 2,
+      "category": "古文"
+    },
+    {
+      "en": "あらまし",
+      "ja": "あらまし",
+      "sentence": "",
+      "stage": 2,
+      "category": "古文"
+    },
+    {
+      "en": "ありがたし",
+      "ja": "ありがたし",
+      "sentence": "",
+      "stage": 2,
+      "category": "古文"
+    },
+    {
+      "en": "ありく",
+      "ja": "ありく",
+      "sentence": "",
+      "stage": 2,
+      "category": "古文"
+    },
+    {
+      "en": "いかが",
+      "ja": "いかが",
+      "sentence": "",
+      "stage": 2,
+      "category": "古文"
+    },
+    {
+      "en": "いかで",
+      "ja": "いかで",
+      "sentence": "",
+      "stage": 2,
+      "category": "古文"
+    },
+    {
+      "en": "いかでか",
+      "ja": "いかでか",
+      "sentence": "",
+      "stage": 3,
+      "category": "古文"
+    },
+    {
+      "en": "いかばかり",
+      "ja": "いかばかり",
+      "sentence": "",
+      "stage": 3,
+      "category": "古文"
+    },
+    {
+      "en": "いかめし",
+      "ja": "いかめし",
+      "sentence": "",
+      "stage": 3,
+      "category": "古文"
+    },
+    {
+      "en": "いぎたなし",
+      "ja": "いぎたなし",
+      "sentence": "",
+      "stage": 3,
+      "category": "古文"
+    },
+    {
+      "en": "いさ",
+      "ja": "いさ",
+      "sentence": "",
+      "stage": 3,
+      "category": "古文"
+    },
+    {
+      "en": "いざ",
+      "ja": "いざ",
+      "sentence": "",
+      "stage": 3,
+      "category": "古文"
+    },
+    {
+      "en": "いそぎ",
+      "ja": "いそぎ",
+      "sentence": "",
+      "stage": 3,
+      "category": "古文"
+    },
+    {
+      "en": "いたし",
+      "ja": "いたし",
+      "sentence": "",
+      "stage": 3,
+      "category": "古文"
+    },
+    {
+      "en": "いたづらなり",
+      "ja": "いたづらなり",
+      "sentence": "",
+      "stage": 4,
+      "category": "古文"
+    },
+    {
+      "en": "いつしか",
+      "ja": "いつしか",
+      "sentence": "",
+      "stage": 4,
+      "category": "古文"
+    },
+    {
+      "en": "いと",
+      "ja": "いと",
+      "sentence": "",
+      "stage": 4,
+      "category": "古文"
+    },
+    {
+      "en": "いとど",
+      "ja": "いとど",
+      "sentence": "",
+      "stage": 4,
+      "category": "古文"
+    },
+    {
+      "en": "いとほし",
+      "ja": "いとほし",
+      "sentence": "",
+      "stage": 4,
+      "category": "古文"
+    },
+    {
+      "en": "いはけなし",
+      "ja": "いはけなし",
+      "sentence": "",
+      "stage": 4,
+      "category": "古文"
+    },
+    {
+      "en": "いぶかし",
+      "ja": "いぶかし",
+      "sentence": "",
+      "stage": 4,
+      "category": "古文"
+    },
+    {
+      "en": "いふかひなし",
+      "ja": "いふかひなし",
+      "sentence": "",
+      "stage": 4,
+      "category": "古文"
+    },
+    {
+      "en": "いみじ",
+      "ja": "いみじ",
+      "sentence": "",
+      "stage": 5,
+      "category": "古文"
+    },
+    {
+      "en": "いらふ",
+      "ja": "いらふ",
+      "sentence": "",
+      "stage": 5,
+      "category": "古文"
+    },
+    {
+      "en": "うし",
+      "ja": "うし",
+      "sentence": "",
+      "stage": 5,
+      "category": "古文"
+    },
+    {
+      "en": "うしろめたし",
+      "ja": "うしろめたし",
+      "sentence": "",
+      "stage": 5,
+      "category": "古文"
+    },
+    {
+      "en": "うたて",
+      "ja": "うたて",
+      "sentence": "",
+      "stage": 5,
+      "category": "古文"
+    },
+    {
+      "en": "うつくし",
+      "ja": "うつくし",
+      "sentence": "",
+      "stage": 5,
+      "category": "古文"
+    },
+    {
+      "en": "うつつ",
+      "ja": "うつつ",
+      "sentence": "",
+      "stage": 5,
+      "category": "古文"
+    },
+    {
+      "en": "うるはし",
+      "ja": "うるはし",
+      "sentence": "",
+      "stage": 5,
+      "category": "古文"
+    },
+    {
+      "en": "え",
+      "ja": "え",
+      "sentence": "",
+      "stage": 6,
+      "category": "古文"
+    },
+    {
+      "en": "えならず",
+      "ja": "えならず",
+      "sentence": "",
+      "stage": 6,
+      "category": "古文"
+    },
+    {
+      "en": "おくる",
+      "ja": "おくる",
+      "sentence": "",
+      "stage": 6,
+      "category": "古文"
+    },
+    {
+      "en": "おこたる",
+      "ja": "おこたる",
+      "sentence": "",
+      "stage": 6,
+      "category": "古文"
+    },
+    {
+      "en": "おこなふ",
+      "ja": "おこなふ",
+      "sentence": "",
+      "stage": 6,
+      "category": "古文"
+    },
+    {
+      "en": "おどろく",
+      "ja": "おどろく",
+      "sentence": "",
+      "stage": 6,
+      "category": "古文"
+    },
+    {
+      "en": "おぼえ",
+      "ja": "おぼえ",
+      "sentence": "",
+      "stage": 6,
+      "category": "古文"
+    },
+    {
+      "en": "おぼす",
+      "ja": "おぼす",
+      "sentence": "",
+      "stage": 6,
+      "category": "古文"
+    },
+    {
+      "en": "おぼつかなし",
+      "ja": "おぼつかなし",
+      "sentence": "",
+      "stage": 7,
+      "category": "古文"
+    },
+    {
+      "en": "おほかた",
+      "ja": "おほかた",
+      "sentence": "",
+      "stage": 7,
+      "category": "古文"
+    },
+    {
+      "en": "おほけなし",
+      "ja": "おほけなし",
+      "sentence": "",
+      "stage": 7,
+      "category": "古文"
+    },
+    {
+      "en": "おほす",
+      "ja": "おほす",
+      "sentence": "",
+      "stage": 7,
+      "category": "古文"
+    },
+    {
+      "en": "おもしろし",
+      "ja": "おもしろし",
+      "sentence": "",
+      "stage": 7,
+      "category": "古文"
+    },
+    {
+      "en": "おろかなり",
+      "ja": "おろかなり",
+      "sentence": "",
+      "stage": 7,
+      "category": "古文"
+    },
+    {
+      "en": "かこつ",
+      "ja": "かこつ",
+      "sentence": "",
+      "stage": 7,
+      "category": "古文"
+    },
+    {
+      "en": "かしこし",
+      "ja": "かしこし",
+      "sentence": "",
+      "stage": 7,
+      "category": "古文"
+    },
+    {
+      "en": "かたし",
+      "ja": "かたし",
+      "sentence": "",
+      "stage": 8,
+      "category": "古文"
+    },
+    {
+      "en": "かたじけなし",
+      "ja": "かたじけなし",
+      "sentence": "",
+      "stage": 8,
+      "category": "古文"
+    },
+    {
+      "en": "かたはらいたし",
+      "ja": "かたはらいたし",
+      "sentence": "",
+      "stage": 8,
+      "category": "古文"
+    },
+    {
+      "en": "かなし",
+      "ja": "かなし",
+      "sentence": "",
+      "stage": 8,
+      "category": "古文"
+    },
+    {
+      "en": "かまふ",
+      "ja": "かまふ",
+      "sentence": "",
+      "stage": 8,
+      "category": "古文"
+    },
+    {
+      "en": "からし",
+      "ja": "からし",
+      "sentence": "",
+      "stage": 8,
+      "category": "古文"
+    },
+    {
+      "en": "かる",
+      "ja": "かる",
+      "sentence": "",
+      "stage": 8,
+      "category": "古文"
+    },
+    {
+      "en": "きこしめす",
+      "ja": "きこしめす",
+      "sentence": "",
+      "stage": 8,
+      "category": "古文"
+    },
+    {
+      "en": "きこゆ",
+      "ja": "きこゆ",
+      "sentence": "",
+      "stage": 9,
+      "category": "古文"
+    },
+    {
+      "en": "きは",
+      "ja": "きは",
+      "sentence": "",
+      "stage": 9,
+      "category": "古文"
+    },
+    {
+      "en": "けし",
+      "ja": "けし",
+      "sentence": "",
+      "stage": 9,
+      "category": "古文"
+    },
+    {
+      "en": "けしからず",
+      "ja": "けしからず",
+      "sentence": "",
+      "stage": 9,
+      "category": "古文"
+    },
+    {
+      "en": "けしき",
+      "ja": "けしき",
+      "sentence": "",
+      "stage": 9,
+      "category": "古文"
+    },
+    {
+      "en": "けはひ",
+      "ja": "けはひ",
+      "sentence": "",
+      "stage": 9,
+      "category": "古文"
+    },
+    {
+      "en": "けやけし",
+      "ja": "けやけし",
+      "sentence": "",
+      "stage": 9,
+      "category": "古文"
+    },
+    {
+      "en": "こちたし",
+      "ja": "こちたし",
+      "sentence": "",
+      "stage": 9,
+      "category": "古文"
+    },
+    {
+      "en": "ことごとし",
+      "ja": "ことごとし",
+      "sentence": "",
+      "stage": 10,
+      "category": "古文"
+    },
+    {
+      "en": "ことなり",
+      "ja": "ことなり",
+      "sentence": "",
+      "stage": 10,
+      "category": "古文"
+    },
+    {
+      "en": "ことわり",
+      "ja": "ことわり",
+      "sentence": "",
+      "stage": 10,
+      "category": "古文"
+    },
+    {
+      "en": "こまやかなり",
+      "ja": "こまやかなり",
+      "sentence": "",
+      "stage": 10,
+      "category": "古文"
+    },
+    {
+      "en": "さうざうし",
+      "ja": "さうざうし",
+      "sentence": "",
+      "stage": 10,
+      "category": "古文"
+    },
+    {
+      "en": "さかし",
+      "ja": "さかし",
+      "sentence": "",
+      "stage": 10,
+      "category": "古文"
+    },
+    {
+      "en": "さすがなり",
+      "ja": "さすがなり",
+      "sentence": "",
+      "stage": 10,
+      "category": "古文"
+    },
+    {
+      "en": "さながら",
+      "ja": "さながら",
+      "sentence": "",
+      "stage": 10,
+      "category": "古文"
+    },
+    {
+      "en": "さはれ",
+      "ja": "さはれ",
+      "sentence": "",
+      "stage": 11,
+      "category": "古文"
+    },
+    {
+      "en": "さらなり",
+      "ja": "さらなり",
+      "sentence": "",
+      "stage": 11,
+      "category": "古文"
+    },
+    {
+      "en": "さらに",
+      "ja": "さらに",
+      "sentence": "",
+      "stage": 11,
+      "category": "古文"
+    },
+    {
+      "en": "しのぶ",
+      "ja": "しのぶ",
+      "sentence": "",
+      "stage": 11,
+      "category": "古文"
+    },
+    {
+      "en": "しるし",
+      "ja": "しるし",
+      "sentence": "",
+      "stage": 11,
+      "category": "古文"
+    },
+    {
+      "en": "すきずきし",
+      "ja": "すきずきし",
+      "sentence": "",
+      "stage": 11,
+      "category": "古文"
+    },
+    {
+      "en": "すさまじ",
+      "ja": "すさまじ",
+      "sentence": "",
+      "stage": 11,
+      "category": "古文"
+    },
+    {
+      "en": "すずろなり",
+      "ja": "すずろなり",
+      "sentence": "",
+      "stage": 11,
+      "category": "古文"
+    },
+    {
+      "en": "ずちなし",
+      "ja": "ずちなし",
+      "sentence": "",
+      "stage": 12,
+      "category": "古文"
+    },
+    {
+      "en": "せちなり",
+      "ja": "せちなり",
+      "sentence": "",
+      "stage": 12,
+      "category": "古文"
+    },
+    {
+      "en": "そこら",
+      "ja": "そこら",
+      "sentence": "",
+      "stage": 12,
+      "category": "古文"
+    },
+    {
+      "en": "そぞろなり",
+      "ja": "そぞろなり",
+      "sentence": "",
+      "stage": 12,
+      "category": "古文"
+    },
+    {
+      "en": "たいだいし",
+      "ja": "たいだいし",
+      "sentence": "",
+      "stage": 12,
+      "category": "古文"
+    },
+    {
+      "en": "たけし",
+      "ja": "たけし",
+      "sentence": "",
+      "stage": 12,
+      "category": "古文"
+    },
+    {
+      "en": "たづき",
+      "ja": "たづき",
+      "sentence": "",
+      "stage": 12,
+      "category": "古文"
+    },
+    {
+      "en": "たのむ",
+      "ja": "たのむ",
+      "sentence": "",
+      "stage": 12,
+      "category": "古文"
+    },
+    {
+      "en": "たばかる",
+      "ja": "たばかる",
+      "sentence": "",
+      "stage": 13,
+      "category": "古文"
+    },
+    {
+      "en": "たまふ",
+      "ja": "たまふ",
+      "sentence": "",
+      "stage": 13,
+      "category": "古文"
+    },
+    {
+      "en": "ためし",
+      "ja": "ためし",
+      "sentence": "",
+      "stage": 13,
+      "category": "古文"
+    },
+    {
+      "en": "たゆ",
+      "ja": "たゆ",
+      "sentence": "",
+      "stage": 13,
+      "category": "古文"
+    },
+    {
+      "en": "ついで",
+      "ja": "ついで",
+      "sentence": "",
+      "stage": 13,
+      "category": "古文"
+    },
+    {
+      "en": "つきづきし",
+      "ja": "つきづきし",
+      "sentence": "",
+      "stage": 13,
+      "category": "古文"
+    },
+    {
+      "en": "つたなし",
+      "ja": "つたなし",
+      "sentence": "",
+      "stage": 13,
+      "category": "古文"
+    },
+    {
+      "en": "つつまし",
+      "ja": "つつまし",
+      "sentence": "",
+      "stage": 13,
+      "category": "古文"
+    },
+    {
+      "en": "つれづれなり",
+      "ja": "つれづれなり",
+      "sentence": "",
+      "stage": 14,
+      "category": "古文"
+    },
+    {
+      "en": "つれなし",
+      "ja": "つれなし",
+      "sentence": "",
+      "stage": 14,
+      "category": "古文"
+    },
+    {
+      "en": "ところせし",
+      "ja": "ところせし",
+      "sentence": "",
+      "stage": 14,
+      "category": "古文"
+    },
+    {
+      "en": "とし",
+      "ja": "とし",
+      "sentence": "",
+      "stage": 14,
+      "category": "古文"
+    },
+    {
+      "en": "とぶらふ",
+      "ja": "とぶらふ",
+      "sentence": "",
+      "stage": 14,
+      "category": "古文"
+    },
+    {
+      "en": "なかなかなり",
+      "ja": "なかなかなり",
+      "sentence": "",
+      "stage": 14,
+      "category": "古文"
+    },
+    {
+      "en": "ながむ",
+      "ja": "ながむ",
+      "sentence": "",
+      "stage": 14,
+      "category": "古文"
+    },
+    {
+      "en": "なつかし",
+      "ja": "なつかし",
+      "sentence": "",
+      "stage": 14,
+      "category": "古文"
+    },
+    {
+      "en": "なほ",
+      "ja": "なほ",
+      "sentence": "",
+      "stage": 15,
+      "category": "古文"
+    },
+    {
+      "en": "なほざりなり",
+      "ja": "なほざりなり",
+      "sentence": "",
+      "stage": 15,
+      "category": "古文"
+    },
+    {
+      "en": "なまめかし",
+      "ja": "なまめかし",
+      "sentence": "",
+      "stage": 15,
+      "category": "古文"
+    },
+    {
+      "en": "なめし",
+      "ja": "なめし",
+      "sentence": "",
+      "stage": 15,
+      "category": "古文"
+    },
+    {
+      "en": "なやむ",
+      "ja": "なやむ",
+      "sentence": "",
+      "stage": 15,
+      "category": "古文"
+    },
+    {
+      "en": "にほふ",
+      "ja": "にほふ",
+      "sentence": "",
+      "stage": 15,
+      "category": "古文"
+    },
+    {
+      "en": "ねんごろなり",
+      "ja": "ねんごろなり",
+      "sentence": "",
+      "stage": 15,
+      "category": "古文"
+    },
+    {
+      "en": "ののしる",
+      "ja": "ののしる",
+      "sentence": "",
+      "stage": 15,
+      "category": "古文"
+    },
+    {
+      "en": "はかなし",
+      "ja": "はかなし",
+      "sentence": "",
+      "stage": 16,
+      "category": "古文"
+    },
+    {
+      "en": "はかばかし",
+      "ja": "はかばかし",
+      "sentence": "",
+      "stage": 16,
+      "category": "古文"
+    },
+    {
+      "en": "はしたなし",
+      "ja": "はしたなし",
+      "sentence": "",
+      "stage": 16,
+      "category": "古文"
+    },
+    {
+      "en": "はづかし",
+      "ja": "はづかし",
+      "sentence": "",
+      "stage": 16,
+      "category": "古文"
+    },
+    {
+      "en": "はべり",
+      "ja": "はべり",
+      "sentence": "",
+      "stage": 16,
+      "category": "古文"
+    },
+    {
+      "en": "ひがひがし",
+      "ja": "ひがひがし",
+      "sentence": "",
+      "stage": 16,
+      "category": "古文"
+    },
+    {
+      "en": "ひねもす",
+      "ja": "ひねもす",
+      "sentence": "",
+      "stage": 16,
+      "category": "古文"
+    },
+    {
+      "en": "びんなし",
+      "ja": "びんなし",
+      "sentence": "",
+      "stage": 16,
+      "category": "古文"
+    },
+    {
+      "en": "ふびんなり",
+      "ja": "ふびんなり",
+      "sentence": "",
+      "stage": 17,
+      "category": "古文"
+    },
+    {
+      "en": "ふるさと",
+      "ja": "ふるさと",
+      "sentence": "",
+      "stage": 17,
+      "category": "古文"
+    },
+    {
+      "en": "まうく",
+      "ja": "まうく",
+      "sentence": "",
+      "stage": 17,
+      "category": "古文"
+    },
+    {
+      "en": "まうづ",
+      "ja": "まうづ",
+      "sentence": "",
+      "stage": 17,
+      "category": "古文"
+    },
+    {
+      "en": "まかづ",
+      "ja": "まかづ",
+      "sentence": "",
+      "stage": 17,
+      "category": "古文"
+    },
+    {
+      "en": "まかる",
+      "ja": "まかる",
+      "sentence": "",
+      "stage": 17,
+      "category": "古文"
+    },
+    {
+      "en": "まさなし",
+      "ja": "まさなし",
+      "sentence": "",
+      "stage": 17,
+      "category": "古文"
+    },
+    {
+      "en": "まめなり",
+      "ja": "まめなり",
+      "sentence": "",
+      "stage": 17,
+      "category": "古文"
+    },
+    {
+      "en": "まもる",
+      "ja": "まもる",
+      "sentence": "",
+      "stage": 18,
+      "category": "古文"
+    },
+    {
+      "en": "みそかなり",
+      "ja": "みそかなり",
+      "sentence": "",
+      "stage": 18,
+      "category": "古文"
+    },
+    {
+      "en": "みやび",
+      "ja": "みやび",
+      "sentence": "",
+      "stage": 18,
+      "category": "古文"
+    },
+    {
+      "en": "むげなり",
+      "ja": "むげなり",
+      "sentence": "",
+      "stage": 18,
+      "category": "古文"
+    },
+    {
+      "en": "むつかし",
+      "ja": "むつかし",
+      "sentence": "",
+      "stage": 18,
+      "category": "古文"
+    },
+    {
+      "en": "むつまじ",
+      "ja": "むつまじ",
+      "sentence": "",
+      "stage": 18,
+      "category": "古文"
+    },
+    {
+      "en": "めざまし",
+      "ja": "めざまし",
+      "sentence": "",
+      "stage": 18,
+      "category": "古文"
+    },
+    {
+      "en": "めづ",
+      "ja": "めづ",
+      "sentence": "",
+      "stage": 18,
+      "category": "古文"
+    },
+    {
+      "en": "めでたし",
+      "ja": "めでたし",
+      "sentence": "",
+      "stage": 19,
+      "category": "古文"
+    },
+    {
+      "en": "めやすし",
+      "ja": "めやすし",
+      "sentence": "",
+      "stage": 19,
+      "category": "古文"
+    },
+    {
+      "en": "ものし",
+      "ja": "ものし",
+      "sentence": "",
+      "stage": 19,
+      "category": "古文"
+    },
+    {
+      "en": "やがて",
+      "ja": "やがて",
+      "sentence": "",
+      "stage": 19,
+      "category": "古文"
+    },
+    {
+      "en": "やさし",
+      "ja": "やさし",
+      "sentence": "",
+      "stage": 19,
+      "category": "古文"
+    },
+    {
+      "en": "やすし",
+      "ja": "やすし",
+      "sentence": "",
+      "stage": 19,
+      "category": "古文"
+    },
+    {
+      "en": "やつす",
+      "ja": "やつす",
+      "sentence": "",
+      "stage": 19,
+      "category": "古文"
+    },
+    {
+      "en": "やむごとなし",
+      "ja": "やむごとなし",
+      "sentence": "",
+      "stage": 19,
+      "category": "古文"
+    },
+    {
+      "en": "ゆかし",
+      "ja": "ゆかし",
+      "sentence": "",
+      "stage": 20,
+      "category": "古文"
+    },
+    {
+      "en": "ゆくりなし",
+      "ja": "ゆくりなし",
+      "sentence": "",
+      "stage": 20,
+      "category": "古文"
+    },
+    {
+      "en": "ゆゆし",
+      "ja": "ゆゆし",
+      "sentence": "",
+      "stage": 20,
+      "category": "古文"
+    },
+    {
+      "en": "よし",
+      "ja": "よし",
+      "sentence": "",
+      "stage": 20,
+      "category": "古文"
+    },
+    {
+      "en": "よしなし",
+      "ja": "よしなし",
+      "sentence": "",
+      "stage": 20,
+      "category": "古文"
+    },
+    {
+      "en": "よに",
+      "ja": "よに",
+      "sentence": "",
+      "stage": 20,
+      "category": "古文"
+    },
+    {
+      "en": "よろし",
+      "ja": "よろし",
+      "sentence": "",
+      "stage": 20,
+      "category": "古文"
+    },
+    {
+      "en": "らうがはし",
+      "ja": "らうがはし",
+      "sentence": "",
+      "stage": 20,
+      "category": "古文"
+    },
+    {
+      "en": "わびし",
+      "ja": "わびし",
+      "sentence": "",
+      "stage": 21,
+      "category": "古文"
+    },
+    {
+      "en": "わぶ",
+      "ja": "わぶ",
+      "sentence": "",
+      "stage": 21,
+      "category": "古文"
+    },
+    {
+      "en": "わりなし",
+      "ja": "わりなし",
+      "sentence": "",
+      "stage": 21,
+      "category": "古文"
+    },
+    {
+      "en": "をかし",
+      "ja": "をかし",
+      "sentence": "",
+      "stage": 21,
+      "category": "古文"
+    },
+    {
+      "en": "をこなり",
+      "ja": "をこなり",
+      "sentence": "",
+      "stage": 21,
+      "category": "古文"
+    },
+    {
+      "en": "あいぎゃう",
+      "ja": "あいぎゃう",
+      "sentence": "",
+      "stage": 21,
+      "category": "古文"
+    },
+    {
+      "en": "あえか",
+      "ja": "あえか",
+      "sentence": "",
+      "stage": 21,
+      "category": "古文"
+    },
+    {
+      "en": "あくがる",
+      "ja": "あくがる",
+      "sentence": "",
+      "stage": 21,
+      "category": "古文"
+    },
+    {
+      "en": "あさむ",
+      "ja": "あさむ",
+      "sentence": "",
+      "stage": 22,
+      "category": "古文"
+    },
+    {
+      "en": "あながち",
+      "ja": "あながち",
+      "sentence": "",
+      "stage": 22,
+      "category": "古文"
+    },
+    {
+      "en": "あまたたび",
+      "ja": "あまたたび",
+      "sentence": "",
+      "stage": 22,
+      "category": "古文"
+    },
+    {
+      "en": "あらぬ",
+      "ja": "あらぬ",
+      "sentence": "",
+      "stage": 22,
+      "category": "古文"
+    },
+    {
+      "en": "あらまほし",
+      "ja": "あらまほし",
+      "sentence": "",
+      "stage": 22,
+      "category": "古文"
+    },
+    {
+      "en": "ありし",
+      "ja": "ありし",
+      "sentence": "",
+      "stage": 22,
+      "category": "古文"
+    },
+    {
+      "en": "いかさま",
+      "ja": "いかさま",
+      "sentence": "",
+      "stage": 22,
+      "category": "古文"
+    },
+    {
+      "en": "いかならむ",
+      "ja": "いかならむ",
+      "sentence": "",
+      "stage": 22,
+      "category": "古文"
+    },
+    {
+      "en": "いかにも",
+      "ja": "いかにも",
+      "sentence": "",
+      "stage": 23,
+      "category": "古文"
+    },
+    {
+      "en": "いたう",
+      "ja": "いたう",
+      "sentence": "",
+      "stage": 23,
+      "category": "古文"
+    },
+    {
+      "en": "いづく",
+      "ja": "いづく",
+      "sentence": "",
+      "stage": 23,
+      "category": "古文"
+    },
+    {
+      "en": "いづち",
+      "ja": "いづち",
+      "sentence": "",
+      "stage": 23,
+      "category": "古文"
+    },
+    {
+      "en": "いづれ",
+      "ja": "いづれ",
+      "sentence": "",
+      "stage": 23,
+      "category": "古文"
+    },
+    {
+      "en": "いで",
+      "ja": "いで",
+      "sentence": "",
+      "stage": 23,
+      "category": "古文"
+    },
+    {
+      "en": "いとけなし",
+      "ja": "いとけなし",
+      "sentence": "",
+      "stage": 23,
+      "category": "古文"
+    },
+    {
+      "en": "いひしろふ",
+      "ja": "いひしろふ",
+      "sentence": "",
+      "stage": 23,
+      "category": "古文"
+    },
+    {
+      "en": "いふもおろかなり",
+      "ja": "いふもおろかなり",
+      "sentence": "",
+      "stage": 24,
+      "category": "古文"
+    },
+    {
+      "en": "いまめかし",
+      "ja": "いまめかし",
+      "sentence": "",
+      "stage": 24,
+      "category": "古文"
+    },
+    {
+      "en": "うたがふ",
+      "ja": "うたがふ",
+      "sentence": "",
+      "stage": 24,
+      "category": "古文"
+    },
+    {
+      "en": "うちつけなり",
+      "ja": "うちつけなり",
+      "sentence": "",
+      "stage": 24,
+      "category": "古文"
+    },
+    {
+      "en": "うつろふ",
+      "ja": "うつろふ",
+      "sentence": "",
+      "stage": 24,
+      "category": "古文"
+    },
+    {
+      "en": "うるさし",
+      "ja": "うるさし",
+      "sentence": "",
+      "stage": 24,
+      "category": "古文"
+    },
+    {
+      "en": "おいらかなり",
+      "ja": "おいらかなり",
+      "sentence": "",
+      "stage": 24,
+      "category": "古文"
+    },
+    {
+      "en": "おとなふ",
+      "ja": "おとなふ",
+      "sentence": "",
+      "stage": 24,
+      "category": "古文"
+    },
+    {
+      "en": "おとなぶ",
+      "ja": "おとなぶ",
+      "sentence": "",
+      "stage": 25,
+      "category": "古文"
+    },
+    {
+      "en": "おのづから",
+      "ja": "おのづから",
+      "sentence": "",
+      "stage": 25,
+      "category": "古文"
+    },
+    {
+      "en": "おぼめく",
+      "ja": "おぼめく",
+      "sentence": "",
+      "stage": 25,
+      "category": "古文"
+    },
+    {
+      "en": "およすく",
+      "ja": "およすく",
+      "sentence": "",
+      "stage": 25,
+      "category": "古文"
+    },
+    {
+      "en": "おろそかなり",
+      "ja": "おろそかなり",
+      "sentence": "",
+      "stage": 25,
+      "category": "古文"
+    },
+    {
+      "en": "かきくらす",
+      "ja": "かきくらす",
+      "sentence": "",
+      "stage": 25,
+      "category": "古文"
+    },
+    {
+      "en": "かく",
+      "ja": "かく",
+      "sentence": "",
+      "stage": 25,
+      "category": "古文"
+    },
+    {
+      "en": "かくて",
+      "ja": "かくて",
+      "sentence": "",
+      "stage": 25,
+      "category": "古文"
+    },
+    {
+      "en": "かし",
+      "ja": "かし",
+      "sentence": "",
+      "stage": 26,
+      "category": "古文"
+    },
+    {
+      "en": "かしづく",
+      "ja": "かしづく",
+      "sentence": "",
+      "stage": 26,
+      "category": "古文"
+    },
+    {
+      "en": "かたみに",
+      "ja": "かたみに",
+      "sentence": "",
+      "stage": 26,
+      "category": "古文"
+    },
+    {
+      "en": "かづく",
+      "ja": "かづく",
+      "sentence": "",
+      "stage": 26,
+      "category": "古文"
+    },
+    {
+      "en": "かど",
+      "ja": "かど",
+      "sentence": "",
+      "stage": 26,
+      "category": "古文"
+    },
+    {
+      "en": "かひなし",
+      "ja": "かひなし",
+      "sentence": "",
+      "stage": 26,
+      "category": "古文"
+    },
+    {
+      "en": "かまびすし",
+      "ja": "かまびすし",
+      "sentence": "",
+      "stage": 26,
+      "category": "古文"
+    },
+    {
+      "en": "かるがるし",
+      "ja": "かるがるし",
+      "sentence": "",
+      "stage": 26,
+      "category": "古文"
+    },
+    {
+      "en": "きよらなり",
+      "ja": "きよらなり",
+      "sentence": "",
+      "stage": 27,
+      "category": "古文"
+    },
+    {
+      "en": "くちをし",
+      "ja": "くちをし",
+      "sentence": "",
+      "stage": 27,
+      "category": "古文"
+    },
+    {
+      "en": "くまなし",
+      "ja": "くまなし",
+      "sentence": "",
+      "stage": 27,
+      "category": "古文"
+    },
+    {
+      "en": "くやし",
+      "ja": "くやし",
+      "sentence": "",
+      "stage": 27,
+      "category": "古文"
+    },
+    {
+      "en": "けうなり",
+      "ja": "けうなり",
+      "sentence": "",
+      "stage": 27,
+      "category": "古文"
+    },
+    {
+      "en": "けだかし",
+      "ja": "けだかし",
+      "sentence": "",
+      "stage": 27,
+      "category": "古文"
+    },
+    {
+      "en": "けに",
+      "ja": "けに",
+      "sentence": "",
+      "stage": 27,
+      "category": "古文"
+    },
+    {
+      "en": "ここら",
+      "ja": "ここら",
+      "sentence": "",
+      "stage": 27,
+      "category": "古文"
+    },
+    {
+      "en": "こそ",
+      "ja": "こそ",
+      "sentence": "",
+      "stage": 28,
+      "category": "古文"
+    },
+    {
+      "en": "こなた",
+      "ja": "こなた",
+      "sentence": "",
+      "stage": 28,
+      "category": "古文"
+    },
+    {
+      "en": "こよなし",
+      "ja": "こよなし",
+      "sentence": "",
+      "stage": 28,
+      "category": "古文"
+    },
+    {
+      "en": "さうなし",
+      "ja": "さうなし",
+      "sentence": "",
+      "stage": 28,
+      "category": "古文"
+    },
+    {
+      "en": "さうどく",
+      "ja": "さうどく",
+      "sentence": "",
+      "stage": 28,
+      "category": "古文"
+    },
+    {
+      "en": "さかしら",
+      "ja": "さかしら",
+      "sentence": "",
+      "stage": 28,
+      "category": "古文"
+    },
+    {
+      "en": "さすらふ",
+      "ja": "さすらふ",
+      "sentence": "",
+      "stage": 28,
+      "category": "古文"
+    },
+    {
+      "en": "さだむ",
+      "ja": "さだむ",
+      "sentence": "",
+      "stage": 28,
+      "category": "古文"
+    },
+    {
+      "en": "さなり",
+      "ja": "さなり",
+      "sentence": "",
+      "stage": 29,
+      "category": "古文"
+    },
+    {
+      "en": "さばかり",
+      "ja": "さばかり",
+      "sentence": "",
+      "stage": 29,
+      "category": "古文"
+    },
+    {
+      "en": "さぶらふ",
+      "ja": "さぶらふ",
+      "sentence": "",
+      "stage": 29,
+      "category": "古文"
+    },
+    {
+      "en": "さま",
+      "ja": "さま",
+      "sentence": "",
+      "stage": 29,
+      "category": "古文"
+    },
+    {
+      "en": "さやかなり",
+      "ja": "さやかなり",
+      "sentence": "",
+      "stage": 29,
+      "category": "古文"
+    },
+    {
+      "en": "さらぬ",
+      "ja": "さらぬ",
+      "sentence": "",
+      "stage": 29,
+      "category": "古文"
+    },
+    {
+      "en": "しか",
+      "ja": "しか",
+      "sentence": "",
+      "stage": 29,
+      "category": "古文"
+    },
+    {
+      "en": "しかすがに",
+      "ja": "しかすがに",
+      "sentence": "",
+      "stage": 29,
+      "category": "古文"
+    },
+    {
+      "en": "したたむ",
+      "ja": "したたむ",
+      "sentence": "",
+      "stage": 30,
+      "category": "古文"
+    },
+    {
+      "en": "しどけなし",
+      "ja": "しどけなし",
+      "sentence": "",
+      "stage": 30,
+      "category": "古文"
+    },
+    {
+      "en": "しる",
+      "ja": "しる",
+      "sentence": "",
+      "stage": 30,
+      "category": "古文"
+    },
+    {
+      "en": "すごし",
+      "ja": "すごし",
+      "sentence": "",
+      "stage": 30,
+      "category": "古文"
+    },
+    {
+      "en": "すべなし",
+      "ja": "すべなし",
+      "sentence": "",
+      "stage": 30,
+      "category": "古文"
+    },
+    {
+      "en": "すみやかなり",
+      "ja": "すみやかなり",
+      "sentence": "",
+      "stage": 30,
+      "category": "古文"
+    },
+    {
+      "en": "せうそこ",
+      "ja": "せうそこ",
+      "sentence": "",
+      "stage": 30,
+      "category": "古文"
+    },
+    {
+      "en": "せちに",
+      "ja": "せちに",
+      "sentence": "",
+      "stage": 30,
+      "category": "古文"
+    },
+    {
+      "en": "たえて",
+      "ja": "たえて",
+      "sentence": "",
+      "stage": 31,
+      "category": "古文"
+    },
+    {
+      "en": "たぐひ",
+      "ja": "たぐひ",
+      "sentence": "",
+      "stage": 31,
+      "category": "古文"
+    },
+    {
+      "en": "ただならず",
+      "ja": "ただならず",
+      "sentence": "",
+      "stage": 31,
+      "category": "古文"
+    },
+    {
+      "en": "たまさかなり",
+      "ja": "たまさかなり",
+      "sentence": "",
+      "stage": 31,
+      "category": "古文"
+    },
+    {
+      "en": "ついゐる",
+      "ja": "ついゐる",
+      "sentence": "",
+      "stage": 31,
+      "category": "古文"
+    },
+    {
+      "en": "つかうまつる",
+      "ja": "つかうまつる",
+      "sentence": "",
+      "stage": 31,
+      "category": "古文"
+    },
+    {
+      "en": "つくづく",
+      "ja": "つくづく",
+      "sentence": "",
+      "stage": 31,
+      "category": "古文"
+    },
+    {
+      "en": "つごもり",
+      "ja": "つごもり",
+      "sentence": "",
+      "stage": 31,
+      "category": "古文"
+    },
+    {
+      "en": "つとめて",
+      "ja": "つとめて",
+      "sentence": "",
+      "stage": 32,
+      "category": "古文"
+    },
+    {
+      "en": "つゆ",
+      "ja": "つゆ",
+      "sentence": "",
+      "stage": 32,
+      "category": "古文"
+    },
+    {
+      "en": "てうず",
+      "ja": "てうず",
+      "sentence": "",
+      "stage": 32,
+      "category": "古文"
+    },
+    {
+      "en": "とかく",
+      "ja": "とかく",
+      "sentence": "",
+      "stage": 32,
+      "category": "古文"
+    },
+    {
+      "en": "とく",
+      "ja": "とく",
+      "sentence": "",
+      "stage": 32,
+      "category": "古文"
+    },
+    {
+      "en": "とみに",
+      "ja": "とみに",
+      "sentence": "",
+      "stage": 32,
+      "category": "古文"
+    },
+    {
+      "en": "ともすれば",
+      "ja": "ともすれば",
+      "sentence": "",
+      "stage": 32,
+      "category": "古文"
+    },
+    {
+      "en": "とよむ",
+      "ja": "とよむ",
+      "sentence": "",
+      "stage": 32,
+      "category": "古文"
+    },
+    {
+      "en": "なかなか",
+      "ja": "なかなか",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "なからむ",
+      "ja": "なからむ",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "なのめなり",
+      "ja": "なのめなり",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "なべて",
+      "ja": "なべて",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "なまじひ",
+      "ja": "なまじひ",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "なむ",
+      "ja": "なむ",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "にげなし",
+      "ja": "にげなし",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "にほひ",
+      "ja": "にほひ",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "ぬべし",
+      "ja": "ぬべし",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "ねたし",
+      "ja": "ねたし",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "のたまふ",
+      "ja": "のたまふ",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "のどかなり",
+      "ja": "のどかなり",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "はかる",
+      "ja": "はかる",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "はした",
+      "ja": "はした",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "はた",
+      "ja": "はた",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "はつかなり",
+      "ja": "はつかなり",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "ひがごと",
+      "ja": "ひがごと",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "ひとへに",
+      "ja": "ひとへに",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "ひま",
+      "ja": "ひま",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "ふす",
+      "ja": "ふす",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "ほい",
+      "ja": "ほい",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "まうでく",
+      "ja": "まうでく",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "まうのぼる",
+      "ja": "まうのぼる",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "まこと",
+      "ja": "まこと",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "まさる",
+      "ja": "まさる",
+      "sentence": "",
+      "stage": 36,
+      "category": "古文"
+    },
+    {
+      "en": "まだき",
+      "ja": "まだき",
+      "sentence": "",
+      "stage": 36,
+      "category": "古文"
+    },
+    {
+      "en": "まどふ",
+      "ja": "まどふ",
+      "sentence": "",
+      "stage": 36,
+      "category": "古文"
+    },
+    {
+      "en": "まほなり",
+      "ja": "まほなり",
+      "sentence": "",
+      "stage": 36,
+      "category": "古文"
+    },
+    {
+      "en": "みまかる",
+      "ja": "みまかる",
+      "sentence": "",
+      "stage": 36,
+      "category": "古文"
+    },
+    {
+      "en": "むくつけし",
+      "ja": "むくつけし",
+      "sentence": "",
+      "stage": 36,
+      "category": "古文"
+    },
+    {
+      "en": "むげに",
+      "ja": "むげに",
+      "sentence": "",
+      "stage": 36,
+      "category": "古文"
+    },
+    {
+      "en": "むつかる",
+      "ja": "むつかる",
+      "sentence": "",
+      "stage": 36,
+      "category": "古文"
+    },
+    {
+      "en": "めづらし",
+      "ja": "めづらし",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "もてなす",
+      "ja": "もてなす",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "やうやう",
+      "ja": "やうやう",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "やがての",
+      "ja": "やがての",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "やをら",
+      "ja": "やをら",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "ゆめ",
+      "ja": "ゆめ",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "よしばむ",
+      "ja": "よしばむ",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "よそ",
+      "ja": "よそ",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "よそふ",
+      "ja": "よそふ",
+      "sentence": "",
+      "stage": 38,
+      "category": "古文"
+    },
+    {
+      "en": "よもすがら",
+      "ja": "よもすがら",
+      "sentence": "",
+      "stage": 38,
+      "category": "古文"
+    },
+    {
+      "en": "らうたし",
+      "ja": "らうたし",
+      "sentence": "",
+      "stage": 38,
+      "category": "古文"
+    },
+    {
+      "en": "わざと",
+      "ja": "わざと",
+      "sentence": "",
+      "stage": 38,
+      "category": "古文"
+    },
+    {
+      "en": "わななく",
+      "ja": "わななく",
+      "sentence": "",
+      "stage": 38,
+      "category": "古文"
+    },
+    {
+      "en": "わろし",
+      "ja": "わろし",
+      "sentence": "",
+      "stage": 38,
+      "category": "古文"
+    },
+    {
+      "en": "あきらむ",
+      "ja": "あきらむ",
+      "sentence": "",
+      "stage": 38,
+      "category": "古文"
+    },
+    {
+      "en": "あそぶ",
+      "ja": "あそぶ",
+      "sentence": "",
+      "stage": 38,
+      "category": "古文"
+    },
+    {
+      "en": "あだめく",
+      "ja": "あだめく",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "あなづる",
+      "ja": "あなづる",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "あらず",
+      "ja": "あらず",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "ありあく",
+      "ja": "ありあく",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "ありけり",
+      "ja": "ありけり",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "あるじす",
+      "ja": "あるじす",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "いかめしげなり",
+      "ja": "いかめしげなり",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "いくばく",
+      "ja": "いくばく",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "いささか",
+      "ja": "いささか",
+      "sentence": "",
+      "stage": 40,
+      "category": "古文"
+    },
+    {
+      "en": "いそし",
+      "ja": "いそし",
+      "sentence": "",
+      "stage": 40,
+      "category": "古文"
+    },
+    {
+      "en": "いそしむ",
+      "ja": "いそしむ",
+      "sentence": "",
+      "stage": 40,
+      "category": "古文"
+    },
+    {
+      "en": "いちはやし",
+      "ja": "いちはやし",
+      "sentence": "",
+      "stage": 40,
+      "category": "古文"
+    },
+    {
+      "en": "いづら",
+      "ja": "いづら",
+      "sentence": "",
+      "stage": 40,
+      "category": "古文"
+    },
+    {
+      "en": "いとま",
+      "ja": "いとま",
+      "sentence": "",
+      "stage": 40,
+      "category": "古文"
+    },
+    {
+      "en": "いはむかたなし",
+      "ja": "いはむかたなし",
+      "sentence": "",
+      "stage": 40,
+      "category": "古文"
+    },
+    {
+      "en": "いぶせし",
+      "ja": "いぶせし",
+      "sentence": "",
+      "stage": 40,
+      "category": "古文"
+    },
+    {
+      "en": "うしろやすし",
+      "ja": "うしろやすし",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "うちまかす",
+      "ja": "うちまかす",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "うちまもる",
+      "ja": "うちまもる",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "うつし心",
+      "ja": "うつし心",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "うつせみ",
+      "ja": "うつせみ",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "おこがまし",
+      "ja": "おこがまし",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "おぼろけなり",
+      "ja": "おぼろけなり",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "おぼろけならず",
+      "ja": "おぼろけならず",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "おもだたし",
+      "ja": "おもだたし",
+      "sentence": "",
+      "stage": 42,
+      "category": "古文"
+    },
+    {
+      "en": "おもてなし",
+      "ja": "おもてなし",
+      "sentence": "",
+      "stage": 42,
+      "category": "古文"
+    },
+    {
+      "en": "おりふし",
+      "ja": "おりふし",
+      "sentence": "",
+      "stage": 42,
+      "category": "古文"
+    },
+    {
+      "en": "かいまみる",
+      "ja": "かいまみる",
+      "sentence": "",
+      "stage": 42,
+      "category": "古文"
+    },
+    {
+      "en": "かくる",
+      "ja": "かくる",
+      "sentence": "",
+      "stage": 42,
+      "category": "古文"
+    },
+    {
+      "en": "かこち顔",
+      "ja": "かこち顔",
+      "sentence": "",
+      "stage": 42,
+      "category": "古文"
+    },
+    {
+      "en": "かしづき",
+      "ja": "かしづき",
+      "sentence": "",
+      "stage": 42,
+      "category": "古文"
+    },
+    {
+      "en": "かたへ",
+      "ja": "かたへ",
+      "sentence": "",
+      "stage": 42,
+      "category": "古文"
+    },
+    {
+      "en": "かたみにする",
+      "ja": "かたみにする",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "かつ",
+      "ja": "かつ",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "かなしうす",
+      "ja": "かなしうす",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "かばかり",
+      "ja": "かばかり",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "かまへて",
+      "ja": "かまへて",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "きざす",
+      "ja": "きざす",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "きす",
+      "ja": "きす",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "くちなは",
+      "ja": "くちなは",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "くるし",
+      "ja": "くるし",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "けしうはあらず",
+      "ja": "けしうはあらず",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "けぢめ",
+      "ja": "けぢめ",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "こころうし",
+      "ja": "こころうし",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "こころづきなし",
+      "ja": "こころづきなし",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "こころにくし",
+      "ja": "こころにくし",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "こころばせ",
+      "ja": "こころばせ",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "こころもとなし",
+      "ja": "こころもとなし",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "こちなし",
+      "ja": "こちなし",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "ことわる",
+      "ja": "ことわる",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "さかゆ",
+      "ja": "さかゆ",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "さしいらへ",
+      "ja": "さしいらへ",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "さす",
+      "ja": "さす",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "さながらに",
+      "ja": "さながらに",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "さぶらひ",
+      "ja": "さぶらひ",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "さまざま",
+      "ja": "さまざま",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "さめざめ",
+      "ja": "さめざめ",
+      "sentence": "",
+      "stage": 46,
+      "category": "古文"
+    },
+    {
+      "en": "しうと",
+      "ja": "しうと",
+      "sentence": "",
+      "stage": 46,
+      "category": "古文"
+    },
+    {
+      "en": "しばし",
+      "ja": "しばし",
+      "sentence": "",
+      "stage": 46,
+      "category": "古文"
+    },
+    {
+      "en": "しめやかなり",
+      "ja": "しめやかなり",
+      "sentence": "",
+      "stage": 46,
+      "category": "古文"
+    },
+    {
+      "en": "しるべ",
+      "ja": "しるべ",
+      "sentence": "",
+      "stage": 46,
+      "category": "古文"
+    },
+    {
+      "en": "すさび",
+      "ja": "すさび",
+      "sentence": "",
+      "stage": 46,
+      "category": "古文"
+    },
+    {
+      "en": "すべからく",
+      "ja": "すべからく",
+      "sentence": "",
+      "stage": 46,
+      "category": "古文"
+    },
+    {
+      "en": "せむかたなし",
+      "ja": "せむかたなし",
+      "sentence": "",
+      "stage": 46,
+      "category": "古文"
+    },
+    {
+      "en": "そこはかとなく",
+      "ja": "そこはかとなく",
+      "sentence": "",
+      "stage": 47,
+      "category": "古文"
+    },
+    {
+      "en": "そばむ",
+      "ja": "そばむ",
+      "sentence": "",
+      "stage": 47,
+      "category": "古文"
+    },
+    {
+      "en": "たがふ",
+      "ja": "たがふ",
+      "sentence": "",
+      "stage": 47,
+      "category": "古文"
+    },
+    {
+      "en": "たけだけし",
+      "ja": "たけだけし",
+      "sentence": "",
+      "stage": 47,
+      "category": "古文"
+    },
+    {
+      "en": "たどる",
+      "ja": "たどる",
+      "sentence": "",
+      "stage": 47,
+      "category": "古文"
+    },
+    {
+      "en": "たまはす",
+      "ja": "たまはす",
+      "sentence": "",
+      "stage": 47,
+      "category": "古文"
+    },
+    {
+      "en": "たむ",
+      "ja": "たむ",
+      "sentence": "",
+      "stage": 47,
+      "category": "古文"
+    },
+    {
+      "en": "たより",
+      "ja": "たより",
+      "sentence": "",
+      "stage": 47,
+      "category": "古文"
+    },
+    {
+      "en": "つかさ",
+      "ja": "つかさ",
+      "sentence": "",
+      "stage": 48,
+      "category": "古文"
+    },
+    {
+      "en": "つくも",
+      "ja": "つくも",
+      "sentence": "",
+      "stage": 48,
+      "category": "古文"
+    },
+    {
+      "en": "つれづれ",
+      "ja": "つれづれ",
+      "sentence": "",
+      "stage": 48,
+      "category": "古文"
+    },
+    {
+      "en": "てしがな",
+      "ja": "てしがな",
+      "sentence": "",
+      "stage": 48,
+      "category": "古文"
+    },
+    {
+      "en": "ときめく",
+      "ja": "ときめく",
+      "sentence": "",
+      "stage": 48,
+      "category": "古文"
+    },
+    {
+      "en": "とくる",
+      "ja": "とくる",
+      "sentence": "",
+      "stage": 48,
+      "category": "古文"
+    },
+    {
+      "en": "としごろ",
+      "ja": "としごろ",
+      "sentence": "",
+      "stage": 48,
+      "category": "古文"
+    },
+    {
+      "en": "ところどころ",
+      "ja": "ところどころ",
+      "sentence": "",
+      "stage": 48,
+      "category": "古文"
+    },
+    {
+      "en": "なかなかに",
+      "ja": "なかなかに",
+      "sentence": "",
+      "stage": 49,
+      "category": "古文"
+    },
+    {
+      "en": "なごり",
+      "ja": "なごり",
+      "sentence": "",
+      "stage": 49,
+      "category": "古文"
+    },
+    {
+      "en": "なさけ",
+      "ja": "なさけ",
+      "sentence": "",
+      "stage": 49,
+      "category": "古文"
+    },
+    {
+      "en": "なだらかなり",
+      "ja": "なだらかなり",
+      "sentence": "",
+      "stage": 49,
+      "category": "古文"
+    },
+    {
+      "en": "なつく",
+      "ja": "なつく",
+      "sentence": "",
+      "stage": 49,
+      "category": "古文"
+    },
+    {
+      "en": "なほし",
+      "ja": "なほし",
+      "sentence": "",
+      "stage": 49,
+      "category": "古文"
+    },
+    {
+      "en": "なむど",
+      "ja": "なむど",
+      "sentence": "",
+      "stage": 49,
+      "category": "古文"
+    },
+    {
+      "en": "にくし",
+      "ja": "にくし",
+      "sentence": "",
+      "stage": 49,
+      "category": "古文"
+    },
+    {
+      "en": "ねびまさる",
+      "ja": "ねびまさる",
+      "sentence": "",
+      "stage": 50,
+      "category": "古文"
+    },
+    {
+      "en": "のたまはす",
+      "ja": "のたまはす",
+      "sentence": "",
+      "stage": 50,
+      "category": "古文"
+    },
+    {
+      "en": "はかなしごと",
+      "ja": "はかなしごと",
+      "sentence": "",
+      "stage": 50,
+      "category": "古文"
+    },
+    {
+      "en": "はげし",
+      "ja": "はげし",
+      "sentence": "",
+      "stage": 50,
+      "category": "古文"
+    },
+    {
+      "en": "はしため",
+      "ja": "はしため",
+      "sentence": "",
+      "stage": 50,
+      "category": "古文"
+    },
+    {
+      "en": "はたらく",
+      "ja": "はたらく",
+      "sentence": "",
+      "stage": 50,
+      "category": "古文"
+    },
+    {
+      "en": "ひきつくろふ",
+      "ja": "ひきつくろふ",
+      "sentence": "",
+      "stage": 50,
+      "category": "古文"
+    },
+    {
+      "en": "ひぐらし",
+      "ja": "ひぐらし",
+      "sentence": "",
+      "stage": 50,
+      "category": "古文"
+    },
+    {
+      "en": "ふと",
+      "ja": "ふと",
+      "sentence": "",
+      "stage": 51,
+      "category": "古文"
+    },
+    {
+      "en": "ふみ",
+      "ja": "ふみ",
+      "sentence": "",
+      "stage": 51,
+      "category": "古文"
+    },
+    {
+      "en": "ほのかなり",
+      "ja": "ほのかなり",
+      "sentence": "",
+      "stage": 51,
+      "category": "古文"
+    },
+    {
+      "en": "まうけ",
+      "ja": "まうけ",
+      "sentence": "",
+      "stage": 51,
+      "category": "古文"
+    },
+    {
+      "en": "まぎる",
+      "ja": "まぎる",
+      "sentence": "",
+      "stage": 51,
+      "category": "古文"
+    },
+    {
+      "en": "まじ",
+      "ja": "まじ",
+      "sentence": "",
+      "stage": 51,
+      "category": "古文"
+    },
+    {
+      "en": "まじらふ",
+      "ja": "まじらふ",
+      "sentence": "",
+      "stage": 51,
+      "category": "古文"
+    },
+    {
+      "en": "まばゆし",
+      "ja": "まばゆし",
+      "sentence": "",
+      "stage": 51,
+      "category": "古文"
+    },
+    {
+      "en": "まめやかなり",
+      "ja": "まめやかなり",
+      "sentence": "",
+      "stage": 52,
+      "category": "古文"
+    },
+    {
+      "en": "みぐるし",
+      "ja": "みぐるし",
+      "sentence": "",
+      "stage": 52,
+      "category": "古文"
+    },
+    {
+      "en": "みめ",
+      "ja": "みめ",
+      "sentence": "",
+      "stage": 52,
+      "category": "古文"
+    },
+    {
+      "en": "みる",
+      "ja": "みる",
+      "sentence": "",
+      "stage": 52,
+      "category": "古文"
+    },
+    {
+      "en": "むくゆ",
+      "ja": "むくゆ",
+      "sentence": "",
+      "stage": 52,
+      "category": "古文"
+    },
+    {
+      "en": "めかす",
+      "ja": "めかす",
+      "sentence": "",
+      "stage": 52,
+      "category": "古文"
+    },
+    {
+      "en": "めぐし",
+      "ja": "めぐし",
+      "sentence": "",
+      "stage": 52,
+      "category": "古文"
+    },
+    {
+      "en": "ものぐるほし",
+      "ja": "ものぐるほし",
+      "sentence": "",
+      "stage": 52,
+      "category": "古文"
+    },
+    {
+      "en": "ものす",
+      "ja": "ものす",
+      "sentence": "",
+      "stage": 53,
+      "category": "古文"
+    },
+    {
+      "en": "やすらふ",
+      "ja": "やすらふ",
+      "sentence": "",
+      "stage": 53,
+      "category": "古文"
+    },
+    {
+      "en": "やつる",
+      "ja": "やつる",
+      "sentence": "",
+      "stage": 53,
+      "category": "古文"
+    },
+    {
+      "en": "ゆゑ",
+      "ja": "ゆゑ",
+      "sentence": "",
+      "stage": 53,
+      "category": "古文"
+    },
+    {
+      "en": "ゆくへ",
+      "ja": "ゆくへ",
+      "sentence": "",
+      "stage": 53,
+      "category": "古文"
+    },
+    {
+      "en": "よだけし",
+      "ja": "よだけし",
+      "sentence": "",
+      "stage": 53,
+      "category": "古文"
+    },
+    {
+      "en": "よも",
+      "ja": "よも",
+      "sentence": "",
+      "stage": 53,
+      "category": "古文"
+    },
+    {
+      "en": "よろこび",
+      "ja": "よろこび",
+      "sentence": "",
+      "stage": 53,
+      "category": "古文"
+    },
+    {
+      "en": "わたる",
+      "ja": "わたる",
+      "sentence": "",
+      "stage": 54,
+      "category": "古文"
+    },
+    {
+      "en": "わづらふ",
+      "ja": "わづらふ",
+      "sentence": "",
+      "stage": 54,
+      "category": "古文"
+    },
+    {
+      "en": "をさをさ",
+      "ja": "をさをさ",
+      "sentence": "",
+      "stage": 54,
+      "category": "古文"
+    },
+    {
+      "en": "あきる",
+      "ja": "あきる",
+      "sentence": "",
+      "stage": 54,
+      "category": "古文"
+    },
+    {
+      "en": "あこがる",
+      "ja": "あこがる",
+      "sentence": "",
+      "stage": 54,
+      "category": "古文"
+    },
+    {
+      "en": "あざる",
+      "ja": "あざる",
+      "sentence": "",
+      "stage": 54,
+      "category": "古文"
+    },
+    {
+      "en": "あしく",
+      "ja": "あしく",
+      "sentence": "",
+      "stage": 54,
+      "category": "古文"
+    },
+    {
+      "en": "あそばす",
+      "ja": "あそばす",
+      "sentence": "",
+      "stage": 54,
+      "category": "古文"
+    },
+    {
+      "en": "あてやかなり",
+      "ja": "あてやかなり",
+      "sentence": "",
+      "stage": 55,
+      "category": "古文"
+    },
+    {
+      "en": "あはす",
+      "ja": "あはす",
+      "sentence": "",
+      "stage": 55,
+      "category": "古文"
+    },
+    {
+      "en": "ありつる",
+      "ja": "ありつる",
+      "sentence": "",
+      "stage": 55,
+      "category": "古文"
+    },
+    {
+      "en": "いかばかりか",
+      "ja": "いかばかりか",
+      "sentence": "",
+      "stage": 55,
+      "category": "古文"
+    },
+    {
+      "en": "いかなり",
+      "ja": "いかなり",
+      "sentence": "",
+      "stage": 55,
+      "category": "古文"
+    },
+    {
+      "en": "いぎたなし",
+      "ja": "いぎたなし",
+      "sentence": "",
+      "stage": 55,
+      "category": "古文"
+    },
+    {
+      "en": "いさめる",
+      "ja": "いさめる",
+      "sentence": "",
+      "stage": 55,
+      "category": "古文"
+    },
+    {
+      "en": "いづ方",
+      "ja": "いづ方",
+      "sentence": "",
+      "stage": 55,
+      "category": "古文"
+    },
+    {
+      "en": "いとせめて",
+      "ja": "いとせめて",
+      "sentence": "",
+      "stage": 56,
+      "category": "古文"
+    },
+    {
+      "en": "いふかたなし",
+      "ja": "いふかたなし",
+      "sentence": "",
+      "stage": 56,
+      "category": "古文"
+    },
+    {
+      "en": "いみじう",
+      "ja": "いみじう",
+      "sentence": "",
+      "stage": 56,
+      "category": "古文"
+    },
+    {
+      "en": "うちとく",
+      "ja": "うちとく",
+      "sentence": "",
+      "stage": 56,
+      "category": "古文"
+    },
+    {
+      "en": "うらなし",
+      "ja": "うらなし",
+      "sentence": "",
+      "stage": 56,
+      "category": "古文"
+    },
+    {
+      "en": "えうなし",
+      "ja": "えうなし",
+      "sentence": "",
+      "stage": 56,
+      "category": "古文"
+    },
+    {
+      "en": "おくゆかし",
+      "ja": "おくゆかし",
+      "sentence": "",
+      "stage": 56,
+      "category": "古文"
+    },
+    {
+      "en": "おぼしめす",
+      "ja": "おぼしめす",
+      "sentence": "",
+      "stage": 56,
+      "category": "古文"
+    },
+    {
+      "en": "おほとのごもる",
+      "ja": "おほとのごもる",
+      "sentence": "",
+      "stage": 57,
+      "category": "古文"
+    },
+    {
+      "en": "おほやけ",
+      "ja": "おほやけ",
+      "sentence": "",
+      "stage": 57,
+      "category": "古文"
+    },
+    {
+      "en": "おもなし",
+      "ja": "おもなし",
+      "sentence": "",
+      "stage": 57,
+      "category": "古文"
+    },
+    {
+      "en": "おもひやる",
+      "ja": "おもひやる",
+      "sentence": "",
+      "stage": 57,
+      "category": "古文"
+    },
+    {
+      "en": "かいなし",
+      "ja": "かいなし",
+      "sentence": "",
+      "stage": 57,
+      "category": "古文"
+    },
+    {
+      "en": "かきくる",
+      "ja": "かきくる",
+      "sentence": "",
+      "stage": 57,
+      "category": "古文"
+    },
+    {
+      "en": "かきつく",
+      "ja": "かきつく",
+      "sentence": "",
+      "stage": 57,
+      "category": "古文"
+    },
+    {
+      "en": "かこつける",
+      "ja": "かこつける",
+      "sentence": "",
+      "stage": 57,
+      "category": "古文"
+    },
+    {
+      "en": "かしらおろす",
+      "ja": "かしらおろす",
+      "sentence": "",
+      "stage": 58,
+      "category": "古文"
+    },
+    {
+      "en": "かたち",
+      "ja": "かたち",
+      "sentence": "",
+      "stage": 58,
+      "category": "古文"
+    },
+    {
+      "en": "かたみに見る",
+      "ja": "かたみに見る",
+      "sentence": "",
+      "stage": 58,
+      "category": "古文"
+    },
+    {
+      "en": "かたらふ",
+      "ja": "かたらふ",
+      "sentence": "",
+      "stage": 58,
+      "category": "古文"
+    },
+    {
+      "en": "かつがつ",
+      "ja": "かつがつ",
+      "sentence": "",
+      "stage": 58,
+      "category": "古文"
+    },
+    {
+      "en": "かばかりなり",
+      "ja": "かばかりなり",
+      "sentence": "",
+      "stage": 58,
+      "category": "古文"
+    },
+    {
+      "en": "きはやかなり",
+      "ja": "きはやかなり",
+      "sentence": "",
+      "stage": 58,
+      "category": "古文"
+    },
+    {
+      "en": "くちをしげなり",
+      "ja": "くちをしげなり",
+      "sentence": "",
+      "stage": 58,
+      "category": "古文"
+    },
+    {
+      "en": "けざやかなり",
+      "ja": "けざやかなり",
+      "sentence": "",
+      "stage": 59,
+      "category": "古文"
+    },
+    {
+      "en": "ここち",
+      "ja": "ここち",
+      "sentence": "",
+      "stage": 59,
+      "category": "古文"
+    },
+    {
+      "en": "こころあり",
+      "ja": "こころあり",
+      "sentence": "",
+      "stage": 59,
+      "category": "古文"
+    },
+    {
+      "en": "こころぐるし",
+      "ja": "こころぐるし",
+      "sentence": "",
+      "stage": 59,
+      "category": "古文"
+    },
+    {
+      "en": "こころざし",
+      "ja": "こころざし",
+      "sentence": "",
+      "stage": 59,
+      "category": "古文"
+    },
+    {
+      "en": "こころすごし",
+      "ja": "こころすごし",
+      "sentence": "",
+      "stage": 59,
+      "category": "古文"
+    },
+    {
+      "en": "こころづくし",
+      "ja": "こころづくし",
+      "sentence": "",
+      "stage": 59,
+      "category": "古文"
+    },
+    {
+      "en": "ことそぐ",
+      "ja": "ことそぐ",
+      "sentence": "",
+      "stage": 59,
+      "category": "古文"
+    },
+    {
+      "en": "さうぞく",
+      "ja": "さうぞく",
+      "sentence": "",
+      "stage": 60,
+      "category": "古文"
+    },
+    {
+      "en": "さかしだつ",
+      "ja": "さかしだつ",
+      "sentence": "",
+      "stage": 60,
+      "category": "古文"
+    },
+    {
+      "en": "さすらへ",
+      "ja": "さすらへ",
+      "sentence": "",
+      "stage": 60,
+      "category": "古文"
+    },
+    {
+      "en": "さのみ",
+      "ja": "さのみ",
+      "sentence": "",
+      "stage": 60,
+      "category": "古文"
+    },
+    {
+      "en": "さは",
+      "ja": "さは",
+      "sentence": "",
+      "stage": 60,
+      "category": "古文"
+    },
+    {
+      "en": "さり",
+      "ja": "さり",
+      "sentence": "",
+      "stage": 60,
+      "category": "古文"
+    },
+    {
+      "en": "さる",
+      "ja": "さる",
+      "sentence": "",
+      "stage": 60,
+      "category": "古文"
+    },
+    {
+      "en": "さるべき",
+      "ja": "さるべき",
+      "sentence": "",
+      "stage": 60,
+      "category": "古文"
+    },
+    {
+      "en": "さるものにて",
+      "ja": "さるものにて",
+      "sentence": "",
+      "stage": 61,
+      "category": "古文"
+    },
+    {
+      "en": "しあへず",
+      "ja": "しあへず",
+      "sentence": "",
+      "stage": 61,
+      "category": "古文"
+    },
+    {
+      "en": "しかじ",
+      "ja": "しかじ",
+      "sentence": "",
+      "stage": 61,
+      "category": "古文"
+    },
+    {
+      "en": "しどろなり",
+      "ja": "しどろなり",
+      "sentence": "",
+      "stage": 61,
+      "category": "古文"
+    },
+    {
+      "en": "しな",
+      "ja": "しな",
+      "sentence": "",
+      "stage": 61,
+      "category": "古文"
+    },
+    {
+      "en": "しほたる",
+      "ja": "しほたる",
+      "sentence": "",
+      "stage": 61,
+      "category": "古文"
+    },
+    {
+      "en": "すきもの",
+      "ja": "すきもの",
+      "sentence": "",
+      "stage": 61,
+      "category": "古文"
+    },
+    {
+      "en": "すずろごと",
+      "ja": "すずろごと",
+      "sentence": "",
+      "stage": 61,
+      "category": "古文"
+    },
+    {
+      "en": "せばし",
+      "ja": "せばし",
+      "sentence": "",
+      "stage": 62,
+      "category": "古文"
+    },
+    {
+      "en": "せめて",
+      "ja": "せめて",
+      "sentence": "",
+      "stage": 62,
+      "category": "古文"
+    },
+    {
+      "en": "そこばく",
+      "ja": "そこばく",
+      "sentence": "",
+      "stage": 62,
+      "category": "古文"
+    },
+    {
+      "en": "たえだえ",
+      "ja": "たえだえ",
+      "sentence": "",
+      "stage": 62,
+      "category": "古文"
+    },
+    {
+      "en": "たけなは",
+      "ja": "たけなは",
+      "sentence": "",
+      "stage": 62,
+      "category": "古文"
+    },
+    {
+      "en": "たちまち",
+      "ja": "たちまち",
+      "sentence": "",
+      "stage": 62,
+      "category": "古文"
+    },
+    {
+      "en": "たのもし",
+      "ja": "たのもし",
+      "sentence": "",
+      "stage": 62,
+      "category": "古文"
+    },
+    {
+      "en": "たまゆら",
+      "ja": "たまゆら",
+      "sentence": "",
+      "stage": 62,
+      "category": "古文"
+    },
+    {
+      "en": "ついでながら",
+      "ja": "ついでながら",
+      "sentence": "",
+      "stage": 63,
+      "category": "古文"
+    },
+    {
+      "en": "つきなし",
+      "ja": "つきなし",
+      "sentence": "",
+      "stage": 63,
+      "category": "古文"
+    },
+    {
+      "en": "つれづれぐさ",
+      "ja": "つれづれぐさ",
+      "sentence": "",
+      "stage": 63,
+      "category": "古文"
+    },
+    {
+      "en": "とが",
+      "ja": "とが",
+      "sentence": "",
+      "stage": 63,
+      "category": "古文"
+    },
+    {
+      "en": "とくと",
+      "ja": "とくと",
+      "sentence": "",
+      "stage": 63,
+      "category": "古文"
+    },
+    {
+      "en": "ところがら",
+      "ja": "ところがら",
+      "sentence": "",
+      "stage": 63,
+      "category": "古文"
+    },
+    {
+      "en": "なかなかめり",
+      "ja": "なかなかめり",
+      "sentence": "",
+      "stage": 63,
+      "category": "古文"
+    },
+    {
+      "en": "なごむ",
+      "ja": "なごむ",
+      "sentence": "",
+      "stage": 63,
+      "category": "古文"
+    },
+    {
+      "en": "なぞ",
+      "ja": "なぞ",
+      "sentence": "",
+      "stage": 64,
+      "category": "古文"
+    },
+    {
+      "en": "なつかしげなり",
+      "ja": "なつかしげなり",
+      "sentence": "",
+      "stage": 64,
+      "category": "古文"
+    },
+    {
+      "en": "なにがし",
+      "ja": "なにがし",
+      "sentence": "",
+      "stage": 64,
+      "category": "古文"
+    },
+    {
+      "en": "なほざりごと",
+      "ja": "なほざりごと",
+      "sentence": "",
+      "stage": 64,
+      "category": "古文"
+    },
+    {
+      "en": "なほなほし",
+      "ja": "なほなほし",
+      "sentence": "",
+      "stage": 64,
+      "category": "古文"
+    },
+    {
+      "en": "にげなげなり",
+      "ja": "にげなげなり",
+      "sentence": "",
+      "stage": 64,
+      "category": "古文"
+    },
+    {
+      "en": "ねたげなり",
+      "ja": "ねたげなり",
+      "sentence": "",
+      "stage": 64,
+      "category": "古文"
+    },
+    {
+      "en": "のどけし",
+      "ja": "のどけし",
+      "sentence": "",
+      "stage": 64,
+      "category": "古文"
+    },
+    {
+      "en": "はかばかしげなり",
+      "ja": "はかばかしげなり",
+      "sentence": "",
+      "stage": 65,
+      "category": "古文"
+    },
+    {
+      "en": "はしたなく",
+      "ja": "はしたなく",
+      "sentence": "",
+      "stage": 65,
+      "category": "古文"
+    },
+    {
+      "en": "ひがむ",
+      "ja": "ひがむ",
+      "sentence": "",
+      "stage": 65,
+      "category": "古文"
+    },
+    {
+      "en": "ひとやりならず",
+      "ja": "ひとやりならず",
+      "sentence": "",
+      "stage": 65,
+      "category": "古文"
+    },
+    {
+      "en": "ふつつかなり",
+      "ja": "ふつつかなり",
+      "sentence": "",
+      "stage": 65,
+      "category": "古文"
+    },
+    {
+      "en": "ほだし",
+      "ja": "ほだし",
+      "sentence": "",
+      "stage": 65,
+      "category": "古文"
+    },
+    {
+      "en": "まうし",
+      "ja": "まうし",
+      "sentence": "",
+      "stage": 65,
+      "category": "古文"
+    },
+    {
+      "en": "まさし",
+      "ja": "まさし",
+      "sentence": "",
+      "stage": 65,
+      "category": "古文"
+    },
+    {
+      "en": "まことし",
+      "ja": "まことし",
+      "sentence": "",
+      "stage": 66,
+      "category": "古文"
+    },
+    {
+      "en": "まどろむ",
+      "ja": "まどろむ",
+      "sentence": "",
+      "stage": 66,
+      "category": "古文"
+    },
+    {
+      "en": "まめだつ",
+      "ja": "まめだつ",
+      "sentence": "",
+      "stage": 66,
+      "category": "古文"
+    },
+    {
+      "en": "みぐし",
+      "ja": "みぐし",
+      "sentence": "",
+      "stage": 66,
+      "category": "古文"
+    },
+    {
+      "en": "みそかごと",
+      "ja": "みそかごと",
+      "sentence": "",
+      "stage": 66,
+      "category": "古文"
+    },
+    {
+      "en": "むなしくなる",
+      "ja": "むなしくなる",
+      "sentence": "",
+      "stage": 66,
+      "category": "古文"
+    },
+    {
+      "en": "めざましげなり",
+      "ja": "めざましげなり",
+      "sentence": "",
+      "stage": 66,
+      "category": "古文"
+    },
+    {
+      "en": "ものあはれ",
+      "ja": "ものあはれ",
+      "sentence": "",
+      "stage": 66,
+      "category": "古文"
+    },
+    {
+      "en": "ものから",
+      "ja": "ものから",
+      "sentence": "",
+      "stage": 67,
+      "category": "古文"
+    },
+    {
+      "en": "ものすごし",
+      "ja": "ものすごし",
+      "sentence": "",
+      "stage": 67,
+      "category": "古文"
+    },
+    {
+      "en": "やう",
+      "ja": "やう",
+      "sentence": "",
+      "stage": 67,
+      "category": "古文"
+    },
+    {
+      "en": "やがてさて",
+      "ja": "やがてさて",
+      "sentence": "",
+      "stage": 67,
+      "category": "古文"
+    },
+    {
+      "en": "やすげなり",
+      "ja": "やすげなり",
+      "sentence": "",
+      "stage": 67,
+      "category": "古文"
+    },
+    {
+      "en": "ゆかしげなり",
+      "ja": "ゆかしげなり",
+      "sentence": "",
+      "stage": 67,
+      "category": "古文"
+    },
+    {
+      "en": "ゆく末",
+      "ja": "ゆく末",
+      "sentence": "",
+      "stage": 67,
+      "category": "古文"
+    },
+    {
+      "en": "よこしまなり",
+      "ja": "よこしまなり",
+      "sentence": "",
+      "stage": 67,
+      "category": "古文"
+    },
+    {
+      "en": "よしある",
+      "ja": "よしある",
+      "sentence": "",
+      "stage": 68,
+      "category": "古文"
+    },
+    {
+      "en": "よしや",
+      "ja": "よしや",
+      "sentence": "",
+      "stage": 68,
+      "category": "古文"
+    },
+    {
+      "en": "わびる",
+      "ja": "わびる",
+      "sentence": "",
+      "stage": 68,
+      "category": "古文"
+    },
+    {
+      "en": "わりなげなり",
+      "ja": "わりなげなり",
+      "sentence": "",
+      "stage": 68,
+      "category": "古文"
+    },
+    {
+      "en": "をかしげなり",
+      "ja": "をかしげなり",
+      "sentence": "",
+      "stage": 68,
+      "category": "古文"
+    }
+  ],
   gI = [],
   Oo = [...dg, ...dI, ...uI, ...hI, ...fI],
   pI = ({
@@ -42526,7 +45354,8 @@ function CI() {
           Qe("削除エラー")
         }
       }
-    }, gu = (u, y, E = "英単語") => {
+    }, __maxStageForCategory = u => Math.max(1, ...Oo.filter(y => (y.category || "英単語") === u).map(y => Number(y.stage) || 1)), gu = (u, y, E = "英単語") => {
+      if (u === "sentence" && E === "古文") return Qe("例文モードは古文ないよ");
       let b = Oo.filter(q => (q.category || "英単語") === E),
         C = b.filter(q => q.stage === y);
       C.length === 0 && (C = b.slice(0, 8)), C.length === 0 && (C = dg.slice(0, 8));
@@ -42610,7 +45439,7 @@ function CI() {
           totalExp: B,
           unlockedStages: {
             ...C?.unlockedStages || {},
-            [he]: Math.min(20, U)
+            [he]: Math.min(__maxStageForCategory(he), U)
           },
           petPoints: ne,
           clearedStages: tn
@@ -52639,7 +55468,7 @@ function CI() {
                   })]
                 }), (0, r.jsxs)("button", {
                   className: "rx-rec",
-                  onClick: () => gu("sentence", Xt, Ft),
+                  onClick: () => Ft === "古文" ? Qe("例文モードは古文ないよ") : gu("sentence", Xt, Ft),
                   children: [(0, r.jsx)("span", {
                     className: "ic",
                     style: {
@@ -52664,7 +55493,7 @@ function CI() {
                     children: [(0, r.jsx)("b", {
                       children: "例文モード"
                     }), (0, r.jsx)("small", {
-                      children: "例文の中で単語の使い方を学ぶ"
+                      children: Ft === "古文" ? "例文モードは古文ないよ" : "例文の中で単語の使い方を学ぶ"
                     })]
                   }), (0, r.jsx)("span", {
                     className: "ch",
