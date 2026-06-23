@@ -51117,7 +51117,7 @@ function CI() {
   }), [Xo, ao] = (0, P.useState)(() => {
     let u = new Date;
     return u.setHours(0, 0, 0, 0), u.getTime()
-  }), [lr, Yo] = (0, P.useState)("stage"), [Jo, Zi] = (0, P.useState)(""), [ta, Si] = (0, P.useState)(null), [Ca, au] = (0, P.useState)("英単語"), [tr, ys] = (0, P.useState)("all"), [za, io] = (0, P.useState)("new"), [Xn, so] = (0, P.useState)(null), [Xl, Cg] = (0, P.useState)([]), [fi, Oc] = (0, P.useState)({
+  }), [lr, Yo] = (0, P.useState)("stage"), [Jo, Zi] = (0, P.useState)(""), [ta, Si] = (0, P.useState)(null), [Ca, au] = (0, P.useState)("英単語"), [__stageJump, __setStageJump] = (0, P.useState)(""), [tr, ys] = (0, P.useState)("all"), [za, io] = (0, P.useState)("new"), [Xn, so] = (0, P.useState)(null), [Xl, Cg] = (0, P.useState)([]), [fi, Oc] = (0, P.useState)({
     name: "",
     url: "",
     description: ""
@@ -61940,6 +61940,12 @@ function CI() {
                     jt = S ? "#64718A" : "#cfd8e6",
                     Vt = S ? "#3F8FD0" : "#7fb3dd",
                     nn = `<svg xmlns='http://www.w3.org/2000/svg' width='380' height='760' viewBox='0 0 380 760'><path d='M312 -10C332 80 272 140 292 230C312 320 358 360 328 470C298 560 342 660 322 770' stroke='${Vt}' stroke-width='13' stroke-linecap='round' fill='none' opacity='0.16'/><path d='M30 40C80 90 50 170 95 230C130 280 110 350 70 400' stroke='${jt}' stroke-width='2.6' stroke-dasharray='3 8' stroke-linecap='round' fill='none' opacity='0.22'/><path d='M245 555C295 595 318 655 288 740' stroke='${jt}' stroke-width='2.6' stroke-dasharray='3 8' stroke-linecap='round' fill='none' opacity='0.22'/><g transform='translate(28,66)' fill='${jt}' opacity='0.16'><rect x='4' y='18' width='30' height='22' rx='1'/><path d='M0 18L19 2L38 18Z'/><rect x='15' y='26' width='7' height='14' fill='white' opacity='0.85'/></g><g transform='translate(296,322) scale(1.5)' fill='${jt}' opacity='0.18'><rect x='0' y='3' width='22' height='3.2' rx='1'/><rect x='1.5' y='9' width='19' height='2.4' rx='1'/><rect x='3' y='5' width='2.8' height='17'/><rect x='16.2' y='5' width='2.8' height='17'/></g><g fill='${jt}' opacity='0.13'><path d='M236 70l26-36 26 36Z'/><path d='M286 80l22-30 22 30Z'/><path d='M30 648l24-32 24 32Z'/><path d='M70 656l18-24 18 24Z'/></g><g transform='translate(26,690)' fill='${jt}' opacity='0.15'><rect x='0' y='10' width='28' height='18' rx='1'/><path d='M-3 10L14 0L31 10Z'/><rect x='11' y='17' width='6' height='11' fill='white' opacity='0.85'/><rect x='40' y='14' width='22' height='14' rx='1'/><path d='M38 14L51 6L64 14Z'/></g><g fill='${jt}' opacity='0.16'><g transform='translate(52,500) scale(1.5)'><path d='M0 14L9 14L4.5 2Z'/><rect x='3.6' y='14' width='1.8' height='4'/></g><g transform='translate(96,536) scale(1.15)'><path d='M0 14L9 14L4.5 2Z'/><rect x='3.6' y='14' width='1.8' height='4'/></g><g transform='translate(330,210) scale(1.35)'><path d='M0 14L9 14L4.5 2Z'/><rect x='3.6' y='14' width='1.8' height='4'/></g><g transform='translate(20,170) scale(1.1)'><path d='M0 14L9 14L4.5 2Z'/><rect x='3.6' y='14' width='1.8' height='4'/></g><g transform='translate(348,560) scale(1.25)'><path d='M0 14L9 14L4.5 2Z'/><rect x='3.6' y='14' width='1.8' height='4'/></g><g transform='translate(160,742) scale(1.1)'><path d='M0 14L9 14L4.5 2Z'/><rect x='3.6' y='14' width='1.8' height='4'/></g></g></svg>`,
+                    __jumpStage = St => {
+                      let kr = Math.floor(Number(St));
+                      if (!Number.isFinite(kr)) return Qe("ステージ番号を入れてね");
+                      if (!y.includes(kr)) return Qe(`ステージ${kr}はないよ`);
+                      Bi(kr), h("modeSelect")
+                    },
                     pa = (0, r.jsx)("div", {
                       className: "stage-map-bg",
                       style: {
@@ -62275,6 +62281,124 @@ function CI() {
                             })]
                           }, St.key)
                         })
+                      }),
+                      Ft === "英単語" && Ce > 30 && (0, r.jsxs)("div", {
+                        style: {
+                          position: "relative",
+                          zIndex: 1,
+                          background: he,
+                          border: `1px solid ${ne}`,
+                          borderRadius: 16,
+                          padding: 12,
+                          margin: "0 0 10px",
+                          boxShadow: "0 2px 10px rgba(34,27,21,0.05)"
+                        },
+                        children: [(0, r.jsxs)("div", {
+                          style: {
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                            marginBottom: 9
+                          },
+                          children: [(0, r.jsx)("span", {
+                            style: {
+                              flex: 1,
+                              minWidth: 0,
+                              fontSize: 13,
+                              fontWeight: 900,
+                              color: B,
+                              fontFamily: '"Zen Maru Gothic",sans-serif'
+                            },
+                            children: "ステージジャンプ"
+                          }), (0, r.jsxs)("span", {
+                            style: {
+                              flex: "none",
+                              fontSize: 11,
+                              fontWeight: 800,
+                              color: G
+                            },
+                            children: ["1〜", y[y.length - 1]]
+                          })]
+                        }), (0, r.jsxs)("div", {
+                          style: {
+                            display: "flex",
+                            gap: 8
+                          },
+                          children: [(0, r.jsx)("input", {
+                            inputMode: "numeric",
+                            pattern: "[0-9]*",
+                            value: __stageJump,
+                            placeholder: "例: 100",
+                            onChange: St => __setStageJump(String(St.target.value || "").replace(/[^0-9]/g, "").slice(0, 3)),
+                            onKeyDown: St => {
+                              St.key === "Enter" && __jumpStage(__stageJump)
+                            },
+                            style: {
+                              flex: 1,
+                              minWidth: 0,
+                              height: 42,
+                              borderRadius: 12,
+                              border: `1px solid ${ne}`,
+                              background: S ? "#fff" : "rgba(255,255,255,.06)",
+                              color: B,
+                              padding: "0 12px",
+                              fontSize: 16,
+                              fontWeight: 800,
+                              fontFamily: "inherit",
+                              outline: "none"
+                            }
+                          }), (0, r.jsx)("button", {
+                            onClick: () => __jumpStage(__stageJump),
+                            style: {
+                              flex: "none",
+                              height: 42,
+                              border: "none",
+                              borderRadius: 12,
+                              background: q,
+                              color: "#fff",
+                              padding: "0 15px",
+                              fontSize: 13,
+                              fontWeight: 900,
+                              fontFamily: "inherit",
+                              cursor: "pointer",
+                              boxShadow: `0 4px 12px ${q}33`
+                            },
+                            children: "移動"
+                          })]
+                        }), (0, r.jsx)("div", {
+                          style: {
+                            display: "flex",
+                            gap: 6,
+                            overflowX: "auto",
+                            paddingTop: 9,
+                            WebkitOverflowScrolling: "touch"
+                          },
+                          children: [1, 25, 50, 75, 100, 125, 150, y[y.length - 1]].filter((St, kr, Ne) => y.includes(St) && Ne.indexOf(St) === kr).map(St => (0, r.jsx)("button", {
+                            onClick: () => __jumpStage(St),
+                            style: {
+                              flex: "0 0 auto",
+                              border: `1px solid ${q}44`,
+                              borderRadius: 999,
+                              background: `${q}10`,
+                              color: q,
+                              padding: "7px 11px",
+                              fontSize: 12,
+                              fontWeight: 900,
+                              fontFamily: "inherit",
+                              cursor: "pointer"
+                            },
+                            children: St === y[y.length - 1] ? "最後" : St
+                          }, St))
+                        }), (0, r.jsx)("div", {
+                          style: {
+                            marginTop: 7,
+                            fontSize: 11,
+                            fontWeight: 700,
+                            color: G,
+                            lineHeight: 1.5
+                          },
+                          children: "未開放の番号にも直接入れます。遠い範囲を先に練習したい時に使ってね。"
+                        })]
                       }),
                       (0, r.jsxs)("div", {
                         style: {
