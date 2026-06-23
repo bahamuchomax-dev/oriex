@@ -22,10 +22,34 @@ import { useEffect, useState } from "react";
 // used by legacyBridgeProfile.js and TeacherAdminPanel.jsx).
 const LEGACY_APP_ID = "gen-ron-kai-app-v1";
 const SEEN_KEY = "oxhVocabSeenAt";
+const CACHE_KEY = "oxhDistributedVocabCache";
 const MAX_WORDS = 200;
-const CACHE_MS = 60_000;
+const CACHE_MS = 10 * 60_000;
 
 let _cache = { at: 0, words: null };
+
+function readStoredCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || !Array.isArray(parsed.words) || !Number.isFinite(Number(parsed.at))) return null;
+    return { at: Number(parsed.at), words: parsed.words };
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredCache(words) {
+  const next = { at: Date.now(), words };
+  _cache = next;
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(next));
+  } catch {
+    /* storage unavailable - keep the in-memory cache */
+  }
+  return words;
+}
 
 // Mirror the legacy bundle's content filter (oriex-app.bundle.js ~L41342): hide any
 // word whose category/subject/title/en/ja mentions みわ, so the new home shows the SAME
@@ -40,6 +64,19 @@ function legacyVisible(w) {
 /** Lazily read the distributed words, newest first. Cached ~60s; never throws. */
 export async function loadDistributedVocab(force = false) {
   if (!force && _cache.words && Date.now() - _cache.at < CACHE_MS) return _cache.words;
+  const stored = !force ? readStoredCache() : null;
+  if (stored && Date.now() - stored.at < CACHE_MS) {
+    _cache = stored;
+    return stored.words;
+  }
+  if (typeof document !== "undefined" && document.visibilityState === "hidden") {
+    if (_cache.words) return _cache.words;
+    if (stored) {
+      _cache = stored;
+      return stored.words;
+    }
+    return null;
+  }
   try {
     const [{ db }, { collection, getDocs, query, limit }] = await Promise.all([
       import("../../firebase/firebase.js"),
@@ -51,12 +88,16 @@ export async function loadDistributedVocab(force = false) {
       .map((d) => ({ id: d.id, ...d.data() }))
       .filter(legacyVisible)
       .sort((a, b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0));
-    _cache = { at: Date.now(), words };
-    return words;
+    return writeStoredCache(words);
   } catch {
     // Hard failure (not signed in / offline / rules): return the last good read if we
     // have one, else null so callers can tell "failed" apart from "empty corpus".
-    return _cache.words || null;
+    if (_cache.words) return _cache.words;
+    if (stored) {
+      _cache = stored;
+      return stored.words;
+    }
+    return null;
   }
 }
 

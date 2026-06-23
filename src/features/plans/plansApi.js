@@ -16,6 +16,27 @@ import {
   computeBookProgress,
 } from "./planUtils.js";
 
+const STUDENT_PLAN_LIMIT = 20;
+const STUDENT_PLAN_PREVIEW_LIMIT = 6;
+const SENT_PLAN_LIMIT = 25;
+const PLAN_CACHE_MS = 5 * 60_000;
+
+const planCache = new Map(); // key -> { at, plans }
+
+function fresh(entry) {
+  return entry && Date.now() - entry.at < PLAN_CACHE_MS;
+}
+
+function cacheKey(kind, uid, n) {
+  return `${kind}:${uid}:${n}`;
+}
+
+async function fetchPlans(colRef, n) {
+  const q = query(colRef, orderBy("createdAt", "desc"), limit(n));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
 /**
  * Teacher sends a weekly plan to a student.
  * Writes 2 docs: the student's weeklyPlans/{planId} and the teacher's
@@ -68,13 +89,34 @@ export function subscribeMyPlans(studentUid, onChange, onError) {
   const q = query(
     refs.weeklyPlansCol(studentUid),
     orderBy("createdAt", "desc"),
-    limit(50)
+    limit(STUDENT_PLAN_LIMIT)
   );
   return onSnapshot(
     q,
-    (snap) => onChange(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
+    (snap) => {
+      const plans = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      planCache.set(cacheKey("student", studentUid, STUDENT_PLAN_LIMIT), {
+        at: Date.now(),
+        plans,
+      });
+      onChange(plans);
+    },
     (err) => onError?.(err)
   );
+}
+
+/**
+ * One-shot student plan read for previews (home card, badges).
+ * This avoids keeping a realtime listener open on the home screen.
+ */
+export async function loadMyPlans(studentUid, max = STUDENT_PLAN_PREVIEW_LIMIT, force = false) {
+  if (!studentUid) return [];
+  const key = cacheKey("student", studentUid, max);
+  const hit = planCache.get(key);
+  if (!force && fresh(hit)) return hit.plans;
+  const plans = await fetchPlans(refs.weeklyPlansCol(studentUid), max);
+  planCache.set(key, { at: Date.now(), plans });
+  return plans;
 }
 
 /**
@@ -108,6 +150,11 @@ export async function saveStudentProgress(plan, updatedItems) {
     console.warn("sentPlans mirror failed (non-fatal)", e);
   }
 
+  for (const key of planCache.keys()) {
+    if (key.startsWith(`student:${plan.studentUid}:`)) planCache.delete(key);
+    if (key.startsWith(`sent:${plan.teacherUid}:`)) planCache.delete(key);
+  }
+
   return { overallProgress, bookProgress };
 }
 
@@ -115,7 +162,11 @@ export async function saveStudentProgress(plan, updatedItems) {
  * Teacher loads their sent-plan history. getDocs only (no realtime required).
  */
 export async function loadSentPlans(teacherUid) {
-  const q = query(refs.sentPlansCol(teacherUid), orderBy("createdAt", "desc"), limit(100));
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  if (!teacherUid) return [];
+  const key = cacheKey("sent", teacherUid, SENT_PLAN_LIMIT);
+  const hit = planCache.get(key);
+  if (fresh(hit)) return hit.plans;
+  const plans = await fetchPlans(refs.sentPlansCol(teacherUid), SENT_PLAN_LIMIT);
+  planCache.set(key, { at: Date.now(), plans });
+  return plans;
 }

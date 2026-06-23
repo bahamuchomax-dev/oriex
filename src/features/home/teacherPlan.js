@@ -23,7 +23,6 @@ export function useTeacherPlan() {
   const [items, setItems] = useState(null);
   useEffect(() => {
     let cancelled = false;
-    let unsub = null;
     let unsubAuth = null;
     (async () => {
       try {
@@ -41,18 +40,17 @@ export function useTeacherPlan() {
         };
         // Wait for Firebase Auth to restore the session, then subscribe with the
         // authenticated uid (the Firestore read is gated by Rules to the student).
-        unsubAuth = fbAuth.onAuthStateChanged(fb.auth, (user) => {
+        // Home only needs a preview, so use a cached one-shot read instead of a
+        // long-lived realtime listener.
+        unsubAuth = fbAuth.onAuthStateChanged(fb.auth, async (user) => {
           if (cancelled) return;
-          if (unsub) {
-            try { unsub(); } catch { /* ignore */ }
-            unsub = null;
-          }
           const uid = (user && user.uid) || acct.uid;
           if (!uid) return;
           try {
-            unsub = plansMod.subscribeMyPlans(uid, apply, () => setItems(null));
+            const list = await plansMod.loadMyPlans(uid);
+            if (!cancelled) apply(list);
           } catch {
-            setItems(null);
+            if (!cancelled) setItems(null);
           }
         });
       } catch {
@@ -61,7 +59,6 @@ export function useTeacherPlan() {
     })();
     return () => {
       cancelled = true;
-      try { if (unsub) unsub(); } catch { /* ignore */ }
       try { if (unsubAuth) unsubAuth(); } catch { /* ignore */ }
     };
   }, []);
