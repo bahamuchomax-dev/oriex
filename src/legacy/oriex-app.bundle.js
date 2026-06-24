@@ -41530,3789 +41530,2690 @@ var cg = {
   fI = [
     {
       "en": "あいなし",
-      "ja": "あいなし",
+      "ja": "つまらない・気に入らない",
       "sentence": "",
       "stage": 1,
       "category": "古文"
     },
     {
       "en": "あからさまなり",
-      "ja": "あからさまなり",
+      "ja": "ほんの一時的だ",
       "sentence": "",
       "stage": 1,
       "category": "古文"
     },
     {
       "en": "あさまし",
-      "ja": "あさまし",
+      "ja": "驚きあきれる・情けない",
       "sentence": "",
       "stage": 1,
       "category": "古文"
     },
     {
       "en": "あした",
-      "ja": "あした",
+      "ja": "朝・翌朝",
       "sentence": "",
       "stage": 1,
       "category": "古文"
     },
     {
       "en": "あだなり",
-      "ja": "あだなり",
+      "ja": "はかない・浮気だ",
       "sentence": "",
       "stage": 1,
       "category": "古文"
     },
     {
       "en": "あぢきなし",
-      "ja": "あぢきなし",
+      "ja": "つまらない・どうしようもない",
       "sentence": "",
       "stage": 1,
       "category": "古文"
     },
     {
       "en": "あてなり",
-      "ja": "あてなり",
+      "ja": "上品だ・高貴だ",
       "sentence": "",
       "stage": 1,
       "category": "古文"
     },
     {
       "en": "あながちなり",
-      "ja": "あながちなり",
+      "ja": "一途だ・むやみだ",
       "sentence": "",
       "stage": 1,
       "category": "古文"
     },
     {
       "en": "あはれなり",
-      "ja": "あはれなり",
+      "ja": "しみじみ趣深い・かわいそうだ",
       "sentence": "",
       "stage": 2,
       "category": "古文"
     },
     {
       "en": "あまた",
-      "ja": "あまた",
+      "ja": "たくさん",
       "sentence": "",
       "stage": 2,
       "category": "古文"
     },
     {
       "en": "あやし",
-      "ja": "あやし",
+      "ja": "不思議だ・身分が低い",
       "sentence": "",
       "stage": 2,
       "category": "古文"
     },
     {
       "en": "あらまし",
-      "ja": "あらまし",
+      "ja": "予定・願望・概略",
       "sentence": "",
       "stage": 2,
       "category": "古文"
     },
     {
       "en": "ありがたし",
-      "ja": "ありがたし",
+      "ja": "めったにない・尊い",
       "sentence": "",
       "stage": 2,
       "category": "古文"
     },
     {
       "en": "ありく",
-      "ja": "ありく",
+      "ja": "動き回る・歩き回る",
       "sentence": "",
       "stage": 2,
       "category": "古文"
     },
     {
       "en": "いかが",
-      "ja": "いかが",
+      "ja": "どのように・どうして",
       "sentence": "",
       "stage": 2,
       "category": "古文"
     },
     {
       "en": "いかで",
-      "ja": "いかで",
+      "ja": "どうにかして・どうして",
       "sentence": "",
       "stage": 2,
       "category": "古文"
     },
     {
       "en": "いかでか",
-      "ja": "いかでか",
+      "ja": "どうして〜か、いや〜ない",
       "sentence": "",
       "stage": 3,
       "category": "古文"
     },
     {
       "en": "いかばかり",
-      "ja": "いかばかり",
+      "ja": "どれほど",
       "sentence": "",
       "stage": 3,
       "category": "古文"
     },
     {
       "en": "いかめし",
-      "ja": "いかめし",
+      "ja": "厳かだ・立派だ",
       "sentence": "",
       "stage": 3,
       "category": "古文"
     },
     {
       "en": "いぎたなし",
-      "ja": "いぎたなし",
+      "ja": "寝坊だ・眠り込んでいる",
       "sentence": "",
       "stage": 3,
       "category": "古文"
     },
     {
       "en": "いさ",
-      "ja": "いさ",
+      "ja": "さあどうだか",
       "sentence": "",
       "stage": 3,
       "category": "古文"
     },
     {
       "en": "いざ",
-      "ja": "いざ",
+      "ja": "さあ",
       "sentence": "",
       "stage": 3,
       "category": "古文"
     },
     {
       "en": "いそぎ",
-      "ja": "いそぎ",
+      "ja": "準備・急用",
       "sentence": "",
       "stage": 3,
       "category": "古文"
     },
     {
       "en": "いたし",
-      "ja": "いたし",
+      "ja": "たいそう・甚だしい",
       "sentence": "",
       "stage": 3,
       "category": "古文"
     },
     {
       "en": "いたづらなり",
-      "ja": "いたづらなり",
+      "ja": "むだだ・むなしい",
       "sentence": "",
       "stage": 4,
       "category": "古文"
     },
     {
       "en": "いつしか",
-      "ja": "いつしか",
+      "ja": "早く・いつの間にか",
       "sentence": "",
       "stage": 4,
       "category": "古文"
     },
     {
       "en": "いと",
-      "ja": "いと",
+      "ja": "たいそう・とても",
       "sentence": "",
       "stage": 4,
       "category": "古文"
     },
     {
       "en": "いとど",
-      "ja": "いとど",
+      "ja": "ますます・いっそう",
       "sentence": "",
       "stage": 4,
       "category": "古文"
     },
     {
       "en": "いとほし",
-      "ja": "いとほし",
+      "ja": "気の毒だ・かわいい",
       "sentence": "",
       "stage": 4,
       "category": "古文"
     },
     {
       "en": "いはけなし",
-      "ja": "いはけなし",
+      "ja": "幼い",
       "sentence": "",
       "stage": 4,
       "category": "古文"
     },
     {
       "en": "いぶかし",
-      "ja": "いぶかし",
+      "ja": "気がかりだ・知りたい",
       "sentence": "",
       "stage": 4,
       "category": "古文"
     },
     {
       "en": "いふかひなし",
-      "ja": "いふかひなし",
+      "ja": "言ってもむだだ・取るに足りない",
       "sentence": "",
       "stage": 4,
       "category": "古文"
     },
     {
       "en": "いみじ",
-      "ja": "いみじ",
+      "ja": "たいそう・すばらしい／ひどい",
       "sentence": "",
       "stage": 5,
       "category": "古文"
     },
     {
       "en": "いらふ",
-      "ja": "いらふ",
+      "ja": "返事をする",
       "sentence": "",
       "stage": 5,
       "category": "古文"
     },
     {
       "en": "うし",
-      "ja": "うし",
+      "ja": "つらい・いやだ",
       "sentence": "",
       "stage": 5,
       "category": "古文"
     },
     {
       "en": "うしろめたし",
-      "ja": "うしろめたし",
+      "ja": "気がかりだ・不安だ",
       "sentence": "",
       "stage": 5,
       "category": "古文"
     },
     {
       "en": "うたて",
-      "ja": "うたて",
+      "ja": "いやだ・情けない",
       "sentence": "",
       "stage": 5,
       "category": "古文"
     },
     {
       "en": "うつくし",
-      "ja": "うつくし",
+      "ja": "かわいらしい",
       "sentence": "",
       "stage": 5,
       "category": "古文"
     },
     {
       "en": "うつつ",
-      "ja": "うつつ",
+      "ja": "現実・正気",
       "sentence": "",
       "stage": 5,
       "category": "古文"
     },
     {
       "en": "うるはし",
-      "ja": "うるはし",
+      "ja": "きちんとしている・美しい",
       "sentence": "",
       "stage": 5,
       "category": "古文"
     },
     {
       "en": "え",
-      "ja": "え",
+      "ja": "〜できない",
       "sentence": "",
       "stage": 6,
       "category": "古文"
     },
     {
       "en": "えならず",
-      "ja": "えならず",
+      "ja": "何とも言えないほどよい",
       "sentence": "",
       "stage": 6,
       "category": "古文"
     },
     {
       "en": "おくる",
-      "ja": "おくる",
+      "ja": "先立たれる・残される",
       "sentence": "",
       "stage": 6,
       "category": "古文"
     },
     {
       "en": "おこたる",
-      "ja": "おこたる",
+      "ja": "病気がよくなる・怠る",
       "sentence": "",
       "stage": 6,
       "category": "古文"
     },
     {
       "en": "おこなふ",
-      "ja": "おこなふ",
+      "ja": "仏道修行をする",
       "sentence": "",
       "stage": 6,
       "category": "古文"
     },
     {
       "en": "おどろく",
-      "ja": "おどろく",
+      "ja": "はっと気づく・目を覚ます",
       "sentence": "",
       "stage": 6,
       "category": "古文"
     },
     {
       "en": "おぼえ",
-      "ja": "おぼえ",
+      "ja": "評判・寵愛",
       "sentence": "",
       "stage": 6,
       "category": "古文"
     },
     {
       "en": "おぼす",
-      "ja": "おぼす",
+      "ja": "お思いになる",
       "sentence": "",
       "stage": 6,
       "category": "古文"
     },
     {
       "en": "おぼつかなし",
-      "ja": "おぼつかなし",
+      "ja": "はっきりしない・心配だ",
       "sentence": "",
       "stage": 7,
       "category": "古文"
     },
     {
       "en": "おほかた",
-      "ja": "おほかた",
+      "ja": "だいたい・全然〜ない",
       "sentence": "",
       "stage": 7,
       "category": "古文"
     },
     {
       "en": "おほけなし",
-      "ja": "おほけなし",
+      "ja": "身の程知らずだ",
       "sentence": "",
       "stage": 7,
       "category": "古文"
     },
     {
       "en": "おほす",
-      "ja": "おほす",
+      "ja": "おっしゃる・命じる",
       "sentence": "",
       "stage": 7,
       "category": "古文"
     },
     {
       "en": "おもしろし",
-      "ja": "おもしろし",
+      "ja": "趣がある・すばらしい",
       "sentence": "",
       "stage": 7,
       "category": "古文"
     },
     {
       "en": "おろかなり",
-      "ja": "おろかなり",
+      "ja": "いい加減だ・並一通りだ",
       "sentence": "",
       "stage": 7,
       "category": "古文"
     },
     {
       "en": "かこつ",
-      "ja": "かこつ",
+      "ja": "嘆く・不平を言う",
       "sentence": "",
       "stage": 7,
       "category": "古文"
     },
     {
       "en": "かしこし",
-      "ja": "かしこし",
+      "ja": "恐れ多い・すばらしい",
       "sentence": "",
       "stage": 7,
       "category": "古文"
     },
     {
       "en": "かたし",
-      "ja": "かたし",
+      "ja": "難しい・めったにない",
       "sentence": "",
       "stage": 8,
       "category": "古文"
     },
     {
       "en": "かたじけなし",
-      "ja": "かたじけなし",
+      "ja": "ありがたい・恐れ多い",
       "sentence": "",
       "stage": 8,
       "category": "古文"
     },
     {
       "en": "かたはらいたし",
-      "ja": "かたはらいたし",
+      "ja": "見苦しい・気の毒だ",
       "sentence": "",
       "stage": 8,
       "category": "古文"
     },
     {
       "en": "かなし",
-      "ja": "かなし",
+      "ja": "かわいい・いとしい",
       "sentence": "",
       "stage": 8,
       "category": "古文"
     },
     {
       "en": "かまふ",
-      "ja": "かまふ",
+      "ja": "準備する・工夫する",
       "sentence": "",
       "stage": 8,
       "category": "古文"
     },
     {
       "en": "からし",
-      "ja": "からし",
+      "ja": "つらい・薄情だ",
       "sentence": "",
       "stage": 8,
       "category": "古文"
     },
     {
       "en": "かる",
-      "ja": "かる",
+      "ja": "離れる・遠ざかる",
       "sentence": "",
       "stage": 8,
       "category": "古文"
     },
     {
       "en": "きこしめす",
-      "ja": "きこしめす",
+      "ja": "お聞きになる・召し上がる",
       "sentence": "",
       "stage": 8,
       "category": "古文"
     },
     {
       "en": "きこゆ",
-      "ja": "きこゆ",
+      "ja": "聞こえる・申し上げる",
       "sentence": "",
       "stage": 9,
       "category": "古文"
     },
     {
       "en": "きは",
-      "ja": "きは",
+      "ja": "身分・程度",
       "sentence": "",
       "stage": 9,
       "category": "古文"
     },
     {
       "en": "けし",
-      "ja": "けし",
+      "ja": "異様だ・普通でない",
       "sentence": "",
       "stage": 9,
       "category": "古文"
     },
     {
       "en": "けしからず",
-      "ja": "けしからず",
+      "ja": "異様だ・よくない",
       "sentence": "",
       "stage": 9,
       "category": "古文"
     },
     {
       "en": "けしき",
-      "ja": "けしき",
+      "ja": "様子・機嫌",
       "sentence": "",
       "stage": 9,
       "category": "古文"
     },
     {
       "en": "けはひ",
-      "ja": "けはひ",
+      "ja": "様子・気配",
       "sentence": "",
       "stage": 9,
       "category": "古文"
     },
     {
       "en": "けやけし",
-      "ja": "けやけし",
+      "ja": "はっきりしている・異様だ",
       "sentence": "",
       "stage": 9,
       "category": "古文"
     },
     {
       "en": "こちたし",
-      "ja": "こちたし",
+      "ja": "大げさだ・仰々しい",
       "sentence": "",
       "stage": 9,
       "category": "古文"
     },
     {
       "en": "ことごとし",
-      "ja": "ことごとし",
+      "ja": "大げさだ・物々しい",
       "sentence": "",
       "stage": 10,
       "category": "古文"
     },
     {
       "en": "ことなり",
-      "ja": "ことなり",
+      "ja": "別だ・格別だ",
       "sentence": "",
       "stage": 10,
       "category": "古文"
     },
     {
       "en": "ことわり",
-      "ja": "ことわり",
+      "ja": "道理・理由",
       "sentence": "",
       "stage": 10,
       "category": "古文"
     },
     {
       "en": "こまやかなり",
-      "ja": "こまやかなり",
+      "ja": "心がこもっている・色が濃い",
       "sentence": "",
       "stage": 10,
       "category": "古文"
     },
     {
       "en": "さうざうし",
-      "ja": "さうざうし",
+      "ja": "物足りない・寂しい",
       "sentence": "",
       "stage": 10,
       "category": "古文"
     },
     {
       "en": "さかし",
-      "ja": "さかし",
+      "ja": "賢い・こざかしい",
       "sentence": "",
       "stage": 10,
       "category": "古文"
     },
     {
       "en": "さすがなり",
-      "ja": "さすがなり",
+      "ja": "そうはいってもやはり",
       "sentence": "",
       "stage": 10,
       "category": "古文"
     },
     {
       "en": "さながら",
-      "ja": "さながら",
+      "ja": "そのまま・すべて",
       "sentence": "",
       "stage": 10,
       "category": "古文"
     },
     {
       "en": "さはれ",
-      "ja": "さはれ",
+      "ja": "どうにでもなれ",
       "sentence": "",
       "stage": 11,
       "category": "古文"
     },
     {
       "en": "さらなり",
-      "ja": "さらなり",
+      "ja": "言うまでもない",
       "sentence": "",
       "stage": 11,
       "category": "古文"
     },
     {
       "en": "さらに",
-      "ja": "さらに",
+      "ja": "まったく〜ない・さらに",
       "sentence": "",
       "stage": 11,
       "category": "古文"
     },
     {
       "en": "しのぶ",
-      "ja": "しのぶ",
+      "ja": "我慢する・恋い慕う",
       "sentence": "",
       "stage": 11,
       "category": "古文"
     },
     {
       "en": "しるし",
-      "ja": "しるし",
+      "ja": "はっきりしている・効き目",
       "sentence": "",
       "stage": 11,
       "category": "古文"
     },
     {
       "en": "すきずきし",
-      "ja": "すきずきし",
+      "ja": "好色めいている・風流だ",
       "sentence": "",
       "stage": 11,
       "category": "古文"
     },
     {
       "en": "すさまじ",
-      "ja": "すさまじ",
+      "ja": "興ざめだ・殺風景だ",
       "sentence": "",
       "stage": 11,
       "category": "古文"
     },
     {
       "en": "すずろなり",
-      "ja": "すずろなり",
+      "ja": "むやみだ・思いがけない",
       "sentence": "",
       "stage": 11,
       "category": "古文"
     },
     {
       "en": "ずちなし",
-      "ja": "ずちなし",
+      "ja": "どうしようもない",
       "sentence": "",
       "stage": 12,
       "category": "古文"
     },
     {
       "en": "せちなり",
-      "ja": "せちなり",
+      "ja": "切実だ・ひどい",
       "sentence": "",
       "stage": 12,
       "category": "古文"
     },
     {
       "en": "そこら",
-      "ja": "そこら",
+      "ja": "たくさん・たいそう",
       "sentence": "",
       "stage": 12,
       "category": "古文"
     },
     {
       "en": "そぞろなり",
-      "ja": "そぞろなり",
+      "ja": "なんとなく・落ち着かない",
       "sentence": "",
       "stage": 12,
       "category": "古文"
     },
     {
       "en": "たいだいし",
-      "ja": "たいだいし",
+      "ja": "とんでもない・もってのほかだ",
       "sentence": "",
       "stage": 12,
       "category": "古文"
     },
     {
       "en": "たけし",
-      "ja": "たけし",
+      "ja": "勇ましい・勢いがある",
       "sentence": "",
       "stage": 12,
       "category": "古文"
     },
     {
       "en": "たづき",
-      "ja": "たづき",
+      "ja": "手段・よりどころ",
       "sentence": "",
       "stage": 12,
       "category": "古文"
     },
     {
       "en": "たのむ",
-      "ja": "たのむ",
+      "ja": "頼りにする・あてにさせる",
       "sentence": "",
       "stage": 12,
       "category": "古文"
     },
     {
       "en": "たばかる",
-      "ja": "たばかる",
+      "ja": "工夫する・だます",
       "sentence": "",
       "stage": 13,
       "category": "古文"
     },
     {
       "en": "たまふ",
-      "ja": "たまふ",
+      "ja": "くださる・〜なさる",
       "sentence": "",
       "stage": 13,
       "category": "古文"
     },
     {
       "en": "ためし",
-      "ja": "ためし",
+      "ja": "例・先例",
       "sentence": "",
       "stage": 13,
       "category": "古文"
     },
     {
       "en": "たゆ",
-      "ja": "たゆ",
+      "ja": "途絶える・気がゆるむ",
       "sentence": "",
       "stage": 13,
       "category": "古文"
     },
     {
       "en": "ついで",
-      "ja": "ついで",
+      "ja": "機会・順序",
       "sentence": "",
       "stage": 13,
       "category": "古文"
     },
     {
       "en": "つきづきし",
-      "ja": "つきづきし",
+      "ja": "似つかわしい",
       "sentence": "",
       "stage": 13,
       "category": "古文"
     },
     {
       "en": "つたなし",
-      "ja": "つたなし",
+      "ja": "下手だ・不運だ",
       "sentence": "",
       "stage": 13,
       "category": "古文"
     },
     {
       "en": "つつまし",
-      "ja": "つつまし",
+      "ja": "遠慮される・気が引ける",
       "sentence": "",
       "stage": 13,
       "category": "古文"
     },
     {
       "en": "つれづれなり",
-      "ja": "つれづれなり",
+      "ja": "退屈だ・もの寂しい",
       "sentence": "",
       "stage": 14,
       "category": "古文"
     },
     {
       "en": "つれなし",
-      "ja": "つれなし",
+      "ja": "平然としている・薄情だ",
       "sentence": "",
       "stage": 14,
       "category": "古文"
     },
     {
       "en": "ところせし",
-      "ja": "ところせし",
+      "ja": "窮屈だ・大げさだ",
       "sentence": "",
       "stage": 14,
       "category": "古文"
     },
     {
       "en": "とし",
-      "ja": "とし",
+      "ja": "早い・鋭い",
       "sentence": "",
       "stage": 14,
       "category": "古文"
     },
     {
       "en": "とぶらふ",
-      "ja": "とぶらふ",
+      "ja": "訪ねる・見舞う",
       "sentence": "",
       "stage": 14,
       "category": "古文"
     },
     {
       "en": "なかなかなり",
-      "ja": "なかなかなり",
+      "ja": "かえって・中途半端だ",
       "sentence": "",
       "stage": 14,
       "category": "古文"
     },
     {
       "en": "ながむ",
-      "ja": "ながむ",
+      "ja": "物思いに沈む・口ずさむ",
       "sentence": "",
       "stage": 14,
       "category": "古文"
     },
     {
       "en": "なつかし",
-      "ja": "なつかし",
+      "ja": "心ひかれる・親しみ深い",
       "sentence": "",
       "stage": 14,
       "category": "古文"
     },
     {
       "en": "なほ",
-      "ja": "なほ",
+      "ja": "やはり・さらに",
       "sentence": "",
       "stage": 15,
       "category": "古文"
     },
     {
       "en": "なほざりなり",
-      "ja": "なほざりなり",
+      "ja": "いい加減だ・おろそかだ",
       "sentence": "",
       "stage": 15,
       "category": "古文"
     },
     {
       "en": "なまめかし",
-      "ja": "なまめかし",
+      "ja": "若々しく美しい・優美だ",
       "sentence": "",
       "stage": 15,
       "category": "古文"
     },
     {
       "en": "なめし",
-      "ja": "なめし",
+      "ja": "無礼だ・失礼だ",
       "sentence": "",
       "stage": 15,
       "category": "古文"
     },
     {
       "en": "なやむ",
-      "ja": "なやむ",
+      "ja": "病気になる・苦しむ",
       "sentence": "",
       "stage": 15,
       "category": "古文"
     },
     {
       "en": "にほふ",
-      "ja": "にほふ",
+      "ja": "美しく映える・香る",
       "sentence": "",
       "stage": 15,
       "category": "古文"
     },
     {
       "en": "ねんごろなり",
-      "ja": "ねんごろなり",
+      "ja": "丁寧だ・親密だ",
       "sentence": "",
       "stage": 15,
       "category": "古文"
     },
     {
       "en": "ののしる",
-      "ja": "ののしる",
+      "ja": "大声で騒ぐ・評判になる",
       "sentence": "",
       "stage": 15,
       "category": "古文"
     },
     {
       "en": "はかなし",
-      "ja": "はかなし",
+      "ja": "頼りない・ちょっとした",
       "sentence": "",
       "stage": 16,
       "category": "古文"
     },
     {
       "en": "はかばかし",
-      "ja": "はかばかし",
+      "ja": "しっかりしている・はっきりしている",
       "sentence": "",
       "stage": 16,
       "category": "古文"
     },
     {
       "en": "はしたなし",
-      "ja": "はしたなし",
+      "ja": "中途半端だ・きまりが悪い",
       "sentence": "",
       "stage": 16,
       "category": "古文"
     },
     {
       "en": "はづかし",
-      "ja": "はづかし",
+      "ja": "こちらが恥ずかしくなるほど立派だ",
       "sentence": "",
       "stage": 16,
       "category": "古文"
     },
     {
       "en": "はべり",
-      "ja": "はべり",
+      "ja": "あります・おります",
       "sentence": "",
       "stage": 16,
       "category": "古文"
     },
     {
       "en": "ひがひがし",
-      "ja": "ひがひがし",
+      "ja": "ひねくれている・変だ",
       "sentence": "",
       "stage": 16,
       "category": "古文"
     },
     {
       "en": "ひねもす",
-      "ja": "ひねもす",
+      "ja": "一日中",
       "sentence": "",
       "stage": 16,
       "category": "古文"
     },
     {
       "en": "びんなし",
-      "ja": "びんなし",
+      "ja": "都合が悪い・困ったことだ",
       "sentence": "",
       "stage": 16,
       "category": "古文"
     },
     {
       "en": "ふびんなり",
-      "ja": "ふびんなり",
+      "ja": "都合が悪い・気の毒だ",
       "sentence": "",
       "stage": 17,
       "category": "古文"
     },
     {
       "en": "ふるさと",
-      "ja": "ふるさと",
+      "ja": "旧都・なじみの土地",
       "sentence": "",
       "stage": 17,
       "category": "古文"
     },
     {
       "en": "まうく",
-      "ja": "まうく",
+      "ja": "準備する・設ける",
       "sentence": "",
       "stage": 17,
       "category": "古文"
     },
     {
       "en": "まうづ",
-      "ja": "まうづ",
+      "ja": "参上する・参詣する",
       "sentence": "",
       "stage": 17,
       "category": "古文"
     },
     {
       "en": "まかづ",
-      "ja": "まかづ",
+      "ja": "退出する",
       "sentence": "",
       "stage": 17,
       "category": "古文"
     },
     {
       "en": "まかる",
-      "ja": "まかる",
+      "ja": "退出する・参る",
       "sentence": "",
       "stage": 17,
       "category": "古文"
     },
     {
       "en": "まさなし",
-      "ja": "まさなし",
+      "ja": "よくない・みっともない",
       "sentence": "",
       "stage": 17,
       "category": "古文"
     },
     {
       "en": "まめなり",
-      "ja": "まめなり",
+      "ja": "まじめだ・実用的だ",
       "sentence": "",
       "stage": 17,
       "category": "古文"
     },
     {
       "en": "まもる",
-      "ja": "まもる",
+      "ja": "じっと見つめる",
       "sentence": "",
       "stage": 18,
       "category": "古文"
     },
     {
       "en": "みそかなり",
-      "ja": "みそかなり",
+      "ja": "ひそかだ",
       "sentence": "",
       "stage": 18,
       "category": "古文"
     },
     {
       "en": "みやび",
-      "ja": "みやび",
+      "ja": "優雅・風流",
       "sentence": "",
       "stage": 18,
       "category": "古文"
     },
     {
       "en": "むげなり",
-      "ja": "むげなり",
+      "ja": "ひどい・まったく〜ない",
       "sentence": "",
       "stage": 18,
       "category": "古文"
     },
     {
       "en": "むつかし",
-      "ja": "むつかし",
+      "ja": "不快だ・面倒だ",
       "sentence": "",
       "stage": 18,
       "category": "古文"
     },
     {
       "en": "むつまじ",
-      "ja": "むつまじ",
+      "ja": "親しい",
       "sentence": "",
       "stage": 18,
       "category": "古文"
     },
     {
       "en": "めざまし",
-      "ja": "めざまし",
+      "ja": "気に入らない・すばらしい",
       "sentence": "",
       "stage": 18,
       "category": "古文"
     },
     {
       "en": "めづ",
-      "ja": "めづ",
+      "ja": "愛する・感嘆する",
       "sentence": "",
       "stage": 18,
       "category": "古文"
     },
     {
       "en": "めでたし",
-      "ja": "めでたし",
+      "ja": "すばらしい・立派だ",
       "sentence": "",
       "stage": 19,
       "category": "古文"
     },
     {
       "en": "めやすし",
-      "ja": "めやすし",
+      "ja": "見苦しくない・感じがよい",
       "sentence": "",
       "stage": 19,
       "category": "古文"
     },
     {
       "en": "ものし",
-      "ja": "ものし",
+      "ja": "気に入らない・不快だ",
       "sentence": "",
       "stage": 19,
       "category": "古文"
     },
     {
       "en": "やがて",
-      "ja": "やがて",
+      "ja": "そのまま・すぐに",
       "sentence": "",
       "stage": 19,
       "category": "古文"
     },
     {
       "en": "やさし",
-      "ja": "やさし",
+      "ja": "恥ずかしい・優美だ",
       "sentence": "",
       "stage": 19,
       "category": "古文"
     },
     {
       "en": "やすし",
-      "ja": "やすし",
+      "ja": "簡単だ・心安い",
       "sentence": "",
       "stage": 19,
       "category": "古文"
     },
     {
       "en": "やつす",
-      "ja": "やつす",
+      "ja": "地味な姿にする・変装する",
       "sentence": "",
       "stage": 19,
       "category": "古文"
     },
     {
       "en": "やむごとなし",
-      "ja": "やむごとなし",
+      "ja": "高貴だ・並々でない",
       "sentence": "",
       "stage": 19,
       "category": "古文"
     },
     {
       "en": "ゆかし",
-      "ja": "ゆかし",
+      "ja": "見たい・知りたい・聞きたい",
       "sentence": "",
       "stage": 20,
       "category": "古文"
     },
     {
       "en": "ゆくりなし",
-      "ja": "ゆくりなし",
+      "ja": "突然だ・思いがけない",
       "sentence": "",
       "stage": 20,
       "category": "古文"
     },
     {
       "en": "ゆゆし",
-      "ja": "ゆゆし",
+      "ja": "不吉だ・すばらしい・ひどい",
       "sentence": "",
       "stage": 20,
       "category": "古文"
     },
     {
       "en": "よし",
-      "ja": "よし",
+      "ja": "理由・方法・風情",
       "sentence": "",
       "stage": 20,
       "category": "古文"
     },
     {
       "en": "よしなし",
-      "ja": "よしなし",
+      "ja": "つまらない・理由がない",
       "sentence": "",
       "stage": 20,
       "category": "古文"
     },
     {
       "en": "よに",
-      "ja": "よに",
+      "ja": "実に・決して〜ない",
       "sentence": "",
       "stage": 20,
       "category": "古文"
     },
     {
       "en": "よろし",
-      "ja": "よろし",
+      "ja": "悪くない・普通によい",
       "sentence": "",
       "stage": 20,
       "category": "古文"
     },
     {
       "en": "らうがはし",
-      "ja": "らうがはし",
+      "ja": "騒がしい・乱雑だ",
       "sentence": "",
       "stage": 20,
       "category": "古文"
     },
     {
       "en": "わびし",
-      "ja": "わびし",
+      "ja": "つらい・寂しい",
       "sentence": "",
       "stage": 21,
       "category": "古文"
     },
     {
       "en": "わぶ",
-      "ja": "わぶ",
+      "ja": "つらく思う・困る",
       "sentence": "",
       "stage": 21,
       "category": "古文"
     },
     {
       "en": "わりなし",
-      "ja": "わりなし",
+      "ja": "道理に合わない・つらい",
       "sentence": "",
       "stage": 21,
       "category": "古文"
     },
     {
       "en": "をかし",
-      "ja": "をかし",
+      "ja": "趣深い・おもしろい",
       "sentence": "",
       "stage": 21,
       "category": "古文"
     },
     {
       "en": "をこなり",
-      "ja": "をこなり",
+      "ja": "愚かだ・ばかげている",
       "sentence": "",
       "stage": 21,
       "category": "古文"
     },
     {
-      "en": "あいぎゃう",
-      "ja": "あいぎゃう",
-      "sentence": "",
-      "stage": 21,
-      "category": "古文"
-    },
-    {
-      "en": "あえか",
-      "ja": "あえか",
+      "en": "あえかなり",
+      "ja": "弱々しい・はかなげだ",
       "sentence": "",
       "stage": 21,
       "category": "古文"
     },
     {
       "en": "あくがる",
-      "ja": "あくがる",
+      "ja": "さまよう・心が離れる",
       "sentence": "",
       "stage": 21,
       "category": "古文"
     },
     {
       "en": "あさむ",
-      "ja": "あさむ",
+      "ja": "驚く・あきれる",
       "sentence": "",
-      "stage": 22,
+      "stage": 21,
       "category": "古文"
     },
     {
-      "en": "あながち",
-      "ja": "あながち",
-      "sentence": "",
-      "stage": 22,
-      "category": "古文"
-    },
-    {
-      "en": "あまたたび",
-      "ja": "あまたたび",
-      "sentence": "",
-      "stage": 22,
-      "category": "古文"
-    },
-    {
-      "en": "あらぬ",
-      "ja": "あらぬ",
+      "en": "あなづる",
+      "ja": "軽んじる・見下す",
       "sentence": "",
       "stage": 22,
       "category": "古文"
     },
     {
       "en": "あらまほし",
-      "ja": "あらまほし",
+      "ja": "理想的だ・望ましい",
       "sentence": "",
       "stage": 22,
       "category": "古文"
     },
     {
       "en": "ありし",
-      "ja": "ありし",
+      "ja": "以前の・昔の",
       "sentence": "",
       "stage": 22,
       "category": "古文"
     },
     {
       "en": "いかさま",
-      "ja": "いかさま",
+      "ja": "どのように・きっと",
       "sentence": "",
       "stage": 22,
-      "category": "古文"
-    },
-    {
-      "en": "いかならむ",
-      "ja": "いかならむ",
-      "sentence": "",
-      "stage": 22,
-      "category": "古文"
-    },
-    {
-      "en": "いかにも",
-      "ja": "いかにも",
-      "sentence": "",
-      "stage": 23,
-      "category": "古文"
-    },
-    {
-      "en": "いたう",
-      "ja": "いたう",
-      "sentence": "",
-      "stage": 23,
       "category": "古文"
     },
     {
       "en": "いづく",
-      "ja": "いづく",
+      "ja": "どこ",
       "sentence": "",
-      "stage": 23,
+      "stage": 22,
       "category": "古文"
     },
     {
       "en": "いづち",
-      "ja": "いづち",
+      "ja": "どちらへ",
       "sentence": "",
-      "stage": 23,
+      "stage": 22,
       "category": "古文"
     },
     {
       "en": "いづれ",
-      "ja": "いづれ",
+      "ja": "どれ・どちら",
       "sentence": "",
-      "stage": 23,
+      "stage": 22,
       "category": "古文"
     },
     {
       "en": "いで",
-      "ja": "いで",
+      "ja": "さあ・さて",
       "sentence": "",
-      "stage": 23,
+      "stage": 22,
       "category": "古文"
     },
     {
       "en": "いとけなし",
-      "ja": "いとけなし",
+      "ja": "幼い",
       "sentence": "",
       "stage": 23,
       "category": "古文"
     },
     {
       "en": "いひしろふ",
-      "ja": "いひしろふ",
+      "ja": "言い争う",
       "sentence": "",
       "stage": 23,
       "category": "古文"
     },
     {
       "en": "いふもおろかなり",
-      "ja": "いふもおろかなり",
+      "ja": "言うまでもない",
       "sentence": "",
-      "stage": 24,
+      "stage": 23,
       "category": "古文"
     },
     {
       "en": "いまめかし",
-      "ja": "いまめかし",
+      "ja": "現代風だ・華やかだ",
       "sentence": "",
-      "stage": 24,
+      "stage": 23,
       "category": "古文"
     },
     {
       "en": "うたがふ",
-      "ja": "うたがふ",
+      "ja": "ためらう・疑う",
       "sentence": "",
-      "stage": 24,
+      "stage": 23,
       "category": "古文"
     },
     {
       "en": "うちつけなり",
-      "ja": "うちつけなり",
+      "ja": "突然だ・軽率だ",
       "sentence": "",
-      "stage": 24,
+      "stage": 23,
       "category": "古文"
     },
     {
       "en": "うつろふ",
-      "ja": "うつろふ",
+      "ja": "色あせる・移り変わる",
       "sentence": "",
-      "stage": 24,
+      "stage": 23,
       "category": "古文"
     },
     {
       "en": "うるさし",
-      "ja": "うるさし",
+      "ja": "面倒だ・いやだ",
       "sentence": "",
-      "stage": 24,
+      "stage": 23,
       "category": "古文"
     },
     {
       "en": "おいらかなり",
-      "ja": "おいらかなり",
+      "ja": "おっとりしている",
       "sentence": "",
       "stage": 24,
       "category": "古文"
     },
     {
       "en": "おとなふ",
-      "ja": "おとなふ",
+      "ja": "音を立てる・訪れる",
       "sentence": "",
       "stage": 24,
       "category": "古文"
     },
     {
       "en": "おとなぶ",
-      "ja": "おとなぶ",
+      "ja": "大人びる",
       "sentence": "",
-      "stage": 25,
+      "stage": 24,
       "category": "古文"
     },
     {
       "en": "おのづから",
-      "ja": "おのづから",
+      "ja": "自然に・偶然に",
       "sentence": "",
-      "stage": 25,
+      "stage": 24,
       "category": "古文"
     },
     {
       "en": "おぼめく",
-      "ja": "おぼめく",
+      "ja": "はっきりしない・とぼける",
       "sentence": "",
-      "stage": 25,
+      "stage": 24,
       "category": "古文"
     },
     {
       "en": "およすく",
-      "ja": "およすく",
+      "ja": "成長する・大人びる",
       "sentence": "",
-      "stage": 25,
+      "stage": 24,
       "category": "古文"
     },
     {
       "en": "おろそかなり",
-      "ja": "おろそかなり",
+      "ja": "いい加減だ・粗末だ",
       "sentence": "",
-      "stage": 25,
+      "stage": 24,
       "category": "古文"
     },
     {
       "en": "かきくらす",
-      "ja": "かきくらす",
+      "ja": "涙で目の前が暗くなる",
       "sentence": "",
-      "stage": 25,
+      "stage": 24,
       "category": "古文"
     },
     {
       "en": "かく",
-      "ja": "かく",
+      "ja": "このように",
       "sentence": "",
       "stage": 25,
       "category": "古文"
     },
     {
       "en": "かくて",
-      "ja": "かくて",
+      "ja": "こうして・このままで",
       "sentence": "",
       "stage": 25,
       "category": "古文"
     },
     {
-      "en": "かし",
-      "ja": "かし",
-      "sentence": "",
-      "stage": 26,
-      "category": "古文"
-    },
-    {
       "en": "かしづく",
-      "ja": "かしづく",
+      "ja": "大切に世話をする",
       "sentence": "",
-      "stage": 26,
+      "stage": 25,
       "category": "古文"
     },
     {
       "en": "かたみに",
-      "ja": "かたみに",
+      "ja": "互いに",
       "sentence": "",
-      "stage": 26,
+      "stage": 25,
       "category": "古文"
     },
     {
       "en": "かづく",
-      "ja": "かづく",
+      "ja": "かぶる・ほうびをいただく",
       "sentence": "",
-      "stage": 26,
+      "stage": 25,
       "category": "古文"
     },
     {
       "en": "かど",
-      "ja": "かど",
+      "ja": "才能・趣",
       "sentence": "",
-      "stage": 26,
+      "stage": 25,
       "category": "古文"
     },
     {
       "en": "かひなし",
-      "ja": "かひなし",
+      "ja": "むだだ・効果がない",
       "sentence": "",
-      "stage": 26,
+      "stage": 25,
       "category": "古文"
     },
     {
       "en": "かまびすし",
-      "ja": "かまびすし",
+      "ja": "やかましい",
       "sentence": "",
-      "stage": 26,
+      "stage": 25,
       "category": "古文"
     },
     {
       "en": "かるがるし",
-      "ja": "かるがるし",
+      "ja": "軽率だ",
       "sentence": "",
       "stage": 26,
       "category": "古文"
     },
     {
       "en": "きよらなり",
-      "ja": "きよらなり",
+      "ja": "上品で美しい",
       "sentence": "",
-      "stage": 27,
+      "stage": 26,
       "category": "古文"
     },
     {
       "en": "くちをし",
-      "ja": "くちをし",
+      "ja": "残念だ・つまらない",
       "sentence": "",
-      "stage": 27,
+      "stage": 26,
       "category": "古文"
     },
     {
       "en": "くまなし",
-      "ja": "くまなし",
+      "ja": "暗い所がない・行き届いている",
       "sentence": "",
-      "stage": 27,
+      "stage": 26,
       "category": "古文"
     },
     {
       "en": "くやし",
-      "ja": "くやし",
+      "ja": "悔しい・残念だ",
       "sentence": "",
-      "stage": 27,
+      "stage": 26,
       "category": "古文"
     },
     {
       "en": "けうなり",
-      "ja": "けうなり",
+      "ja": "珍しい・普通でない",
       "sentence": "",
-      "stage": 27,
+      "stage": 26,
       "category": "古文"
     },
     {
       "en": "けだかし",
-      "ja": "けだかし",
+      "ja": "気品がある",
       "sentence": "",
-      "stage": 27,
+      "stage": 26,
       "category": "古文"
     },
     {
       "en": "けに",
-      "ja": "けに",
+      "ja": "いっそう・なるほど",
       "sentence": "",
-      "stage": 27,
-      "category": "古文"
-    },
-    {
-      "en": "ここら",
-      "ja": "ここら",
-      "sentence": "",
-      "stage": 27,
-      "category": "古文"
-    },
-    {
-      "en": "こそ",
-      "ja": "こそ",
-      "sentence": "",
-      "stage": 28,
+      "stage": 26,
       "category": "古文"
     },
     {
       "en": "こなた",
-      "ja": "こなた",
+      "ja": "こちら・こちら側",
       "sentence": "",
-      "stage": 28,
+      "stage": 27,
       "category": "古文"
     },
     {
       "en": "こよなし",
-      "ja": "こよなし",
+      "ja": "格段である・この上ない",
       "sentence": "",
-      "stage": 28,
+      "stage": 27,
       "category": "古文"
     },
     {
       "en": "さうなし",
-      "ja": "さうなし",
+      "ja": "たやすい・ためらわない",
       "sentence": "",
-      "stage": 28,
+      "stage": 27,
       "category": "古文"
     },
     {
       "en": "さうどく",
-      "ja": "さうどく",
+      "ja": "騒ぐ・取り乱す",
       "sentence": "",
-      "stage": 28,
+      "stage": 27,
       "category": "古文"
     },
     {
       "en": "さかしら",
-      "ja": "さかしら",
+      "ja": "利口ぶること・差し出がましいこと",
       "sentence": "",
-      "stage": 28,
+      "stage": 27,
       "category": "古文"
     },
     {
       "en": "さすらふ",
-      "ja": "さすらふ",
+      "ja": "さまよう",
       "sentence": "",
-      "stage": 28,
+      "stage": 27,
       "category": "古文"
     },
     {
       "en": "さだむ",
-      "ja": "さだむ",
+      "ja": "決める・評定する",
+      "sentence": "",
+      "stage": 27,
+      "category": "古文"
+    },
+    {
+      "en": "さなり",
+      "ja": "そのようだ・そうである",
+      "sentence": "",
+      "stage": 27,
+      "category": "古文"
+    },
+    {
+      "en": "さばかり",
+      "ja": "それほど・あれほど",
       "sentence": "",
       "stage": 28,
       "category": "古文"
     },
     {
-      "en": "さなり",
-      "ja": "さなり",
-      "sentence": "",
-      "stage": 29,
-      "category": "古文"
-    },
-    {
-      "en": "さばかり",
-      "ja": "さばかり",
-      "sentence": "",
-      "stage": 29,
-      "category": "古文"
-    },
-    {
       "en": "さぶらふ",
-      "ja": "さぶらふ",
+      "ja": "お仕えする・あります",
       "sentence": "",
-      "stage": 29,
+      "stage": 28,
       "category": "古文"
     },
     {
       "en": "さま",
-      "ja": "さま",
+      "ja": "様子・身分・方法",
       "sentence": "",
-      "stage": 29,
+      "stage": 28,
       "category": "古文"
     },
     {
       "en": "さやかなり",
-      "ja": "さやかなり",
+      "ja": "はっきりしている",
       "sentence": "",
-      "stage": 29,
+      "stage": 28,
       "category": "古文"
     },
     {
       "en": "さらぬ",
-      "ja": "さらぬ",
+      "ja": "そうでない・別の",
       "sentence": "",
-      "stage": 29,
+      "stage": 28,
       "category": "古文"
     },
     {
       "en": "しか",
-      "ja": "しか",
+      "ja": "そのように",
       "sentence": "",
-      "stage": 29,
+      "stage": 28,
       "category": "古文"
     },
     {
       "en": "しかすがに",
-      "ja": "しかすがに",
+      "ja": "そうはいってもやはり",
+      "sentence": "",
+      "stage": 28,
+      "category": "古文"
+    },
+    {
+      "en": "したたむ",
+      "ja": "整理する・処理する",
+      "sentence": "",
+      "stage": 28,
+      "category": "古文"
+    },
+    {
+      "en": "しどけなし",
+      "ja": "だらしない・乱れている",
       "sentence": "",
       "stage": 29,
       "category": "古文"
     },
     {
-      "en": "したたむ",
-      "ja": "したたむ",
-      "sentence": "",
-      "stage": 30,
-      "category": "古文"
-    },
-    {
-      "en": "しどけなし",
-      "ja": "しどけなし",
-      "sentence": "",
-      "stage": 30,
-      "category": "古文"
-    },
-    {
       "en": "しる",
-      "ja": "しる",
+      "ja": "治める・領有する",
       "sentence": "",
-      "stage": 30,
+      "stage": 29,
       "category": "古文"
     },
     {
       "en": "すごし",
-      "ja": "すごし",
+      "ja": "ぞっとするほど寂しい・すばらしい",
       "sentence": "",
-      "stage": 30,
+      "stage": 29,
       "category": "古文"
     },
     {
       "en": "すべなし",
-      "ja": "すべなし",
+      "ja": "どうしようもない",
       "sentence": "",
-      "stage": 30,
+      "stage": 29,
       "category": "古文"
     },
     {
       "en": "すみやかなり",
-      "ja": "すみやかなり",
+      "ja": "早い・すぐだ",
       "sentence": "",
-      "stage": 30,
+      "stage": 29,
       "category": "古文"
     },
     {
       "en": "せうそこ",
-      "ja": "せうそこ",
+      "ja": "手紙・連絡",
       "sentence": "",
-      "stage": 30,
+      "stage": 29,
       "category": "古文"
     },
     {
       "en": "せちに",
-      "ja": "せちに",
+      "ja": "しきりに・切実に",
+      "sentence": "",
+      "stage": 29,
+      "category": "古文"
+    },
+    {
+      "en": "たえて",
+      "ja": "まったく〜ない",
+      "sentence": "",
+      "stage": 29,
+      "category": "古文"
+    },
+    {
+      "en": "たぐひ",
+      "ja": "同類・例",
       "sentence": "",
       "stage": 30,
       "category": "古文"
     },
     {
-      "en": "たえて",
-      "ja": "たえて",
-      "sentence": "",
-      "stage": 31,
-      "category": "古文"
-    },
-    {
-      "en": "たぐひ",
-      "ja": "たぐひ",
-      "sentence": "",
-      "stage": 31,
-      "category": "古文"
-    },
-    {
       "en": "ただならず",
-      "ja": "ただならず",
+      "ja": "普通でない・妊娠している",
       "sentence": "",
-      "stage": 31,
+      "stage": 30,
       "category": "古文"
     },
     {
       "en": "たまさかなり",
-      "ja": "たまさかなり",
+      "ja": "まれだ・偶然だ",
       "sentence": "",
-      "stage": 31,
+      "stage": 30,
       "category": "古文"
     },
     {
       "en": "ついゐる",
-      "ja": "ついゐる",
+      "ja": "ひざまずく・座る",
       "sentence": "",
-      "stage": 31,
+      "stage": 30,
       "category": "古文"
     },
     {
       "en": "つかうまつる",
-      "ja": "つかうまつる",
+      "ja": "お仕えする・いたす",
       "sentence": "",
-      "stage": 31,
+      "stage": 30,
       "category": "古文"
     },
     {
       "en": "つくづく",
-      "ja": "つくづく",
+      "ja": "しみじみと",
       "sentence": "",
-      "stage": 31,
+      "stage": 30,
       "category": "古文"
     },
     {
       "en": "つごもり",
-      "ja": "つごもり",
+      "ja": "月末",
+      "sentence": "",
+      "stage": 30,
+      "category": "古文"
+    },
+    {
+      "en": "つとめて",
+      "ja": "早朝・翌朝",
+      "sentence": "",
+      "stage": 30,
+      "category": "古文"
+    },
+    {
+      "en": "つゆ",
+      "ja": "少しも〜ない",
       "sentence": "",
       "stage": 31,
       "category": "古文"
     },
     {
-      "en": "つとめて",
-      "ja": "つとめて",
-      "sentence": "",
-      "stage": 32,
-      "category": "古文"
-    },
-    {
-      "en": "つゆ",
-      "ja": "つゆ",
-      "sentence": "",
-      "stage": 32,
-      "category": "古文"
-    },
-    {
       "en": "てうず",
-      "ja": "てうず",
+      "ja": "整える・調理する",
       "sentence": "",
-      "stage": 32,
+      "stage": 31,
       "category": "古文"
     },
     {
       "en": "とかく",
-      "ja": "とかく",
+      "ja": "あれこれ・ともかく",
       "sentence": "",
-      "stage": 32,
+      "stage": 31,
       "category": "古文"
     },
     {
       "en": "とく",
-      "ja": "とく",
+      "ja": "早く",
       "sentence": "",
-      "stage": 32,
+      "stage": 31,
       "category": "古文"
     },
     {
       "en": "とみに",
-      "ja": "とみに",
+      "ja": "急に・すぐには",
       "sentence": "",
-      "stage": 32,
+      "stage": 31,
       "category": "古文"
     },
     {
       "en": "ともすれば",
-      "ja": "ともすれば",
+      "ja": "ややもすると",
       "sentence": "",
-      "stage": 32,
+      "stage": 31,
       "category": "古文"
     },
     {
       "en": "とよむ",
-      "ja": "とよむ",
+      "ja": "響きわたる・評判になる",
+      "sentence": "",
+      "stage": 31,
+      "category": "古文"
+    },
+    {
+      "en": "なのめなり",
+      "ja": "普通だ・いい加減だ",
+      "sentence": "",
+      "stage": 31,
+      "category": "古文"
+    },
+    {
+      "en": "なべて",
+      "ja": "一般に・すべて",
       "sentence": "",
       "stage": 32,
       "category": "古文"
     },
     {
-      "en": "なかなか",
-      "ja": "なかなか",
-      "sentence": "",
-      "stage": 33,
-      "category": "古文"
-    },
-    {
-      "en": "なからむ",
-      "ja": "なからむ",
-      "sentence": "",
-      "stage": 33,
-      "category": "古文"
-    },
-    {
-      "en": "なのめなり",
-      "ja": "なのめなり",
-      "sentence": "",
-      "stage": 33,
-      "category": "古文"
-    },
-    {
-      "en": "なべて",
-      "ja": "なべて",
-      "sentence": "",
-      "stage": 33,
-      "category": "古文"
-    },
-    {
       "en": "なまじひ",
-      "ja": "なまじひ",
+      "ja": "中途半端に・無理に",
       "sentence": "",
-      "stage": 33,
+      "stage": 32,
       "category": "古文"
     },
     {
       "en": "なむ",
-      "ja": "なむ",
+      "ja": "きっと〜てほしい・係助詞",
       "sentence": "",
-      "stage": 33,
+      "stage": 32,
       "category": "古文"
     },
     {
       "en": "にげなし",
-      "ja": "にげなし",
+      "ja": "似合わない",
       "sentence": "",
-      "stage": 33,
+      "stage": 32,
       "category": "古文"
     },
     {
       "en": "にほひ",
-      "ja": "にほひ",
+      "ja": "美しさ・つや",
+      "sentence": "",
+      "stage": 32,
+      "category": "古文"
+    },
+    {
+      "en": "ねたし",
+      "ja": "しゃくだ・憎らしい",
+      "sentence": "",
+      "stage": 32,
+      "category": "古文"
+    },
+    {
+      "en": "のたまふ",
+      "ja": "おっしゃる",
+      "sentence": "",
+      "stage": 32,
+      "category": "古文"
+    },
+    {
+      "en": "のどかなり",
+      "ja": "穏やかだ・のんびりしている",
+      "sentence": "",
+      "stage": 32,
+      "category": "古文"
+    },
+    {
+      "en": "はかる",
+      "ja": "だます・相談する",
       "sentence": "",
       "stage": 33,
       "category": "古文"
     },
     {
-      "en": "ぬべし",
-      "ja": "ぬべし",
-      "sentence": "",
-      "stage": 34,
-      "category": "古文"
-    },
-    {
-      "en": "ねたし",
-      "ja": "ねたし",
-      "sentence": "",
-      "stage": 34,
-      "category": "古文"
-    },
-    {
-      "en": "のたまふ",
-      "ja": "のたまふ",
-      "sentence": "",
-      "stage": 34,
-      "category": "古文"
-    },
-    {
-      "en": "のどかなり",
-      "ja": "のどかなり",
-      "sentence": "",
-      "stage": 34,
-      "category": "古文"
-    },
-    {
-      "en": "はかる",
-      "ja": "はかる",
-      "sentence": "",
-      "stage": 34,
-      "category": "古文"
-    },
-    {
-      "en": "はした",
-      "ja": "はした",
-      "sentence": "",
-      "stage": 34,
-      "category": "古文"
-    },
-    {
       "en": "はた",
-      "ja": "はた",
+      "ja": "また・それでもやはり",
       "sentence": "",
-      "stage": 34,
+      "stage": 33,
       "category": "古文"
     },
     {
       "en": "はつかなり",
-      "ja": "はつかなり",
+      "ja": "わずかだ",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "ひがごと",
+      "ja": "間違い・心得違い",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "ひとへに",
+      "ja": "ひたすら・まったく",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "ひま",
+      "ja": "すき間・暇",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "ふす",
+      "ja": "横になる・寝る",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "ほい",
+      "ja": "本来の願い",
+      "sentence": "",
+      "stage": 33,
+      "category": "古文"
+    },
+    {
+      "en": "まうでく",
+      "ja": "参上して来る",
       "sentence": "",
       "stage": 34,
       "category": "古文"
     },
     {
-      "en": "ひがごと",
-      "ja": "ひがごと",
-      "sentence": "",
-      "stage": 35,
-      "category": "古文"
-    },
-    {
-      "en": "ひとへに",
-      "ja": "ひとへに",
-      "sentence": "",
-      "stage": 35,
-      "category": "古文"
-    },
-    {
-      "en": "ひま",
-      "ja": "ひま",
-      "sentence": "",
-      "stage": 35,
-      "category": "古文"
-    },
-    {
-      "en": "ふす",
-      "ja": "ふす",
-      "sentence": "",
-      "stage": 35,
-      "category": "古文"
-    },
-    {
-      "en": "ほい",
-      "ja": "ほい",
-      "sentence": "",
-      "stage": 35,
-      "category": "古文"
-    },
-    {
-      "en": "まうでく",
-      "ja": "まうでく",
-      "sentence": "",
-      "stage": 35,
-      "category": "古文"
-    },
-    {
       "en": "まうのぼる",
-      "ja": "まうのぼる",
+      "ja": "参上する・上京する",
       "sentence": "",
-      "stage": 35,
+      "stage": 34,
       "category": "古文"
     },
     {
       "en": "まこと",
-      "ja": "まこと",
+      "ja": "本当・誠実",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "まさる",
+      "ja": "増える・すぐれる",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "まだき",
+      "ja": "早くも・早すぎる",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "まどふ",
+      "ja": "迷う・ひどく慌てる",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "まほなり",
+      "ja": "完全だ・整っている",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "みまかる",
+      "ja": "死ぬ",
+      "sentence": "",
+      "stage": 34,
+      "category": "古文"
+    },
+    {
+      "en": "むくつけし",
+      "ja": "不気味だ・恐ろしい",
       "sentence": "",
       "stage": 35,
       "category": "古文"
     },
     {
-      "en": "まさる",
-      "ja": "まさる",
-      "sentence": "",
-      "stage": 36,
-      "category": "古文"
-    },
-    {
-      "en": "まだき",
-      "ja": "まだき",
-      "sentence": "",
-      "stage": 36,
-      "category": "古文"
-    },
-    {
-      "en": "まどふ",
-      "ja": "まどふ",
-      "sentence": "",
-      "stage": 36,
-      "category": "古文"
-    },
-    {
-      "en": "まほなり",
-      "ja": "まほなり",
-      "sentence": "",
-      "stage": 36,
-      "category": "古文"
-    },
-    {
-      "en": "みまかる",
-      "ja": "みまかる",
-      "sentence": "",
-      "stage": 36,
-      "category": "古文"
-    },
-    {
-      "en": "むくつけし",
-      "ja": "むくつけし",
-      "sentence": "",
-      "stage": 36,
-      "category": "古文"
-    },
-    {
       "en": "むげに",
-      "ja": "むげに",
+      "ja": "まったく・ひどく",
       "sentence": "",
-      "stage": 36,
+      "stage": 35,
       "category": "古文"
     },
     {
       "en": "むつかる",
-      "ja": "むつかる",
+      "ja": "機嫌が悪くなる",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "めづらし",
+      "ja": "すばらしい・珍しい",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "もてなす",
+      "ja": "扱う・振る舞う",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "やうやう",
+      "ja": "だんだん・しだいに",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "やをら",
+      "ja": "そっと・静かに",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "ゆめ",
+      "ja": "決して〜ない",
+      "sentence": "",
+      "stage": 35,
+      "category": "古文"
+    },
+    {
+      "en": "よしばむ",
+      "ja": "風流ぶる・わけありげにする",
       "sentence": "",
       "stage": 36,
       "category": "古文"
     },
     {
-      "en": "めづらし",
-      "ja": "めづらし",
-      "sentence": "",
-      "stage": 37,
-      "category": "古文"
-    },
-    {
-      "en": "もてなす",
-      "ja": "もてなす",
-      "sentence": "",
-      "stage": 37,
-      "category": "古文"
-    },
-    {
-      "en": "やうやう",
-      "ja": "やうやう",
-      "sentence": "",
-      "stage": 37,
-      "category": "古文"
-    },
-    {
-      "en": "やがての",
-      "ja": "やがての",
-      "sentence": "",
-      "stage": 37,
-      "category": "古文"
-    },
-    {
-      "en": "やをら",
-      "ja": "やをら",
-      "sentence": "",
-      "stage": 37,
-      "category": "古文"
-    },
-    {
-      "en": "ゆめ",
-      "ja": "ゆめ",
-      "sentence": "",
-      "stage": 37,
-      "category": "古文"
-    },
-    {
-      "en": "よしばむ",
-      "ja": "よしばむ",
-      "sentence": "",
-      "stage": 37,
-      "category": "古文"
-    },
-    {
       "en": "よそ",
-      "ja": "よそ",
+      "ja": "無関係な所・他人",
       "sentence": "",
-      "stage": 37,
+      "stage": 36,
       "category": "古文"
     },
     {
       "en": "よそふ",
-      "ja": "よそふ",
+      "ja": "準備する・装う",
       "sentence": "",
-      "stage": 38,
+      "stage": 36,
       "category": "古文"
     },
     {
       "en": "よもすがら",
-      "ja": "よもすがら",
+      "ja": "一晩中",
       "sentence": "",
-      "stage": 38,
+      "stage": 36,
       "category": "古文"
     },
     {
       "en": "らうたし",
-      "ja": "らうたし",
+      "ja": "かわいらしい・いじらしい",
       "sentence": "",
-      "stage": 38,
+      "stage": 36,
       "category": "古文"
     },
     {
       "en": "わざと",
-      "ja": "わざと",
+      "ja": "正式に・わざわざ",
       "sentence": "",
-      "stage": 38,
+      "stage": 36,
       "category": "古文"
     },
     {
       "en": "わななく",
-      "ja": "わななく",
+      "ja": "震える",
       "sentence": "",
-      "stage": 38,
+      "stage": 36,
       "category": "古文"
     },
     {
       "en": "わろし",
-      "ja": "わろし",
+      "ja": "よくない・下手だ",
       "sentence": "",
-      "stage": 38,
+      "stage": 36,
       "category": "古文"
     },
     {
       "en": "あきらむ",
-      "ja": "あきらむ",
+      "ja": "明らかにする・解き明かす",
       "sentence": "",
-      "stage": 38,
+      "stage": 37,
       "category": "古文"
     },
     {
       "en": "あそぶ",
-      "ja": "あそぶ",
+      "ja": "管弦を楽しむ・遊ぶ",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "あだめく",
+      "ja": "浮気っぽく見える",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "あしく",
+      "ja": "悪く・不都合に",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "あそばす",
+      "ja": "演奏なさる・お作りになる",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "あてやかなり",
+      "ja": "上品で美しい",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "あはす",
+      "ja": "結婚させる・合わせる",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "ありつる",
+      "ja": "さっきの・以前の",
+      "sentence": "",
+      "stage": 37,
+      "category": "古文"
+    },
+    {
+      "en": "いくばく",
+      "ja": "どれほど・少し",
       "sentence": "",
       "stage": 38,
       "category": "古文"
     },
     {
-      "en": "あだめく",
-      "ja": "あだめく",
-      "sentence": "",
-      "stage": 39,
-      "category": "古文"
-    },
-    {
-      "en": "あなづる",
-      "ja": "あなづる",
-      "sentence": "",
-      "stage": 39,
-      "category": "古文"
-    },
-    {
-      "en": "あらず",
-      "ja": "あらず",
-      "sentence": "",
-      "stage": 39,
-      "category": "古文"
-    },
-    {
-      "en": "ありあく",
-      "ja": "ありあく",
-      "sentence": "",
-      "stage": 39,
-      "category": "古文"
-    },
-    {
-      "en": "ありけり",
-      "ja": "ありけり",
-      "sentence": "",
-      "stage": 39,
-      "category": "古文"
-    },
-    {
-      "en": "あるじす",
-      "ja": "あるじす",
-      "sentence": "",
-      "stage": 39,
-      "category": "古文"
-    },
-    {
-      "en": "いかめしげなり",
-      "ja": "いかめしげなり",
-      "sentence": "",
-      "stage": 39,
-      "category": "古文"
-    },
-    {
-      "en": "いくばく",
-      "ja": "いくばく",
-      "sentence": "",
-      "stage": 39,
-      "category": "古文"
-    },
-    {
       "en": "いささか",
-      "ja": "いささか",
+      "ja": "少し",
       "sentence": "",
-      "stage": 40,
+      "stage": 38,
       "category": "古文"
     },
     {
       "en": "いそし",
-      "ja": "いそし",
+      "ja": "勤勉だ・熱心だ",
       "sentence": "",
-      "stage": 40,
-      "category": "古文"
-    },
-    {
-      "en": "いそしむ",
-      "ja": "いそしむ",
-      "sentence": "",
-      "stage": 40,
+      "stage": 38,
       "category": "古文"
     },
     {
       "en": "いちはやし",
-      "ja": "いちはやし",
+      "ja": "激しい・気が早い",
       "sentence": "",
-      "stage": 40,
-      "category": "古文"
-    },
-    {
-      "en": "いづら",
-      "ja": "いづら",
-      "sentence": "",
-      "stage": 40,
+      "stage": 38,
       "category": "古文"
     },
     {
       "en": "いとま",
-      "ja": "いとま",
+      "ja": "暇・別れ",
       "sentence": "",
-      "stage": 40,
+      "stage": 38,
       "category": "古文"
     },
     {
       "en": "いはむかたなし",
-      "ja": "いはむかたなし",
+      "ja": "何とも言いようがない",
       "sentence": "",
-      "stage": 40,
+      "stage": 38,
       "category": "古文"
     },
     {
       "en": "いぶせし",
-      "ja": "いぶせし",
+      "ja": "気が晴れない・不快だ",
+      "sentence": "",
+      "stage": 38,
+      "category": "古文"
+    },
+    {
+      "en": "うしろやすし",
+      "ja": "安心だ",
+      "sentence": "",
+      "stage": 38,
+      "category": "古文"
+    },
+    {
+      "en": "うちとく",
+      "ja": "気を許す・くつろぐ",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "うらなし",
+      "ja": "心に隔てがない",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "えうなし",
+      "ja": "必要がない・役に立たない",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "おくゆかし",
+      "ja": "奥深く知りたい・上品だ",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "おぼしめす",
+      "ja": "お思いになる",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "おほとのごもる",
+      "ja": "お休みになる",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "おほやけ",
+      "ja": "朝廷・天皇・公的なもの",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "おもなし",
+      "ja": "面目ない・恥知らずだ",
+      "sentence": "",
+      "stage": 39,
+      "category": "古文"
+    },
+    {
+      "en": "おもひやる",
+      "ja": "想像する・気遣う",
       "sentence": "",
       "stage": 40,
       "category": "古文"
     },
     {
-      "en": "うしろやすし",
-      "ja": "うしろやすし",
-      "sentence": "",
-      "stage": 41,
-      "category": "古文"
-    },
-    {
-      "en": "うちまかす",
-      "ja": "うちまかす",
-      "sentence": "",
-      "stage": 41,
-      "category": "古文"
-    },
-    {
-      "en": "うちまもる",
-      "ja": "うちまもる",
-      "sentence": "",
-      "stage": 41,
-      "category": "古文"
-    },
-    {
-      "en": "うつし心",
-      "ja": "うつし心",
-      "sentence": "",
-      "stage": 41,
-      "category": "古文"
-    },
-    {
-      "en": "うつせみ",
-      "ja": "うつせみ",
-      "sentence": "",
-      "stage": 41,
-      "category": "古文"
-    },
-    {
-      "en": "おこがまし",
-      "ja": "おこがまし",
-      "sentence": "",
-      "stage": 41,
-      "category": "古文"
-    },
-    {
-      "en": "おぼろけなり",
-      "ja": "おぼろけなり",
-      "sentence": "",
-      "stage": 41,
-      "category": "古文"
-    },
-    {
-      "en": "おぼろけならず",
-      "ja": "おぼろけならず",
-      "sentence": "",
-      "stage": 41,
-      "category": "古文"
-    },
-    {
-      "en": "おもだたし",
-      "ja": "おもだたし",
-      "sentence": "",
-      "stage": 42,
-      "category": "古文"
-    },
-    {
-      "en": "おもてなし",
-      "ja": "おもてなし",
-      "sentence": "",
-      "stage": 42,
-      "category": "古文"
-    },
-    {
-      "en": "おりふし",
-      "ja": "おりふし",
-      "sentence": "",
-      "stage": 42,
-      "category": "古文"
-    },
-    {
       "en": "かいまみる",
-      "ja": "かいまみる",
+      "ja": "のぞき見る",
       "sentence": "",
-      "stage": 42,
+      "stage": 40,
       "category": "古文"
     },
     {
       "en": "かくる",
-      "ja": "かくる",
+      "ja": "隠れる・亡くなる",
       "sentence": "",
-      "stage": 42,
+      "stage": 40,
       "category": "古文"
     },
     {
       "en": "かこち顔",
-      "ja": "かこち顔",
+      "ja": "恨みがましい顔つき",
       "sentence": "",
-      "stage": 42,
-      "category": "古文"
-    },
-    {
-      "en": "かしづき",
-      "ja": "かしづき",
-      "sentence": "",
-      "stage": 42,
+      "stage": 40,
       "category": "古文"
     },
     {
       "en": "かたへ",
-      "ja": "かたへ",
+      "ja": "片方・仲間",
+      "sentence": "",
+      "stage": 40,
+      "category": "古文"
+    },
+    {
+      "en": "かつ",
+      "ja": "一方では・すぐに",
+      "sentence": "",
+      "stage": 40,
+      "category": "古文"
+    },
+    {
+      "en": "かまへて",
+      "ja": "ぜひとも・何とかして",
+      "sentence": "",
+      "stage": 40,
+      "category": "古文"
+    },
+    {
+      "en": "きざす",
+      "ja": "兆しが現れる",
+      "sentence": "",
+      "stage": 40,
+      "category": "古文"
+    },
+    {
+      "en": "くるし",
+      "ja": "つらい・差し支えがある",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "けしうはあらず",
+      "ja": "悪くはない",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "けぢめ",
+      "ja": "区別・違い",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "こころうし",
+      "ja": "つらい・情けない",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "こころづきなし",
+      "ja": "気に入らない",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "こころにくし",
+      "ja": "奥ゆかしい・心ひかれる",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "こころばせ",
+      "ja": "心づかい・性格",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "こころもとなし",
+      "ja": "待ち遠しい・不安だ",
+      "sentence": "",
+      "stage": 41,
+      "category": "古文"
+    },
+    {
+      "en": "ことわる",
+      "ja": "判断する・説明する",
       "sentence": "",
       "stage": 42,
       "category": "古文"
     },
     {
-      "en": "かたみにする",
-      "ja": "かたみにする",
-      "sentence": "",
-      "stage": 43,
-      "category": "古文"
-    },
-    {
-      "en": "かつ",
-      "ja": "かつ",
-      "sentence": "",
-      "stage": 43,
-      "category": "古文"
-    },
-    {
-      "en": "かなしうす",
-      "ja": "かなしうす",
-      "sentence": "",
-      "stage": 43,
-      "category": "古文"
-    },
-    {
-      "en": "かばかり",
-      "ja": "かばかり",
-      "sentence": "",
-      "stage": 43,
-      "category": "古文"
-    },
-    {
-      "en": "かまへて",
-      "ja": "かまへて",
-      "sentence": "",
-      "stage": 43,
-      "category": "古文"
-    },
-    {
-      "en": "きざす",
-      "ja": "きざす",
-      "sentence": "",
-      "stage": 43,
-      "category": "古文"
-    },
-    {
-      "en": "きす",
-      "ja": "きす",
-      "sentence": "",
-      "stage": 43,
-      "category": "古文"
-    },
-    {
-      "en": "くちなは",
-      "ja": "くちなは",
-      "sentence": "",
-      "stage": 43,
-      "category": "古文"
-    },
-    {
-      "en": "くるし",
-      "ja": "くるし",
-      "sentence": "",
-      "stage": 44,
-      "category": "古文"
-    },
-    {
-      "en": "けしうはあらず",
-      "ja": "けしうはあらず",
-      "sentence": "",
-      "stage": 44,
-      "category": "古文"
-    },
-    {
-      "en": "けぢめ",
-      "ja": "けぢめ",
-      "sentence": "",
-      "stage": 44,
-      "category": "古文"
-    },
-    {
-      "en": "こころうし",
-      "ja": "こころうし",
-      "sentence": "",
-      "stage": 44,
-      "category": "古文"
-    },
-    {
-      "en": "こころづきなし",
-      "ja": "こころづきなし",
-      "sentence": "",
-      "stage": 44,
-      "category": "古文"
-    },
-    {
-      "en": "こころにくし",
-      "ja": "こころにくし",
-      "sentence": "",
-      "stage": 44,
-      "category": "古文"
-    },
-    {
-      "en": "こころばせ",
-      "ja": "こころばせ",
-      "sentence": "",
-      "stage": 44,
-      "category": "古文"
-    },
-    {
-      "en": "こころもとなし",
-      "ja": "こころもとなし",
-      "sentence": "",
-      "stage": 44,
-      "category": "古文"
-    },
-    {
-      "en": "こちなし",
-      "ja": "こちなし",
-      "sentence": "",
-      "stage": 45,
-      "category": "古文"
-    },
-    {
-      "en": "ことわる",
-      "ja": "ことわる",
-      "sentence": "",
-      "stage": 45,
-      "category": "古文"
-    },
-    {
       "en": "さかゆ",
-      "ja": "さかゆ",
+      "ja": "栄える",
       "sentence": "",
-      "stage": 45,
+      "stage": 42,
       "category": "古文"
     },
     {
       "en": "さしいらへ",
-      "ja": "さしいらへ",
+      "ja": "差し出た返事",
       "sentence": "",
-      "stage": 45,
+      "stage": 42,
       "category": "古文"
     },
     {
       "en": "さす",
-      "ja": "さす",
+      "ja": "中止する・閉じる",
       "sentence": "",
-      "stage": 45,
-      "category": "古文"
-    },
-    {
-      "en": "さながらに",
-      "ja": "さながらに",
-      "sentence": "",
-      "stage": 45,
-      "category": "古文"
-    },
-    {
-      "en": "さぶらひ",
-      "ja": "さぶらひ",
-      "sentence": "",
-      "stage": 45,
-      "category": "古文"
-    },
-    {
-      "en": "さまざま",
-      "ja": "さまざま",
-      "sentence": "",
-      "stage": 45,
+      "stage": 42,
       "category": "古文"
     },
     {
       "en": "さめざめ",
-      "ja": "さめざめ",
+      "ja": "涙を流して泣くさま",
       "sentence": "",
-      "stage": 46,
+      "stage": 42,
       "category": "古文"
     },
     {
       "en": "しうと",
-      "ja": "しうと",
+      "ja": "夫の父母・舅姑",
       "sentence": "",
-      "stage": 46,
+      "stage": 42,
       "category": "古文"
     },
     {
       "en": "しばし",
-      "ja": "しばし",
+      "ja": "少しの間",
       "sentence": "",
-      "stage": 46,
+      "stage": 42,
       "category": "古文"
     },
     {
       "en": "しめやかなり",
-      "ja": "しめやかなり",
+      "ja": "静かだ・しんみりしている",
       "sentence": "",
-      "stage": 46,
+      "stage": 42,
       "category": "古文"
     },
     {
       "en": "しるべ",
-      "ja": "しるべ",
+      "ja": "案内・知り合い",
       "sentence": "",
-      "stage": 46,
+      "stage": 43,
       "category": "古文"
     },
     {
       "en": "すさび",
-      "ja": "すさび",
+      "ja": "気まぐれ・慰み",
       "sentence": "",
-      "stage": 46,
-      "category": "古文"
-    },
-    {
-      "en": "すべからく",
-      "ja": "すべからく",
-      "sentence": "",
-      "stage": 46,
+      "stage": 43,
       "category": "古文"
     },
     {
       "en": "せむかたなし",
-      "ja": "せむかたなし",
+      "ja": "どうしようもない",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "そこはかとなく",
+      "ja": "なんとなく・とりとめもなく",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "そばむ",
+      "ja": "横を向く・すねる",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "たがふ",
+      "ja": "違う・背く",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "たけだけし",
+      "ja": "勇ましい・荒々しい",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "たどる",
+      "ja": "探し求める・迷う",
+      "sentence": "",
+      "stage": 43,
+      "category": "古文"
+    },
+    {
+      "en": "たまはす",
+      "ja": "お与えになる",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "たより",
+      "ja": "よりどころ・機会",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "つかさ",
+      "ja": "役所・官職",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "ときめく",
+      "ja": "寵愛を受けて栄える",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "としごろ",
+      "ja": "長年・数年来",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "なごり",
+      "ja": "余韻・名残",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "なさけ",
+      "ja": "思いやり・風流心",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "なだらかなり",
+      "ja": "穏やかだ・無難だ",
+      "sentence": "",
+      "stage": 44,
+      "category": "古文"
+    },
+    {
+      "en": "なつく",
+      "ja": "慣れ親しむ",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "なほし",
+      "ja": "普通だ・平凡だ",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "なむど",
+      "ja": "など",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "にくし",
+      "ja": "憎らしい・見事だ",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "ねびまさる",
+      "ja": "成長して美しくなる",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "のたまはす",
+      "ja": "おっしゃらせる・お命じになる",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "はげし",
+      "ja": "強い・激しい",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "はしため",
+      "ja": "身分の低い女・召使い女",
+      "sentence": "",
+      "stage": 45,
+      "category": "古文"
+    },
+    {
+      "en": "ひきつくろふ",
+      "ja": "整える・取り繕う",
       "sentence": "",
       "stage": 46,
       "category": "古文"
     },
     {
-      "en": "そこはかとなく",
-      "ja": "そこはかとなく",
-      "sentence": "",
-      "stage": 47,
-      "category": "古文"
-    },
-    {
-      "en": "そばむ",
-      "ja": "そばむ",
-      "sentence": "",
-      "stage": 47,
-      "category": "古文"
-    },
-    {
-      "en": "たがふ",
-      "ja": "たがふ",
-      "sentence": "",
-      "stage": 47,
-      "category": "古文"
-    },
-    {
-      "en": "たけだけし",
-      "ja": "たけだけし",
-      "sentence": "",
-      "stage": 47,
-      "category": "古文"
-    },
-    {
-      "en": "たどる",
-      "ja": "たどる",
-      "sentence": "",
-      "stage": 47,
-      "category": "古文"
-    },
-    {
-      "en": "たまはす",
-      "ja": "たまはす",
-      "sentence": "",
-      "stage": 47,
-      "category": "古文"
-    },
-    {
-      "en": "たむ",
-      "ja": "たむ",
-      "sentence": "",
-      "stage": 47,
-      "category": "古文"
-    },
-    {
-      "en": "たより",
-      "ja": "たより",
-      "sentence": "",
-      "stage": 47,
-      "category": "古文"
-    },
-    {
-      "en": "つかさ",
-      "ja": "つかさ",
-      "sentence": "",
-      "stage": 48,
-      "category": "古文"
-    },
-    {
-      "en": "つくも",
-      "ja": "つくも",
-      "sentence": "",
-      "stage": 48,
-      "category": "古文"
-    },
-    {
-      "en": "つれづれ",
-      "ja": "つれづれ",
-      "sentence": "",
-      "stage": 48,
-      "category": "古文"
-    },
-    {
-      "en": "てしがな",
-      "ja": "てしがな",
-      "sentence": "",
-      "stage": 48,
-      "category": "古文"
-    },
-    {
-      "en": "ときめく",
-      "ja": "ときめく",
-      "sentence": "",
-      "stage": 48,
-      "category": "古文"
-    },
-    {
-      "en": "とくる",
-      "ja": "とくる",
-      "sentence": "",
-      "stage": 48,
-      "category": "古文"
-    },
-    {
-      "en": "としごろ",
-      "ja": "としごろ",
-      "sentence": "",
-      "stage": 48,
-      "category": "古文"
-    },
-    {
-      "en": "ところどころ",
-      "ja": "ところどころ",
-      "sentence": "",
-      "stage": 48,
-      "category": "古文"
-    },
-    {
-      "en": "なかなかに",
-      "ja": "なかなかに",
-      "sentence": "",
-      "stage": 49,
-      "category": "古文"
-    },
-    {
-      "en": "なごり",
-      "ja": "なごり",
-      "sentence": "",
-      "stage": 49,
-      "category": "古文"
-    },
-    {
-      "en": "なさけ",
-      "ja": "なさけ",
-      "sentence": "",
-      "stage": 49,
-      "category": "古文"
-    },
-    {
-      "en": "なだらかなり",
-      "ja": "なだらかなり",
-      "sentence": "",
-      "stage": 49,
-      "category": "古文"
-    },
-    {
-      "en": "なつく",
-      "ja": "なつく",
-      "sentence": "",
-      "stage": 49,
-      "category": "古文"
-    },
-    {
-      "en": "なほし",
-      "ja": "なほし",
-      "sentence": "",
-      "stage": 49,
-      "category": "古文"
-    },
-    {
-      "en": "なむど",
-      "ja": "なむど",
-      "sentence": "",
-      "stage": 49,
-      "category": "古文"
-    },
-    {
-      "en": "にくし",
-      "ja": "にくし",
-      "sentence": "",
-      "stage": 49,
-      "category": "古文"
-    },
-    {
-      "en": "ねびまさる",
-      "ja": "ねびまさる",
-      "sentence": "",
-      "stage": 50,
-      "category": "古文"
-    },
-    {
-      "en": "のたまはす",
-      "ja": "のたまはす",
-      "sentence": "",
-      "stage": 50,
-      "category": "古文"
-    },
-    {
-      "en": "はかなしごと",
-      "ja": "はかなしごと",
-      "sentence": "",
-      "stage": 50,
-      "category": "古文"
-    },
-    {
-      "en": "はげし",
-      "ja": "はげし",
-      "sentence": "",
-      "stage": 50,
-      "category": "古文"
-    },
-    {
-      "en": "はしため",
-      "ja": "はしため",
-      "sentence": "",
-      "stage": 50,
-      "category": "古文"
-    },
-    {
-      "en": "はたらく",
-      "ja": "はたらく",
-      "sentence": "",
-      "stage": 50,
-      "category": "古文"
-    },
-    {
-      "en": "ひきつくろふ",
-      "ja": "ひきつくろふ",
-      "sentence": "",
-      "stage": 50,
-      "category": "古文"
-    },
-    {
       "en": "ひぐらし",
-      "ja": "ひぐらし",
+      "ja": "一日中・終日",
       "sentence": "",
-      "stage": 50,
+      "stage": 46,
       "category": "古文"
     },
     {
       "en": "ふと",
-      "ja": "ふと",
+      "ja": "急に・ちょっと",
       "sentence": "",
-      "stage": 51,
+      "stage": 46,
       "category": "古文"
     },
     {
       "en": "ふみ",
-      "ja": "ふみ",
+      "ja": "手紙・書物",
       "sentence": "",
-      "stage": 51,
+      "stage": 46,
       "category": "古文"
     },
     {
       "en": "ほのかなり",
-      "ja": "ほのかなり",
+      "ja": "かすかだ",
       "sentence": "",
-      "stage": 51,
+      "stage": 46,
       "category": "古文"
     },
     {
       "en": "まうけ",
-      "ja": "まうけ",
+      "ja": "準備・設け",
       "sentence": "",
-      "stage": 51,
+      "stage": 46,
       "category": "古文"
     },
     {
       "en": "まぎる",
-      "ja": "まぎる",
+      "ja": "紛れる・見分けにくくなる",
       "sentence": "",
-      "stage": 51,
-      "category": "古文"
-    },
-    {
-      "en": "まじ",
-      "ja": "まじ",
-      "sentence": "",
-      "stage": 51,
+      "stage": 46,
       "category": "古文"
     },
     {
       "en": "まじらふ",
-      "ja": "まじらふ",
+      "ja": "交際する・宮仕えする",
       "sentence": "",
-      "stage": 51,
+      "stage": 46,
       "category": "古文"
     },
     {
       "en": "まばゆし",
-      "ja": "まばゆし",
+      "ja": "まぶしい・恥ずかしい",
       "sentence": "",
-      "stage": 51,
-      "category": "古文"
-    },
-    {
-      "en": "まめやかなり",
-      "ja": "まめやかなり",
-      "sentence": "",
-      "stage": 52,
+      "stage": 47,
       "category": "古文"
     },
     {
       "en": "みぐるし",
-      "ja": "みぐるし",
+      "ja": "見苦しい",
       "sentence": "",
-      "stage": 52,
+      "stage": 47,
       "category": "古文"
     },
     {
       "en": "みめ",
-      "ja": "みめ",
+      "ja": "容貌・見た目",
       "sentence": "",
-      "stage": 52,
-      "category": "古文"
-    },
-    {
-      "en": "みる",
-      "ja": "みる",
-      "sentence": "",
-      "stage": 52,
+      "stage": 47,
       "category": "古文"
     },
     {
       "en": "むくゆ",
-      "ja": "むくゆ",
+      "ja": "報いる・仕返しする",
       "sentence": "",
-      "stage": 52,
-      "category": "古文"
-    },
-    {
-      "en": "めかす",
-      "ja": "めかす",
-      "sentence": "",
-      "stage": 52,
+      "stage": 47,
       "category": "古文"
     },
     {
       "en": "めぐし",
-      "ja": "めぐし",
+      "ja": "かわいそうだ・いじらしい",
       "sentence": "",
-      "stage": 52,
+      "stage": 47,
       "category": "古文"
     },
     {
       "en": "ものぐるほし",
-      "ja": "ものぐるほし",
+      "ja": "気が狂ったようだ",
       "sentence": "",
-      "stage": 52,
+      "stage": 47,
       "category": "古文"
     },
     {
       "en": "ものす",
-      "ja": "ものす",
+      "ja": "ある・行く・来る",
       "sentence": "",
-      "stage": 53,
+      "stage": 47,
       "category": "古文"
     },
     {
       "en": "やすらふ",
-      "ja": "やすらふ",
+      "ja": "ためらう・休む",
       "sentence": "",
-      "stage": 53,
+      "stage": 47,
       "category": "古文"
     },
     {
       "en": "やつる",
-      "ja": "やつる",
+      "ja": "みすぼらしくなる",
       "sentence": "",
-      "stage": 53,
+      "stage": 48,
       "category": "古文"
     },
     {
       "en": "ゆゑ",
-      "ja": "ゆゑ",
+      "ja": "理由・由緒・趣",
       "sentence": "",
-      "stage": 53,
+      "stage": 48,
       "category": "古文"
     },
     {
       "en": "ゆくへ",
-      "ja": "ゆくへ",
+      "ja": "行く先・所在",
       "sentence": "",
-      "stage": 53,
+      "stage": 48,
       "category": "古文"
     },
     {
       "en": "よだけし",
-      "ja": "よだけし",
+      "ja": "大げさだ・おっくうだ",
       "sentence": "",
-      "stage": 53,
+      "stage": 48,
       "category": "古文"
     },
     {
       "en": "よも",
-      "ja": "よも",
+      "ja": "まさか〜ない",
       "sentence": "",
-      "stage": 53,
-      "category": "古文"
-    },
-    {
-      "en": "よろこび",
-      "ja": "よろこび",
-      "sentence": "",
-      "stage": 53,
+      "stage": 48,
       "category": "古文"
     },
     {
       "en": "わたる",
-      "ja": "わたる",
+      "ja": "ずっと〜する・一面に〜する",
       "sentence": "",
-      "stage": 54,
+      "stage": 48,
       "category": "古文"
     },
     {
       "en": "わづらふ",
-      "ja": "わづらふ",
+      "ja": "苦しむ・困る",
       "sentence": "",
-      "stage": 54,
+      "stage": 48,
       "category": "古文"
     },
     {
       "en": "をさをさ",
-      "ja": "をさをさ",
+      "ja": "ほとんど〜ない",
       "sentence": "",
-      "stage": 54,
-      "category": "古文"
-    },
-    {
-      "en": "あきる",
-      "ja": "あきる",
-      "sentence": "",
-      "stage": 54,
-      "category": "古文"
-    },
-    {
-      "en": "あこがる",
-      "ja": "あこがる",
-      "sentence": "",
-      "stage": 54,
-      "category": "古文"
-    },
-    {
-      "en": "あざる",
-      "ja": "あざる",
-      "sentence": "",
-      "stage": 54,
-      "category": "古文"
-    },
-    {
-      "en": "あしく",
-      "ja": "あしく",
-      "sentence": "",
-      "stage": 54,
-      "category": "古文"
-    },
-    {
-      "en": "あそばす",
-      "ja": "あそばす",
-      "sentence": "",
-      "stage": 54,
-      "category": "古文"
-    },
-    {
-      "en": "あてやかなり",
-      "ja": "あてやかなり",
-      "sentence": "",
-      "stage": 55,
-      "category": "古文"
-    },
-    {
-      "en": "あはす",
-      "ja": "あはす",
-      "sentence": "",
-      "stage": 55,
-      "category": "古文"
-    },
-    {
-      "en": "ありつる",
-      "ja": "ありつる",
-      "sentence": "",
-      "stage": 55,
-      "category": "古文"
-    },
-    {
-      "en": "いかばかりか",
-      "ja": "いかばかりか",
-      "sentence": "",
-      "stage": 55,
-      "category": "古文"
-    },
-    {
-      "en": "いかなり",
-      "ja": "いかなり",
-      "sentence": "",
-      "stage": 55,
-      "category": "古文"
-    },
-    {
-      "en": "いぎたなし",
-      "ja": "いぎたなし",
-      "sentence": "",
-      "stage": 55,
-      "category": "古文"
-    },
-    {
-      "en": "いさめる",
-      "ja": "いさめる",
-      "sentence": "",
-      "stage": 55,
-      "category": "古文"
-    },
-    {
-      "en": "いづ方",
-      "ja": "いづ方",
-      "sentence": "",
-      "stage": 55,
-      "category": "古文"
-    },
-    {
-      "en": "いとせめて",
-      "ja": "いとせめて",
-      "sentence": "",
-      "stage": 56,
-      "category": "古文"
-    },
-    {
-      "en": "いふかたなし",
-      "ja": "いふかたなし",
-      "sentence": "",
-      "stage": 56,
-      "category": "古文"
-    },
-    {
-      "en": "いみじう",
-      "ja": "いみじう",
-      "sentence": "",
-      "stage": 56,
-      "category": "古文"
-    },
-    {
-      "en": "うちとく",
-      "ja": "うちとく",
-      "sentence": "",
-      "stage": 56,
-      "category": "古文"
-    },
-    {
-      "en": "うらなし",
-      "ja": "うらなし",
-      "sentence": "",
-      "stage": 56,
-      "category": "古文"
-    },
-    {
-      "en": "えうなし",
-      "ja": "えうなし",
-      "sentence": "",
-      "stage": 56,
-      "category": "古文"
-    },
-    {
-      "en": "おくゆかし",
-      "ja": "おくゆかし",
-      "sentence": "",
-      "stage": 56,
-      "category": "古文"
-    },
-    {
-      "en": "おぼしめす",
-      "ja": "おぼしめす",
-      "sentence": "",
-      "stage": 56,
-      "category": "古文"
-    },
-    {
-      "en": "おほとのごもる",
-      "ja": "おほとのごもる",
-      "sentence": "",
-      "stage": 57,
-      "category": "古文"
-    },
-    {
-      "en": "おほやけ",
-      "ja": "おほやけ",
-      "sentence": "",
-      "stage": 57,
-      "category": "古文"
-    },
-    {
-      "en": "おもなし",
-      "ja": "おもなし",
-      "sentence": "",
-      "stage": 57,
-      "category": "古文"
-    },
-    {
-      "en": "おもひやる",
-      "ja": "おもひやる",
-      "sentence": "",
-      "stage": 57,
-      "category": "古文"
-    },
-    {
-      "en": "かいなし",
-      "ja": "かいなし",
-      "sentence": "",
-      "stage": 57,
-      "category": "古文"
-    },
-    {
-      "en": "かきくる",
-      "ja": "かきくる",
-      "sentence": "",
-      "stage": 57,
-      "category": "古文"
-    },
-    {
-      "en": "かきつく",
-      "ja": "かきつく",
-      "sentence": "",
-      "stage": 57,
-      "category": "古文"
-    },
-    {
-      "en": "かこつける",
-      "ja": "かこつける",
-      "sentence": "",
-      "stage": 57,
-      "category": "古文"
-    },
-    {
-      "en": "かしらおろす",
-      "ja": "かしらおろす",
-      "sentence": "",
-      "stage": 58,
-      "category": "古文"
-    },
-    {
-      "en": "かたち",
-      "ja": "かたち",
-      "sentence": "",
-      "stage": 58,
-      "category": "古文"
-    },
-    {
-      "en": "かたみに見る",
-      "ja": "かたみに見る",
-      "sentence": "",
-      "stage": 58,
-      "category": "古文"
-    },
-    {
-      "en": "かたらふ",
-      "ja": "かたらふ",
-      "sentence": "",
-      "stage": 58,
-      "category": "古文"
-    },
-    {
-      "en": "かつがつ",
-      "ja": "かつがつ",
-      "sentence": "",
-      "stage": 58,
-      "category": "古文"
-    },
-    {
-      "en": "かばかりなり",
-      "ja": "かばかりなり",
-      "sentence": "",
-      "stage": 58,
-      "category": "古文"
-    },
-    {
-      "en": "きはやかなり",
-      "ja": "きはやかなり",
-      "sentence": "",
-      "stage": 58,
-      "category": "古文"
-    },
-    {
-      "en": "くちをしげなり",
-      "ja": "くちをしげなり",
-      "sentence": "",
-      "stage": 58,
-      "category": "古文"
-    },
-    {
-      "en": "けざやかなり",
-      "ja": "けざやかなり",
-      "sentence": "",
-      "stage": 59,
-      "category": "古文"
-    },
-    {
-      "en": "ここち",
-      "ja": "ここち",
-      "sentence": "",
-      "stage": 59,
-      "category": "古文"
-    },
-    {
-      "en": "こころあり",
-      "ja": "こころあり",
-      "sentence": "",
-      "stage": 59,
-      "category": "古文"
-    },
-    {
-      "en": "こころぐるし",
-      "ja": "こころぐるし",
-      "sentence": "",
-      "stage": 59,
-      "category": "古文"
-    },
-    {
-      "en": "こころざし",
-      "ja": "こころざし",
-      "sentence": "",
-      "stage": 59,
-      "category": "古文"
-    },
-    {
-      "en": "こころすごし",
-      "ja": "こころすごし",
-      "sentence": "",
-      "stage": 59,
-      "category": "古文"
-    },
-    {
-      "en": "こころづくし",
-      "ja": "こころづくし",
-      "sentence": "",
-      "stage": 59,
-      "category": "古文"
-    },
-    {
-      "en": "ことそぐ",
-      "ja": "ことそぐ",
-      "sentence": "",
-      "stage": 59,
-      "category": "古文"
-    },
-    {
-      "en": "さうぞく",
-      "ja": "さうぞく",
-      "sentence": "",
-      "stage": 60,
-      "category": "古文"
-    },
-    {
-      "en": "さかしだつ",
-      "ja": "さかしだつ",
-      "sentence": "",
-      "stage": 60,
-      "category": "古文"
-    },
-    {
-      "en": "さすらへ",
-      "ja": "さすらへ",
-      "sentence": "",
-      "stage": 60,
-      "category": "古文"
-    },
-    {
-      "en": "さのみ",
-      "ja": "さのみ",
-      "sentence": "",
-      "stage": 60,
-      "category": "古文"
-    },
-    {
-      "en": "さは",
-      "ja": "さは",
-      "sentence": "",
-      "stage": 60,
-      "category": "古文"
-    },
-    {
-      "en": "さり",
-      "ja": "さり",
-      "sentence": "",
-      "stage": 60,
-      "category": "古文"
-    },
-    {
-      "en": "さる",
-      "ja": "さる",
-      "sentence": "",
-      "stage": 60,
-      "category": "古文"
-    },
-    {
-      "en": "さるべき",
-      "ja": "さるべき",
-      "sentence": "",
-      "stage": 60,
-      "category": "古文"
-    },
-    {
-      "en": "さるものにて",
-      "ja": "さるものにて",
-      "sentence": "",
-      "stage": 61,
-      "category": "古文"
-    },
-    {
-      "en": "しあへず",
-      "ja": "しあへず",
-      "sentence": "",
-      "stage": 61,
-      "category": "古文"
-    },
-    {
-      "en": "しかじ",
-      "ja": "しかじ",
-      "sentence": "",
-      "stage": 61,
-      "category": "古文"
-    },
-    {
-      "en": "しどろなり",
-      "ja": "しどろなり",
-      "sentence": "",
-      "stage": 61,
-      "category": "古文"
-    },
-    {
-      "en": "しな",
-      "ja": "しな",
-      "sentence": "",
-      "stage": 61,
-      "category": "古文"
-    },
-    {
-      "en": "しほたる",
-      "ja": "しほたる",
-      "sentence": "",
-      "stage": 61,
-      "category": "古文"
-    },
-    {
-      "en": "すきもの",
-      "ja": "すきもの",
-      "sentence": "",
-      "stage": 61,
-      "category": "古文"
-    },
-    {
-      "en": "すずろごと",
-      "ja": "すずろごと",
-      "sentence": "",
-      "stage": 61,
-      "category": "古文"
-    },
-    {
-      "en": "せばし",
-      "ja": "せばし",
-      "sentence": "",
-      "stage": 62,
-      "category": "古文"
-    },
-    {
-      "en": "せめて",
-      "ja": "せめて",
-      "sentence": "",
-      "stage": 62,
-      "category": "古文"
-    },
-    {
-      "en": "そこばく",
-      "ja": "そこばく",
-      "sentence": "",
-      "stage": 62,
-      "category": "古文"
-    },
-    {
-      "en": "たえだえ",
-      "ja": "たえだえ",
-      "sentence": "",
-      "stage": 62,
-      "category": "古文"
-    },
-    {
-      "en": "たけなは",
-      "ja": "たけなは",
-      "sentence": "",
-      "stage": 62,
-      "category": "古文"
-    },
-    {
-      "en": "たちまち",
-      "ja": "たちまち",
-      "sentence": "",
-      "stage": 62,
-      "category": "古文"
-    },
-    {
-      "en": "たのもし",
-      "ja": "たのもし",
-      "sentence": "",
-      "stage": 62,
-      "category": "古文"
-    },
-    {
-      "en": "たまゆら",
-      "ja": "たまゆら",
-      "sentence": "",
-      "stage": 62,
-      "category": "古文"
-    },
-    {
-      "en": "ついでながら",
-      "ja": "ついでながら",
-      "sentence": "",
-      "stage": 63,
-      "category": "古文"
-    },
-    {
-      "en": "つきなし",
-      "ja": "つきなし",
-      "sentence": "",
-      "stage": 63,
-      "category": "古文"
-    },
-    {
-      "en": "つれづれぐさ",
-      "ja": "つれづれぐさ",
-      "sentence": "",
-      "stage": 63,
-      "category": "古文"
-    },
-    {
-      "en": "とが",
-      "ja": "とが",
-      "sentence": "",
-      "stage": 63,
-      "category": "古文"
-    },
-    {
-      "en": "とくと",
-      "ja": "とくと",
-      "sentence": "",
-      "stage": 63,
-      "category": "古文"
-    },
-    {
-      "en": "ところがら",
-      "ja": "ところがら",
-      "sentence": "",
-      "stage": 63,
-      "category": "古文"
-    },
-    {
-      "en": "なかなかめり",
-      "ja": "なかなかめり",
-      "sentence": "",
-      "stage": 63,
-      "category": "古文"
-    },
-    {
-      "en": "なごむ",
-      "ja": "なごむ",
-      "sentence": "",
-      "stage": 63,
-      "category": "古文"
-    },
-    {
-      "en": "なぞ",
-      "ja": "なぞ",
-      "sentence": "",
-      "stage": 64,
-      "category": "古文"
-    },
-    {
-      "en": "なつかしげなり",
-      "ja": "なつかしげなり",
-      "sentence": "",
-      "stage": 64,
-      "category": "古文"
-    },
-    {
-      "en": "なにがし",
-      "ja": "なにがし",
-      "sentence": "",
-      "stage": 64,
-      "category": "古文"
-    },
-    {
-      "en": "なほざりごと",
-      "ja": "なほざりごと",
-      "sentence": "",
-      "stage": 64,
-      "category": "古文"
-    },
-    {
-      "en": "なほなほし",
-      "ja": "なほなほし",
-      "sentence": "",
-      "stage": 64,
-      "category": "古文"
-    },
-    {
-      "en": "にげなげなり",
-      "ja": "にげなげなり",
-      "sentence": "",
-      "stage": 64,
-      "category": "古文"
-    },
-    {
-      "en": "ねたげなり",
-      "ja": "ねたげなり",
-      "sentence": "",
-      "stage": 64,
-      "category": "古文"
-    },
-    {
-      "en": "のどけし",
-      "ja": "のどけし",
-      "sentence": "",
-      "stage": 64,
-      "category": "古文"
-    },
-    {
-      "en": "はかばかしげなり",
-      "ja": "はかばかしげなり",
-      "sentence": "",
-      "stage": 65,
-      "category": "古文"
-    },
-    {
-      "en": "はしたなく",
-      "ja": "はしたなく",
-      "sentence": "",
-      "stage": 65,
-      "category": "古文"
-    },
-    {
-      "en": "ひがむ",
-      "ja": "ひがむ",
-      "sentence": "",
-      "stage": 65,
-      "category": "古文"
-    },
-    {
-      "en": "ひとやりならず",
-      "ja": "ひとやりならず",
-      "sentence": "",
-      "stage": 65,
-      "category": "古文"
-    },
-    {
-      "en": "ふつつかなり",
-      "ja": "ふつつかなり",
-      "sentence": "",
-      "stage": 65,
-      "category": "古文"
-    },
-    {
-      "en": "ほだし",
-      "ja": "ほだし",
-      "sentence": "",
-      "stage": 65,
-      "category": "古文"
-    },
-    {
-      "en": "まうし",
-      "ja": "まうし",
-      "sentence": "",
-      "stage": 65,
-      "category": "古文"
-    },
-    {
-      "en": "まさし",
-      "ja": "まさし",
-      "sentence": "",
-      "stage": 65,
-      "category": "古文"
-    },
-    {
-      "en": "まことし",
-      "ja": "まことし",
-      "sentence": "",
-      "stage": 66,
-      "category": "古文"
-    },
-    {
-      "en": "まどろむ",
-      "ja": "まどろむ",
-      "sentence": "",
-      "stage": 66,
-      "category": "古文"
-    },
-    {
-      "en": "まめだつ",
-      "ja": "まめだつ",
-      "sentence": "",
-      "stage": 66,
-      "category": "古文"
-    },
-    {
-      "en": "みぐし",
-      "ja": "みぐし",
-      "sentence": "",
-      "stage": 66,
-      "category": "古文"
-    },
-    {
-      "en": "みそかごと",
-      "ja": "みそかごと",
-      "sentence": "",
-      "stage": 66,
-      "category": "古文"
-    },
-    {
-      "en": "むなしくなる",
-      "ja": "むなしくなる",
-      "sentence": "",
-      "stage": 66,
-      "category": "古文"
-    },
-    {
-      "en": "めざましげなり",
-      "ja": "めざましげなり",
-      "sentence": "",
-      "stage": 66,
-      "category": "古文"
-    },
-    {
-      "en": "ものあはれ",
-      "ja": "ものあはれ",
-      "sentence": "",
-      "stage": 66,
-      "category": "古文"
-    },
-    {
-      "en": "ものから",
-      "ja": "ものから",
-      "sentence": "",
-      "stage": 67,
-      "category": "古文"
-    },
-    {
-      "en": "ものすごし",
-      "ja": "ものすごし",
-      "sentence": "",
-      "stage": 67,
-      "category": "古文"
-    },
-    {
-      "en": "やう",
-      "ja": "やう",
-      "sentence": "",
-      "stage": 67,
-      "category": "古文"
-    },
-    {
-      "en": "やがてさて",
-      "ja": "やがてさて",
-      "sentence": "",
-      "stage": 67,
-      "category": "古文"
-    },
-    {
-      "en": "やすげなり",
-      "ja": "やすげなり",
-      "sentence": "",
-      "stage": 67,
-      "category": "古文"
-    },
-    {
-      "en": "ゆかしげなり",
-      "ja": "ゆかしげなり",
-      "sentence": "",
-      "stage": 67,
-      "category": "古文"
-    },
-    {
-      "en": "ゆく末",
-      "ja": "ゆく末",
-      "sentence": "",
-      "stage": 67,
-      "category": "古文"
-    },
-    {
-      "en": "よこしまなり",
-      "ja": "よこしまなり",
-      "sentence": "",
-      "stage": 67,
-      "category": "古文"
-    },
-    {
-      "en": "よしある",
-      "ja": "よしある",
-      "sentence": "",
-      "stage": 68,
-      "category": "古文"
-    },
-    {
-      "en": "よしや",
-      "ja": "よしや",
-      "sentence": "",
-      "stage": 68,
-      "category": "古文"
-    },
-    {
-      "en": "わびる",
-      "ja": "わびる",
-      "sentence": "",
-      "stage": 68,
-      "category": "古文"
-    },
-    {
-      "en": "わりなげなり",
-      "ja": "わりなげなり",
-      "sentence": "",
-      "stage": 68,
-      "category": "古文"
-    },
-    {
-      "en": "をかしげなり",
-      "ja": "をかしげなり",
-      "sentence": "",
-      "stage": 68,
+      "stage": 48,
       "category": "古文"
     }
   ],
