@@ -47035,7 +47035,17 @@ function jI({
         poopT: Date.now(),
         last: Date.now(),
         spent: 0,
-        petAt: 0
+        petAt: 0,
+        bond: 0,
+        petN: 0,
+        feedN: 0,
+        cleanN: 0,
+        playN: 0,
+        streak: 0,
+        best: 0,
+        careDay: "",
+        ach: [],
+        tasted: {}
       };
       try {
         let te = JSON.parse(localStorage.getItem("oriex_hamu_" + (window.__oxUid || "local")) || "null");
@@ -47158,7 +47168,7 @@ function jI({
         l && l("もちものにありません");
         return
       }
-      Be.inv[te.id]--, Be.food = p(Be.food + te.food), Be.happy = p(Be.happy + te.happy), Be.grow = (Be.grow || 0) + 2, We.current.eat = performance.now(), We.current.eatCol = te.col, rt(Be), M("")
+      Be.inv[te.id]--, Be.food = p(Be.food + te.food), Be.happy = p(Be.happy + te.happy), Be.grow = (Be.grow || 0) + 2, We.current.eat = performance.now(), We.current.eatCol = te.col, rt(careTrack(Be, "feed", te.id)), M("")
     },
     an = () => {
       let te = Date.now();
@@ -47178,20 +47188,20 @@ function jI({
         y: 90 + ut % 2 * 14,
         t: performance.now() + ut * 90
       });
-      rt(Be)
+      rt(careTrack(Be, "pet"))
     },
     O = () => {
       if (m.clean >= 99 && !m.poops) {
         l && l("もうピカピカ！");
         return
       }
-      rt({
+      rt(careTrack({
         ...m,
         clean: 100,
         poops: 0,
         poopT: Date.now(),
         grow: (m.grow || 0) + 1
-      }), We.current.clean = performance.now()
+      }, "clean")), We.current.clean = performance.now()
     },
     ae = () => {
       if (!(m.own && m.own.wheel)) {
@@ -47202,12 +47212,12 @@ function jI({
         l && l("おなかがすいてあそべない…");
         return
       }
-      rt({
+      rt(careTrack({
         ...m,
         happy: p(m.happy + 15),
         food: p(m.food - 6),
         grow: (m.grow || 0) + 3
-      }), We.current.playReq = performance.now()
+      }, "play")), We.current.playReq = performance.now()
     },
     $ = te => {
       if (W < te.xp) {
@@ -47283,6 +47293,93 @@ function jI({
       children: te
     }),
     it = $t === 0 ? 30 - zt : $t === 1 ? 100 - zt : 0;
+  let __bondLv = b => Math.max(0, Math.floor((Math.sqrt(1 + .4 * (b || 0)) - 1) / 2)),
+    __bondTotal = L => 10 * L * (L + 1),
+    __title = lv => lv >= 30 ? "ソウルメイト" : lv >= 15 ? "あいぼう" : lv >= 5 ? "なかよし" : lv >= 1 ? "しんまい" : "",
+    __ach = [{
+      id: "pet1", n: "はじめてのなで", d: "なでる1回", c: s => (s.petN || 0) >= 1
+    }, {
+      id: "pet50", n: "なでなで名人", d: "なでる50回", c: s => (s.petN || 0) >= 50
+    }, {
+      id: "pet200", n: "なでなで達人", d: "なでる200回", c: s => (s.petN || 0) >= 200
+    }, {
+      id: "feed1", n: "はじめてのごはん", d: "ごはん1回", c: s => (s.feedN || 0) >= 1
+    }, {
+      id: "feed50", n: "ごはん係", d: "ごはん50回", c: s => (s.feedN || 0) >= 50
+    }, {
+      id: "clean10", n: "おそうじ係", d: "そうじ10回", c: s => (s.cleanN || 0) >= 10
+    }, {
+      id: "play10", n: "あそびの天才", d: "あそぶ10回", c: s => (s.playN || 0) >= 10
+    }, {
+      id: "kid", n: "すくすく", d: "キッズに成長", c: s => (s.grow || 0) >= 90
+    }, {
+      id: "adult", n: "りっぱなおとな", d: "おとなに成長", c: s => (s.grow || 0) >= 360
+    }, {
+      id: "streak3", n: "三日つづいた", d: "3日れんぞくお世話", c: s => (s.best || 0) >= 3
+    }, {
+      id: "streak7", n: "一週間まいにち", d: "7日れんぞくお世話", c: s => (s.best || 0) >= 7
+    }, {
+      id: "streak30", n: "一ヶ月のきずな", d: "30日れんぞくお世話", c: s => (s.best || 0) >= 30
+    }, {
+      id: "bond5", n: "なかよし", d: "きずなLv5", c: s => __bondLv(s.bond) >= 5
+    }, {
+      id: "bond15", n: "あいぼう", d: "きずなLv15", c: s => __bondLv(s.bond) >= 15
+    }, {
+      id: "bond30", n: "ソウルメイト", d: "きずなLv30", c: s => __bondLv(s.bond) >= 30
+    }, {
+      id: "zukan", n: "おやつ博士", d: "ぜんぶのおやつをあげる", c: s => Od.every(f => (s.tasted || {})[f.id])
+    }],
+    careTrack = (st, kind, foodId) => {
+      let s = { ...st };
+      s.bond = (s.bond || 0) + ({ pet: 3, feed: 4, clean: 3, play: 5 }[kind] || 3);
+      let k = { pet: "petN", feed: "feedN", clean: "cleanN", play: "playN" }[kind];
+      k && (s[k] = (s[k] || 0) + 1), kind === "feed" && foodId && (s.tasted = { ...s.tasted || {}, [foodId]: 1 });
+      let dd = new Date,
+        td = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + dd.getDate();
+      if (s.careDay !== td) {
+        let yy = new Date;
+        yy.setDate(yy.getDate() - 1);
+        let yd = yy.getFullYear() + "-" + (yy.getMonth() + 1) + "-" + yy.getDate();
+        s.streak = (s.careDay === yd ? s.streak || 0 : 0) + 1, s.careDay = td, s.best = Math.max(s.best || 0, s.streak)
+      }
+      let have = {};
+      (s.ach || []).forEach(x => have[x] = 1);
+      let nw = [];
+      for (let a of __ach) !have[a.id] && a.c(s) && (have[a.id] = 1, nw.push(a.n));
+      return s.ach = Object.keys(have), nw.length && l && setTimeout(() => l("じっせき解除：" + nw.join("、")), 350), s
+    },
+    __recPanel = () => {
+      let lv = __bondLv(m.bond),
+        pv = __bondTotal(lv),
+        nx = __bondTotal(lv + 1),
+        pct = Math.max(0, Math.min(100, (m.bond - pv) / (nx - pv) * 100)),
+        tasted = m.tasted || {},
+        got = Od.filter(f => tasted[f.id]).length,
+        have = {};
+      (m.ach || []).forEach(x => have[x] = 1);
+      let oc = Object.keys(have).length,
+        sec = (lb, bd) => (0, r.jsxs)("div", {
+          style: { marginBottom: 13 },
+          children: [(0, r.jsx)("div", { style: { fontSize: 11, fontWeight: 900, color: t ? "#888" : "#999", marginBottom: 6 }, children: lb }), bd]
+        });
+      return (0, r.jsxs)("div", {
+        children: [sec("きずなレベル" + (__title(lv) ? "・" + __title(lv) : ""), (0, r.jsxs)("div", {
+          children: [(0, r.jsxs)("div", { style: { display: "flex", justifyContent: "space-between", fontWeight: 900, fontSize: 13, color: t ? "#222" : "#eee", marginBottom: 4 }, children: ["Lv " + lv, Math.round(m.bond || 0) + "pt"] }), (0, r.jsx)("div", { style: { height: 9, borderRadius: 99, background: t ? "rgba(0,0,0,0.07)" : "rgba(255,255,255,0.1)", overflow: "hidden" }, children: (0, r.jsx)("div", { style: { width: pct + "%", height: "100%", background: e.accentGrad || e.accent, borderRadius: 99, transition: "width .4s" } }) }), (0, r.jsx)("div", { style: { fontSize: 10, color: t ? "#999" : "#888", marginTop: 3, fontWeight: 700 }, children: "つぎのLvまで " + Math.max(0, Math.ceil(nx - (m.bond || 0))) + "pt" })]
+        })), sec("れんぞくお世話", (0, r.jsxs)("div", {
+          style: { display: "flex", gap: 10 },
+          children: [(0, r.jsxs)("div", { style: { flex: 1, padding: "8px 10px", borderRadius: 12, background: t ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.06)", fontWeight: 900, fontSize: 13, color: t ? "#222" : "#eee" }, children: ["いま ", m.streak || 0, "日"] }), (0, r.jsxs)("div", { style: { flex: 1, padding: "8px 10px", borderRadius: 12, background: t ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.06)", fontWeight: 900, fontSize: 13, color: t ? "#222" : "#eee" }, children: ["さいこう ", m.best || 0, "日"] })]
+        })), sec("おやつずかん " + got + "/" + Od.length, (0, r.jsx)("div", {
+          style: { display: "flex", gap: 6, flexWrap: "wrap" },
+          children: Od.map(f => (0, r.jsxs)("div", { style: { display: "flex", alignItems: "center", gap: 5, padding: "5px 9px", borderRadius: 99, border: "1px solid " + (t ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.12)"), opacity: tasted[f.id] ? 1 : .4 }, children: [(0, r.jsx)("span", { style: { width: 10, height: 10, borderRadius: 99, background: f.col } }), (0, r.jsx)("span", { style: { fontSize: 11, fontWeight: 800, color: t ? "#333" : "#ddd" }, children: tasted[f.id] ? f.n : "？？？" })] }, f.id))
+        })), sec("じっせき " + oc + "/" + __ach.length, (0, r.jsx)("div", {
+          style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 },
+          children: __ach.map(a => {
+            let on = !!have[a.id];
+            return (0, r.jsxs)("div", { style: { padding: "7px 9px", borderRadius: 11, border: "1px solid " + (on ? e.accent + "66" : t ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.12)"), background: on ? e.accent + "1f" : "transparent", opacity: on ? 1 : .55 }, children: [(0, r.jsx)("div", { style: { fontSize: 11.5, fontWeight: 900, color: on ? t ? "#222" : "#fff" : t ? "#999" : "#888" }, children: a.n }), (0, r.jsx)("div", { style: { fontSize: 9.5, fontWeight: 700, color: t ? "#aaa" : "#888", marginTop: 1 }, children: a.d })] }, a.id)
+          })
+        }))]
+      })
+    };
   return (0, r.jsxs)("div", {
     style: {
       padding: "4px 2px 24px",
@@ -47521,7 +47618,7 @@ function jI({
             fontSize: 12,
             backdropFilter: "blur(8px)"
           },
-          children: [m.name || "ハムちゃん", "・", W, "XP"]
+          children: [m.name || "ハムちゃん", __title(__bondLv(m.bond)) ? " " + __title(__bondLv(m.bond)) : "", "・", W, "XP"]
         }), (0, r.jsxs)("div", {
           style: {
             padding: "5px 11px",
@@ -47540,6 +47637,9 @@ function jI({
           left: "50%",
           transform: "translateX(-50%)",
           display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          maxWidth: "calc(100vw - 20px)",
           gap: 9,
           zIndex: 3
         },
@@ -47549,7 +47649,8 @@ function jI({
           ["そうじ", O],
           ["あそぶ", ae],
           ["ショップ", () => M(I === "shop" ? "" : "shop")],
-          ["もよう", () => M(I === "layout" ? "" : "layout")]
+          ["もよう", () => M(I === "layout" ? "" : "layout")],
+          ["きろく", () => M(I === "rec" ? "" : "rec")]
         ].map(te => (0, r.jsx)("button", {
           onClick: te[1],
           style: {
@@ -47595,7 +47696,7 @@ function jI({
               fontSize: 13,
               color: t ? "#222" : "#f2f2f4"
             },
-            children: I === "food" ? "もちもの（えさ）" : I === "shop" ? "ショップ（勉強1分 = 1XP）" : "\u3082\u3088\u3046\u304C\u3048\uFF08\u30DE\u30B9\u79FB\u52D5\u30FB90\xB0\u56DE\u8EE2\uFF09"
+            children: I === "rec" ? "きろく・やりこみ" : I === "food" ? "もちもの（えさ）" : I === "shop" ? "ショップ（勉強1分 = 1XP）" : "\u3082\u3088\u3046\u304C\u3048\uFF08\u30DE\u30B9\u79FB\u52D5\u30FB90\xB0\u56DE\u8EE2\uFF09"
           }), (0, r.jsx)("button", {
             onClick: () => M(""),
             style: {
@@ -47770,7 +47871,7 @@ function jI({
               children: "ショップで購入"
             })]
           }, te.id)
-        })]
+        }), I === "rec" && __recPanel()]
       }), de && (() => {
         let te = (At, sn) => {
             let Ue = $e.current,
