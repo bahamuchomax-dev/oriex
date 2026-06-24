@@ -113,11 +113,12 @@ export function installVocabDistDot() {
     }
     // Backstop repaint (re-applies the dot if React re-rendered the tile away) and a
     // slower re-read to pick up freshly distributed words within a session. The read
-    // poll is 15min (the shared loader keeps its own durable 10min cache, so a tick is a cache
+    // poll is 30min (the shared loader keeps its own durable 10min cache, so a tick is a cache
     // hit unless genuinely stale) and is visibility-gated in refreshCount — a teacher
     // rarely distributes new words mid-session, so this is ample and far cheaper.
+    // (visibilitychange below also refetches on every foreground return.)
     setInterval(() => { if (!document.hidden) paint(); }, 2000);
-    setInterval(refreshCount, 900000);
+    setInterval(refreshCount, 1800000);
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) refreshCount();
     });

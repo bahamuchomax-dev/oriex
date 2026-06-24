@@ -16,6 +16,7 @@ import { refs } from "../../firebase/firestorePaths.js";
 const LEGACY_APP_ID = "gen-ron-kai-app-v1";
 const CARD_CACHE_MS = 5 * 60_000;
 const LIST_CACHE_MS = 2 * 60_000;
+const PUBLIC_CARDS_CACHE_MS = 20 * 60_000; // weekly-reset board; changes slowly
 
 const cardCache = new Map(); // uid -> { at, value }
 const shortIdCache = new Map(); // shortId -> { at, value }
@@ -119,19 +120,20 @@ export async function resolveUserCard(uid) {
  */
 export async function loadPublicCards(max = 50) {
   const cached = publicCardsCache.get(max);
-  if (fresh(cached, CARD_CACHE_MS)) return cached.value;
+  if (fresh(cached, PUBLIC_CARDS_CACHE_MS)) return cached.value;
 
-  const reads = await Promise.allSettled([
-    getDocs(query(legacyCustomAppCol(), limit(max))),
-    getDocs(query(refs.customAppCol(), limit(max))),
-  ]);
+  // Single read of the LIVE legacy directory. The modern top-level customApp path
+  // is never written in production, so reading it only added an extra billed query
+  // for an always-empty result — dropped.
   const byUid = new Map();
-  for (const res of reads) {
-    if (res.status !== "fulfilled") continue;
-    for (const d of res.value.docs) {
+  try {
+    const snap = await getDocs(query(legacyCustomAppCol(), limit(max)));
+    for (const d of snap.docs) {
       const card = publicCard(d.data().uid ?? d.id, d.data(), "customApp");
       if (card.uid && !byUid.has(card.uid)) byUid.set(card.uid, card);
     }
+  } catch {
+    /* leave board empty on read error, as before */
   }
   return remember(publicCardsCache, max, Array.from(byUid.values()));
 }

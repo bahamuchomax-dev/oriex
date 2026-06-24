@@ -100,11 +100,42 @@ export function installReadCounter() {
     if (!u) return;
     if (window.__oxDevCheckedUid === u.uid) return; // already evaluated this user
     window.__oxDevCheckedUid = u.uid;
+
+    // developerList is a global, near-static directory. Serve it from a TTL'd
+    // localStorage cache so we skip a whole-collection getDocs on every cold start.
+    // A newly-granted dev badge may appear up to TTL late (cosmetic); own functional
+    // status still re-checks the `developer` custom claim via confirmByClaim().
+    const CACHE_KEY = "ox_devUids_v1";
+    const TTL_MS = 12 * 60 * 60 * 1000; // 12h
+    try {
+      const raw = window.localStorage.getItem(CACHE_KEY);
+      if (raw) {
+        const cached = JSON.parse(raw);
+        if (cached && Array.isArray(cached.ids) && Date.now() - cached.ts < TTL_MS) {
+          const ids = new Set(cached.ids.map(String));
+          window.__oxDevUids = ids;
+          if (ids.has(String(u.uid))) markDeveloper();
+          else confirmByClaim(u);
+          return; // cache hit — no Firestore read
+        }
+      }
+    } catch {
+      /* cache unreadable — fall through to a live read */
+    }
+
     getDocs(collection(db, "artifacts", APP_ID, "public", "data", "developerList"))
       .then((snap) => {
         const ids = new Set();
         snap.forEach((d) => ids.add(String(d.id)));
         window.__oxDevUids = ids;
+        try {
+          window.localStorage.setItem(
+            CACHE_KEY,
+            JSON.stringify({ ts: Date.now(), ids: Array.from(ids) }),
+          );
+        } catch {
+          /* storage blocked/full — non-fatal */
+        }
         if (ids.has(String(u.uid))) {
           markDeveloper();
           return;

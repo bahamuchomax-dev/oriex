@@ -48,10 +48,18 @@ function writeLocal(u, state) {
   }
 }
 
+// Once-per-session-per-uid guard: the room re-mounts on every [L] change in the
+// bundle, so without this the room doc was re-read on every open. Set before the
+// await so concurrent re-mounts dedupe to a single read. (Furniture bought on
+// another device mid-session surfaces on the next cold start — rare; acceptable.)
+let loadedFor = null;
+
 // Pull saved own/layout from the cloud and merge into the local pet state (keeping
 // the volatile gauges). Applies to the engine on its next furniture rebuild / open.
 async function loadFromCloud(u) {
   try {
+    if (loadedFor === u) return;
+    loadedFor = u;
     const snap = await getDoc(roomRef(u));
     if (!snap.exists()) return;
     const d = snap.data() || {};

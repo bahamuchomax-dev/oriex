@@ -50822,13 +50822,17 @@ function CI() {
       }
       u.uid && R.enabled && (async () => {
         try {
-          let y = await Cl(et(R.db, "artifacts", R.appId, "public", "data", "customApp", u.uid)),
-            E = y.exists() ? y.data() : {},
-            b = 0;
-          try {
-            let _ti = await Cl(et(R.db, "artifacts", R.appId, "public", "data", "teacherIndex", u.uid));
-            _ti.exists() && (E = { ..._ti.data(), ...E })
-          } catch {}
+          let cached = (Array.isArray(Q) ? Q.find(G => G.id === u.uid) : null) || (Array.isArray(zt) ? zt.find(G => (G.uid || G.id) === u.uid) : null),
+            E, b = 0;
+          if (cached) E = { ...cached };
+          else {
+            let y = await Cl(et(R.db, "artifacts", R.appId, "public", "data", "customApp", u.uid));
+            E = y.exists() ? y.data() : {};
+            try {
+              let _ti = await Cl(et(R.db, "artifacts", R.appId, "public", "data", "teacherIndex", u.uid));
+              _ti.exists() && (E = { ..._ti.data(), ...E })
+            } catch {}
+          }
           try {
             b = (await rn(bt(R.db, "artifacts", R.appId, "users", u.uid, "friends"))).size
           } catch {}
@@ -50863,12 +50867,13 @@ function CI() {
     date: "",
     time: "",
     message: ""
-  }), [tt, Qt] = (0, P.useState)("now"), [Xe, Nt] = (0, P.useState)("study"), mt = async () => {
+  }), [tt, Qt] = (0, P.useState)("now"), [Xe, Nt] = (0, P.useState)("study"), mt = async force => {
     if (!(!R.enabled || !e)) try {
       if (os((await rn(bt(R.db, "artifacts", R.appId, "public", "data", "weeklyTasks"))).docs.map(u => ({
           id: u.id,
           ...u.data()
         })).sort((u, y) => (y.createdAt || 0) - (u.createdAt || 0))), i?.isTeacher) {
+        if (force || window.__oxScreen === "weeklyPlan" || window.__oxScreen === "weeklyTaskAdmin") {
         let u = (await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "taskProgress"), li(200)))).docs.map(E => ({
           id: E.id,
           ...E.data()
@@ -50878,6 +50883,7 @@ function CI() {
         u.forEach(E => {
           E.uid === e?.uid && (y[E.taskId] = E.done || 0)
         }), Hr(y)
+        }
       } else {
         let u = (await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "taskProgress"), wc("uid", "==", e.uid)))).docs.map(E => ({
           id: E.id,
@@ -50895,9 +50901,11 @@ function CI() {
     mt();
     let y = setInterval(() => {
       document.hidden || mt()
-    }, 3e5);
+    }, 9e5);
     return () => clearInterval(y)
-  }, [e?.uid, i?.isTeacher]);
+  }, [e?.uid, i?.isTeacher]), (0, P.useEffect)(() => {
+    i?.isTeacher && (l === "weeklyPlan" || l === "weeklyTaskAdmin") && mt(!0)
+  }, [l]);
   let [un, st] = (0, P.useState)(0), Wn = () => {
     try {
       return Math.max(0, ...(Tt || []).filter(u => u.assignedTo === "all" || Array.isArray(u.assignedTo) && u.assignedTo.includes(e?.uid)).map(u => Number(u.createdAt) || 0))
@@ -51342,9 +51350,10 @@ function CI() {
   (0, P.useEffect)(() => {
     Yn.current = En
   }, [En]), (0, P.useEffect)(() => {
-    !e?.uid || !R.enabled || !["start", "stageMap"].includes(l) || ti.current?.shortId === "DEBUG" || (async () => {
+    !e?.uid || !R.enabled || !["start", "stageMap"].includes(l) || ti.current?.shortId === "DEBUG" || (typeof window !== "undefined" && window.__oxProfileAt && window.__oxProfileAt.uid === e.uid && Date.now() - window.__oxProfileAt.t < 6e4) || (async () => {
       try {
         let u = await Cl(et(R.db, "artifacts", R.appId, "users", e.uid, "profile", "main"));
+        try { window.__oxProfileAt = { uid: e.uid, t: Date.now() } } catch (__e) {}
         if (!u.exists()) {
           !u.metadata.fromCache && !on.current && uu(!0);
           return
@@ -51448,7 +51457,7 @@ function CI() {
             id: U.id,
             ...U.data()
           })).sort((U, ue) => ue.timestamp - U.timestamp);
-          if (Je(pe), pe.length > 0) {
+          if (window.__oxAnnAt = Date.now(), Je(pe), pe.length > 0) {
             let U = pe[0].id;
             $h(ue => ue === U ? ue : null)
           }
@@ -51634,12 +51643,13 @@ function CI() {
     }
   }, [e?.uid]), (0, P.useEffect)(() => {
     if (l !== "chat" || !R.enabled || !R.db) return;
+    if (Date.now() - (window.__oxChatAt || 0) < 6e4) return;
     let u = !0;
     return rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "chat"), jc("timestamp", "asc"), li(100))).then(y => {
-      u && hr(y.docs.map(E => ({
+      u && (hr(y.docs.map(E => ({
         id: E.id,
         ...E.data()
-      })))
+      }))), window.__oxChatAt = Date.now())
     }).catch(() => {}), () => {
       u = !1
     }
@@ -52159,7 +52169,7 @@ function CI() {
             text: pr,
             timestamp: Date.now(),
             uid: e?.uid || "admin"
-          }), Vo(""), Qe("お知らせを送信しました！")
+          }), window.__oxAnnAt = 0, Vo(""), Qe("お知らせを送信しました！")
         } catch (u) {
           Qe("送信エラー: " + u.message, "error")
         }
@@ -53201,6 +53211,7 @@ function CI() {
         }
       } catch {}
     })(), ["plaza", "announcementsList"].includes(l) && (async () => {
+      if (Date.now() - (window.__oxAnnAt || 0) < 6e4) return;
       try {
         let y = await rn(oa(bt(R.db, "artifacts", R.appId, "public", "data", "announcements"), jc("timestamp", "desc"), li(50)));
         if (u) {
@@ -53208,7 +53219,7 @@ function CI() {
             id: b.id,
             ...b.data()
           })).sort((b, C) => C.timestamp - b.timestamp);
-          Je(E)
+          Je(E), window.__oxAnnAt = Date.now()
         }
       } catch {}
     })(), () => {

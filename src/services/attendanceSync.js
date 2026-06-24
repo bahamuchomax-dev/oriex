@@ -108,12 +108,16 @@ function schedulePush() {
 }
 
 let pulling = false;
+let lastPullAt = 0;
+const PULL_TTL_MS = 10 * 60 * 1000; // stamps change at most ~once/day; skip repeated same-session re-reads
 async function pullFromServer() {
   const u = currentUid();
   if (!u || pulling) return;
+  if (Date.now() - lastPullAt < PULL_TTL_MS) return; // repeated tab opens reuse the recent fetch
   pulling = true;
   try {
     const snap = await getDoc(docRef(u));
+    lastPullAt = Date.now(); // set only after a successful read so failures can retry
     const server = snap.exists() && Array.isArray(snap.data().stamps) ? snap.data().stamps : [];
     const local = readLocal();
     const merged = mergeStamps(local, server);

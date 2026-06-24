@@ -18,7 +18,10 @@ import { collection, getDocs } from "firebase/firestore";
 
 const APP_ID = "gen-ron-kai-app-v1";
 const CACHE_PREFIX = "oxLegacyCustomSeenCache:";
-const CACHE_MS = 10 * 60_000;
+// 6h: solved-words rarely need cross-device refresh, and the FS hook (below) re-arms
+// the cache on every local solve, so the whole-collection getDocs only re-fires on a
+// cold reopen after a long idle gap. A longer TTL cuts those reseed reads.
+const CACHE_MS = 6 * 60 * 60_000;
 
 function uid() {
   if (auth && auth.currentUser && auth.currentUser.uid) return auth.currentUser.uid;
