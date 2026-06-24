@@ -47355,7 +47355,11 @@ function jI({
         pct = Math.max(0, Math.min(100, (m.bond - pv) / (nx - pv) * 100)),
         tasted = m.tasted || {},
         got = Od.filter(f => tasted[f.id]).length,
-        have = {};
+        have = {},
+        __sd = new Date,
+        __std = __sd.getFullYear() + "-" + (__sd.getMonth() + 1) + "-" + __sd.getDate(),
+        __sy = (() => { let y = new Date; y.setDate(y.getDate() - 1); return y.getFullYear() + "-" + (y.getMonth() + 1) + "-" + y.getDate() })(),
+        cur = m.careDay === __std || m.careDay === __sy ? m.streak || 0 : 0;
       (m.ach || []).forEach(x => have[x] = 1);
       let oc = Object.keys(have).length,
         sec = (lb, bd) => (0, r.jsxs)("div", {
@@ -47367,7 +47371,7 @@ function jI({
           children: [(0, r.jsxs)("div", { style: { display: "flex", justifyContent: "space-between", fontWeight: 900, fontSize: 13, color: t ? "#222" : "#eee", marginBottom: 4 }, children: ["Lv " + lv, Math.round(m.bond || 0) + "pt"] }), (0, r.jsx)("div", { style: { height: 9, borderRadius: 99, background: t ? "rgba(0,0,0,0.07)" : "rgba(255,255,255,0.1)", overflow: "hidden" }, children: (0, r.jsx)("div", { style: { width: pct + "%", height: "100%", background: e.accentGrad || e.accent, borderRadius: 99, transition: "width .4s" } }) }), (0, r.jsx)("div", { style: { fontSize: 10, color: t ? "#999" : "#888", marginTop: 3, fontWeight: 700 }, children: "つぎのLvまで " + Math.max(0, Math.ceil(nx - (m.bond || 0))) + "pt" })]
         })), sec("れんぞくお世話", (0, r.jsxs)("div", {
           style: { display: "flex", gap: 10 },
-          children: [(0, r.jsxs)("div", { style: { flex: 1, padding: "8px 10px", borderRadius: 12, background: t ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.06)", fontWeight: 900, fontSize: 13, color: t ? "#222" : "#eee" }, children: ["いま ", m.streak || 0, "日"] }), (0, r.jsxs)("div", { style: { flex: 1, padding: "8px 10px", borderRadius: 12, background: t ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.06)", fontWeight: 900, fontSize: 13, color: t ? "#222" : "#eee" }, children: ["さいこう ", m.best || 0, "日"] })]
+          children: [(0, r.jsxs)("div", { style: { flex: 1, padding: "8px 10px", borderRadius: 12, background: t ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.06)", fontWeight: 900, fontSize: 13, color: t ? "#222" : "#eee" }, children: ["いま ", cur, "日"] }), (0, r.jsxs)("div", { style: { flex: 1, padding: "8px 10px", borderRadius: 12, background: t ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.06)", fontWeight: 900, fontSize: 13, color: t ? "#222" : "#eee" }, children: ["さいこう ", m.best || 0, "日"] })]
         })), sec("おやつずかん " + got + "/" + Od.length, (0, r.jsx)("div", {
           style: { display: "flex", gap: 6, flexWrap: "wrap" },
           children: Od.map(f => (0, r.jsxs)("div", { style: { display: "flex", alignItems: "center", gap: 5, padding: "5px 9px", borderRadius: 99, border: "1px solid " + (t ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.12)"), opacity: tasted[f.id] ? 1 : .4 }, children: [(0, r.jsx)("span", { style: { width: 10, height: 10, borderRadius: 99, background: f.col } }), (0, r.jsx)("span", { style: { fontSize: 11, fontWeight: 800, color: t ? "#333" : "#ddd" }, children: tasted[f.id] ? f.n : "？？？" })] }, f.id))
@@ -47674,7 +47678,7 @@ function jI({
           position: "absolute",
           left: 10,
           right: 10,
-          bottom: "calc(max(12px, env(safe-area-inset-bottom, 0px)) + 86px)",
+          bottom: "calc(max(12px, env(safe-area-inset-bottom, 0px)) + 152px)",
           maxHeight: "46%",
           overflowY: "auto",
           borderRadius: 18,
@@ -51578,7 +51582,7 @@ function CI() {
       let b = E || Ft || "英単語",
         C = y ? yt : Oo.filter(ct => (ct.category || "英単語") === b);
       C.length < 4 && (C = Oo.filter(ct => (ct.category || "英単語") === b)), C.length < 4 && y && (C = [...C, ...yt]);
-      let K = [...C].filter(ct => ct.en !== u.en),
+      let K = [...C].filter(ct => ct.en !== u.en && ct.ja !== u.ja),
         q = ws(u),
         B = u.stage || 1,
         G = K.filter(ct => ws(ct) === q && Math.abs((ct.stage || 1) - B) <= 3),
@@ -52789,7 +52793,7 @@ function CI() {
               let _rx = Math.round((Number(b.minutes) || 0) / 60 * 150);
               if (_rx > 0) {
                 let _cp = ti.current || i || {},
-                  _np = { ..._cp, totalExp: (_cp.totalExp || 0) - _rx };
+                  _np = { ..._cp, totalExp: Math.max(0, (_cp.totalExp || 0) - _rx) };
                 o(_np);
                 try { wt("profile", _np) } catch {}
                 if (e && R.enabled) qn(et(R.db, "artifacts", R.appId, "users", e.uid, "profile", "main"), { totalExp: _np.totalExp }, { merge: !0 }).catch(() => {})
@@ -59351,7 +59355,15 @@ function CI() {
                   }, ...vr].slice(0, 80);
                   Na(C), localStorage.setItem("oritan_book_logs", JSON.stringify(C))
                 }
-                As?.("correct"), Qe("記録しました。"), m("start"), h("start")
+                let _gx = Math.round((b.minutes || 0) / 60 * 150);
+                if (_gx > 0) {
+                  let _cp = ti.current || i || {},
+                    _np = { ..._cp, totalExp: (_cp.totalExp || 0) + _gx };
+                  o(_np);
+                  try { wt("profile", _np) } catch {}
+                  e && R.enabled && qn(et(R.db, "artifacts", R.appId, "users", e.uid, "profile", "main"), { totalExp: _np.totalExp }, { merge: !0 }).catch(() => {})
+                }
+                As?.("correct"), Qe(_gx > 0 ? "記録しました。" + _gx + "EXPを獲得しました！" : "記録しました。"), m("start"), h("start")
               } catch {
                 Qe("記録に失敗しました。通信環境を確認してもう一度お試しください", "error")
               }
@@ -59694,7 +59706,7 @@ function CI() {
                             let _rx = Math.round((Number(_orig.minutes) || 0) / 60 * 150);
                             if (_rx > 0) {
                               let _cp = ti.current || i || {},
-                                _np = { ..._cp, totalExp: (_cp.totalExp || 0) - _rx };
+                                _np = { ..._cp, totalExp: Math.max(0, (_cp.totalExp || 0) - _rx) };
                               o(_np);
                               try { wt("profile", _np) } catch {}
                               if (e && R.enabled) qn(et(R.db, "artifacts", R.appId, "users", e.uid, "profile", "main"), { totalExp: _np.totalExp }, { merge: !0 }).catch(() => {})
@@ -62814,7 +62826,7 @@ function CI() {
                     })
                   }), U("お知らせ"), (0, r.jsxs)("button", {
                     className: "ox-plaza-announce",
-                    onClick: () => u("announcementsList"),
+                    onClick: () => { setOxNoticeTab(he > 0 ? "announce" : "social"); u("announcementsList") },
                     style: {
                       display: "flex",
                       alignItems: "center",

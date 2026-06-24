@@ -48,28 +48,35 @@ function writeLocal(u, state) {
   }
 }
 
-// Once-per-session-per-uid guard: the room re-mounts on every [L] change in the
-// bundle, so without this the room doc was re-read on every open. Set before the
-// await so concurrent re-mounts dedupe to a single read. (Furniture bought on
-// another device mid-session surfaces on the next cold start — rare; acceptable.)
+// Re-fetch guard with a 60s TTL (NOT once-per-session): the room re-mounts on every
+// [L] change, so this dedupes rapid re-opens, but still lets a later open RECOVER if
+// an intervening rt() persist clobbered localStorage with empty furniture. Reset on
+// error so a transient read failure retries on the next open.
 let loadedFor = null;
+let loadedAt = 0;
 
-// Pull saved own/layout from the cloud and merge into the local pet state (keeping
-// the volatile gauges). Applies to the engine on its next furniture rebuild / open.
+// Pull saved own/layout from the cloud and UNION into the local pet state (keeping
+// the volatile gauges; local wins on key conflicts so an un-pushed local purchase is
+// not discarded). Applies to the engine on its next furniture rebuild / open.
 async function loadFromCloud(u) {
   try {
-    if (loadedFor === u) return;
+    if (loadedFor === u && Date.now() - loadedAt < 60000) return;
     loadedFor = u;
+    loadedAt = Date.now();
     const snap = await getDoc(roomRef(u));
     if (!snap.exists()) return;
     const d = snap.data() || {};
     if (!d.own && !d.layout) return;
     const local = readLocal(u) || {};
-    if (d.own && typeof d.own === "object") local.own = d.own;
-    if (d.layout && typeof d.layout === "object") local.layout = d.layout;
+    if (d.own && typeof d.own === "object") local.own = { ...d.own, ...(local.own || {}) };
+    if (d.layout && typeof d.layout === "object") local.layout = { ...d.layout, ...(local.layout || {}) };
+    // The bundle pet initializer only accepts a cached object that HAS `name`; on a
+    // fresh device readLocal() is null, so without a name the merged furniture is
+    // rejected and never surfaces. Seed the bundle default (no-op for existing users).
+    if (!local.name) local.name = "ハムちゃん";
     writeLocal(u, local);
   } catch {
-    /* non-fatal: local state still works */
+    loadedFor = null; // allow a retry on the next room open (transient read failure)
   }
 }
 

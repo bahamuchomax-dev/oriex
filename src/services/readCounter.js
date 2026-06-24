@@ -22,7 +22,7 @@
  * ============================================================ */
 import { auth } from "../firebase/firebase.js";
 import { db } from "../firebase/db.js";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 
 const APP_ID = "gen-ron-kai-app-v1";
 
@@ -113,10 +113,18 @@ export function installReadCounter() {
         const cached = JSON.parse(raw);
         if (cached && Array.isArray(cached.ids) && Date.now() - cached.ts < TTL_MS) {
           const ids = new Set(cached.ids.map(String));
-          window.__oxDevUids = ids;
-          if (ids.has(String(u.uid))) markDeveloper();
-          else confirmByClaim(u);
-          return; // cache hit — no Firestore read
+          window.__oxDevUids = ids; // OTHER-user badges: cosmetic, stale is fine
+          // Re-derive OWN functional status live (single own-doc read) so a REVOKED
+          // developer loses the badge + app-lock bypass on the next cold start, not up
+          // to TTL later. Covers the list-grant path; confirmByClaim covers the claim
+          // path. Still far cheaper than the whole-collection getDocs the cache replaced.
+          getDoc(doc(db, "artifacts", APP_ID, "public", "data", "developerList", u.uid))
+            .then((snap) => {
+              if (snap.exists()) markDeveloper();
+              else confirmByClaim(u);
+            })
+            .catch(() => confirmByClaim(u));
+          return; // cache hit — only a single own-doc read
         }
       }
     } catch {
