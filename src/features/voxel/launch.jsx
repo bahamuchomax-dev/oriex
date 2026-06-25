@@ -55,8 +55,7 @@ function injectStyles() {
 
 function makeCard() {
   const btn = document.createElement('button')
-  btn.id = 'voxel-plaza-card'
-  btn.className = 'ox-plaza-action ox-plaza-voxel'
+  btn.className = 'ox-plaza-action ox-plaza-voxel voxel-plaza-card'
   btn.type = 'button'
   btn.style.cssText =
     'display:flex;align-items:center;gap:8px;padding:12px 10px;border-radius:18px;' +
@@ -71,10 +70,24 @@ function makeCard() {
   return btn
 }
 
+// Insert our card into the minigame section. The 広場 renders different DOM on
+// PC vs mobile, but the hamster minigame card (.ox-plaza-hamu) is present in
+// both layouts — so we anchor to it and drop our card right after it. Falls
+// back to appending into any .ox-plaza-action-grid.
 function tryInject() {
-  const grids = document.querySelectorAll('.ox-plaza-action-grid')
-  grids.forEach((grid) => {
-    if (!grid.querySelector('#voxel-plaza-card')) grid.appendChild(makeCard())
+  let placed = false
+  document.querySelectorAll('.ox-plaza-hamu').forEach((hamu) => {
+    const parent = hamu.parentElement
+    if (!parent || parent.querySelector('.voxel-plaza-card')) {
+      placed = true
+      return
+    }
+    hamu.insertAdjacentElement('afterend', makeCard())
+    placed = true
+  })
+  if (placed) return
+  document.querySelectorAll('.ox-plaza-action-grid').forEach((grid) => {
+    if (!grid.querySelector('.voxel-plaza-card')) grid.appendChild(makeCard())
   })
 }
 
