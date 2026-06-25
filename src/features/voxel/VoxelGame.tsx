@@ -5,6 +5,7 @@ import { Player } from './components/Player'
 import { VoxelWorld } from './components/VoxelWorld'
 import { Hotbar } from './components/Hotbar'
 import { Hand } from './components/Hand'
+import { DropItems } from './components/DropItems'
 import { Sky } from './components/Sky'
 import { Clouds } from './components/Clouds'
 import { CraftPanel } from './components/CraftPanel'
@@ -126,6 +127,7 @@ export default function VoxelGame({ onBack }: { onBack?: () => void }) {
         <Sky />
         <Clouds />
         <VoxelWorld onOpenCraft={() => setPanel('bench')} />
+        <DropItems />
         <Hand />
         <Player />
       </Canvas>

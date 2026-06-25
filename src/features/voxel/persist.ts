@@ -5,6 +5,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { serializeWorld, loadWorld, generateWorld, type WorldSave } from './world'
 import { serializeInv, loadInv, addItem, setOnChange } from './inventory'
+import { serializeDrops, loadDrops } from './drops'
 import type { ItemId } from './itemDefs'
 
 const KEY = 'mc_save_v1'
@@ -12,7 +13,7 @@ let pending = false
 
 export function saveNow() {
   try {
-    const data = { v: 1, world: serializeWorld(), inv: serializeInv() }
+    const data = { v: 1, world: serializeWorld(), inv: serializeInv(), drops: serializeDrops() }
     localStorage.setItem(KEY, JSON.stringify(data))
   } catch {
     /* storage full / unavailable — ignore */
@@ -36,9 +37,11 @@ export function initGame() {
       const data = JSON.parse(raw) as {
         world: WorldSave
         inv: { items: [ItemId, number][]; hotbar: (ItemId | null)[]; selected: number }
+        drops?: [ItemId, number, number, number, number][]
       }
       loadWorld(data.world)
       loadInv(data.inv)
+      if (data.drops) loadDrops(data.drops)
       loaded = true
     }
   } catch {

@@ -88,3 +88,9 @@ export function playBreak(block?: BlockType, _tool?: Tool) {
 export function playPlace() {
   tone(160, 0.07, 'sine', 0.05)
 }
+
+// short blip when an item is collected
+export function playPickup() {
+  tone(660, 0.05, 'triangle', 0.045)
+  tone(990, 0.05, 'triangle', 0.035)
+}

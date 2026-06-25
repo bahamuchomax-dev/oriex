@@ -19,11 +19,11 @@ import {
 import { buildWaterGeometry } from '../waterGeometry'
 import { enqueueAround, stepWater } from '../waterSim'
 import { def, BLOCK_DROPS, breakTimeFor, type Tool } from '../itemDefs'
-import { selectedItem, count, removeItem, addItem } from '../inventory'
+import { selectedItem, count, removeItem } from '../inventory'
 import { playHit, playBreak, playPlace } from '../audio'
 import { handState } from '../handState'
 import { markDirty } from '../persist'
-import { pushToast } from '../toast'
+import { spawnDrop } from '../drops'
 import { touch } from '../controls'
 
 const MAX = 8000
@@ -292,9 +292,9 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
           crackMat.opacity = 0.2 + ratio * 0.75
         }
         if (progress.current >= need) {
-          // drops
+          // spawn physical drop entities (collected on approach)
           for (const [id, n, chance] of BLOCK_DROPS[block] ?? []) {
-            if (Math.random() < chance) { addItem(id, n); pushToast(`${def(id).name} +${n}`) }
+            if (Math.random() < chance) spawnDrop(id, n, hx, hy + 0.1, hz)
           }
           world.delete(k)
           waterLevel.delete(k)
