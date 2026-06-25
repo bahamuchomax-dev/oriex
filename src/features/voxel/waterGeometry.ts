@@ -8,11 +8,12 @@
 import * as THREE from 'three'
 import { world, keyOf, WATER } from './world'
 
-// Water surface sits a little below the top of the cell. Higher flow levels
-// (farther from a source) sit lower, like Minecraft's thinning water.
+// Water surface sits a little below the top of the cell. We keep ALL water at
+// the same height (flat) so adjacent cells never leave a gap between differing
+// surface heights — that made flowing water look broken. Flow still spreads
+// logically; it just renders as one continuous flat surface per cell layer.
 const TOP_BASE = 0.35 // relative to cell centre (cube top is +0.5)
-const LEVEL_STEP = 0.07
-export const topForLevel = (level: number) => TOP_BASE - Math.min(level, 6) * LEVEL_STEP
+export const topForLevel = (_level: number) => TOP_BASE
 
 // natural pond blue-green (not a pale white glass)
 const BASE = new THREE.Color(0.13, 0.4, 0.5)

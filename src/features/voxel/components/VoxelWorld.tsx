@@ -113,7 +113,7 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
   }, [tex])
 
   const waterMat = useMemo(
-    () => new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.52, depthWrite: false, side: THREE.FrontSide }),
+    () => new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.55, depthWrite: false, side: THREE.DoubleSide }),
     [],
   )
   const tuftMat = useMemo(
