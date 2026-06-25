@@ -7,6 +7,28 @@
   z-index: 50; /* cover the oriex tab bar while playing */
 }
 
+/* On touch devices in portrait, prompt landscape (FPS needs the width). */
+.rotate-hint { display: none; }
+@media (orientation: portrait) and (pointer: coarse) {
+  .rotate-hint {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: #0b0f17;
+    color: #fff;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: center;
+    padding: 24px;
+    font: 700 18px system-ui, sans-serif;
+  }
+  .rotate-hint .icon { font-size: 56px; animation: rotateHint 1.6s ease-in-out infinite; }
+}
+@keyframes rotateHint { 0%, 100% { transform: rotate(0); } 55% { transform: rotate(90deg); } }
+
 .voxel-back {
   position: absolute;
   top: 12px;

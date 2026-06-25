@@ -59,6 +59,10 @@ export default function VoxelGame({ onBack }: { onBack?: () => void }) {
 
   return (
     <div className="game-container">
+      <div className="rotate-hint">
+        <span className="icon">📱</span>
+        <span>横画面にしてください</span>
+      </div>
       <div className="ui-overlay">
         <div className={`instructions ${playing ? 'compact' : ''}`}>
           {playing ? (

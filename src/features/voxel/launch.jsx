@@ -32,6 +32,24 @@ export function openVoxelGame() {
   host = document.createElement('div')
   host.id = 'voxel-host'
   document.body.appendChild(host)
+  // Best-effort landscape on touch devices (Android). iOS can't lock — the CSS
+  // .rotate-hint prompts there instead. All wrapped: failures are non-fatal.
+  if (matchMedia('(pointer: coarse)').matches) {
+    try {
+      const fs = host.requestFullscreen?.()
+      const lock = () => {
+        try {
+          screen.orientation?.lock?.('landscape')?.catch?.(() => {})
+        } catch {
+          /* unsupported */
+        }
+      }
+      if (fs && fs.then) fs.then(lock).catch(lock)
+      else lock()
+    } catch {
+      /* fullscreen unsupported */
+    }
+  }
   root = createRoot(host)
   root.render(
     h(
