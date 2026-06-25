@@ -31,7 +31,7 @@ const TABS = [
   { id: "review", label: "復習" },
   { id: "factory", label: "単語" },
   { id: "hamster", label: "部屋" },
-  { id: "voxel", label: "鉱山" },
+  { id: "voxel", label: "探索" },
   { id: "profile", label: "マイ" },
 ];
 

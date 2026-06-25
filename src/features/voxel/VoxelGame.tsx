@@ -39,7 +39,8 @@ export default function VoxelGame({ onBack }: { onBack?: () => void }) {
       const n = parseInt(e.key, 10)
       if (n >= 1 && n <= HOTBAR_SIZE) setSelected(n - 1)
       else if (e.key === 'e' || e.key === 'E') setPanel((p) => (p ? null : 'inv'))
-      else if (e.key === 'Escape') setPanel(null)
+      // Esc intentionally does NOT pause/stop the game (browser still releases
+      // the pointer lock natively; clicking resumes).
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -80,7 +81,17 @@ export default function VoxelGame({ onBack }: { onBack?: () => void }) {
       </div>
 
       {!panel && <MobileControls onCraft={() => setPanel('inv')} />}
-      {panel && <CraftPanel atWorkbench={panel === 'bench'} onClose={() => setPanel(null)} />}
+      {panel && (
+        <CraftPanel
+          atWorkbench={panel === 'bench'}
+          onClose={() => {
+            setPanel(null)
+            // resume immediately — don't leave the game "stopped" after the workbench
+            const c = document.querySelector('canvas') as HTMLCanvasElement | null
+            c?.requestPointerLock?.()
+          }}
+        />
+      )}
 
       <Canvas
         shadows
