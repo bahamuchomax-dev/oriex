@@ -3,6 +3,7 @@ import { useThree, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { isSolid, surfaceHeight, PLAYER } from '../world'
 import { touch } from '../controls'
+import { startBGM, stopBGM, playStep } from '../audio'
 
 const { HW, BODY, EYE } = PLAYER
 
@@ -52,6 +53,8 @@ export function Player() {
   const feet = useRef(new THREE.Vector3(0, surfaceHeight(0, 0) + 2, 0))
   const hvel = useRef({ x: 0, z: 0 }) // horizontal velocity (smoothed)
   const vy = useRef(0) // vertical velocity (gravity + jump only)
+  const stepTimer = useRef(0) // footstep cadence
+  const bgmOn = useRef(false)
 
   // mouse-look state kept as plain numbers
   const yaw = useRef(0)
@@ -112,12 +115,17 @@ export function Player() {
       document.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('keyup', onKeyUp)
+      stopBGM() // halt music when the game closes (Player unmounts)
     }
   }, [camera, gl])
 
   useFrame((_, dtRaw) => {
     if (!locked.current && !touch.active) return
     const dt = Math.min(dtRaw, 0.05) // clamp big frame gaps to avoid tunneling
+    if (!bgmOn.current) {
+      bgmOn.current = true
+      startBGM() // first frame after a gesture (lock/touch) → audio is allowed
+    }
     const f = feet.current
     const h = hvel.current
 
@@ -189,6 +197,19 @@ export function Player() {
         else f.y = Math.round(f.y) + 0.5 + EPS // landed on a block top
         vy.current = 0
       }
+    }
+
+    // ── footsteps while walking on the ground ─────────────────────────────────
+    const speed = Math.hypot(h.x, h.z)
+    const onFloor = groundSupport(f.x, f.y, f.z) !== null && vy.current <= 0.001
+    if (onFloor && speed > 1.2) {
+      stepTimer.current -= dt
+      if (stepTimer.current <= 0) {
+        playStep()
+        stepTimer.current = 0.34
+      }
+    } else {
+      stepTimer.current = 0 // step promptly when movement resumes
     }
 
     // ── fell off the world → respawn at the centre column ─────────────────────

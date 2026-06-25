@@ -94,3 +94,64 @@ export function playPickup() {
   tone(660, 0.05, 'triangle', 0.045)
   tone(990, 0.05, 'triangle', 0.035)
 }
+
+// soft footstep — short low filtered noise burst, slight random pitch
+export function playStep() {
+  const a = getCtx()
+  if (!a) return
+  const dur = 0.07
+  const n = Math.floor(a.sampleRate * dur)
+  const buf = a.createBuffer(1, n, a.sampleRate)
+  const d = buf.getChannelData(0)
+  for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n)
+  const src = a.createBufferSource()
+  src.buffer = buf
+  const f = a.createBiquadFilter()
+  f.type = 'lowpass'
+  f.frequency.value = 380 + Math.random() * 120
+  const g = a.createGain()
+  g.gain.value = 0.05
+  src.connect(f).connect(g).connect(a.destination)
+  src.start()
+}
+
+// ── gentle ambient BGM (procedural, low volume) ──────────────────────────────
+let bgmTimer: number | null = null
+let bgmStep = 0
+export function startBGM() {
+  const a = getCtx()
+  if (!a || bgmTimer !== null) return
+  const master = a.createGain()
+  master.gain.value = 0.045
+  master.connect(a.destination)
+  // soft A-minor-ish palette
+  const arp = [220, 262, 294, 330, 392, 330, 294, 262]
+  const bass = [110, 110, 98, 131]
+  const beat = 0.62
+  const voice = (freq: number, t: number, dur: number, type: OscillatorType, peak: number) => {
+    const o = a.createOscillator()
+    const g = a.createGain()
+    o.type = type
+    o.frequency.value = freq
+    g.gain.setValueAtTime(0.0001, t)
+    g.gain.exponentialRampToValueAtTime(peak, t + 0.06)
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur)
+    o.connect(g).connect(master)
+    o.start(t)
+    o.stop(t + dur + 0.05)
+  }
+  bgmTimer = window.setInterval(() => {
+    const ctx = getCtx()
+    if (!ctx) return
+    const t = ctx.currentTime + 0.05
+    voice(arp[bgmStep % arp.length], t, beat * 1.4, 'triangle', 0.5)
+    if (bgmStep % 4 === 0) voice(bass[(bgmStep / 4) % bass.length], t, beat * 3, 'sine', 0.7)
+    bgmStep++
+  }, beat * 1000)
+}
+export function stopBGM() {
+  if (bgmTimer !== null) {
+    clearInterval(bgmTimer)
+    bgmTimer = null
+  }
+}

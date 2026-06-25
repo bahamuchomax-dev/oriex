@@ -6,6 +6,7 @@ import { VoxelWorld } from './components/VoxelWorld'
 import { Hotbar } from './components/Hotbar'
 import { Hand } from './components/Hand'
 import { DropItems } from './components/DropItems'
+import { OrientationGate } from './components/OrientationGate'
 import { Sky } from './components/Sky'
 import { Clouds } from './components/Clouds'
 import { CraftPanel } from './components/CraftPanel'
@@ -60,10 +61,7 @@ export default function VoxelGame({ onBack }: { onBack?: () => void }) {
 
   return (
     <div className="game-container">
-      <div className="rotate-hint">
-        <span className="icon">📱</span>
-        <span>横画面にしてください</span>
-      </div>
+      <OrientationGate />
       <div className="ui-overlay">
         <div className={`instructions ${playing ? 'compact' : ''}`}>
           {playing ? (
