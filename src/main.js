@@ -319,3 +319,11 @@ if (typeof requestIdleCallback === "function") {
 } else if (typeof window !== "undefined") {
   window.addEventListener("load", preloadThree);
 }
+
+// Voxel "探索" minigame launcher. Adds a small button to the live app that
+// mounts the React Three Fiber game into its own overlay root on demand. The
+// launcher module is tiny; the heavy game chunk is lazy-loaded only on click,
+// so normal startup and the initial bundle are unaffected.
+import("./features/voxel/launch.jsx")
+  .then((m) => m.mountVoxelLauncher())
+  .catch((err) => console.warn("[oriex] voxel launcher failed", err));
