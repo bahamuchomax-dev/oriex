@@ -10,6 +10,8 @@ import TeacherProblems from "./features/teacher/TeacherProblems.jsx";
 // Heavy 3D screen is code-split so it (and three.js usage) stays out of the
 // initial bundle — matches the reference note about lazy-loading heavy views.
 const HamsterRoom = lazy(() => import("./features/hamster/HamsterRoom.jsx"));
+// Voxel mining minigame (React Three Fiber) — code-split like the hamster room.
+const VoxelGame = lazy(() => import("./features/voxel/VoxelGame.tsx"));
 
 /* ============================================================
  * App - React migration scaffold that hosts migrated screens
@@ -29,6 +31,7 @@ const TABS = [
   { id: "review", label: "復習" },
   { id: "factory", label: "単語" },
   { id: "hamster", label: "部屋" },
+  { id: "voxel", label: "鉱山" },
   { id: "profile", label: "マイ" },
 ];
 
@@ -56,6 +59,11 @@ export default function App() {
             <HamsterRoom mood={60} />
           </Suspense>
         </div>
+      )}
+      {tab === "voxel" && (
+        <Suspense fallback={<div className="rx-trow-ls">読み込み中…</div>}>
+          <VoxelGame onBack={() => setTab("home")} />
+        </Suspense>
       )}
 
       {/* Local AI UI is temporarily paused. Keep src/features/localAi intact;
