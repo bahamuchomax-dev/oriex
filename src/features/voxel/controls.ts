@@ -4,6 +4,10 @@
 // (pointer-lock + keyboard + mouse) is unaffected — `active` stays false until
 // the first touch.
 // ─────────────────────────────────────────────────────────────────────────────
+// True only while actually playing (not on title/difficulty/pause/menus).
+// Player & VoxelWorld gate all input on this so menus fully stop the game.
+export const session = { playing: false }
+
 export const touch = {
   supported:
     typeof window !== 'undefined' &&

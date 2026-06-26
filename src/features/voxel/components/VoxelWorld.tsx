@@ -24,7 +24,7 @@ import { playHit, playBreak, playPlace } from '../audio'
 import { handState } from '../handState'
 import { markDirty } from '../persist'
 import { spawnDrop } from '../drops'
-import { touch } from '../controls'
+import { touch, session } from '../controls'
 
 const MAX = 8000
 const MAX_DECO = 1000
@@ -267,7 +267,7 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
     const sel = selectedItem()
     const heldTool: Tool | undefined = sel ? def(sel).tool : undefined
     const tgt = targetRef.current
-    const active = document.pointerLockElement === gl.domElement || touch.active
+    const active = session.playing && (document.pointerLockElement === gl.domElement || touch.active)
     let mining = false
 
     const selKey = sel ?? ''
@@ -318,7 +318,7 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
     handState.mining = mining
 
     // touch place button (single-shot via pulse counter)
-    if (touch.active && touch.placePulse !== lastTouchPlace.current) {
+    if (session.playing && touch.active && touch.placePulse !== lastTouchPlace.current) {
       lastTouchPlace.current = touch.placePulse
       doPlaceRef.current()
     }
@@ -389,6 +389,7 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
   useEffect(() => {
     const dom = gl.domElement
     const onDown = (e: MouseEvent) => {
+      if (!session.playing) return
       if (document.pointerLockElement !== dom) return
       if (e.button === 0) {
         leftHeld.current = true

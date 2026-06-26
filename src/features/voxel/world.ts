@@ -162,6 +162,13 @@ function plantTree(x: number, z: number, groundY: number) {
       }
 }
 
+export function resetWorld() {
+  world.clear()
+  waterLevel.clear()
+  waterSources.clear()
+  decorations.clear()
+}
+
 export function generateWorld() {
   if (world.size > 0) return // guard against double generation (HMR / re-import)
 
@@ -199,4 +206,5 @@ export function generateWorld() {
     }
 }
 
-generateWorld()
+// NOTE: world is populated on demand by persist (startContinue / startNewGame),
+// after the title screen — no longer auto-generated at import.

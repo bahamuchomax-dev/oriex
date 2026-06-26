@@ -5,6 +5,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import type { Tool } from './itemDefs'
 import { GRASS, DIRT, STONE, WOOD, LEAF, type BlockType } from './world'
+import { config } from './config'
 
 let ctx: AudioContext | null = null
 function getCtx(): AudioContext | null {
@@ -119,6 +120,7 @@ export function playStep() {
 let bgmTimer: number | null = null
 let bgmStep = 0
 export function startBGM() {
+  if (!config.bgm) return
   const a = getCtx()
   if (!a || bgmTimer !== null) return
   const master = a.createGain()

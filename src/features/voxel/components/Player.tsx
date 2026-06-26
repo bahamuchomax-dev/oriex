@@ -2,7 +2,7 @@ import { useRef, useEffect } from 'react'
 import { useThree, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { isSolid, surfaceHeight, PLAYER } from '../world'
-import { touch } from '../controls'
+import { touch, session } from '../controls'
 import { startBGM, stopBGM, playStep } from '../audio'
 
 const { HW, BODY, EYE } = PLAYER
@@ -120,6 +120,7 @@ export function Player() {
   }, [camera, gl])
 
   useFrame((_, dtRaw) => {
+    if (!session.playing) return // stopped on title / pause / menus
     if (!locked.current && !touch.active) return
     const dt = Math.min(dtRaw, 0.05) // clamp big frame gaps to avoid tunneling
     if (!bgmOn.current) {

@@ -26,6 +26,87 @@
 .rotate-hint .icon { font-size: 56px; animation: rotateHint 1.6s ease-in-out infinite; }
 @keyframes rotateHint { 0%, 100% { transform: rotate(0); } 55% { transform: rotate(90deg); } }
 
+/* ── title / difficulty / pause / settings / help menus ──────────────────── */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  padding: 16px;
+}
+.menu-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #7ec0ff, #cfe6ff 45%, #b6e08c);
+}
+.menu-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60px 60px at 20% 30%, rgba(255, 255, 255, 0.5), transparent 70%),
+    radial-gradient(90px 90px at 75% 22%, rgba(255, 255, 255, 0.45), transparent 70%);
+}
+.menu-card {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 94vw);
+  max-height: 88vh;
+  overflow: auto;
+  background: rgba(20, 28, 40, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  color: #eef2f8;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+.menu-title {
+  margin: 0 0 12px;
+  text-align: center;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+.menu-h2 { margin: 0 0 6px; text-align: center; font-size: 20px; }
+.menu-btn {
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.menu-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.16); }
+.menu-btn:disabled { opacity: 0.4; cursor: default; }
+.menu-btn.primary { background: linear-gradient(135deg, #3a7bd5, #2aa37a); border-color: transparent; }
+.menu-btn.ghost { background: transparent; }
+.menu-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 14px; }
+.seg { display: flex; gap: 6px; }
+.seg-btn {
+  padding: 8px 12px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+}
+.seg-btn.on { background: #3a7bd5; border-color: transparent; }
+.help-cols { display: flex; gap: 16px; text-align: left; font-size: 13px; }
+.help-cols h3 { margin: 0 0 6px; font-size: 14px; color: #bcd4ff; }
+.help-cols ul { margin: 0; padding-left: 16px; line-height: 1.7; }
+@media (max-width: 520px) { .help-cols { flex-direction: column; gap: 8px; } }
+
 .voxel-back {
   position: absolute;
   top: 12px;
