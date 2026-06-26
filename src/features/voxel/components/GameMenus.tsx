@@ -17,10 +17,21 @@ export function GameMenus({
   return (
     <div className="menu-overlay">
       {screen !== 'paused' && <div className="menu-bg" />}
+      {screen === 'title' && (
+        <div className="title-cubes" aria-hidden="true">
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+            <span key={i} className={`tc tc${i}`} />
+          ))}
+        </div>
+      )}
       <div className="menu-card">
         {screen === 'title' && (
           <>
-            <h1 className="menu-title">ボクセル ワールド</h1>
+            <h1 className="menu-title">
+              <span className="t1">ボクセル</span>
+              <span className="t2">ワールド</span>
+            </h1>
+            <p className="menu-tag">採掘 ・ 建築 ・ 探索</p>
             <button className="menu-btn" disabled={!canContinue} onClick={() => onAct('continue')}>続きから</button>
             <button className="menu-btn primary" onClick={() => onAct('new')}>初めから</button>
             <button className="menu-btn" onClick={() => onAct('settings')}>設定</button>

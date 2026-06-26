@@ -126,7 +126,7 @@ export default function VoxelGame({ onBack }: { onBack?: () => void }) {
           <Toasts />
         </div>
       )}
-      {screen === 'playing' && !panel && <MobileControls onCraft={() => setPanel('inv')} />}
+      {screen === 'playing' && !panel && <MobileControls onCraft={() => setPanel('inv')} onMenu={() => setScreen('paused')} />}
       {panel && <CraftPanel atWorkbench={panel === 'bench'} onClose={() => { setPanel(null); relock() }} />}
       {screen !== 'playing' && <GameMenus screen={screen} canContinue={canCont} hasExit={!!onBack} onAct={act} />}
 
@@ -156,13 +156,15 @@ export default function VoxelGame({ onBack }: { onBack?: () => void }) {
             shadow-bias={-0.0002}
             shadow-normalBias={0.08}
           />
+          {/* Player first: it moves the camera, so the hand (last) reads the
+              up-to-date camera in the same frame → no jitter while walking. */}
+          <Player />
           <Sky />
           <Clouds />
           <VoxelWorld onOpenCraft={() => setPanel('bench')} />
           <Mobs />
           <DropItems />
           <Hand />
-          <Player />
         </Canvas>
       )}
     </div>

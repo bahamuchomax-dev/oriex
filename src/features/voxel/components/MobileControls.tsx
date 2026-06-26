@@ -3,7 +3,7 @@ import { touch } from '../controls'
 
 // On-screen controls for touch devices: left joystick to move, drag the screen
 // to look, and buttons for jump / break / place / craft. Hidden on desktop.
-export function MobileControls({ onCraft }: { onCraft: () => void }) {
+export function MobileControls({ onCraft, onMenu }: { onCraft: () => void; onMenu: () => void }) {
   const joyRef = useRef<HTMLDivElement | null>(null)
   const knobRef = useRef<HTMLDivElement | null>(null)
   const joyId = useRef<number | null>(null)
@@ -91,25 +91,12 @@ export function MobileControls({ onCraft }: { onCraft: () => void }) {
       >
         <div ref={knobRef} className="joy-knob" />
       </div>
+      <button className="tbtn menu" aria-label="メニュー" onTouchStart={(e) => { e.preventDefault(); touch.active = true; onMenu() }}>☰</button>
       <div className="touch-btns">
-        <button className="tbtn" onTouchStart={(e) => { e.preventDefault(); touch.active = true; onCraft() }}>作</button>
-        <button className="tbtn" onTouchStart={(e) => { e.preventDefault(); touch.active = true; touch.placePulse++ }}>置</button>
-        <button
-          className="tbtn break"
-          onTouchStart={(e) => { e.preventDefault(); touch.active = true; touch.breaking = true }}
-          onTouchEnd={() => { touch.breaking = false }}
-          onTouchCancel={() => { touch.breaking = false }}
-        >
-          壊
-        </button>
-        <button
-          className="tbtn jump"
-          onTouchStart={(e) => { e.preventDefault(); touch.active = true; touch.jump = true }}
-          onTouchEnd={() => { touch.jump = false }}
-          onTouchCancel={() => { touch.jump = false }}
-        >
-          跳
-        </button>
+        <button className="tbtn inv" aria-label="持ち物" onTouchStart={(e) => { e.preventDefault(); touch.active = true; onCraft() }}>🎒</button>
+        <button className="tbtn place" aria-label="設置" onTouchStart={(e) => { e.preventDefault(); touch.active = true; touch.placePulse++ }}>🧱</button>
+        <button className="tbtn jump" aria-label="ジャンプ" onTouchStart={(e) => { e.preventDefault(); touch.active = true; touch.jump = true }} onTouchEnd={() => { touch.jump = false }} onTouchCancel={() => { touch.jump = false }}>⤴</button>
+        <button className="tbtn break" aria-label="破壊" onTouchStart={(e) => { e.preventDefault(); touch.active = true; touch.breaking = true }} onTouchEnd={() => { touch.breaking = false }} onTouchCancel={() => { touch.breaking = false }}>⛏</button>
       </div>
     </>
   )
