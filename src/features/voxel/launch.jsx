@@ -14,6 +14,12 @@ let root = null
 let host = null
 
 export function closeVoxelGame() {
+  // restore Oriex's portrait-only enforcement for the rest of the app
+  try {
+    document.body.classList.remove('rx-runmode')
+  } catch {
+    /* ignore */
+  }
   try {
     if (document.pointerLockElement) document.exitPointerLock()
   } catch {
@@ -29,6 +35,13 @@ export function closeVoxelGame() {
 
 export function openVoxelGame() {
   if (host) return
+  // Suppress Oriex's "たて画面でご利用ください" landscape overlay while playing
+  // (same mechanism the hamster room uses). Restored on close.
+  try {
+    document.body.classList.add('rx-runmode')
+  } catch {
+    /* ignore */
+  }
   host = document.createElement('div')
   host.id = 'voxel-host'
   document.body.appendChild(host)
