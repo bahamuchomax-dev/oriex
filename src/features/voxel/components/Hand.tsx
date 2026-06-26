@@ -19,25 +19,37 @@ const overlay = (opts: THREE.MeshStandardMaterialParameters) =>
 
 function buildTool(kind: Tool): THREE.Group {
   const g = new THREE.Group()
-  const wood = overlay({ color: '#6b4a2a' })
-  const metal = overlay({ color: '#b9bcc2', metalness: 0.3 })
+  const wood = overlay({ color: '#7a5230' })
+  const metal = overlay({ color: '#a6adb5', metalness: 0.35, roughness: 0.55 })
+  const dark = overlay({ color: '#6f767d' }) // edge / shading for the head
   const box = (w: number, h: number, d: number, mat: THREE.Material, x = 0, y = 0, z = 0) => {
     const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat)
     m.position.set(x, y, z)
     g.add(m)
   }
   if (kind === 'bucket') {
-    box(0.34, 0.34, 0.34, metal, 0, 0.05, 0)
-    box(0.04, 0.18, 0.04, metal, 0.18, 0.18, 0)
-    box(0.04, 0.18, 0.04, metal, -0.18, 0.18, 0)
+    box(0.32, 0.3, 0.32, metal, 0, 0.04, 0)
+    box(0.3, 0.05, 0.3, dark, 0, 0.2, 0) // rim
+    box(0.04, 0.16, 0.04, metal, 0.17, 0.18, 0) // handle arc
+    box(0.04, 0.16, 0.04, metal, -0.17, 0.18, 0)
+    box(0.38, 0.04, 0.04, metal, 0, 0.27, 0)
   } else {
-    box(0.06, 0.5, 0.06, wood, 0, 0, 0) // handle
-    if (kind === 'axe') box(0.06, 0.16, 0.2, metal, 0.02, 0.22, 0.08)
-    else if (kind === 'shovel') box(0.16, 0.16, 0.04, metal, 0, 0.3, 0)
-    else {
-      box(0.34, 0.05, 0.05, metal, 0, 0.27, 0)
-      box(0.05, 0.12, 0.05, metal, 0.15, 0.21, 0)
-      box(0.05, 0.12, 0.05, metal, -0.15, 0.21, 0)
+    // wooden stick handle (longer/chunkier, blocky like MC)
+    box(0.08, 0.66, 0.08, wood, 0, -0.02, 0)
+    if (kind === 'axe') {
+      // square-ish head on one side near the top with a darker blade edge
+      box(0.18, 0.28, 0.1, metal, 0.13, 0.26, 0)
+      box(0.07, 0.22, 0.1, dark, 0.26, 0.26, 0) // blade
+      box(0.1, 0.1, 0.1, metal, 0.04, 0.3, 0) // socket
+    } else if (kind === 'shovel') {
+      box(0.24, 0.26, 0.06, metal, 0, 0.42, 0) // wide flat blade
+      box(0.24, 0.04, 0.06, dark, 0, 0.29, 0) // socket band
+    } else {
+      // pickaxe: a wide head bar with two angled points
+      box(0.5, 0.08, 0.09, metal, 0, 0.36, 0)
+      box(0.09, 0.14, 0.09, dark, 0.22, 0.28, 0) // left point
+      box(0.09, 0.14, 0.09, dark, -0.22, 0.28, 0) // right point
+      box(0.1, 0.07, 0.09, metal, 0, 0.3, 0) // socket to handle
     }
   }
   g.traverse((o) => (o.renderOrder = 1000))
@@ -122,7 +134,7 @@ export function Hand() {
 
   const anim = useRef({ breakT: 0, placeT: 0, lastBreak: 0, lastPlace: 0 })
   const BASE_Z = -0.8
-  const BASE_X = 0.34
+  const BASE_X = 0.42
   const BASE_Y = -0.22
 
   useFrame((state, dt) => {
@@ -149,11 +161,11 @@ export function Hand() {
   return (
     <group ref={group}>
       <group ref={pivot} position={[BASE_X, BASE_Y, BASE_Z]} rotation={[-0.15, -0.35, 0]} scale={[0.8, 0.8, 0.8]}>
-        <mesh geometry={armGeom} material={armMat} position={[0.16, -0.28, 0.16]} rotation={[0.5, 0, 0.25]} renderOrder={1000} />
+        <mesh geometry={armGeom} material={armMat} position={[0.3, -0.3, 0.16]} rotation={[0.5, 0, 0.32]} renderOrder={1000} />
         {d?.placesBlock !== undefined && (
           <mesh geometry={cubeGeom} material={blockMats[d.placesBlock]} rotation={[0.35, 0.6, 0]} renderOrder={1000} />
         )}
-        {d?.tool && <primitive object={tools[d.tool]} position={[0.02, -0.05, 0]} rotation={[0.2, 0, 0.15]} />}
+        {d?.tool && <primitive object={tools[d.tool]} position={[0.02, -0.08, 0]} rotation={[0.3, 0.15, 0.5]} />}
         {d?.placesDecor && <primitive object={decors[d.placesDecor]} position={[0, -0.1, 0]} rotation={[0.1, 0, 0.1]} />}
         {d && d.placesBlock === undefined && !d.tool && !d.placesDecor && (
           <mesh geometry={itemGeom} material={matMat} rotation={[0.2, 0.4, 0]} renderOrder={1000} />
