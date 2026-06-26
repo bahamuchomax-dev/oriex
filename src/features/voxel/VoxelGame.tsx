@@ -10,6 +10,8 @@ import { Sky } from './components/Sky'
 import { Clouds } from './components/Clouds'
 import { CraftPanel } from './components/CraftPanel'
 import { MobileControls } from './components/MobileControls'
+import { Mobs } from './components/Mobs'
+import { Hud } from './components/Hud'
 import { GameMenus, type Screen } from './components/GameMenus'
 import { SUN_POSITION } from './world'
 import { hasSave, startContinue, startNewGame } from './persist'
@@ -119,6 +121,7 @@ export default function VoxelGame({ onBack }: { onBack?: () => void }) {
             </button>
           )}
           {!panel && <div className="crosshair" />}
+          <Hud />
           <Hotbar />
           <Toasts />
         </div>
@@ -156,6 +159,7 @@ export default function VoxelGame({ onBack }: { onBack?: () => void }) {
           <Sky />
           <Clouds />
           <VoxelWorld onOpenCraft={() => setPanel('bench')} />
+          <Mobs />
           <DropItems />
           <Hand />
           <Player />

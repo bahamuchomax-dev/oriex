@@ -24,6 +24,7 @@ import { playHit, playBreak, playPlace } from '../audio'
 import { handState } from '../handState'
 import { markDirty } from '../persist'
 import { spawnDrop } from '../drops'
+import { attackFromCamera } from '../mobs'
 import { touch, session } from '../controls'
 
 const MAX = 8000
@@ -79,6 +80,9 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
   const lastSel = useRef<string | null>(null)
   const lastTouchPlace = useRef(0)
   const doPlaceRef = useRef<() => void>(() => {})
+  const prevTouchBreak = useRef(false)
+  const touchAtk = useRef(false)
+  const atkDir = useMemo(() => new THREE.Vector3(), [])
   const targetRef = useRef<{ hit: Coord; place: Coord } | null>(null)
 
   // ── geometry + textures + materials ─────────────────────────────────────────
@@ -273,7 +277,21 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
     const selKey = sel ?? ''
     if (selKey !== lastSel.current) { lastSel.current = selKey; progress.current = 0; breakKey.current = null }
 
-    if ((leftHeld.current || touch.breaking) && active && tgt) {
+    // touch melee: on the break-button press edge, hit a hostile in front first
+    if (session.playing && touch.active) {
+      if (touch.breaking && !prevTouchBreak.current) {
+        camera.getWorldDirection(atkDir)
+        const dmg = heldTool === 'axe' ? 3 : heldTool === 'shovel' || heldTool === 'pickaxe' ? 2 : 1
+        if (attackFromCamera(camera.position.x, camera.position.y, camera.position.z, atkDir.x, atkDir.y, atkDir.z, dmg)) {
+          handState.breakPulse++
+          touchAtk.current = true
+        }
+      }
+      if (!touch.breaking) touchAtk.current = false
+      prevTouchBreak.current = touch.breaking
+    }
+
+    if ((leftHeld.current || (touch.breaking && !touchAtk.current)) && active && tgt) {
       const [hx, hy, hz] = tgt.hit
       const k = keyOf(hx, hy, hz)
       const block = world.get(k)
@@ -392,6 +410,15 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
       if (!session.playing) return
       if (document.pointerLockElement !== dom) return
       if (e.button === 0) {
+        // melee first: if a hostile is in front, hit it instead of breaking
+        const sel = selectedItem()
+        const tool = sel ? def(sel).tool : undefined
+        const dmg = tool === 'axe' ? 3 : tool === 'shovel' || tool === 'pickaxe' ? 2 : 1
+        camera.getWorldDirection(atkDir)
+        if (attackFromCamera(camera.position.x, camera.position.y, camera.position.z, atkDir.x, atkDir.y, atkDir.z, dmg)) {
+          handState.breakPulse++
+          return
+        }
         leftHeld.current = true
         return
       }

@@ -116,6 +116,25 @@ export function playStep() {
   src.start()
 }
 
+// hit a mob (soft squish)
+export function playEnemyHit() {
+  tone(180, 0.08, 'square', 0.05)
+}
+// mob defeated (pop)
+export function playEnemyDie() {
+  noise(0.16, 0.07, 1400)
+  tone(140, 0.12, 'square', 0.05)
+}
+// player takes damage (low thud)
+export function playHurt() {
+  tone(90, 0.16, 'sawtooth', 0.06)
+}
+// friendly critter chirp
+export function playChirp() {
+  tone(880, 0.05, 'triangle', 0.04)
+  tone(1175, 0.05, 'triangle', 0.03)
+}
+
 // ── gentle ambient BGM (procedural, low volume) ──────────────────────────────
 let bgmTimer: number | null = null
 let bgmStep = 0

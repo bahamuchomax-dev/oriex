@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { isSolid, surfaceHeight, PLAYER } from '../world'
 import { touch, session } from '../controls'
 import { startBGM, stopBGM, playStep } from '../audio'
+import { player, resetHp } from '../playerState'
 
 const { HW, BODY, EYE } = PLAYER
 
@@ -213,12 +214,13 @@ export function Player() {
       stepTimer.current = 0 // step promptly when movement resumes
     }
 
-    // ── fell off the world → respawn at the centre column ─────────────────────
-    if (f.y < -20) {
+    // ── death → respawn at the centre column with full health ─────────────────
+    if (f.y < -20 || player.respawn) {
       f.set(0, surfaceHeight(0, 0) + 2, 0)
       vy.current = 0
       h.x = 0
       h.z = 0
+      if (player.respawn) resetHp()
     }
 
     camera.position.set(f.x, f.y + EYE, f.z)

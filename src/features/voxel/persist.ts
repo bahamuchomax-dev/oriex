@@ -8,6 +8,9 @@ import { serializeInv, loadInv, addItem, inv, bump } from './inventory'
 import { serializeDrops, loadDrops, drops } from './drops'
 import { setOnChange } from './inventory'
 import { config, type Difficulty } from './config'
+import { player, resetHp } from './playerState'
+import { time } from './time'
+import { clearMobs } from './mobs'
 import type { ItemId } from './itemDefs'
 
 const KEY = 'mc_save_v1'
@@ -31,6 +34,8 @@ export function saveNow() {
       drops: serializeDrops(),
       difficulty: config.difficulty,
       bgm: config.bgm,
+      hp: player.hp,
+      t: time.t,
     }
     localStorage.setItem(KEY, JSON.stringify(data))
   } catch {
@@ -65,12 +70,17 @@ export function startContinue(): boolean {
       drops?: [ItemId, number, number, number, number][]
       difficulty?: Difficulty
       bgm?: boolean
+      hp?: number
+      t?: number
     }
     loadWorld(data.world)
     loadInv(data.inv)
     if (data.drops) loadDrops(data.drops)
     if (data.difficulty) config.difficulty = data.difficulty
     if (typeof data.bgm === 'boolean') config.bgm = data.bgm
+    if (typeof data.hp === 'number') player.hp = data.hp
+    if (typeof data.t === 'number') time.t = data.t
+    clearMobs()
     wireAutosave()
     return true
   } catch {
@@ -83,6 +93,9 @@ export function startNewGame(difficulty: Difficulty) {
   config.difficulty = difficulty
   resetWorld()
   generateWorld()
+  clearMobs()
+  resetHp()
+  time.t = 0.3
   inv.items.clear()
   inv.hotbar.fill(null)
   inv.selected = 0

@@ -107,6 +107,34 @@
 .help-cols ul { margin: 0; padding-left: 16px; line-height: 1.7; }
 @media (max-width: 520px) { .help-cols { flex-direction: column; gap: 8px; } }
 
+/* ── health HUD + damage flash ───────────────────────────────────────────── */
+.hp-bar {
+  position: absolute;
+  left: 14px;
+  bottom: 100px;
+  display: flex;
+  gap: 3px;
+  z-index: 11;
+  pointer-events: none;
+}
+.pip {
+  width: 10px;
+  height: 16px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(0, 0, 0, 0.35);
+}
+.pip.on { background: #ff4d5e; }
+.hurt-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  pointer-events: none;
+  background: radial-gradient(circle, transparent 38%, rgba(200, 20, 20, 0.55));
+  animation: hurtFade 0.45s ease-out forwards;
+}
+@keyframes hurtFade { from { opacity: 1; } to { opacity: 0; } }
+
 .voxel-back {
   position: absolute;
   top: 12px;
