@@ -52,6 +52,12 @@ export const SUN_POSITION: [number, number, number] = [55, 80, 35]
 // Player metrics shared by Player (collision) and VoxelWorld (placement guard)
 export const PLAYER = { HW: 0.3, BODY: 1.7, EYE: 1.5 }
 
+// World seed (chunk terrain is reproducible from this).
+export let seed = 1337
+export const setSeed = (s: number) => {
+  seed = s | 0
+}
+
 // ── The live world: "x,y,z" -> BlockType ──────────────────────────────────────
 export const world = new Map<string, BlockType>()
 // Per-water-cell flow distance from a source: 0 = source, 1..N = flowing water.
@@ -104,7 +110,7 @@ export function loadWorld(s: WorldSave) {
 
 // ── Deterministic value noise (hash based — no Math.random, fully reproducible) ─
 function hash(x: number, z: number): number {
-  let h = Math.imul(x, 374761393) ^ Math.imul(z, 668265263)
+  let h = Math.imul(x, 374761393) ^ Math.imul(z, 668265263) ^ Math.imul(seed, 2246822519)
   h = Math.imul(h ^ (h >>> 13), 1274126177)
   return ((h ^ (h >>> 16)) >>> 0) / 4294967295
 }
@@ -133,24 +139,27 @@ export function surfaceHeight(x: number, z: number): number {
   return Math.round(n * 3.0) // ~0..4, mostly 1-step neighbours
 }
 
-const isPond = (x: number, z: number, h: number) =>
+export type Biome = 'sand' | 'grass' | 'forest' | 'rocky'
+export const biomeAt = (x: number, z: number): Biome => {
+  const b = smoothNoise(x * 0.022 + 700, z * 0.022 + 700)
+  return b < 0.34 ? 'sand' : b < 0.56 ? 'grass' : b < 0.8 ? 'forest' : 'rocky'
+}
+export const isPond = (x: number, z: number, h: number) =>
   h <= 1 && smoothNoise(x * 0.16 + 50, z * 0.16 + 50) > 0.6
-const isRock = (x: number, z: number, h: number) =>
+export const isRock = (x: number, z: number, h: number) =>
   h >= 3 && smoothNoise(x * 0.22 + 90, z * 0.22 + 90) > 0.66
 
-const set = (x: number, y: number, z: number, t: BlockType) => world.set(keyOf(x, y, z), t)
+export const setBlock = (x: number, y: number, z: number, t: BlockType) => world.set(keyOf(x, y, z), t)
+const set = setBlock
 
-function plantTree(x: number, z: number, groundY: number) {
+export function plantTree(x: number, z: number, groundY: number) {
   const r = hash(x * 13 + 1, z * 13 + 7)
-  const trunk = 3 + (r > 0.66 ? 2 : r > 0.33 ? 1 : 0) // 3..5 tall, varied
+  const trunk = 3 + (r > 0.66 ? 2 : r > 0.33 ? 1 : 0)
   const topY = groundY + trunk
   for (let y = groundY + 1; y <= topY; y++) set(x, y, z, WOOD)
-
   const leaf = (px: number, py: number, pz: number) => {
-    if (px < -HALF || px > HALF || pz < -HALF || pz > HALF) return
     if (!world.has(keyOf(px, py, pz))) set(px, py, pz, LEAF)
   }
-  // roughly spherical canopy around the trunk top
   const rad = 2
   for (let dy = -2; dy <= 2; dy++)
     for (let dx = -rad; dx <= rad; dx++)
@@ -162,49 +171,47 @@ function plantTree(x: number, z: number, groundY: number) {
       }
 }
 
-export function resetWorld() {
-  world.clear()
-  waterLevel.clear()
-  waterSources.clear()
-  decorations.clear()
+// Generate one terrain column into the live world (used per-chunk).
+export function genColumn(x: number, z: number) {
+  const h = surfaceHeight(x, z)
+  if (isPond(x, z, h)) {
+    const bed = h - 1
+    set(x, bed, z, DIRT)
+    for (let y = bed - 1; y >= MIN_Y; y--) set(x, y, z, STONE)
+    set(x, h, z, WATER)
+    waterLevel.set(keyOf(x, h, z), 0)
+    waterSources.add(keyOf(x, h, z))
+    return
+  }
+  const biome = biomeAt(x, z)
+  const rock = isRock(x, z, h) || (biome === 'rocky' && hash(x * 3 + 5, z * 3 + 5) > 0.5)
+  const topType: BlockType = rock ? STONE : biome === 'sand' ? SAND : GRASS
+  set(x, h, z, topType)
+  const sub: BlockType = rock ? STONE : biome === 'sand' ? SAND : DIRT
+  if (h - 1 >= MIN_Y) set(x, h - 1, z, sub)
+  if (!rock && h - 2 >= MIN_Y) set(x, h - 2, z, biome === 'sand' ? SAND : DIRT)
+  for (let y = h - 3; y >= MIN_Y; y--) set(x, y, z, STONE)
 }
 
-export function generateWorld() {
-  if (world.size > 0) return // guard against double generation (HMR / re-import)
+// Should a tree trunk be at this column? (biome-weighted, deterministic)
+export function treeAt(x: number, z: number): boolean {
+  const h = surfaceHeight(x, z)
+  if (isPond(x, z, h) || isRock(x, z, h)) return false
+  const b = biomeAt(x, z)
+  if (b === 'sand' || b === 'rocky') return false
+  return hash(x * 91 + 17, z * 53 + 29) > (b === 'forest' ? 0.9 : 0.984)
+}
 
-  for (let x = -HALF; x <= HALF; x++) {
-    for (let z = -HALF; z <= HALF; z++) {
-      const h = surfaceHeight(x, z)
-
-      if (isPond(x, z, h)) {
-        // carved basin: dirt bed one below, a WATER block sits in the hollow
-        const bed = h - 1
-        set(x, bed, z, DIRT)
-        for (let y = bed - 1; y >= MIN_Y; y--) set(x, y, z, STONE)
-        set(x, h, z, WATER)
-        waterLevel.set(keyOf(x, h, z), 0) // pond water is a source
-        waterSources.add(keyOf(x, h, z))
-        continue
-      }
-
-      const rock = isRock(x, z, h)
-      const topType: BlockType = rock ? STONE : GRASS
-      set(x, h, z, topType)
-      const sub: BlockType = rock ? STONE : DIRT
-      if (h - 1 >= MIN_Y) set(x, h - 1, z, sub)
-      if (!rock && h - 2 >= MIN_Y) set(x, h - 2, z, DIRT)
-      for (let y = h - 3; y >= MIN_Y; y--) set(x, y, z, STONE)
+// remove every block/water/source whose column lies in [x0..x1, z0..z1]
+export function clearColumns(x0: number, x1: number, z0: number, z1: number) {
+  for (const k of [...world.keys()]) {
+    const c = k.split(',')
+    const x = +c[0]
+    const z = +c[2]
+    if (x >= x0 && x <= x1 && z >= z0 && z <= z1) {
+      world.delete(k)
+      waterLevel.delete(k)
+      waterSources.delete(k)
     }
   }
-
-  // Trees — deterministic, kept away from the border so canopies fit
-  for (let x = -HALF + 2; x <= HALF - 2; x++)
-    for (let z = -HALF + 2; z <= HALF - 2; z++) {
-      const h = surfaceHeight(x, z)
-      if (isPond(x, z, h) || isRock(x, z, h)) continue
-      if (hash(x * 91 + 17, z * 53 + 29) > 0.984) plantTree(x, z, h)
-    }
 }
-
-// NOTE: world is populated on demand by persist (startContinue / startNewGame),
-// after the title screen — no longer auto-generated at import.

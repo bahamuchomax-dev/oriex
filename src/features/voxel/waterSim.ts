@@ -12,7 +12,7 @@
 //  • breaking a block lets neighbouring water flow into the gap
 //  • placing a block removes water there and re-flows the neighbourhood
 // ─────────────────────────────────────────────────────────────────────────────
-import { world, waterLevel, waterSources, keyOf, WATER, HALF, MIN_Y } from './world'
+import { world, waterLevel, waterSources, keyOf, WATER, MIN_Y } from './world'
 
 const MAX = 6 // max spread distance before water thins out and dries
 const Y_CAP = 48
@@ -23,8 +23,8 @@ const HORIZ: [number, number][] = [
   [0, -1],
 ]
 
-const inBounds = (x: number, y: number, z: number) =>
-  x >= -HALF && x <= HALF && z >= -HALF && z <= HALF && y >= MIN_Y && y <= Y_CAP
+// chunked world is unbounded on x/z; only clamp the vertical range
+const inBounds = (_x: number, y: number, _z: number) => y >= MIN_Y && y <= Y_CAP
 
 const isWater = (x: number, y: number, z: number) => world.get(keyOf(x, y, z)) === WATER
 const isAir = (x: number, y: number, z: number) => !world.has(keyOf(x, y, z))

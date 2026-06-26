@@ -7,10 +7,11 @@ import {
   TYPES,
   type BlockType,
   GRASS, DIRT, STONE, WOOD, LEAF, WATER, SAND, PLANKS, BRICK, GLASS, WORKBENCH,
-  BLOCK_RENDER, PLAYER, HALF, MIN_Y, tuftAt,
-  waterLevel, waterLevelAt, waterSources,
+  BLOCK_RENDER, PLAYER, MIN_Y, tuftAt,
+  waterLevelAt,
   decorations, pruneDecorations, type DecorKind,
 } from '../world'
+import { updateStreaming, applyEdit } from '../chunks'
 import {
   makeGrassTop, makeGrassSide, makeDirt, makeStone, makeWoodSide, makeWoodTop,
   makeLeaf, makeGrassBlade, makeCrackTexture, makeSand, makePlanks, makeBrick,
@@ -27,13 +28,23 @@ import { spawnDrop } from '../drops'
 import { attackFromCamera } from '../mobs'
 import { touch, session } from '../controls'
 
-const MAX = 8000
-const MAX_DECO = 1000
+const MAX = 30000 // per cube-type instance cap (streamed + face-culled)
+const MAX_DECO = 2000
 const REACH = 6
 const NDC_CENTER = new THREE.Vector2(0, 0)
 const DECOR_KINDS: DecorKind[] = ['torch', 'ladder', 'flower', 'pebble']
 
 type Coord = [number, number, number]
+
+// occluder = solid opaque block (water + glass don't hide neighbour faces)
+const occ = (x: number, y: number, z: number) => {
+  const b = world.get(keyOf(x, y, z))
+  return b !== undefined && b !== WATER && b !== GLASS
+}
+// a block is worth rendering only if at least one neighbour is non-occluding
+const exposed = (x: number, y: number, z: number) =>
+  !occ(x + 1, y, z) || !occ(x - 1, y, z) || !occ(x, y + 1, z) ||
+  !occ(x, y - 1, z) || !occ(x, y, z + 1) || !occ(x, y, z - 1)
 
 function crossedGeometry() {
   const w = 0.42
@@ -83,6 +94,7 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
   const prevTouchBreak = useRef(false)
   const touchAtk = useRef(false)
   const atkDir = useMemo(() => new THREE.Vector3(), [])
+  const streamT = useRef(0)
   const targetRef = useRef<{ hit: Coord; place: Coord } | null>(null)
 
   // ── geometry + textures + materials ─────────────────────────────────────────
@@ -157,6 +169,7 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
       const p = k.split(',')
       const x = Number(p[0]); const y = Number(p[1]); const z = Number(p[2])
       if (t === WATER) return
+      if (!exposed(x, y, z)) return // face-culling: skip fully-buried blocks
       buckets.get(t)!.push([x, y, z])
       if (t === GRASS && tuftAt(x, z) && !world.has(keyOf(x, y + 1, z))) tufts.push([x, y, z])
     })
@@ -314,9 +327,7 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
           for (const [id, n, chance] of BLOCK_DROPS[block] ?? []) {
             if (Math.random() < chance) spawnDrop(id, n, hx, hy + 0.1, hz)
           }
-          world.delete(k)
-          waterLevel.delete(k)
-          waterSources.delete(k)
+          applyEdit(hx, hy, hz, 0) // record diff + remove block/water
           pruneDecorations()
           enqueueAround(hx, hy, hz)
           rebuild()
@@ -339,6 +350,13 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
     if (session.playing && touch.active && touch.placePulse !== lastTouchPlace.current) {
       lastTouchPlace.current = touch.placePulse
       doPlaceRef.current()
+    }
+
+    // stream chunks around the player (throttled); full rebuild when they change
+    streamT.current -= dt
+    if (streamT.current <= 0) {
+      streamT.current = 0.3
+      if (updateStreaming(camera.position.x, camera.position.z)) rebuild()
     }
 
     if (stepWater(256)) rebuildWater()
@@ -369,12 +387,12 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
     if (!sel) return
     const d = def(sel)
     const [px, pyy, pz] = tgt.place
-    if (pyy < MIN_Y || px < -HALF || px > HALF || pz < -HALF || pz > HALF) return
+    if (pyy < MIN_Y || pyy > 60) return // unbounded x/z (chunked); just clamp height
     const pk = keyOf(px, pyy, pz)
 
     if (d.tool === 'bucket') {
       if (!world.has(pk) && !playerOverlapsCell(px, pyy, pz)) {
-        world.set(pk, WATER); waterLevel.set(pk, 0); waterSources.add(pk)
+        applyEdit(px, pyy, pz, WATER)
         enqueueAround(px, pyy, pz); rebuild(); markDirty(); playPlace()
         handState.placePulse++
       }
@@ -386,8 +404,7 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
     if (d.placesBlock !== undefined) {
       if (world.has(pk) && world.get(pk) !== WATER) return
       if (playerOverlapsCell(px, pyy, pz)) return
-      waterLevel.delete(pk); waterSources.delete(pk)
-      world.set(pk, d.placesBlock)
+      applyEdit(px, pyy, pz, d.placesBlock)
       removeItem(sel, 1)
       enqueueAround(px, pyy, pz)
       pruneDecorations()

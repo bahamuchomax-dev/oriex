@@ -2,7 +2,7 @@
 // Mob manager: a hostile slime and a friendly critter, plus a tiny particle
 // pool for hits/deaths. Pure logic; Mobs.tsx renders and drives it.
 // ─────────────────────────────────────────────────────────────────────────────
-import { isSolid, HALF, MIN_Y } from './world'
+import { isSolid, MIN_Y } from './world'
 import { config, DIFFICULTY_SCALE } from './config'
 
 export type MobType = 'slime' | 'critter'
@@ -49,7 +49,6 @@ function groundTop(x: number, z: number, fromY: number): number | null {
   for (let y = Math.round(fromY) + 2; y >= MIN_Y; y--) if (isSolid(ix, y, iz)) return y + 0.5
   return null
 }
-const inBounds = (x: number, z: number) => x >= -HALF && x <= HALF && z >= -HALF && z <= HALF
 const enemyCount = () => mobs.reduce((n, m) => n + (m.type === 'slime' ? 1 : 0), 0)
 const friendCount = () => mobs.reduce((n, m) => n + (m.type === 'critter' ? 1 : 0), 0)
 
@@ -60,8 +59,7 @@ export function spawnEnemy(px: number, pz: number) {
   const dist = 10 + Math.random() * 15
   const x = Math.round(px + Math.cos(ang) * dist)
   const z = Math.round(pz + Math.sin(ang) * dist)
-  if (!inBounds(x, z)) return
-  const g = groundTop(x, z, 16)
+  const g = groundTop(x, z, 16) // null if the spot isn't in a loaded chunk
   if (g == null) return
   const hp = 6 * sc.enemyHp
   mobs.push({ type: 'slime', x, y: g + SLIME_H, z, vx: 0, vy: 0, vz: 0, hp, maxHp: hp, cd: 0, age: 0, wx: 0, wz: 0 })
@@ -73,7 +71,6 @@ export function spawnFriend(px: number, pz: number) {
   const dist = 8 + Math.random() * 8
   const x = Math.round(px + Math.cos(ang) * dist)
   const z = Math.round(pz + Math.sin(ang) * dist)
-  if (!inBounds(x, z)) return
   const g = groundTop(x, z, 16)
   if (g == null) return
   mobs.push({ type: 'critter', x, y: g + CRITTER_H, z, vx: 0, vy: 0, vz: 0, hp: 3, maxHp: 3, cd: 0, age: 0, wx: Math.random() * 2 - 1, wz: Math.random() * 2 - 1 })
@@ -148,7 +145,6 @@ export function updateMobs(dt: number, px: number, py: number, pz: number) {
       m.z += mvz * 1.8 * dt
       const g = groundTop(m.x, m.z, m.y + 1)
       if (g != null && m.vy <= 0 && m.y <= g + CRITTER_H) { m.y = g + CRITTER_H; m.vy = 0 }
-      if (!inBounds(m.x, m.z)) { m.x = Math.max(-HALF, Math.min(HALF, m.x)); m.z = Math.max(-HALF, Math.min(HALF, m.z)) }
     }
     if (m.y < MIN_Y - 5) mobs.splice(i, 1)
   }
