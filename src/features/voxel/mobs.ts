@@ -4,6 +4,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { isSolid, MIN_Y } from './world'
 import { config, DIFFICULTY_SCALE } from './config'
+import { touch } from './controls'
+
+const MOBILE = touch.supported
+const MOB_FACTOR = MOBILE ? 0.6 : 1 // fewer mobs on phones
 
 export type MobType = 'slime' | 'critter'
 export interface Mob {
@@ -54,7 +58,7 @@ const friendCount = () => mobs.reduce((n, m) => n + (m.type === 'critter' ? 1 : 
 
 export function spawnEnemy(px: number, pz: number) {
   const sc = DIFFICULTY_SCALE[config.difficulty]
-  if (enemyCount() >= Math.round(MAX_ENEMY * sc.enemies)) return
+  if (enemyCount() >= Math.round(MAX_ENEMY * sc.enemies * MOB_FACTOR)) return
   const ang = Math.random() * Math.PI * 2
   const dist = 10 + Math.random() * 15
   const x = Math.round(px + Math.cos(ang) * dist)
@@ -66,7 +70,7 @@ export function spawnEnemy(px: number, pz: number) {
 }
 
 export function spawnFriend(px: number, pz: number) {
-  if (friendCount() >= MAX_FRIEND) return
+  if (friendCount() >= Math.round(MAX_FRIEND * MOB_FACTOR)) return
   const ang = Math.random() * Math.PI * 2
   const dist = 8 + Math.random() * 8
   const x = Math.round(px + Math.cos(ang) * dist)
@@ -180,11 +184,11 @@ export function attackFromCamera(
   m.vz += (dz / dl) * 4
   m.vy += 3
   if (m.hp <= 0) {
-    puff(m.x, m.y, m.z, 0.45, 0.8, 0.35, 8)
+    puff(m.x, m.y, m.z, 0.45, 0.8, 0.35, MOBILE ? 4 : 8)
     mobHooks.onDeath?.(m)
     mobs.splice(best, 1)
   } else {
-    puff(m.x, m.y, m.z, 0.5, 0.85, 0.4, 3)
+    puff(m.x, m.y, m.z, 0.5, 0.85, 0.4, MOBILE ? 2 : 3)
     mobHooks.onHit?.(m)
   }
   return true

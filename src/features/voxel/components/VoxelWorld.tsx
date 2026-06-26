@@ -95,6 +95,7 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
   const touchAtk = useRef(false)
   const atkDir = useMemo(() => new THREE.Vector3(), [])
   const streamT = useRef(0)
+  const waterT = useRef(0)
   const targetRef = useRef<{ hit: Coord; place: Coord } | null>(null)
 
   // ── geometry + textures + materials ─────────────────────────────────────────
@@ -359,7 +360,12 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
       if (updateStreaming(camera.position.x, camera.position.z)) rebuild()
     }
 
-    if (stepWater(256)) rebuildWater()
+    // water sim: every frame on PC, throttled on mobile
+    waterT.current -= dt
+    if (waterT.current <= 0) {
+      waterT.current = touch.supported ? 0.12 : 0
+      if (stepWater(touch.supported ? 128 : 256)) rebuildWater()
+    }
     waterMat.opacity = 0.5 + Math.sin(state.clock.elapsedTime * 1.3) * 0.07
   })
 

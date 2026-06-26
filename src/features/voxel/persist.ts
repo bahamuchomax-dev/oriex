@@ -18,6 +18,14 @@ const KEY = 'mc_save_v2'
 let pending = false
 let wired = false
 
+export function clearSave() {
+  try {
+    localStorage.removeItem(KEY)
+  } catch {
+    /* ignore */
+  }
+}
+
 export const hasSave = (): boolean => {
   try {
     return !!localStorage.getItem(KEY)

@@ -53,6 +53,7 @@ export function GameMenus({
               <span>BGM</span>
               <button className={`seg-btn ${config.bgm ? 'on' : ''}`} onClick={() => onAct('bgm')}>{config.bgm ? 'ON' : 'OFF'}</button>
             </div>
+            <button className="menu-btn danger" onClick={() => onAct('reset')}>ワールドをリセット</button>
             <button className="menu-btn ghost" onClick={() => onAct('back')}>戻る</button>
           </>
         )}
