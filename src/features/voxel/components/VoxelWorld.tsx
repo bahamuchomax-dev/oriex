@@ -27,12 +27,36 @@ import { markDirty } from '../persist'
 import { spawnDrop } from '../drops'
 import { attackFromCamera } from '../mobs'
 import { touch, session } from '../controls'
+import { isNight, time } from '../time'
+import { healPlayer, MAX_HP } from '../playerState'
+import { pushToast } from '../toast'
 
 const MAX = 30000 // per cube-type instance cap (streamed + face-culled)
 const MAX_DECO = 2000
 const REACH = 6
 const NDC_CENTER = new THREE.Vector2(0, 0)
-const DECOR_KINDS: DecorKind[] = ['torch', 'ladder', 'flower', 'pebble']
+const DECOR_KINDS: DecorKind[] = ['torch', 'ladder', 'flower', 'pebble', 'bed']
+
+type DecorPartDef = { w: number; h: number; d: number; color: string; basic?: boolean; o: [number, number, number] }
+// multi-part decoration models (offsets are from the cell floor = y-0.5)
+const DECOR_PARTS: Record<DecorKind, DecorPartDef[]> = {
+  torch: [
+    { w: 0.09, h: 0.5, d: 0.09, color: '#6b4a2a', o: [0, 0.25, 0] }, // stick
+    { w: 0.16, h: 0.18, d: 0.16, color: '#ff8a1e', basic: true, o: [0, 0.55, 0] }, // flame (glows)
+    { w: 0.1, h: 0.12, d: 0.1, color: '#ffe39a', basic: true, o: [0, 0.64, 0] }, // bright tip
+  ],
+  ladder: [{ w: 0.86, h: 1.0, d: 0.08, color: '#7a5a30', o: [0, 0.5, 0] }],
+  flower: [
+    { w: 0.05, h: 0.3, d: 0.05, color: '#3f8c33', o: [0, 0.15, 0] }, // stem
+    { w: 0.2, h: 0.16, d: 0.2, color: '#e85c8a', o: [0, 0.36, 0] }, // petals
+  ],
+  pebble: [{ w: 0.4, h: 0.16, d: 0.4, color: '#9a9ca2', o: [0, 0.08, 0] }],
+  bed: [
+    { w: 0.92, h: 0.2, d: 0.92, color: '#c0444f', o: [0, 0.12, 0] }, // mattress
+    { w: 0.62, h: 0.12, d: 0.34, color: '#f3f0e8', o: [0, 0.3, 0.26] }, // pillow
+    { w: 0.92, h: 0.26, d: 0.1, color: '#7a5230', o: [0, 0.15, -0.45] }, // headboard
+  ],
+}
 
 type Coord = [number, number, number]
 
@@ -75,11 +99,6 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
 
   const waterRef = useRef<THREE.Mesh | null>(null)
   const decoRef = useRef<THREE.InstancedMesh | null>(null) // grass tufts
-  const decorRefs = useMemo(() => {
-    const m = new Map<DecorKind, { current: THREE.InstancedMesh | null }>()
-    for (const k of DECOR_KINDS) m.set(k, { current: null })
-    return m
-  }, [])
   const outlineRef = useRef<THREE.LineSegments | null>(null)
   const crackRef = useRef<THREE.Mesh | null>(null)
 
@@ -139,13 +158,20 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
   )
 
   // decoration geometries + materials
-  const decorAssets = useMemo(() => {
-    return {
-      torch: { geom: new THREE.BoxGeometry(0.14, 0.55, 0.14), mat: new THREE.MeshStandardMaterial({ color: '#6b4a2a', emissive: '#ff9a2e', emissiveIntensity: 0.7 }), off: -0.5 + 0.28 },
-      ladder: { geom: new THREE.BoxGeometry(0.84, 1.0, 0.08), mat: new THREE.MeshLambertMaterial({ color: '#7a5a30' }), off: 0 },
-      flower: { geom: new THREE.BoxGeometry(0.22, 0.34, 0.22), mat: new THREE.MeshLambertMaterial({ color: '#e85c8a' }), off: -0.5 + 0.18 },
-      pebble: { geom: new THREE.BoxGeometry(0.4, 0.16, 0.4), mat: new THREE.MeshLambertMaterial({ color: '#9a9ca2' }), off: -0.5 + 0.09 },
-    } as Record<DecorKind, { geom: THREE.BufferGeometry; mat: THREE.Material; off: number }>
+  // one InstancedMesh per decoration part (multi-part models)
+  const decorParts = useMemo(() => {
+    const out: { kind: DecorKind; geom: THREE.BoxGeometry; mat: THREE.Material; o: [number, number, number]; mesh: THREE.InstancedMesh | null }[] = []
+    for (const k of DECOR_KINDS)
+      for (const p of DECOR_PARTS[k]) {
+        out.push({
+          kind: k,
+          geom: new THREE.BoxGeometry(p.w, p.h, p.d),
+          mat: p.basic ? new THREE.MeshBasicMaterial({ color: p.color }) : new THREE.MeshLambertMaterial({ color: p.color }),
+          o: p.o,
+          mesh: null,
+        })
+      }
+    return out
   }, [])
 
   const outlineGeom = useMemo(() => new THREE.EdgesGeometry(new THREE.BoxGeometry(1.002, 1.002, 1.002)), [])
@@ -214,27 +240,27 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
       dm.computeBoundingSphere()
     }
 
-    // placed decorations (torch/ladder/flower/pebble)
+    // placed decorations (multi-part models)
     const decBy = new Map<DecorKind, Coord[]>()
     for (const k of DECOR_KINDS) decBy.set(k, [])
     decorations.forEach((kind, key) => {
       const p = key.split(',')
       decBy.get(kind)!.push([Number(p[0]), Number(p[1]), Number(p[2])])
     })
-    for (const kind of DECOR_KINDS) {
-      const mesh = decorRefs.get(kind)!.current
+    for (const part of decorParts) {
+      const mesh = part.mesh
       if (!mesh) continue
-      const list = decBy.get(kind)!
-      const off = decorAssets[kind].off
-      for (let i = 0; i < list.length; i++) {
+      const list = decBy.get(part.kind)!
+      const n = Math.min(list.length, MAX_DECO)
+      for (let i = 0; i < n; i++) {
         const [x, y, z] = list[i]
-        mesh.setMatrixAt(i, m.makeTranslation(x, y + off, z))
+        mesh.setMatrixAt(i, m.makeTranslation(x + part.o[0], y - 0.5 + part.o[1], z + part.o[2]))
       }
-      mesh.count = Math.min(list.length, 500)
+      mesh.count = n
       mesh.instanceMatrix.needsUpdate = true
       mesh.computeBoundingSphere()
     }
-  }, [meshRefs, decorRefs, decorAssets, rebuildWater])
+  }, [meshRefs, decorParts, rebuildWater])
 
   useLayoutEffect(() => {
     rebuild()
@@ -244,9 +270,9 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
       waterRef.current?.geometry?.dispose()
       Object.values(mats).flat().forEach((mm) => (mm as THREE.Material).dispose())
       Object.values(tex).forEach((t) => t.dispose())
-      for (const k of DECOR_KINDS) { decorAssets[k].geom.dispose(); decorAssets[k].mat.dispose() }
+      for (const part of decorParts) { part.geom.dispose(); part.mat.dispose() }
     }
-  }, [rebuild, geom, tuftGeom, outlineGeom, crackGeom, crackMat, crackTex, waterMat, tuftMat, mats, tex, decorAssets])
+  }, [rebuild, geom, tuftGeom, outlineGeom, crackGeom, crackMat, crackTex, waterMat, tuftMat, mats, tex, decorParts])
 
   const raycaster = useMemo(() => {
     const r = new THREE.Raycaster()
@@ -384,8 +410,20 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
   const doPlace = useCallback(() => {
     const tgt = targetRef.current
     if (!tgt) return
+    const [hx, hy, hz] = tgt.hit
+    // bed (sits on top of the targeted block) → sleep through the night
+    if (decorations.get(keyOf(hx, hy + 1, hz)) === 'bed') {
+      if (isNight()) {
+        time.t = 0.3
+        healPlayer(MAX_HP)
+        pushToast('おやすみ… 朝になった')
+      } else {
+        pushToast('夜になってから使えます')
+      }
+      return
+    }
     // workbench → open crafting
-    if (world.get(keyOf(tgt.hit[0], tgt.hit[1], tgt.hit[2])) === WORKBENCH) {
+    if (world.get(keyOf(hx, hy, hz)) === WORKBENCH) {
       onOpenCraft()
       return
     }
@@ -480,13 +518,12 @@ export function VoxelWorld({ onOpenCraft }: { onOpenCraft: () => void }) {
       <mesh ref={waterRef} material={waterMat} frustumCulled={false} renderOrder={2} />
       <instancedMesh ref={decoRef} args={[tuftGeom, tuftMat, MAX_DECO]} frustumCulled={false} />
 
-      {DECOR_KINDS.map((k) => (
+      {decorParts.map((part, i) => (
         <instancedMesh
-          key={k}
-          ref={(el) => { decorRefs.get(k)!.current = el }}
-          args={[decorAssets[k].geom, decorAssets[k].mat, 500]}
+          key={i}
+          ref={(el) => { part.mesh = el }}
+          args={[part.geom, part.mat, MAX_DECO]}
           frustumCulled={false}
-          castShadow
         />
       ))}
 

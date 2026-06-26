@@ -56,7 +56,7 @@ function buildTool(kind: Tool): THREE.Group {
   return g
 }
 
-function buildDecor(kind: 'torch' | 'ladder' | 'flower' | 'pebble'): THREE.Group {
+function buildDecor(kind: 'torch' | 'ladder' | 'flower' | 'pebble' | 'bed'): THREE.Group {
   const g = new THREE.Group()
   const box = (w: number, h: number, d: number, color: string, x = 0, y = 0, z = 0, emissive?: string) => {
     const mat = overlay(emissive ? { color, emissive, emissiveIntensity: 0.8 } : { color })
@@ -64,9 +64,13 @@ function buildDecor(kind: 'torch' | 'ladder' | 'flower' | 'pebble'): THREE.Group
     m.position.set(x, y, z)
     g.add(m)
   }
-  if (kind === 'torch') { box(0.07, 0.4, 0.07, '#6b4a2a', 0, 0, 0); box(0.1, 0.1, 0.1, '#ffae3a', 0, 0.24, 0, '#ff8a1e') }
-  else if (kind === 'ladder') { box(0.34, 0.42, 0.05, '#7a5a30', 0, 0, 0) }
+  if (kind === 'torch') {
+    box(0.07, 0.42, 0.07, '#6b4a2a', 0, 0, 0) // stick
+    box(0.12, 0.13, 0.12, '#ff8a1e', 0, 0.26, 0, '#ff7a14') // flame
+    box(0.07, 0.08, 0.07, '#ffe39a', 0, 0.34, 0, '#ffcf57') // bright tip
+  } else if (kind === 'ladder') { box(0.34, 0.42, 0.05, '#7a5a30', 0, 0, 0) }
   else if (kind === 'flower') { box(0.04, 0.26, 0.04, '#3f8c33', 0, 0, 0); box(0.16, 0.14, 0.16, '#e85c8a', 0, 0.16, 0) }
+  else if (kind === 'bed') { box(0.4, 0.12, 0.28, '#c0444f', 0, 0, 0); box(0.22, 0.08, 0.16, '#f3f0e8', -0.07, 0.06, 0) }
   else { box(0.26, 0.12, 0.26, '#9a9ca2', 0, 0, 0) }
   g.traverse((o) => (o.renderOrder = 1000))
   return g
@@ -112,7 +116,7 @@ export function Hand() {
     [],
   )
   const decors = useMemo(
-    () => ({ torch: buildDecor('torch'), ladder: buildDecor('ladder'), flower: buildDecor('flower'), pebble: buildDecor('pebble') }),
+    () => ({ torch: buildDecor('torch'), ladder: buildDecor('ladder'), flower: buildDecor('flower'), pebble: buildDecor('pebble'), bed: buildDecor('bed') }),
     [],
   )
 

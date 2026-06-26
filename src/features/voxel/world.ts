@@ -38,7 +38,7 @@ export const BLOCK_LABELS: Record<number, string> = {
 }
 
 // ── Decorations: small no-collision placeables on top of blocks ───────────────
-export type DecorKind = 'torch' | 'ladder' | 'flower' | 'pebble'
+export type DecorKind = 'torch' | 'ladder' | 'flower' | 'pebble' | 'bed'
 export const decorations = new Map<string, DecorKind>() // key -> kind
 
 // ── World bounds ──────────────────────────────────────────────────────────────
@@ -200,6 +200,34 @@ export function treeAt(x: number, z: number): boolean {
   const b = biomeAt(x, z)
   if (b === 'sand' || b === 'rocky') return false
   return hash(x * 91 + 17, z * 53 + 29) > (b === 'forest' ? 0.9 : 0.984)
+}
+
+// A small plank hut for villages. Fully contained near the given centre so it
+// stays within one chunk (deterministic; regenerated on chunk reload).
+export function buildHut(cxCenter: number, czCenter: number) {
+  const gy = surfaceHeight(cxCenter, czCenter)
+  const x0 = cxCenter - 2
+  const x1 = cxCenter + 2
+  const z0 = czCenter - 2
+  const z1 = czCenter + 2
+  // clear the footprint above the floor so the hut isn't buried in a hillside
+  for (let x = x0; x <= x1; x++)
+    for (let z = z0; z <= z1; z++)
+      for (let y = gy + 1; y <= gy + 5; y++) world.delete(keyOf(x, y, z))
+  // floor + walls + roof
+  for (let x = x0; x <= x1; x++)
+    for (let z = z0; z <= z1; z++) {
+      set(x, gy, z, PLANKS) // floor
+      set(x, gy + 4, z, PLANKS) // roof
+      const edge = x === x0 || x === x1 || z === z0 || z === z1
+      const corner = (x === x0 || x === x1) && (z === z0 || z === z1)
+      if (edge) for (let y = gy + 1; y <= gy + 3; y++) set(x, y, z, corner ? WOOD : PLANKS)
+    }
+  // doorway (front-centre, 1 wide x 2 tall)
+  world.delete(keyOf(cxCenter, gy + 1, z0))
+  world.delete(keyOf(cxCenter, gy + 2, z0))
+  // a little window opening on a side
+  world.delete(keyOf(x1, gy + 2, czCenter))
 }
 
 // remove every block/water/source whose column lies in [x0..x1, z0..z1]

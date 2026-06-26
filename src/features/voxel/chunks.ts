@@ -6,9 +6,21 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import {
   world, waterLevel, waterSources, keyOf, WATER, type BlockType,
-  genColumn, treeAt, plantTree, surfaceHeight, clearColumns,
+  genColumn, treeAt, plantTree, surfaceHeight, clearColumns, buildHut, biomeAt, isPond,
 } from './world'
 import { touch } from './controls'
+
+// hashed per-chunk: deterministic, uncommon
+function villageHash(cx: number, cz: number) {
+  let h = Math.imul(cx, 341873128) ^ Math.imul(cz, 132897987)
+  h = Math.imul(h ^ (h >>> 13), 1274126177)
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967295
+}
+function isVillageChunk(cx: number, cz: number) {
+  const b = biomeAt(cx * CHUNK + 8, cz * CHUNK + 8)
+  if (b === 'rocky') return false // build on friendly terrain
+  return villageHash(cx, cz) > 0.9
+}
 
 export const CHUNK = 16
 export const chunkRadius = () => (touch.supported ? 2 : 3) // mobile vs PC
@@ -44,13 +56,20 @@ function loadChunk(cx: number, cz: number) {
   const bz = cz * CHUNK
   for (let dx = 0; dx < CHUNK; dx++)
     for (let dz = 0; dz < CHUNK; dz++) genColumn(bx + dx, bz + dz)
-  // trees fully inside the chunk (canopy radius 2)
-  for (let dx = 2; dx < CHUNK - 2; dx++)
-    for (let dz = 2; dz < CHUNK - 2; dz++) {
-      const x = bx + dx
-      const z = bz + dz
-      if (treeAt(x, z)) plantTree(x, z, surfaceHeight(x, z))
-    }
+
+  if (isVillageChunk(cx, cz)) {
+    // a couple of huts on non-pond ground, kept clear of chunk edges
+    const spots: [number, number][] = [[bx + 5, bz + 5], [bx + 10, bz + 10]]
+    for (const [hx, hz] of spots) if (!isPond(hx, hz, surfaceHeight(hx, hz))) buildHut(hx, hz)
+  } else {
+    // trees fully inside the chunk (canopy radius 2)
+    for (let dx = 2; dx < CHUNK - 2; dx++)
+      for (let dz = 2; dz < CHUNK - 2; dz++) {
+        const x = bx + dx
+        const z = bz + dz
+        if (treeAt(x, z)) plantTree(x, z, surfaceHeight(x, z))
+      }
+  }
   // overlay player edits within this chunk
   edits.forEach((val, k) => {
     const c = k.split(',')

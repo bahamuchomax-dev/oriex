@@ -11,7 +11,7 @@ export type Tool = 'axe' | 'shovel' | 'pickaxe' | 'bucket'
 export type ItemId =
   | 'dirt' | 'stone' | 'wood' | 'leaf' | 'grass' | 'sand'
   | 'planks' | 'brick' | 'glass' | 'workbench'
-  | 'torch' | 'ladder' | 'flower' | 'pebble'
+  | 'torch' | 'ladder' | 'flower' | 'pebble' | 'bed'
   | 'axe' | 'shovel' | 'pickaxe' | 'bucket'
   | 'stick' | 'seed'
 
@@ -37,6 +37,7 @@ export const ITEM_DEFS: Record<ItemId, ItemDef> = {
   workbench: { id: 'workbench', name: '作業台', placesBlock: WORKBENCH, swatch: 'linear-gradient(#7d5d34 0 35%,#9c7038 35% 100%)' },
 
   torch: { id: 'torch', name: 'たいまつ', placesDecor: 'torch', swatch: 'linear-gradient(#ffcf57 0 30%,#6b4a2a 30% 100%)' },
+  bed: { id: 'bed', name: 'ベッド', placesDecor: 'bed', swatch: 'linear-gradient(#c0444f 0 60%,#f3f0e8 60% 100%)' },
   ladder: { id: 'ladder', name: 'はしご', placesDecor: 'ladder', swatch: 'repeating-linear-gradient(0deg,#8a6a3f 0 3px,transparent 3px 6px)' },
   flower: { id: 'flower', name: '花', placesDecor: 'flower', swatch: 'radial-gradient(circle at 50% 35%,#ff6b9d 30%,#3f8c33 32%)' },
   pebble: { id: 'pebble', name: '小石', placesDecor: 'pebble', swatch: 'radial-gradient(circle,#b8babf,#7d7f86)' },

@@ -36,4 +36,5 @@ export const RECIPES: Recipe[] = [
   { id: 'ladder', result: 'ladder', count: 3, ingredients: [{ id: 'planks', n: 2 }], requiresWorkbench: true, category: '小物' },
   { id: 'pebble', result: 'pebble', count: 4, ingredients: [{ id: 'stone', n: 2 }], requiresWorkbench: true, category: '小物' },
   { id: 'flower', result: 'flower', count: 1, ingredients: [{ id: 'leaf', n: 1 }], requiresWorkbench: true, category: '小物' },
+  { id: 'bed', result: 'bed', count: 1, ingredients: [{ id: 'planks', n: 3 }, { id: 'leaf', n: 3 }], requiresWorkbench: true, category: '建築' },
 ]
